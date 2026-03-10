@@ -5,7 +5,7 @@ export default function HomePage() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between text-sm">
         <h1 className="mb-4 text-4xl font-bold tracking-tight">
-          Welcome to <span className="text-primary">Bluemoon</span>
+          Welcome to <span className="text-primary">Jinx.to</span>
         </h1>
         <p className="mb-8 text-lg text-muted-foreground">
           A production-ready Next.js starter with modern tooling

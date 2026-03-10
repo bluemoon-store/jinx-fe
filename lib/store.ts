@@ -20,7 +20,7 @@ export const useAppStore = create<AppState>()(
         setLoading: (isLoading) => set({ isLoading }),
       }),
       {
-        name: 'bluemoon-storage',
+        name: 'jinx-to-storage',
         partialize: (state) => ({ user: state.user }),
       }
     )

@@ -1,5 +1,5 @@
 {
-  "name": "bluemoon-fe",
+  "name": "jinx-to-fe",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

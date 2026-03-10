@@ -17,26 +17,26 @@ const fontMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Bluemoon',
-    template: '%s | Bluemoon',
+    default: 'Jinx.to',
+    template: '%s | Jinx.to',
   },
-  description: 'Bluemoon - Modern web application',
+  description: 'Jinx.to - Modern web application',
   keywords: ['nextjs', 'react', 'typescript'],
-  authors: [{ name: 'Bluemoon Team' }],
-  creator: 'Bluemoon',
+  authors: [{ name: 'Jinx.to Team' }],
+  creator: 'Jinx.to',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: process.env.NEXT_PUBLIC_APP_URL,
-    title: 'Bluemoon',
-    description: 'Bluemoon - Modern web application',
-    siteName: 'Bluemoon',
+    title: 'Jinx.to',
+    description: 'Jinx.to - Modern web application',
+    siteName: 'Jinx.to',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Bluemoon',
-    description: 'Bluemoon - Modern web application',
+    title: 'Jinx.to',
+    description: 'Jinx.to - Modern web application',
   },
   robots: {
     index: true,

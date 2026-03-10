@@ -1,4 +1,4 @@
-# Bluemoon
+# Jinx.to
 
 A production-ready Next.js starter template with modern tooling, best practices, and a comprehensive set of libraries out of the box.
 
@@ -34,7 +34,7 @@ A production-ready Next.js starter template with modern tooling, best practices,
 
 ```bash
 git clone <repository-url>
-cd bluemoon-fe
+cd jinx-to-fe
 ```
 
 ### 2. Install dependencies
@@ -110,7 +110,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Project Structure
 
 ```
-bluemoon-fe/
+jinx-to-fe/
 ├── .github/
 │   └── workflows/         # GitHub Actions CI/CD
 ├── .husky/                # Git hooks

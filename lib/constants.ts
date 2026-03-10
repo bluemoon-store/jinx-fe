@@ -1,4 +1,4 @@
-export const APP_NAME = 'Bluemoon'
+export const APP_NAME = 'Jinx.to'
 export const APP_DESCRIPTION = 'Modern web application'
 
 export const ROUTES = {
