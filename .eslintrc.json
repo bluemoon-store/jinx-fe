@@ -8,14 +8,7 @@
     "plugin:jsx-a11y/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "jsx-a11y",
-    "import",
-    "unused-imports"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "jsx-a11y", "import", "unused-imports"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
@@ -33,13 +26,7 @@
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          ["parent", "sibling"],
-          "index"
-        ],
+        "groups": ["builtin", "external", "internal", ["parent", "sibling"], "index"],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
@@ -48,10 +35,7 @@
       }
     ],
     "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      { "prefer": "type-imports" }
-    ],
+    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "no-console": ["warn", { "allow": ["warn", "error"] }]
   },
   "settings": {

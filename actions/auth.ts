@@ -29,5 +29,5 @@ export async function loginAction(data: LoginInput) {
 
 export async function logoutAction() {
   // TODO: clear session/cookies
-  redirect('/login')
+  // redirect('/login')
 }

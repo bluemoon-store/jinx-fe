@@ -1,11 +1,7 @@
 import { MainNav } from '@/components/layouts/main-nav'
 import { Sidebar } from '@/components/layouts/sidebar'
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <MainNav />

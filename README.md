@@ -68,44 +68,44 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_APP_URL` | Public URL of the application | Yes |
-| `NEXT_PUBLIC_APP_NAME` | Application name | Yes |
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `NEXTAUTH_URL` | NextAuth.js callback URL | Yes |
-| `NEXTAUTH_SECRET` | NextAuth.js secret key | Yes |
-| `GITHUB_CLIENT_ID` | GitHub OAuth app client ID | No |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth app client secret | No |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | No |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | No |
-| `SENTRY_DSN` | Sentry DSN for error tracking | No |
-| `NEXT_PUBLIC_SENTRY_DSN` | Public Sentry DSN | No |
-| `RESEND_API_KEY` | Resend API key for emails | No |
-| `NEXT_PUBLIC_GA_ID` | Google Analytics ID | No |
+| Variable                 | Description                    | Required |
+| ------------------------ | ------------------------------ | -------- |
+| `NEXT_PUBLIC_APP_URL`    | Public URL of the application  | Yes      |
+| `NEXT_PUBLIC_APP_NAME`   | Application name               | Yes      |
+| `DATABASE_URL`           | PostgreSQL connection string   | Yes      |
+| `NEXTAUTH_URL`           | NextAuth.js callback URL       | Yes      |
+| `NEXTAUTH_SECRET`        | NextAuth.js secret key         | Yes      |
+| `GITHUB_CLIENT_ID`       | GitHub OAuth app client ID     | No       |
+| `GITHUB_CLIENT_SECRET`   | GitHub OAuth app client secret | No       |
+| `GOOGLE_CLIENT_ID`       | Google OAuth client ID         | No       |
+| `GOOGLE_CLIENT_SECRET`   | Google OAuth client secret     | No       |
+| `SENTRY_DSN`             | Sentry DSN for error tracking  | No       |
+| `NEXT_PUBLIC_SENTRY_DSN` | Public Sentry DSN              | No       |
+| `RESEND_API_KEY`         | Resend API key for emails      | No       |
+| `NEXT_PUBLIC_GA_ID`      | Google Analytics ID            | No       |
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `bun run dev` | Start development server with Turbopack |
-| `bun run build` | Build for production |
-| `bun run start` | Start production server |
-| `bun run lint` | Run ESLint |
-| `bun run lint:fix` | Run ESLint with auto-fix |
-| `bun run format` | Format code with Prettier |
-| `bun run format:check` | Check code formatting |
-| `bun run type-check` | Run TypeScript type checking |
-| `bun run test` | Run unit tests with Vitest |
-| `bun run test:ui` | Run tests with Vitest UI |
-| `bun run test:coverage` | Run tests with coverage report |
-| `bun run test:e2e` | Run Playwright E2E tests |
-| `bun run analyze` | Analyze bundle size |
-| `bun run db:generate` | Generate Prisma client |
-| `bun run db:migrate` | Run database migrations |
-| `bun run db:push` | Push schema to database |
-| `bun run db:studio` | Open Prisma Studio |
-| `bun run db:seed` | Seed the database |
+| Script                  | Description                             |
+| ----------------------- | --------------------------------------- |
+| `bun run dev`           | Start development server with Turbopack |
+| `bun run build`         | Build for production                    |
+| `bun run start`         | Start production server                 |
+| `bun run lint`          | Run ESLint                              |
+| `bun run lint:fix`      | Run ESLint with auto-fix                |
+| `bun run format`        | Format code with Prettier               |
+| `bun run format:check`  | Check code formatting                   |
+| `bun run type-check`    | Run TypeScript type checking            |
+| `bun run test`          | Run unit tests with Vitest              |
+| `bun run test:ui`       | Run tests with Vitest UI                |
+| `bun run test:coverage` | Run tests with coverage report          |
+| `bun run test:e2e`      | Run Playwright E2E tests                |
+| `bun run analyze`       | Analyze bundle size                     |
+| `bun run db:generate`   | Generate Prisma client                  |
+| `bun run db:migrate`    | Run database migrations                 |
+| `bun run db:push`       | Push schema to database                 |
+| `bun run db:studio`     | Open Prisma Studio                      |
+| `bun run db:seed`       | Seed the database                       |
 
 ## Project Structure
 
@@ -165,6 +165,7 @@ bun run start
 5. Open a pull request
 
 Please ensure:
+
 - All tests pass (`bun run test`)
 - Code is properly formatted (`bun run format:check`)
 - TypeScript compiles without errors (`bun run type-check`)
