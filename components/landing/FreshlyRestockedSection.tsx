@@ -1,243 +1,155 @@
-import { FunctionComponent } from 'react'
+'use client'
 
-const FreshlyRestockedSection: FunctionComponent = () => {
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+
+const allItems = [
+  // Page 1
+  { name: 'AIRBNB', src: '/icons/airbnb.svg' },
+  { name: 'VENMO', src: '/icons/airbnb.svg' },
+  { name: 'DUNKIN', src: '/icons/airbnb.svg' },
+  { name: 'AFFIRM', src: '/icons/airbnb.svg' },
+  { name: 'MOD PIZZA', src: '/icons/airbnb.svg' },
+  // Page 2
+  { name: 'FIVE BELOW', src: '/icons/airbnb.svg' },
+  { name: 'SHIPT', src: '/icons/airbnb.svg' },
+  { name: 'TACO BELL', src: '/icons/airbnb.svg' },
+  { name: 'BURGER KING', src: '/icons/airbnb.svg' },
+  { name: 'SEAT GEEK', src: '/icons/airbnb.svg' },
+  // Page 3
+  { name: 'WALMART', src: '/icons/airbnb.svg' },
+  { name: 'TARGET', src: '/icons/airbnb.svg' },
+  { name: 'BEST BUY', src: '/icons/airbnb.svg' },
+  { name: 'COSTCO', src: '/icons/airbnb.svg' },
+  { name: 'CVS', src: '/icons/airbnb.svg' },
+  // Page 4
+  { name: 'HOME DEPOT', src: '/icons/airbnb.svg' },
+  { name: 'IKEA', src: '/icons/airbnb.svg' },
+  { name: 'WAYFAIR', src: '/icons/airbnb.svg' },
+  { name: 'OVERSTOCK', src: '/icons/airbnb.svg' },
+  { name: 'BED BATH', src: '/icons/airbnb.svg' },
+  // Page 5
+  { name: 'GAP', src: '/icons/airbnb.svg' },
+  { name: 'H&M', src: '/icons/airbnb.svg' },
+  { name: 'ZARA', src: '/icons/airbnb.svg' },
+  { name: 'NIKE', src: '/icons/airbnb.svg' },
+  { name: 'ADIDAS', src: '/icons/airbnb.svg' },
+]
+
+const ITEMS_PER_PAGE = 5
+const TOTAL_PAGES = Math.ceil(allItems.length / ITEMS_PER_PAGE)
+
+export default function FreshlyRestockedSection() {
+  const [page, setPage] = useState(0)
+
+  const items = allItems.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE)
+
+  const prev = () => setPage((p) => Math.max(0, p - 1))
+  const next = () => setPage((p) => Math.min(TOTAL_PAGES - 1, p + 1))
+
   return (
-    <>
-      <div className="w-num-580 h-num-100 text-num-32 absolute top-[1539px] left-[670.5px] flex flex-col items-center justify-center gap-2.5">
-        <div className="flex items-center gap-[5px]">
-          <div className="tracking-num-0_02 relative font-extrabold">FRESHLY</div>
-          <div className="text-mediumslateblue-100 font-heydex flex items-center gap-[5px]">
-            <img className="relative h-7 w-7" alt="" />
-            <div className="tracking-num-0_02 relative">ReSToCKED</div>
-          </div>
-        </div>
-        <div className="text-num-16 leading-num-24 font-commissioner relative self-stretch font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-          Products with stocks just refreshed, they keep selling so quick.
-          <br />
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </div>
-      </div>
-      <div className="absolute top-[1669px] left-[224px] flex w-[1473px] flex-wrap content-start items-start gap-[17px] text-[20px]">
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">AIRBNB</div>
+    <section className="overflow-x-hidden text-sm sm:text-base lg:text-lg">
+      {/* Section header */}
+      <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center gap-2 text-center sm:gap-2.5 lg:gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+            <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+              FRESHLY
             </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
+            <div className="text-mediumslateblue-100 font-heydex flex items-center gap-1.5 sm:gap-2">
+              <img
+                className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                alt=""
+                src="/icons/IconPlanning.svg"
+              />
+              <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+                ReSToCKED
               </div>
             </div>
           </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">VENMO</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative shrink-0 font-extrabold uppercase">
-                DUNKIN DONUTS
-              </div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">AFFIRM</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">MOD PIZZA</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">FIVE BELOW</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">SHIPT</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <div className="w-num-257 h-num-125 rounded-num-8 bg-indigo border-darkslateblue relative box-border shrink-0 overflow-hidden border-[1px] border-solid shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-            <img
-              className="h-num-300 absolute top-[calc(50%_-_150.5px)] left-[calc(50%_-_147.5px)] w-[296px] shrink-0 opacity-[0.05]"
-              alt=""
-            />
-            <div className="absolute top-[calc(50%_-_25.5px)] left-[calc(50%_-_71.5px)] flex shrink-0 items-center gap-[5.4px]">
-              <img className="relative h-[51.6px] w-[56.9px]" alt="" />
-              <img className="relative h-[45.5px] w-[79.9px]" alt="" />
-            </div>
-          </div>
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">TACO BELL</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">BURGER KING</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-num-281 rounded-num-8 border-darkslateblue p-num-12 box-border flex flex-col items-center justify-center gap-3 border-[1px] border-solid bg-gray-200">
-          <img
-            className="w-num-257 h-num-125 rounded-num-8 relative shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-            alt=""
-          />
-          <div className="flex w-36 flex-col items-center gap-0.5">
-            <div className="flex items-center justify-center self-stretch">
-              <div className="tracking-num-0_02 relative font-extrabold uppercase">SEAT GEEK</div>
-            </div>
-            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-              <div className="leading-num-24 relative font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                <b className="leading-num-24 relative [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  $2.50
-                </b>
-              </div>
-            </div>
+          <div className="font-commissioner w-full max-w-num-580 text-sm font-medium leading-6 text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7 lg:leading-num-24">
+            Products with stocks just refreshed, they keep selling so quick.
+            <br className="hidden sm:block" />
+            <span className="hidden sm:inline">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </span>
           </div>
         </div>
       </div>
-      <div className="absolute top-[2142px] left-[860px] flex items-center gap-[7.5px]">
-        <img
-          className="w-num-30 rounded-num-30 h-[30px] object-contain opacity-[0.25] shadow-[0px_15px_15px_rgba(0,_0,_0,_0.01)]"
-          alt=""
-        />
-        <div className="rounded-num-30 border-darkslateblue flex flex-col items-center border-[1.5px] border-solid bg-gray-200 p-[9px] shadow-[0px_15px_15px_rgba(0,_0,_0,_0.01)]">
-          <div className="flex w-full max-w-full items-center gap-[7.5px]">
-            <div className="w-num-30 relative h-3 rounded-[13.5px] bg-white" />
-            <div className="rounded-num-50 relative h-3 w-3 bg-white opacity-[0.25]" />
-            <div className="rounded-num-50 relative h-3 w-3 bg-white opacity-[0.25]" />
-            <div className="rounded-num-50 relative h-3 w-3 bg-white opacity-[0.25]" />
-            <div className="rounded-num-50 relative h-3 w-3 bg-white opacity-[0.25]" />
-          </div>
+
+      {/* Products grid */}
+      <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:mt-8 sm:px-6 lg:mt-10 lg:px-8">
+        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
+          {items.map((item) => (
+            <div
+              key={item.name}
+              className="border-darkslateblue box-border flex w-full flex-col items-center justify-center gap-2.5 rounded-num-8 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6 xl:p-num-12"
+            >
+              <img
+                className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
+                alt=""
+                src={item.src}
+              />
+              <div className="flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
+                <div className="flex items-center justify-center self-stretch">
+                  <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
+                    {item.name}
+                  </div>
+                </div>
+                <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
+                  <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                    from{' '}
+                  </div>
+                  <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
+                    <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                      $2.50
+                    </b>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <img
-          className="w-num-30 rounded-num-30 h-[30px] shadow-[0px_15px_15px_rgba(0,_0,_0,_0.01)]"
-          alt=""
-        />
+
+        {/* Pagination */}
+        <div className="mt-6 flex w-full items-center justify-center gap-3 sm:mt-8 lg:mt-10">
+          <button
+            type="button"
+            onClick={prev}
+            disabled={page === 0}
+            aria-label="Previous page"
+            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:opacity-25 hover:not-disabled:opacity-80"
+          >
+            <ChevronLeft className="h-4 w-4 text-white" />
+          </button>
+
+          <div className="border-darkslateblue flex items-center gap-[7.5px] rounded-[30px] border-[1.5px] border-solid bg-gray-200 px-[9px] py-[9px] shadow-[0px_15px_15px_rgba(0,0,0,0.01)]">
+            {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setPage(i)}
+                aria-label={`Go to page ${i + 1}`}
+                className={cn(
+                  'rounded-[13.5px] bg-white transition-all duration-300',
+                  i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25',
+                )}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={next}
+            disabled={page === TOTAL_PAGES - 1}
+            aria-label="Next page"
+            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:opacity-25 hover:not-disabled:opacity-80"
+          >
+            <ChevronRight className="h-4 w-4 text-white" />
+          </button>
+        </div>
       </div>
-    </>
+    </section>
   )
 }
-
-export default FreshlyRestockedSection

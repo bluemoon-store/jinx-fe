@@ -1,125 +1,181 @@
-import { FunctionComponent } from 'react'
+'use client'
+
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { FunctionComponent, useState } from 'react'
+
+const faqData = [
+  {
+    id: 1,
+    question: 'What kind of digital giftcards does Jinx.to offer?',
+    answer:
+      'Jinx.to offers a wide variety of digital giftcards across categories including food & dining, streaming services, gaming, travel, shopping, and more. We carry top brands like Starbucks, Netflix, Amazon, PlayStation, and hundreds of others — all delivered instantly to your account.',
+  },
+  {
+    id: 2,
+    question: 'What makes Jinx.to a safe platform to shop on?',
+    answer:
+      'Every giftcard on Jinx.to is sourced directly from authorized distributors and verified before listing. Your transactions are encrypted end-to-end, and we never store your payment credentials. Our team monitors for fraud 24/7 to ensure every purchase is legitimate and protected.',
+  },
+  {
+    id: 3,
+    question: 'Can I use other cryptocurrencies to shop?',
+    answer:
+      "We've partnered with top brands to bring you the best deals on the market. Our team works around the clock to ensure that every gift card is 100% legitimate and delivered instantly. Shop with confidence, knowing that your purchase is protected by our guarantee.",
+    defaultOpen: true,
+  },
+  {
+    id: 4,
+    question: 'How do I browse for giftcards on Jinx.to?',
+    answer:
+      'Simply use the category tabs at the top of the store to filter by type — food, streaming, shopping, and more. You can also use the search bar to find a specific brand instantly. Each listing shows the available denominations and current pricing.',
+  },
+  {
+    id: 5,
+    question: 'Can I get a refund for a giftcard I purchased?',
+    answer:
+      'Due to the digital nature of giftcards, all sales are final once the card has been delivered to your account. However, if you experience a technical issue or receive an invalid code, please contact our support team within 48 hours and we will make it right.',
+  },
+  {
+    id: 6,
+    question: 'How do I redeem a giftcard on Jinx.to?',
+    answer:
+      'After purchase, your giftcard code will appear in your Jinx Account under "My Orders". Simply copy the code and redeem it on the brand\'s official website or app. Each card includes a direct redemption link for convenience.',
+  },
+  {
+    id: 7,
+    question: 'Are there any fees associated with buying giftcards?',
+    answer:
+      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.',
+    defaultOpen: true,
+  },
+  {
+    id: 8,
+    question: 'How long does it take to receive my giftcard?',
+    answer:
+      'Most giftcards are delivered instantly after payment confirmation. In rare cases where manual verification is required, delivery may take up to 15 minutes. You will receive an email notification as soon as your card is ready in your account.',
+  },
+]
+
+const FAQItem: FunctionComponent<{
+  question: string
+  answer: string
+  isOpen: boolean
+  onToggle: () => void
+}> = ({ question, answer, isOpen, onToggle }) => (
+  <details
+    open={isOpen}
+    onToggle={(e) => {
+      if ((e.currentTarget as HTMLDetailsElement).open !== isOpen) onToggle()
+    }}
+    className="group rounded-num-8 border-darkslateblue border-[1px] border-solid bg-gray-200"
+  >
+    <summary className="rounded-num-8 border-darkslateblue lg:p-num-19_1 flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-2 border-[1px] border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5">
+      <b className="tracking-num--0_01 sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
+        {question}
+      </b>
+      <div className="rounded-num-8 flex items-center justify-center bg-white/5 p-1">
+        <ChevronDown className="h-5 w-5 shrink-0 text-white opacity-75 group-open:hidden" />
+        <ChevronUp className="hidden h-5 w-5 shrink-0 text-white group-open:block" />
+      </div>
+    </summary>
+    <div className="text-lightsteelblue-100 sm:leading-num-24 lg:p-num-19_1 p-4 text-sm leading-6 font-medium sm:p-5 sm:text-base">
+      {answer}
+    </div>
+  </details>
+)
 
 const FAQSection: FunctionComponent = () => {
+  const [openIds, setOpenIds] = useState<Set<number>>(
+    new Set(faqData.filter((f) => f.defaultOpen).map((f) => f.id))
+  )
+
+  const allOpen = openIds.size === faqData.length
+
+  const toggleItem = (id: number) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleAll = () => {
+    setOpenIds(allOpen ? new Set() : new Set(faqData.map((f) => f.id)))
+  }
+
+  const col1 = faqData.slice(0, 4)
+  const col2 = faqData.slice(4)
+
   return (
-    <div className="text-num-16 font-commissioner absolute top-[3853px] left-[calc(50%_-_737px)] h-[607px] w-[1474px] text-left">
-      <div className="w-num-580 text-num-32 font-nata-sans absolute top-[0px] left-[calc(50%_-_290px)] flex flex-col items-center justify-center gap-2.5 text-center">
-        <div className="flex items-center gap-[5px]">
-          <div className="tracking-num-0_02 relative font-extrabold">FREQUENTLY ASKED</div>
-          <div className="text-deepskyblue-100 font-heydex flex items-center gap-[5px]">
-            <img className="relative h-7 w-7" alt="" />
-            <div className="tracking-num-0_02 relative">QUEsTIONS</div>
-          </div>
-        </div>
-        <div className="text-num-16 leading-num-24 font-commissioner relative self-stretch font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          <br />
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </div>
-      </div>
-      <div className="absolute top-[130px] left-[calc(50%_-_737px)] flex w-[1474px] items-center gap-3">
-        <div className="flex flex-1 flex-col items-start gap-3">
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex items-center justify-center self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex max-w-full flex-1 items-center justify-between gap-0">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  What kind of digital giftcards does Jinx.to offer?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
+    <section className="font-commissioner lg:text-num-16 overflow-x-hidden text-left text-sm sm:text-base">
+      {/* Section header */}
+      <div className="mx-auto flex w-full max-w-[1474px] flex-col items-center gap-2 px-4 text-center sm:gap-2.5 sm:px-6 lg:gap-3 lg:px-8">
+        <div className="font-nata-sans sm:max-w-num-580 flex w-full max-w-full flex-col items-center justify-center gap-2 sm:gap-2.5 lg:gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-[5px]">
+            <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+              FREQUENTLY ASKED
+            </div>
+            <div className="text-deepskyblue-100 font-heydex flex items-center gap-1.5 sm:gap-[5px]">
+              <img
+                className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                alt=""
+                src="/icons/IconBubbleQuestion.svg"
+              />
+              <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+                QUEsTIONS
               </div>
             </div>
           </div>
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex items-center justify-center self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex max-w-full flex-1 items-center justify-between gap-0">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  What makes Jinx.to a safe platform to shop on?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-            </div>
-          </div>
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex flex-col items-start gap-[11.9px] self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex items-center justify-between gap-0 self-stretch">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  Can I use other cryptocurrencies to shop?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-              <div className="leading-num-24 text-lightsteelblue-100 relative self-stretch font-medium">
-                We've partnered with top brands to bring you the best deals on the market. Our team
-                works around the clock to ensure that every gift card is 100% legitimate and
-                delivered instantly. Shop with confidence, knowing that your purchase is protected
-                by our guarantee.
-              </div>
-            </div>
-          </div>
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex items-center justify-center self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex max-w-full flex-1 items-center justify-between gap-0">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  How do I browse for giftcards on Jinx.to?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-1 flex-col items-start gap-3">
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex items-center justify-center self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex max-w-full flex-1 items-center justify-between gap-0">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  Can I get a refund for a giftcard I purchased?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-            </div>
-          </div>
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex items-center justify-center self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex max-w-full flex-1 items-center justify-between gap-0">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  How do I redeem a giftcard on Jinx.to?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-            </div>
-          </div>
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex flex-col items-start gap-[11.9px] self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex items-center justify-between gap-0 self-stretch">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  Are there any fees associated with buying giftcards?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-              <div className="leading-num-24 text-lightsteelblue-100 relative self-stretch font-medium">
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                proident, sunt in culpa qui officia.
-              </div>
-            </div>
-          </div>
-          <div className="rounded-num-8 border-darkslateblue flex flex-col items-start self-stretch border-[1px] border-solid bg-gray-200">
-            <div className="rounded-num-8 border-darkslateblue p-num-19_1 flex items-center justify-center self-stretch border-[1px] border-solid bg-gray-200">
-              <div className="flex max-w-full flex-1 items-center justify-between gap-0">
-                <b className="tracking-num--0_01 leading-num-28 relative flex-1">
-                  How long does it take to receive my giftcard?
-                </b>
-                <img className="rounded-num-8 relative h-8 w-8" alt="" />
-              </div>
-            </div>
+          <div className="font-commissioner lg:leading-num-24 text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base sm:leading-7">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            <br className="hidden sm:block" />
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </div>
         </div>
       </div>
-      <div className="rounded-num-8 border-darkslateblue py-num-4 px-num-16 absolute top-[561px] left-[calc(50%_-_103px)] box-border flex h-[46px] w-[207px] items-center justify-center gap-2 border-[1px] border-solid bg-gray-200 text-white">
-        <img className="relative hidden max-h-full w-5" alt="" />
-        <b className="tracking-num--0_01 leading-num-28 relative">Read all FAQs</b>
+
+      {/* FAQ grid */}
+      <div className="mx-auto mt-6 w-full max-w-[1474px] px-4 sm:mt-8 sm:px-6 lg:mt-10 lg:px-8">
+        <div className="grid grid-cols-1 gap-2 sm:gap-3 lg:grid-cols-2">
+          <div className="flex flex-col gap-2 sm:gap-3">
+            {col1.map((faq) => (
+              <FAQItem
+                key={faq.id}
+                question={faq.question}
+                answer={faq.answer}
+                isOpen={openIds.has(faq.id)}
+                onToggle={() => toggleItem(faq.id)}
+              />
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 sm:gap-3">
+            {col2.map((faq) => (
+              <FAQItem
+                key={faq.id}
+                question={faq.question}
+                answer={faq.answer}
+                isOpen={openIds.has(faq.id)}
+                onToggle={() => toggleItem(faq.id)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Footer CTA */}
+        <div className="mt-6 flex items-center justify-center sm:mt-8">
+          <button
+            type="button"
+            onClick={toggleAll}
+            className="rounded-num-8 border-darkslateblue sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border-[1px] border-solid bg-gray-200 px-6 py-3 text-white transition-colors hover:bg-gray-300 sm:px-8 lg:w-[207px]"
+          >
+            <b className="tracking-num--0_01 sm:leading-num-28 text-sm leading-snug sm:text-base">
+              {allOpen ? 'Collapse all' : 'Read all FAQs'}
+            </b>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 

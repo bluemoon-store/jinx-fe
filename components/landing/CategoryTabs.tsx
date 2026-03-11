@@ -1,92 +1,39 @@
-import { FunctionComponent } from 'react'
+const tabs = [
+  'All Giftcards',
+  'Cashout',
+  'Food',
+  'Flights',
+  'Groceries',
+  'Shopping',
+  'Clothing',
+  'Gas/Oil',
+  'Tickets',
+  'Jewelry',
+  'Rentals',
+  'Streaming',
+]
 
-const CategoryTabs: FunctionComponent = () => {
+export default function CategoryTabs() {
   return (
-    <>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[223px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">All Giftcards</div>
+    <nav aria-label="Giftcard categories" className="w-full">
+      <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2 lg:gap-3">
+          {tabs.map((label) => (
+            <div key={label} className="group relative w-full sm:w-auto">
+              {/* Bottom layer (non-blurred shadow) */}
+              <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#003bbf] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+
+              <button
+                type="button"
+                className="relative z-10 flex min-h-[44px] w-full cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-sm font-commissioner text-white/70 transform transition-all duration-200 sm:w-auto sm:gap-1 sm:px-num-12 sm:py-2 sm:text-base group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white"
+              >
+                <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconDollar.svg" />
+                <span className="leading-num-20 font-semibold">{label}</span>
+              </button>
+            </div>
+          ))}
         </div>
       </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[355.23px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Cashout</div>
-        </div>
-      </div>
-      <img
-        className="rounded-num-99 absolute top-[704.41px] left-[459.36px] h-[41.2px] w-[93.3px] object-contain shadow-[0px_4px_0px_rgba(0,_94,_255,_0.25)]"
-        alt=""
-      />
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[556.69px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex h-5 w-0 flex-col items-center" />
-        <div className="leading-num-20 relative font-semibold">Food</div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[645.92px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Flights</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[742.15px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Groceries</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[856.38px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Shopping</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[969.62px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Clothing</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[1077.85px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Gas/Oil</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[1179.08px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Tickets</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[1278.31px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Lifestyle</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[1386.54px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">{`Jewelry `}</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[1486.77px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">Rentals</div>
-        </div>
-      </div>
-      <div className="rounded-num-99 px-num-12 text-whitesmoke-100 font-commissioner absolute top-[707px] left-[1587px] flex items-center gap-1 border-[1px] border-dashed border-gray-600 py-2">
-        <img className="relative h-4 w-4" alt="" />
-        <div className="flex flex-col items-center">
-          <div className="leading-num-20 relative font-semibold">{`Streaming `}</div>
-        </div>
-      </div>
-      <img className="absolute top-[724px] left-[504px] h-[52px] w-[52px] object-cover" alt="" />
-    </>
+    </nav>
   )
 }
-
-export default CategoryTabs
