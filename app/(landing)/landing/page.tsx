@@ -11,17 +11,19 @@ import SellingSection from '@/components/landing/SellingSection'
 
 export default function LandingPage() {
   return (
-    <div className="text-num-14 text-ghostwhite font-nata-sans relative h-[4822px] w-full overflow-hidden bg-gray-400 text-center">
-      <HeroSection />
+    <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col bg-gray-400 text-center">
       <Navbar />
-      <SellingSection />
-      <FeaturesSection />
-      <HowToPurchaseSection />
-      <FAQSection />
-      <Footer />
-      <CategoryTabs />
-      <FreshlyRestockedSection />
-      <NewlyLaunchedSection />
+      <main className="flex flex-1 flex-col overflow-x-hidden">
+        <HeroSection />
+        {/* <SellingSection />
+        <FeaturesSection />
+        <HowToPurchaseSection />
+        <FAQSection />
+        <CategoryTabs />
+        <FreshlyRestockedSection />
+        <NewlyLaunchedSection /> */}
+        <Footer />
+      </main>
     </div>
   )
 }
