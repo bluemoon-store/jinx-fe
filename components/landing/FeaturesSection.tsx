@@ -61,7 +61,7 @@ const FeaturesSection: FunctionComponent = () => {
   ] as const
 
   return (
-    <section className="text-sm text-left lg:text-base">
+    <section className="text-left text-sm lg:text-base">
       {/* Section header */}
       <div className="mx-auto flex w-full max-w-[1476.9px] flex-col items-center gap-2 px-4 text-center sm:px-6 lg:gap-2.5 lg:px-8">
         <div className="flex items-center gap-1 text-xl sm:text-2xl lg:text-[32px]">
@@ -88,12 +88,16 @@ const FeaturesSection: FunctionComponent = () => {
               className={`rounded-num-8 flex flex-col items-start border-[1px] border-solid p-4 lg:p-[16px] ${feature.borderClass} ${feature.bgClass}`}
             >
               <div className="flex w-full items-start justify-start gap-2.5 lg:gap-3">
-                <img className="mt-0.5 h-5 w-5 flex-shrink-0 lg:h-7 lg:w-7" alt="" src="/icons/IconClockAlert.svg" />
+                <img
+                  className="mt-0.5 h-5 w-5 flex-shrink-0 lg:h-7 lg:w-7"
+                  alt=""
+                  src="/icons/IconClockAlert.svg"
+                />
                 <div className="flex flex-1 flex-col items-start gap-1 lg:gap-[5px]">
-                  <div className="tracking-num-0_02 self-stretch font-extrabold uppercase leading-snug [text-shadow:0px_0px_18.58px_rgba(0,_0,_0,_0.6)]">
+                  <div className="tracking-num-0_02 self-stretch leading-snug font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,_0,_0,_0.6)]">
                     {feature.title}
                   </div>
-                  <div className="font-commissioner text-lightsteelblue-200 self-stretch text-sm font-medium leading-snug [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                  <div className="font-commissioner text-lightsteelblue-200 self-stretch text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
                     {feature.description}
                   </div>
                 </div>

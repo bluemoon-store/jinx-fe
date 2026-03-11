@@ -58,10 +58,10 @@ const HowToPurchaseSection: FunctionComponent = () => {
                 type="button"
                 onClick={() => setSelectedStep(step.id)}
                 className={cn(
-                  'rounded-num-8 box-border flex w-full flex-col justify-end border-[1px] border-solid p-4 text-left text-lg sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cornflowerblue focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
+                  'rounded-num-8 focus-visible:ring-cornflowerblue box-border flex w-full flex-col justify-end border-[1px] border-solid p-4 text-left text-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
                   isSelected
                     ? 'border-cornflowerblue [background:linear-gradient(180deg,_rgba(92,_133,_246,_0),_rgba(92,_133,_246,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
-                    : 'border-darkslateblue [background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]',
+                    : 'border-darkslateblue [background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
                 )}
               >
                 <div className="mx-auto flex w-full max-w-[325.5px] flex-col items-center gap-2 lg:gap-3">
@@ -71,16 +71,16 @@ const HowToPurchaseSection: FunctionComponent = () => {
                         'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-solid transition-opacity duration-200 lg:h-10 lg:w-10',
                         isSelected
                           ? 'border-cornflowerblue bg-[rgba(92,133,246,0.15)]'
-                          : 'border-darkslateblue bg-white/5 opacity-40',
+                          : 'border-darkslateblue bg-white/5 opacity-40'
                       )}
                     >
                       <img className="h-5 w-5 lg:h-6 lg:w-6" alt="" src={step.iconSrc} />
                     </div>
-                    <div className="tracking-num-0_02 font-extrabold uppercase leading-tight [text-shadow:0px_0px_18.58px_rgba(0,_0,_0,_0.6)]">
+                    <div className="tracking-num-0_02 leading-tight font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,_0,_0,_0.6)]">
                       {step.title}
                     </div>
                   </div>
-                  <div className="font-commissioner text-lightsteelblue-200 self-stretch text-sm font-medium leading-snug [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] lg:text-base">
+                  <div className="font-commissioner text-lightsteelblue-200 self-stretch text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] lg:text-base">
                     {step.description}
                   </div>
                 </div>

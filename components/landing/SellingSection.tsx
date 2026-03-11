@@ -138,7 +138,16 @@ const SellingSection: FunctionComponent = () => {
                 </div>
 
                 {/* Card box — z-10, sits behind the logo */}
-                <div className="rounded-num-8 relative z-10 box-border flex w-full flex-col items-center justify-end gap-3 px-4 pt-[56px] pb-4 [background:linear-gradient(180deg,rgba(255,42,42,0),rgba(255,42,42,0.25))_padding-box,linear-gradient(#0d1b35,#0d1b35)_padding-box,linear-gradient(76.58deg,#ff2a2a,rgba(255,42,42,0))_border-box,linear-gradient(237.38deg,#ff2a2a,rgba(255,42,42,0))_border-box] [border:1px_solid_transparent] sm:pt-[62px]">
+                <div
+                  className="rounded-num-8 relative z-10 box-border flex w-full flex-col items-center justify-end gap-3 px-4 pt-[56px] pb-4 sm:pt-[62px]"
+                  style={{
+                    border: '1px solid transparent',
+                    background:
+                      'linear-gradient(180deg, rgba(255,42,42,0), rgba(255,42,42,0.25)) padding-box, linear-gradient(#0d1b35, #0d1b35) padding-box, linear-gradient(76.58deg, #ff2a2a, rgba(255,42,42,0)) border-box',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, padding-box, border-box',
+                  }}
+                >
                   {/* Name + price */}
                   <div className="flex w-36 flex-col items-center gap-0.5">
                     <div className="flex items-center justify-center gap-[5px] self-stretch">

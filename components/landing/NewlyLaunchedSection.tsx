@@ -75,10 +75,10 @@ export default function NewlyLaunchedSection() {
           {items.map((item) => (
             <div
               key={item.name}
-              className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 lg:gap-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent]"
+              className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent] lg:gap-3"
             >
               <img
-                className="w-full rounded-num-8 aspect-[257/125] object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+                className="rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
                 alt=""
                 src={item.src}
               />
@@ -108,7 +108,7 @@ export default function NewlyLaunchedSection() {
             onClick={prev}
             disabled={page === 0}
             aria-label="Previous page"
-            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:opacity-25 hover:not-disabled:opacity-80"
+            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
             <ChevronLeft className="h-4 w-4 text-white" />
           </button>
@@ -122,7 +122,7 @@ export default function NewlyLaunchedSection() {
                 aria-label={`Go to page ${i + 1}`}
                 className={cn(
                   'rounded-[13.5px] bg-white transition-all duration-300',
-                  i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25',
+                  i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25'
                 )}
               />
             ))}
@@ -133,7 +133,7 @@ export default function NewlyLaunchedSection() {
             onClick={next}
             disabled={page === TOTAL_PAGES - 1}
             aria-label="Next page"
-            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:opacity-25 hover:not-disabled:opacity-80"
+            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
             <ChevronRight className="h-4 w-4 text-white" />
           </button>

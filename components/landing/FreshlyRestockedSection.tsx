@@ -68,7 +68,7 @@ export default function FreshlyRestockedSection() {
               </div>
             </div>
           </div>
-          <div className="font-commissioner w-full max-w-num-580 text-sm font-medium leading-6 text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7 lg:leading-num-24">
+          <div className="font-commissioner max-w-num-580 lg:leading-num-24 w-full text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7">
             Products with stocks just refreshed, they keep selling so quick.
             <br className="hidden sm:block" />
             <span className="hidden sm:inline">
@@ -84,7 +84,7 @@ export default function FreshlyRestockedSection() {
           {items.map((item) => (
             <div
               key={item.name}
-              className="border-darkslateblue box-border flex w-full flex-col items-center justify-center gap-2.5 rounded-num-8 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6 xl:p-num-12"
+              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
               <img
                 className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
@@ -119,7 +119,7 @@ export default function FreshlyRestockedSection() {
             onClick={prev}
             disabled={page === 0}
             aria-label="Previous page"
-            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:opacity-25 hover:not-disabled:opacity-80"
+            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
             <ChevronLeft className="h-4 w-4 text-white" />
           </button>
@@ -133,7 +133,7 @@ export default function FreshlyRestockedSection() {
                 aria-label={`Go to page ${i + 1}`}
                 className={cn(
                   'rounded-[13.5px] bg-white transition-all duration-300',
-                  i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25',
+                  i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25'
                 )}
               />
             ))}
@@ -144,7 +144,7 @@ export default function FreshlyRestockedSection() {
             onClick={next}
             disabled={page === TOTAL_PAGES - 1}
             aria-label="Next page"
-            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:opacity-25 hover:not-disabled:opacity-80"
+            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
             <ChevronRight className="h-4 w-4 text-white" />
           </button>
