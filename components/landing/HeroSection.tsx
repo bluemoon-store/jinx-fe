@@ -2,12 +2,15 @@ import { FunctionComponent } from 'react'
 
 const HeroSection: FunctionComponent = () => {
   return (
-    <section className="text-num-16 lg:rounded-num-8 mx-auto grid h-[500px] max-h-[500px] min-h-[400px] w-full max-w-[1475px] grid-rows-1 place-items-center overflow-hidden rounded-none px-4 py-12 [background:linear-gradient(180deg,_#4e2bff,_#b600c7)] sm:h-[560px] sm:max-h-[560px] sm:min-h-[500px] sm:px-6 sm:py-16 lg:h-[591px] lg:max-h-[591px] lg:min-h-[591px] lg:px-8">
-      {/* Decorative background image - grid child for overlay, does not affect row height */}
-      <img
-        className="col-start-1 row-start-1 h-full w-full shrink-0 object-cover object-center opacity-[0.05]"
-        alt=""
-      />
+    <section
+      className="text-num-16 lg:rounded-num-8 mx-auto grid h-[500px] max-h-[500px] min-h-[400px] w-full max-w-[1475px] grid-rows-1 place-items-center overflow-hidden rounded-none px-4 py-12 sm:h-[560px] sm:max-h-[560px] sm:min-h-[500px] sm:px-6 sm:py-16 lg:h-[591px] lg:max-h-[591px] lg:min-h-[591px] lg:px-8"
+      style={{
+        backgroundImage: `url('/icons/splash-hero.svg'), linear-gradient(180deg, #4e2bff, #b600c7)`,
+        backgroundSize: 'cover, auto',
+        backgroundPosition: 'center, center',
+        backgroundRepeat: 'no-repeat, repeat',
+      }}
+    >
       {/* Hero content - centered in the section */}
       <div className="col-start-1 row-start-1 flex h-full w-full max-w-2xl flex-col items-center justify-center gap-4 sm:gap-5 lg:gap-6">
         <div className="text-num-14 flex w-full items-center justify-center gap-2 overflow-hidden border-b border-solid border-white px-4 py-3 [background:linear-gradient(180deg,_rgba(13,_5,_32,_0),_rgba(255,_255,_255,_0.31))] sm:gap-[13px] sm:px-6 sm:py-[18px]">
