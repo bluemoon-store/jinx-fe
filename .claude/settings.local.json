@@ -1,5 +1,14 @@
 {
   "permissions": {
-    "allow": ["Bash(bun add:*)", "Bash(bun run:*)", "Bash(yarn install:*)"]
+    "allow": [
+      "Bash(bun add:*)",
+      "Bash(bun run:*)",
+      "Bash(yarn install:*)",
+      "Bash(yarn type-check:*)",
+      "Bash(cat app/layout.tsx 2>/dev/null || find app -name \"layout.tsx\" | head -5 | xargs cat)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/tailwindcss/package.json'\\).version\\)\")",
+      "Bash(yarn add:*)",
+      "Bash(yarn remove:*)"
+    ]
   }
 }

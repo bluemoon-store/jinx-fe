@@ -7,5 +7,3 @@ export default defineConfig([
   },
   js.configs.recommended,
 ])
-
-

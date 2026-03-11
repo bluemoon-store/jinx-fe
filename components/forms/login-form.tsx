@@ -41,14 +41,14 @@ export function LoginForm() {
           Email
         </label>
         <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
-        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+        {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
       </div>
       <div className="space-y-2">
         <label htmlFor="password" className="text-sm font-medium">
           Password
         </label>
         <Input id="password" type="password" {...register('password')} />
-        {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+        {errors.password && <p className="text-destructive text-sm">{errors.password.message}</p>}
       </div>
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? 'Signing in...' : 'Sign in'}

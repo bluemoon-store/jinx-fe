@@ -1,18 +1,31 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Commissioner, Nata_Sans } from 'next/font/google'
+import localFont from 'next/font/local'
 
 import { Providers } from '@/components/layouts/providers'
 
 import './globals.css'
 
-const fontSans = Inter({
+const fontCommissioner = Commissioner({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-commissioner',
+  display: 'swap',
+  weight: ['500', '600', '700'],
 })
 
-const fontMono = JetBrains_Mono({
+const fontNataSans = Nata_Sans({
   subsets: ['latin'],
-  variable: '--font-mono',
+  variable: '--font-nata-sans',
+  display: 'swap',
+  weight: ['700', '800', '900'],
+})
+
+const fontHeydex = localFont({
+  src: '../public/fonts/Heydex-Regular.woff',
+  variable: '--font-heydex',
+  display: 'swap',
+  weight: '400',
+  style: 'normal',
 })
 
 export const metadata: Metadata = {
@@ -58,7 +71,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
+      <body
+        className={`${fontCommissioner.variable} ${fontNataSans.variable} ${fontHeydex.variable} font-commissioner antialiased`}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>

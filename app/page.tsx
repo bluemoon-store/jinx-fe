@@ -7,20 +7,20 @@ export default function HomePage() {
         <h1 className="mb-4 text-4xl font-bold tracking-tight">
           Welcome to <span className="text-primary">Jinx.to</span>
         </h1>
-        <p className="mb-8 text-lg text-muted-foreground">
+        <p className="text-muted-foreground mb-8 text-lg">
           A production-ready Next.js starter with modern tooling
         </p>
         <div className="flex gap-4">
           <Link
             href="/dashboard"
-            className="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2"
           >
             Get Started
           </Link>
           <Link
             href="https://nextjs.org/docs"
             target="_blank"
-            className="rounded-md border border-border px-4 py-2 hover:bg-accent"
+            className="border-border hover:bg-accent rounded-md border px-4 py-2"
           >
             Documentation
           </Link>
