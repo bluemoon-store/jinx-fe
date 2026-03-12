@@ -17,9 +17,9 @@ export default function LandingPage() {
         <SellingSection />
         <FreshlyRestockedSection />
         <NewlyLaunchedSection />
-        {/* <HowToPurchaseSection />
+        <HowToPurchaseSection />
         <FeaturesSection />
-        <FAQSection /> */}
+        <FAQSection />
         <Footer />
       </main>
     </div>
