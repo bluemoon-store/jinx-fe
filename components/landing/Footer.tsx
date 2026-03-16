@@ -11,14 +11,16 @@ const Footer: FunctionComponent = () => {
             alt=""
             src="/icons/Jin X.svg"
           />
+          <div className="hidden h-4 w-px bg-white/25 sm:block" />
           <div className="tracking-num-0_02 text-center text-sm leading-[19px] font-black uppercase [text-shadow:0px_0px_9.29px_rgba(0,_0,_0,_0.6)] sm:text-left sm:text-base">
             Premium digital goods,
             <br />
             delivered fast.
           </div>
+          <div className="hidden h-4 w-px bg-white/25 sm:block" />
           <div className="text-num-16 font-commissioner flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="tracking-num--0_01 leading-num-28 text-sm font-semibold sm:text-base">
-              Pay securily using
+              Pay securely using
             </div>
             <div className="flex items-center justify-center gap-2">
               <img
@@ -123,13 +125,13 @@ const Footer: FunctionComponent = () => {
             <div className="hidden h-1 w-[18px] border-b border-solid border-white object-contain opacity-[0.25] sm:block"></div>
             <div className="text-ghostwhite font-commissioner flex items-center justify-center gap-4 sm:gap-[15px]">
               <div className="flex flex-col items-center sm:items-start">
-                <div className="flex items-center gap-[4.4px]">
+                <div className="rounded-num-8 flex cursor-pointer items-center gap-[4.4px] px-2 py-1 transition-colors hover:bg-white/5">
                   <img className="max-h-full w-[18px]" alt="" src="/icons/IconTelegram.svg" />
                   <div className="leading-num-21_93 font-semibold">Telegram</div>
                 </div>
               </div>
               <div className="flex flex-col items-center sm:items-start">
-                <div className="flex items-center gap-[4.4px]">
+                <div className="rounded-num-8 flex cursor-pointer items-center gap-[4.4px] px-2 py-1 transition-colors hover:bg-white/5">
                   <img className="max-h-full w-[18px]" alt="" src="/icons/SVG-2.svg" />
                   <div className="leading-num-21_93 font-semibold">Discord</div>
                 </div>

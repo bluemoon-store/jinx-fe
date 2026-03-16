@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Reveal } from '@/components/ui/reveal'
 
 const allItems = [
   // Page 1
@@ -51,30 +52,34 @@ export default function NewlyLaunchedSection() {
   return (
     <section className="text-base lg:text-[20px]">
       {/* Section header */}
-      <div className="mx-auto flex w-full max-w-[1476.9px] flex-col items-center gap-2 px-4 text-center sm:px-6 lg:gap-2.5 lg:px-8">
-        <div className="font-heydex text-limegreen flex items-center gap-2 text-2xl lg:gap-2.5 lg:text-[32px]">
-          <div className="flex items-center gap-1">
-            <img className="h-5 w-5 lg:h-7 lg:w-7" alt="" src="/icons/IconStarLines.svg" />
-            <div className="tracking-num-0_02">NEWLY</div>
+      <Reveal variant="fade-up">
+        <div className="mx-auto flex w-full max-w-[1476.9px] flex-col items-center gap-2 px-4 text-center sm:px-6 lg:gap-2.5 lg:px-8">
+          <div className="font-heydex text-limegreen flex items-center gap-2 text-2xl lg:gap-2.5 lg:text-[32px]">
+            <div className="flex items-center gap-1">
+              <img className="h-5 w-5 lg:h-7 lg:w-7" alt="" src="/icons/IconStarLines.svg" />
+              <div className="tracking-num-0_02">NEWLY</div>
+            </div>
+            <div className="tracking-num-0_02 font-nata-sans text-ghostwhite font-extrabold">
+              LAUNCHED
+            </div>
           </div>
-          <div className="tracking-num-0_02 font-nata-sans text-ghostwhite font-extrabold">
-            LAUNCHED
+          <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
+            Just added to Jinx Store, all new giftcards for you.
+            <br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </div>
         </div>
-        <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
-          Just added to Jinx Store, all new giftcards for you.
-          <br className="hidden sm:block" />
-          <span className="sm:hidden"> </span>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </div>
-      </div>
+      </Reveal>
 
       {/* Products grid */}
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:px-6 lg:mt-10 lg:px-8">
         <div className="grid grid-cols-1 justify-items-center gap-3 sm:grid-cols-3 lg:gap-[17px] xl:grid-cols-5">
-          {items.map((item) => (
-            <div
+          {items.map((item, idx) => (
+            <Reveal
               key={item.name}
+              variant="fade-up"
+              delay={idx * 70}
               className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent] lg:gap-3"
             >
               <img
@@ -97,7 +102,7 @@ export default function NewlyLaunchedSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
 

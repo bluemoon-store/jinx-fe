@@ -1,7 +1,9 @@
 'use client'
 
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import Link from 'next/link'
 import { FunctionComponent, useState } from 'react'
+import { Reveal } from '@/components/ui/reveal'
 
 const faqData = [
   {
@@ -108,37 +110,42 @@ const FAQSection: FunctionComponent = () => {
   const col2 = faqData.slice(4)
 
   return (
-    <section className="font-commissioner lg:text-num-16 overflow-x-hidden text-left text-sm sm:text-base">
+    <section
+      id="faqs"
+      className="font-commissioner lg:text-num-16 overflow-x-hidden text-left text-sm sm:text-base"
+    >
       {/* Section header */}
-      <div className="mx-auto flex w-full max-w-[1474px] flex-col items-center gap-2 px-4 text-center sm:gap-2.5 sm:px-6 lg:gap-3 lg:px-8">
-        <div className="font-nata-sans sm:max-w-num-580 flex w-full max-w-full flex-col items-center justify-center gap-2 sm:gap-2.5 lg:gap-3">
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-[5px]">
-            <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
-              FREQUENTLY ASKED
-            </div>
-            <div className="text-deepskyblue-100 font-heydex flex items-center gap-1.5 sm:gap-[5px]">
-              <img
-                className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
-                alt=""
-                src="/icons/IconBubbleQuestion.svg"
-              />
+      <Reveal variant="fade-up">
+        <div className="mx-auto flex w-full max-w-[1474px] flex-col items-center gap-2 px-4 text-center sm:gap-2.5 sm:px-6 lg:gap-3 lg:px-8">
+          <div className="font-nata-sans sm:max-w-num-580 flex w-full max-w-full flex-col items-center justify-center gap-2 sm:gap-2.5 lg:gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-[5px]">
               <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
-                QUEsTIONS
+                FREQUENTLY ASKED
+              </div>
+              <div className="text-deepskyblue-100 font-heydex flex items-center gap-1.5 sm:gap-[5px]">
+                <img
+                  className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                  alt=""
+                  src="/icons/IconBubbleQuestion.svg"
+                />
+                <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+                  QUEsTIONS
+                </div>
               </div>
             </div>
-          </div>
-          <div className="font-commissioner lg:leading-num-24 text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base sm:leading-7">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            <br className="hidden sm:block" />
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <div className="font-commissioner lg:leading-num-24 text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base sm:leading-7">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              <br className="hidden sm:block" />
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </div>
           </div>
         </div>
-      </div>
+      </Reveal>
 
       {/* FAQ grid */}
       <div className="mx-auto mt-6 w-full max-w-[1474px] px-4 sm:mt-8 sm:px-6 lg:mt-10 lg:px-8">
         <div className="grid grid-cols-1 gap-2 sm:gap-3 lg:grid-cols-2">
-          <div className="flex flex-col gap-2 sm:gap-3">
+          <Reveal variant="slide-left" className="flex flex-col gap-2 sm:gap-3">
             {col1.map((faq) => (
               <FAQItem
                 key={faq.id}
@@ -148,8 +155,8 @@ const FAQSection: FunctionComponent = () => {
                 onToggle={() => toggleItem(faq.id)}
               />
             ))}
-          </div>
-          <div className="flex flex-col gap-2 sm:gap-3">
+          </Reveal>
+          <Reveal variant="slide-right" delay={100} className="flex flex-col gap-2 sm:gap-3">
             {col2.map((faq) => (
               <FAQItem
                 key={faq.id}
@@ -159,21 +166,22 @@ const FAQSection: FunctionComponent = () => {
                 onToggle={() => toggleItem(faq.id)}
               />
             ))}
-          </div>
+          </Reveal>
         </div>
 
         {/* Footer CTA */}
-        <div className="mt-6 flex items-center justify-center sm:mt-8">
-          <button
-            type="button"
-            onClick={toggleAll}
-            className="rounded-num-8 border-darkslateblue sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border-[1px] border-solid bg-gray-200 px-6 py-3 text-white transition-colors hover:bg-gray-300 sm:px-8 lg:w-[207px]"
-          >
-            <b className="tracking-num--0_01 sm:leading-num-28 text-sm leading-snug sm:text-base">
-              {allOpen ? 'Collapse all' : 'Read all FAQs'}
-            </b>
-          </button>
-        </div>
+        <Reveal variant="fade-up" delay={200}>
+          <div className="mt-6 flex items-center justify-center sm:mt-8">
+            <Link
+              href="#faqs"
+              className="rounded-num-8 border-darkslateblue sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border-[1px] border-solid bg-gray-200 px-6 py-3 text-white transition-colors hover:bg-gray-300 sm:px-8 lg:w-[207px]"
+            >
+              <b className="tracking-num--0_01 sm:leading-num-28 text-sm leading-snug sm:text-base">
+                Read all FAQs
+              </b>
+            </Link>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

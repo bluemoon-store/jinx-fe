@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Reveal } from '@/components/ui/reveal'
 
 const allItems = [
   // Page 1
@@ -51,39 +52,43 @@ export default function FreshlyRestockedSection() {
   return (
     <section className="overflow-x-hidden text-sm sm:text-base lg:text-lg">
       {/* Section header */}
-      <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center gap-2 text-center sm:gap-2.5 lg:gap-3">
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-            <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
-              FRESHLY
-            </div>
-            <div className="text-mediumslateblue-100 font-heydex flex items-center gap-1.5 sm:gap-2">
-              <img
-                className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
-                alt=""
-                src="/icons/IconPlanning.svg"
-              />
+      <Reveal variant="fade-up">
+        <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-2 text-center sm:gap-2.5 lg:gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
               <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
-                ReSToCKED
+                FRESHLY
+              </div>
+              <div className="text-mediumslateblue-100 font-heydex flex items-center gap-1.5 sm:gap-2">
+                <img
+                  className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 lg:h-7 lg:w-7"
+                  alt=""
+                  src="/icons/IconPlanning.svg"
+                />
+                <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+                  ReSToCKED
+                </div>
               </div>
             </div>
-          </div>
-          <div className="font-commissioner max-w-num-580 lg:leading-num-24 w-full text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7">
-            Products with stocks just refreshed, they keep selling so quick.
-            <br className="hidden sm:block" />
-            <span className="hidden sm:inline">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </span>
+            <div className="font-commissioner max-w-num-580 lg:leading-num-24 w-full text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7">
+              Products with stocks just refreshed, they keep selling so quick.
+              <br className="hidden sm:block" />
+              <span className="hidden sm:inline">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </Reveal>
 
       {/* Products grid */}
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:mt-8 sm:px-6 lg:mt-10 lg:px-8">
         <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
-          {items.map((item) => (
-            <div
+          {items.map((item, idx) => (
+            <Reveal
               key={item.name}
+              variant="fade-up"
+              delay={idx * 70}
               className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
               <img
@@ -108,7 +113,7 @@ export default function FreshlyRestockedSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
 

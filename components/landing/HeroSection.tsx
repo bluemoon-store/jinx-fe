@@ -1,4 +1,7 @@
+'use client'
+
 import { FunctionComponent } from 'react'
+import { Reveal } from '@/components/ui/reveal'
 
 const tabs = [
   'Cashout',
@@ -27,7 +30,12 @@ const HeroSection: FunctionComponent = () => {
         }}
       >
         {/* Hero content - centered in the section */}
-        <div className="col-start-1 row-start-1 flex h-full w-full max-w-2xl flex-col items-center justify-center gap-4 sm:gap-5 lg:gap-6">
+        <Reveal
+          variant="fade-up"
+          threshold={0}
+          duration={700}
+          className="col-start-1 row-start-1 flex h-full w-full max-w-2xl flex-col items-center justify-center gap-4 sm:gap-5 lg:gap-6"
+        >
           <div className="text-num-14 flex w-full items-center justify-center gap-2 overflow-hidden border-b border-solid border-white px-4 py-3 [background:linear-gradient(180deg,_rgba(13,_5,_32,_0),_rgba(255,_255,_255,_0.31))] sm:gap-[13px] sm:px-6 sm:py-[18px]">
             <img className="h-3 w-3 sm:h-4 sm:w-4" alt="" src="/icons/IconSparkle3.svg" />
             <div className="tracking-num-0_02 overflow-hidden text-xs leading-[18px] font-extrabold text-ellipsis whitespace-nowrap sm:text-sm">
@@ -49,28 +57,30 @@ const HeroSection: FunctionComponent = () => {
           <button className="py-num-12 font-commissioner box-border flex h-12 min-h-[44px] w-full items-center justify-center rounded-[7.79px] bg-white px-8 text-left text-fuchsia-100 shadow-[0px_2px_0px_rgba(139,_92,_246,_0.5)] sm:w-auto sm:px-12">
             <b className="tracking-num--0_01 leading-num-28 shrink-0">Explore the Store</b>
           </button>
-        </div>
+        </Reveal>
       </div>
-      <div className="w-full">
-        <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
-            {tabs.map((label) => (
-              <div key={label} className="group relative w-auto">
-                {/* Bottom layer (non-blurred shadow) */}
-                <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#003bbf] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      <Reveal variant="fade-up" delay={250} threshold={0}>
+        <div className="w-full">
+          <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
+              {tabs.map((label) => (
+                <div key={label} className="group relative w-auto">
+                  {/* Bottom layer (non-blurred shadow) */}
+                  <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#003bbf] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
-                <button
-                  type="button"
-                  className="font-commissioner sm:px-num-12 relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-sm text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2 sm:text-base"
-                >
-                  <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconDollar.svg" />
-                  <span className="leading-num-20 font-semibold">{label}</span>
-                </button>
-              </div>
-            ))}
+                  <button
+                    type="button"
+                    className="font-commissioner sm:px-num-12 relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-sm text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2 sm:text-base"
+                  >
+                    <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconDollar.svg" />
+                    <span className="leading-num-20 font-semibold">{label}</span>
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }
