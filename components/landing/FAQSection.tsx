@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { FunctionComponent, useState } from 'react'
 import { Reveal } from '@/components/ui/reveal'
@@ -64,26 +64,34 @@ const FAQItem: FunctionComponent<{
   isOpen: boolean
   onToggle: () => void
 }> = ({ question, answer, isOpen, onToggle }) => (
-  <details
-    open={isOpen}
-    onToggle={(e) => {
-      if ((e.currentTarget as HTMLDetailsElement).open !== isOpen) onToggle()
-    }}
-    className="group rounded-num-8 border-darkslateblue border-[1px] border-solid bg-gray-200"
-  >
-    <summary className="rounded-num-8 border-darkslateblue lg:p-num-19_1 flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-2 border-[1px] border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5">
+  <div className="rounded-num-8 border-darkslateblue border border-solid bg-gray-200">
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={isOpen}
+      className="rounded-num-8 border-darkslateblue lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 border border-solid bg-gray-200 p-4 text-left sm:gap-3 sm:p-5"
+    >
       <b className="tracking-num--0_01 sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
         {question}
       </b>
-      <div className="rounded-num-8 flex items-center justify-center bg-white/5 p-1">
-        <ChevronDown className="h-5 w-5 shrink-0 text-white opacity-75 group-open:hidden" />
-        <ChevronUp className="hidden h-5 w-5 shrink-0 text-white group-open:block" />
+      <div className="rounded-num-8 flex shrink-0 items-center justify-center bg-white/5 p-1">
+        <ChevronDown
+          className="h-5 w-5 text-white opacity-75 transition-transform duration-300 ease-in-out"
+          style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
       </div>
-    </summary>
-    <div className="text-lightsteelblue-100 sm:leading-num-24 lg:p-num-19_1 p-4 text-sm leading-6 font-medium sm:p-5 sm:text-base">
-      {answer}
+    </button>
+    <div
+      className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+      style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+    >
+      <div className="overflow-hidden">
+        <div className="text-lightsteelblue-100 sm:leading-num-24 lg:p-num-19.1 p-4 text-sm leading-6 font-medium sm:p-5 sm:text-base">
+          {answer}
+        </div>
+      </div>
     </div>
-  </details>
+  </div>
 )
 
 const FAQSection: FunctionComponent = () => {
@@ -173,8 +181,8 @@ const FAQSection: FunctionComponent = () => {
         <Reveal variant="fade-up" delay={200}>
           <div className="mt-6 flex items-center justify-center sm:mt-8">
             <Link
-              href="#faqs"
-              className="rounded-num-8 border-darkslateblue sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border-[1px] border-solid bg-gray-200 px-6 py-3 text-white transition-colors hover:bg-gray-300 sm:px-8 lg:w-[207px]"
+              href="/faqs"
+              className="rounded-num-8 border-darkslateblue sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border border-solid bg-gray-200 px-6 py-3 text-white transition-colors hover:bg-gray-300 sm:px-8 lg:w-[207px]"
             >
               <b className="tracking-num--0_01 sm:leading-num-28 text-sm leading-snug sm:text-base">
                 Read all FAQs

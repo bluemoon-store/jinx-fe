@@ -1,27 +1,272 @@
-export default function FAQs() {
+'use client'
+
+import { ChevronDown } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+
+type FaqCategoryId = 'general' | 'orders' | 'replacements' | 'refunds'
+
+type FaqItem = {
+  id: string
+  question: string
+  answer: string
+  defaultOpen?: boolean
+}
+
+type FaqCategory = {
+  id: FaqCategoryId
+  label: string
+  items: FaqItem[]
+}
+
+function NavItem({
+  isActive,
+  label,
+  onClick,
+}: {
+  isActive: boolean
+  label: string
+  onClick: () => void
+}) {
   return (
-    <section className="text-num-14 font-commissioner w-full overflow-hidden text-left text-white">
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        'rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5 text-left',
+        isActive
+          ? 'border border-solid border-white/15 text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+          : 'text-white/90 hover:bg-white/5 hover:text-white',
+      ].join(' ')}
+    >
+      <span className="leading-num-20 font-semibold">{label}</span>
+    </button>
+  )
+}
+
+function FAQItem({
+  question,
+  answer,
+  isOpen,
+  onToggle,
+}: {
+  question: string
+  answer: string
+  isOpen: boolean
+  onToggle: () => void
+}) {
+  return (
+    <div className="rounded-num-8 border-darkslateblue border border-solid bg-gray-200">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="rounded-num-8 border-darkslateblue lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 border border-solid bg-gray-200 p-4 text-left sm:gap-3 sm:p-5"
+      >
+        <b className="tracking-num--0_01 sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
+          {question}
+        </b>
+        <div className="rounded-num-8 flex shrink-0 items-center justify-center bg-white/5 p-1">
+          <ChevronDown
+            className="h-5 w-5 text-white opacity-75 transition-transform duration-300 ease-in-out"
+            style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          />
+        </div>
+      </button>
+      <div
+        className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <div className="text-lightsteelblue-100 sm:leading-num-24 lg:p-num-19.1 p-4 text-sm leading-6 font-medium sm:p-5 sm:text-base">
+            {answer}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function FAQs() {
+  const categories = useMemo<FaqCategory[]>(
+    () => [
+      {
+        id: 'general',
+        label: 'General',
+        items: [
+          {
+            id: 'general-1',
+            question: 'What kind of digital giftcards does Bluemoon offer?',
+            answer:
+              'Bluemoon offers a wide variety of digital giftcards across categories including food & dining, streaming services, gaming, travel, shopping, and more. Giftcards are delivered to your account after purchase.',
+          },
+          {
+            id: 'general-2',
+            question: 'What makes Bluemoon safe to shop on?',
+            answer:
+              'We use encrypted connections and monitor for fraud. For payments, we rely on trusted payment providers and do not store full card numbers on our servers.',
+          },
+          {
+            id: 'general-3',
+            question: 'Can I use other cryptocurrencies to shop?',
+            answer:
+              'Supported payment methods depend on the product and checkout options shown at the time of purchase. If a payment method is available, you’ll see it during checkout.',
+            defaultOpen: true,
+          },
+          {
+            id: 'general-4',
+            question: 'How do I browse for giftcards?',
+            answer:
+              'Use categories and search to find brands quickly. Each listing shows available denominations and delivery details.',
+          },
+        ],
+      },
+      {
+        id: 'orders',
+        label: 'Orders',
+        items: [
+          {
+            id: 'orders-1',
+            question: 'Where can I find my order after purchasing?',
+            answer:
+              'After purchase, your digital code and details will appear in your account under your orders/history (if available). You may also receive an email confirmation.',
+          },
+          {
+            id: 'orders-2',
+            question: 'How long does it take to receive my giftcard?',
+            answer:
+              'Most giftcards are delivered shortly after payment confirmation. In rare cases, additional verification may delay delivery.',
+          },
+        ],
+      },
+      {
+        id: 'replacements',
+        label: 'Replacements',
+        items: [
+          {
+            id: 'replacements-1',
+            question: 'What if I receive an invalid code?',
+            answer:
+              'If you receive an invalid code, contact support within 48 hours with your order details. We will investigate and, if confirmed, issue a replacement or other resolution.',
+          },
+          {
+            id: 'replacements-2',
+            question: 'What information should I include when contacting support?',
+            answer:
+              'Include the email on your account, order ID, the brand/product, and screenshots where relevant. This helps us resolve issues faster.',
+          },
+        ],
+      },
+      {
+        id: 'refunds',
+        label: 'Refunds',
+        items: [
+          {
+            id: 'refunds-1',
+            question: 'Can I get a refund for a giftcard I purchased?',
+            answer:
+              'Due to the digital nature of giftcards, sales are typically final once delivered. If there is a technical issue (e.g., invalid code), contact support and we will help.',
+          },
+          {
+            id: 'refunds-2',
+            question: 'How do refunds work if approved?',
+            answer:
+              'If a refund is approved, it is returned to the original payment method where possible. Processing time depends on your bank or payment provider.',
+          },
+          {
+            id: 'refunds-3',
+            question: 'Are there any fees associated with buying giftcards?',
+            answer:
+              'Any applicable fees (network, processing, or service fees) will be displayed at checkout before you pay.',
+          },
+        ],
+      },
+    ],
+    []
+  )
+
+  const [activeCategory, setActiveCategory] = useState<FaqCategoryId>('general')
+  const [openIds, setOpenIds] = useState<Set<string>>(
+    () => new Set(categories.flatMap((c) => c.items.map((i) => i.id)))
+  )
+
+  const toggleItem = (id: string) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  useEffect(() => {
+    const sections = categories
+      .map((c) => document.getElementById(`faq-${c.id}`))
+      .filter(Boolean) as HTMLElement[]
+
+    if (!sections.length) return
+
+    let ticking = false
+
+    const handleScroll = () => {
+      if (ticking) return
+      ticking = true
+
+      window.requestAnimationFrame(() => {
+        ticking = false
+        const viewportTop = window.scrollY
+        const viewportCenter = viewportTop + window.innerHeight * 0.3
+
+        let bestId: FaqCategoryId | null = null
+        let bestDistance = Number.POSITIVE_INFINITY
+
+        for (const el of sections) {
+          const rect = el.getBoundingClientRect()
+          const sectionTop = rect.top + window.scrollY
+          const distance = Math.abs(sectionTop - viewportCenter)
+          const id = el.dataset.faqId as FaqCategoryId | undefined
+          if (!id) continue
+          if (distance < bestDistance) {
+            bestDistance = distance
+            bestId = id
+          }
+        }
+
+        if (bestId && bestId !== activeCategory) {
+          setActiveCategory(bestId)
+        }
+      })
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [categories, activeCategory])
+
+  return (
+    <section className="text-num-14 font-commissioner w-full text-left text-white">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
         <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[208px_1fr] lg:gap-16">
           {/* FAQ navigation */}
-          <aside className="text-lightsteelblue-200 w-full lg:sticky lg:top-24 lg:self-start">
+          <aside className="text-lightsteelblue-200 w-full self-start lg:sticky lg:top-24">
             <nav className="flex w-full flex-col items-start gap-1">
               <div className="rounded-num-8 px-num-12 min-w-num-190 text-slategray box-border flex w-full items-center py-2 text-[12px]">
                 <div className="leading-[15px] font-semibold uppercase">FAQs</div>
               </div>
 
-              <div className="rounded-num-8 border-whitesmoke-300 min-w-num-190 box-border flex w-full items-center overflow-hidden border border-solid p-2.5 text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]">
-                <div className="leading-num-20 font-semibold">General</div>
-              </div>
-              <div className="rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5">
-                <div className="leading-num-20 font-semibold">Orders</div>
-              </div>
-              <div className="rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5">
-                <div className="leading-num-20 font-semibold">Replacements</div>
-              </div>
-              <div className="rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5">
-                <div className="leading-num-20 font-semibold">Refunds</div>
-              </div>
+              {categories.map((cat) => (
+                <NavItem
+                  key={cat.id}
+                  isActive={cat.id === activeCategory}
+                  label={cat.label}
+                  onClick={() => {
+                    setActiveCategory(cat.id)
+                    document.getElementById(`faq-${cat.id}`)?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    })
+                  }}
+                />
+              ))}
             </nav>
           </aside>
 
@@ -30,7 +275,7 @@ export default function FAQs() {
             {/* Header */}
             <header className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2 text-[18px]">
-                <img className="h-5 w-5" alt="" />
+                <img className="h-5 w-5" alt="" src="/icons/IconBubbleQuestion.svg" />
                 <h1 className="tracking-num-0.02 leading-num-28 font-semibold">
                   Frequently asked questions
                 </h1>
@@ -39,7 +284,7 @@ export default function FAQs() {
               <div className="text-lightsteelblue-200 flex w-fit items-center justify-center gap-2 rounded-md bg-gray-300 px-2 py-1.5 text-[12px]">
                 <div className="leading-[15px] font-semibold">Can’t find answer to your query?</div>
                 <div className="text-ghostwhite flex items-center gap-1">
-                  <img className="h-3.5 w-3.5" alt="" />
+                  <img className="h-3.5 w-3.5" alt="" src="/icons/IconRescueRing.svg" />
                   <div className="leading-[15px] font-semibold">Contact Support</div>
                 </div>
               </div>
@@ -47,8 +292,12 @@ export default function FAQs() {
 
             {/* Search */}
             <div className="text-num-16 text-lightsteelblue-100 mt-6 flex w-full items-center">
-              <div className="rounded-num-8 border-whitesmoke-200 px-num-12 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-200 py-2">
-                <img className="h-num-18 w-num-18 opacity-[0.5]" alt="" />
+              <div className="rounded-num-8 border-darkslateblue px-num-12 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-200 py-2">
+                <img
+                  className="h-num-18 w-num-18 opacity-[0.5]"
+                  alt=""
+                  src="/icons/IconMagnifyingGlass.svg"
+                />
                 <div className="tracking-num--0_01 leading-num-28 font-semibold opacity-[0.25]">
                   Search for a question or a keyword
                 </div>
@@ -56,188 +305,36 @@ export default function FAQs() {
             </div>
 
             {/* Sections */}
-            <div className="mt-10 flex w-full flex-col gap-5 text-[18px]">
-              <section className="flex w-full flex-col gap-5">
-                <div className="flex items-center">
-                  <h2 className="tracking-num-0.02 leading-num-28 font-semibold">General</h2>
+            <div className="mt-4 flex w-full flex-col gap-5 text-[18px]">
+              {categories.map((cat, idx) => (
+                <div key={cat.id}>
+                  {idx !== 0 && <div className="h-px w-full bg-white/10" />}
+
+                  <section
+                    id={`faq-${cat.id}`}
+                    data-faq-id={cat.id}
+                    className="flex w-full scroll-mt-28 flex-col gap-5 pt-5 sm:scroll-mt-[95px]"
+                  >
+                    <div className="flex items-center">
+                      <h2 className="tracking-num-0.02 leading-num-28 font-semibold">
+                        {cat.label}
+                      </h2>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      {cat.items.map((item) => (
+                        <FAQItem
+                          key={item.id}
+                          question={item.question}
+                          answer={item.answer}
+                          isOpen={openIds.has(item.id)}
+                          onToggle={() => toggleItem(item.id)}
+                        />
+                      ))}
+                    </div>
+                  </section>
                 </div>
-
-                <div className="text-num-16 text-ghostwhite flex flex-col gap-3">
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          What kind of digital giftcards does Jinx.to offer?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          What makes Jinx.to a safe platform to shop on?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex flex-col gap-[11.9px] border border-solid bg-gray-200">
-                      <div className="flex items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          Can I use other cryptocurrencies to shop?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                      <div className="text-lightsteelblue-100 leading-6 font-medium">
-                        We've partnered with top brands to bring you the best deals on the market.
-                        Our team works around the clock to ensure that every gift card is 100%
-                        legitimate and delivered instantly. Shop with confidence, knowing that your
-                        purchase is protected by our guarantee.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          How do I browse for giftcards on Jinx.to?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <img className="h-px w-full max-w-full overflow-hidden" alt="" />
-
-              <section className="flex w-full flex-col gap-5">
-                <div className="flex items-center">
-                  <h2 className="tracking-num-0.02 leading-num-28 font-semibold">Orders</h2>
-                </div>
-
-                <div className="text-num-16 text-ghostwhite flex flex-col gap-3">
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          Can I get a refund for a giftcard I purchased?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          How long does it take to receive my giftcard?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <img className="h-px w-full max-w-full overflow-hidden" alt="" />
-
-              <section className="flex w-full flex-col gap-5">
-                <div className="flex items-center">
-                  <h2 className="tracking-num-0.02 leading-num-28 font-semibold">Replacements</h2>
-                </div>
-
-                <div className="text-num-16 text-ghostwhite flex flex-col gap-3">
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          Can I get a refund for a giftcard I purchased?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          How long does it take to receive my giftcard?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <img className="h-px w-full max-w-full overflow-hidden" alt="" />
-
-              <section className="flex w-full flex-col gap-5">
-                <div className="flex items-center">
-                  <h2 className="tracking-num-0.02 leading-num-28 font-semibold">Refunds</h2>
-                </div>
-
-                <div className="text-num-16 text-ghostwhite flex flex-col gap-3">
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          Can I get a refund for a giftcard I purchased?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          How do I redeem a giftcard on Jinx.to?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex flex-col gap-[11.9px] border border-solid bg-gray-200">
-                      <div className="flex items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          Are there any fees associated with buying giftcards?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                      <div className="text-lightsteelblue-100 leading-6 font-medium">
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-num-8 border-darkslateblue flex flex-col border border-solid bg-gray-200">
-                    <div className="rounded-num-8 border-darkslateblue p-num-19.1 flex items-center justify-center border border-solid bg-gray-200">
-                      <div className="flex w-full items-center justify-between gap-0">
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          How long does it take to receive my giftcard?
-                        </div>
-                        <img className="rounded-num-8 h-8 w-8" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
+              ))}
             </div>
           </main>
         </div>

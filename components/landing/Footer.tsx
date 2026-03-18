@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { FunctionComponent } from 'react'
 
 const Footer: FunctionComponent = () => {
@@ -104,16 +105,36 @@ const Footer: FunctionComponent = () => {
             <div className="hidden h-1 w-[18px] border-b border-solid border-white object-contain opacity-[0.25] sm:block"></div>
             <div className="text-ghostwhite font-commissioner flex flex-wrap items-center justify-center gap-3 sm:gap-[15px]">
               <div className="flex flex-col items-center sm:items-start">
-                <div className="leading-num-21_93 font-semibold">Terms</div>
+                <Link
+                  href="/legal?section=terms"
+                  className="rounded-num-8 leading-num-21.93 px-2 py-1 font-semibold transition-colors hover:bg-white/5"
+                >
+                  Terms
+                </Link>
               </div>
               <div className="flex flex-col items-center sm:items-start">
-                <div className="leading-num-21_93 font-semibold">Privacy</div>
+                <Link
+                  href="/legal?section=privacy"
+                  className="rounded-num-8 leading-num-21.93 px-2 py-1 font-semibold transition-colors hover:bg-white/5"
+                >
+                  Privacy
+                </Link>
               </div>
               <div className="flex flex-col items-center sm:items-start">
-                <div className="leading-num-21_93 font-semibold">Refund</div>
+                <Link
+                  href="/legal?section=refund"
+                  className="rounded-num-8 leading-num-21.93 px-2 py-1 font-semibold transition-colors hover:bg-white/5"
+                >
+                  Refund
+                </Link>
               </div>
               <div className="flex flex-col items-center sm:items-start">
-                <div className="leading-num-21_93 font-semibold">Cookies</div>
+                <Link
+                  href="/legal?section=cookies"
+                  className="rounded-num-8 leading-num-21.93 px-2 py-1 font-semibold transition-colors hover:bg-white/5"
+                >
+                  Cookies
+                </Link>
               </div>
             </div>
           </div>

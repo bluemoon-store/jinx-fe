@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { FunctionComponent, useState } from 'react'
 
 const Navbar: FunctionComponent = () => {
@@ -10,19 +11,21 @@ const Navbar: FunctionComponent = () => {
   const navLinks = [
     { label: 'Shop', href: '#', icon: '/icons/IconBasket1-1.svg' },
     { label: 'Drops', href: '#', icon: '/icons/IconGift1.svg' },
-    { label: 'FAQs', href: '#', icon: '/icons/IconCircleQuestionmark.svg' },
+    { label: 'FAQs', href: '/faqs', icon: '/icons/IconCircleQuestionmark.svg' },
     { label: 'Support', href: '#', icon: '/icons/IconRescueRing.svg' },
   ]
 
   return (
-    <header className="text-whitesmoke-100 font-commissioner relative box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 overflow-y-auto border-b border-solid border-gray-100 bg-transparent px-4 py-0 sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
+    <header className="text-whitesmoke-100 font-commissioner fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 overflow-y-auto border-b border-solid border-gray-100 bg-gray-400/80 px-4 py-0 backdrop-blur sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
       {/* Logo and nav links */}
       <nav className="flex h-14 flex-1 shrink-0 items-center gap-2 sm:gap-4 lg:gap-[15px]">
-        <img
-          className="h-8 w-14 shrink-0 sm:h-[45.3px] sm:w-[82px]"
-          alt=""
-          src="/icons/Jin X.svg"
-        />
+        <Link href="/" className="shrink-0">
+          <img
+            className="h-8 w-14 sm:h-[45.3px] sm:w-[82px]"
+            alt="Bluemoon"
+            src="/icons/Jin X.svg"
+          />
+        </Link>
         <div className="h-num-19 hidden w-px shrink-0 border-r border-solid border-white opacity-[0.25] lg:block" />
         {/* Desktop nav links */}
         <div className="hidden items-center gap-2 opacity-75 lg:flex lg:gap-3.5">
@@ -57,12 +60,12 @@ const Navbar: FunctionComponent = () => {
               <img className="h-4 w-4" alt="" src="/icons/IconSun.svg" />
               {/* Inner switch track/handle (no icon) */}
               <div
-                className={`relative h-[18px] w-[30.8px] rounded-[31.5px] transition-colors duration-300 ease-out ${
+                className={`h-num-18 relative w-[30.8px] rounded-[31.5px] transition-colors duration-300 ease-out ${
                   themeSwitchOn ? 'bg-fuchsia-200' : 'bg-gray-500'
                 }`}
               >
                 <div
-                  className={`absolute top-1/2 left-[4px] h-[14px] w-[14px] -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-300 ease-out ${
+                  className={`left-num-4 absolute top-1/2 h-[14px] w-[14px] -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-300 ease-out ${
                     themeSwitchOn ? 'translate-x-[10px]' : 'translate-x-0'
                   }`}
                 />
@@ -73,7 +76,7 @@ const Navbar: FunctionComponent = () => {
               <img className="h-4 w-4" alt="" src="/icons/IconRescueRing.svg" />
               <b className="tracking-num--0_01 leading-num-28">0</b>
             </button>
-            <button className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.25)]">
+            <button className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]">
               <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
               <span className="tracking-num--0_01 leading-num-28 font-semibold">Wallet</span>
               <span className="font-nata-sans tracking-num--0_01 leading-num-28 font-extrabold">
@@ -99,8 +102,8 @@ const Navbar: FunctionComponent = () => {
       {/* Mobile: wallet + menu button */}
       <div className="flex flex-1 items-center justify-end gap-2 lg:hidden">
         <div className="text-num-16 text-ghostwhite flex items-center justify-center gap-1 text-left sm:gap-2">
-          <button className="rounded-num-8 box-border flex h-11 min-h-[44px] shrink-0 items-center justify-center gap-1 bg-fuchsia-200 px-3 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.25)] sm:px-4">
-            <img className="h-4 w-4" alt="" />
+          <button className="rounded-num-8 box-border flex h-11 min-h-[44px] shrink-0 items-center justify-center gap-1 bg-fuchsia-200 px-3 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)] sm:px-4">
+            <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
             <span className="font-nata-sans tracking-num--0_01 leading-num-28 text-sm font-extrabold sm:text-base">
               $0.00
             </span>
