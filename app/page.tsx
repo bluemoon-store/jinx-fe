@@ -1,31 +1,27 @@
-import Link from 'next/link'
+import FAQSection from '@/components/landing/FAQSection'
+import FeaturesSection from '@/components/landing/FeaturesSection'
+import Footer from '@/components/landing/Footer'
+import FreshlyRestockedSection from '@/components/landing/FreshlyRestockedSection'
+import HeroSection from '@/components/landing/HeroSection'
+import HowToPurchaseSection from '@/components/landing/HowToPurchaseSection'
+import Navbar from '@/components/landing/Navbar'
+import NewlyLaunchedSection from '@/components/landing/NewlyLaunchedSection'
+import SellingSection from '@/components/landing/SellingSection'
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between text-sm">
-        <h1 className="mb-4 text-4xl font-bold tracking-tight">
-          Welcome to <span className="text-primary">Jinx.to</span>
-        </h1>
-        <p className="text-muted-foreground mb-8 text-lg">
-          A production-ready Next.js starter with modern tooling
-        </p>
-        <div className="flex gap-4">
-          <Link
-            href="/dashboard"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2"
-          >
-            Get Started
-          </Link>
-          <Link
-            href="https://nextjs.org/docs"
-            target="_blank"
-            className="border-border hover:bg-accent rounded-md border px-4 py-2"
-          >
-            Documentation
-          </Link>
-        </div>
-      </div>
-    </main>
+    <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col bg-gray-400 text-center">
+      <Navbar />
+      <main className="flex flex-1 flex-col gap-16 overflow-x-hidden sm:gap-20 lg:gap-24">
+        <HeroSection />
+        <SellingSection />
+        <FreshlyRestockedSection />
+        <NewlyLaunchedSection />
+        <HowToPurchaseSection />
+        <FeaturesSection />
+        <FAQSection />
+        <Footer />
+      </main>
+    </div>
   )
 }
