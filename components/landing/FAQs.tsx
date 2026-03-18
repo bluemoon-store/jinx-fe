@@ -188,6 +188,22 @@ export default function FAQs() {
   const [openIds, setOpenIds] = useState<Set<string>>(
     () => new Set(categories.flatMap((c) => c.items.map((i) => i.id)))
   )
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredCategories = useMemo(() => {
+    if (!searchQuery.trim()) return categories
+
+    return categories
+      .map((cat) => ({
+        ...cat,
+        items: cat.items.filter(
+          (item) =>
+            item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.answer.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+      }))
+      .filter((cat) => cat.items.length > 0)
+  }, [categories, searchQuery])
 
   const toggleItem = (id: string) => {
     setOpenIds((prev) => {
@@ -291,50 +307,58 @@ export default function FAQs() {
             </header>
 
             {/* Search */}
-            <div className="text-num-16 text-lightsteelblue-100 mt-6 flex w-full items-center">
-              <div className="rounded-num-8 border-darkslateblue px-num-12 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-200 py-2">
-                <img
-                  className="h-num-18 w-num-18 opacity-[0.5]"
-                  alt=""
-                  src="/icons/IconMagnifyingGlass.svg"
-                />
-                <div className="tracking-num--0_01 leading-num-28 font-semibold opacity-[0.25]">
-                  Search for a question or a keyword
-                </div>
-              </div>
+            <div className="text-num-16 text-lightsteelblue-100 rounded-num-8 border-darkslateblue px-num-12 mt-6 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-200 py-1">
+              <img
+                className="h-num-18 w-num-18 opacity-[0.5]"
+                alt=""
+                src="/icons/IconMagnifyingGlass.svg"
+              />
+              <input
+                type="text"
+                placeholder="Search for a question or a keyword"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-semibold text-white placeholder-white/25 outline-none focus:border-none focus:outline-none focus:ring-0 active:border-none active:outline-none"
+              />
             </div>
 
             {/* Sections */}
             <div className="mt-4 flex w-full flex-col gap-5 text-[18px]">
-              {categories.map((cat, idx) => (
-                <div key={cat.id}>
-                  {idx !== 0 && <div className="h-px w-full bg-white/10" />}
-
-                  <section
-                    id={`faq-${cat.id}`}
-                    data-faq-id={cat.id}
-                    className="flex w-full scroll-mt-28 flex-col gap-5 pt-5 sm:scroll-mt-[95px]"
-                  >
-                    <div className="flex items-center">
-                      <h2 className="tracking-num-0.02 leading-num-28 font-semibold">
-                        {cat.label}
-                      </h2>
-                    </div>
-
-                    <div className="flex flex-col gap-3">
-                      {cat.items.map((item) => (
-                        <FAQItem
-                          key={item.id}
-                          question={item.question}
-                          answer={item.answer}
-                          isOpen={openIds.has(item.id)}
-                          onToggle={() => toggleItem(item.id)}
-                        />
-                      ))}
-                    </div>
-                  </section>
+              {filteredCategories.length === 0 ? (
+                <div className="text-lightsteelblue-200 py-8 text-center">
+                  No FAQs match your search
                 </div>
-              ))}
+              ) : (
+                filteredCategories.map((cat, idx) => (
+                  <div key={cat.id}>
+                    {idx !== 0 && <div className="h-px w-full bg-white/10" />}
+
+                    <section
+                      id={`faq-${cat.id}`}
+                      data-faq-id={cat.id}
+                      className="flex w-full scroll-mt-28 flex-col gap-5 pt-5 sm:scroll-mt-[95px]"
+                    >
+                      <div className="flex items-center">
+                        <h2 className="tracking-num-0.02 leading-num-28 font-semibold">
+                          {cat.label}
+                        </h2>
+                      </div>
+
+                      <div className="flex flex-col gap-3">
+                        {cat.items.map((item) => (
+                          <FAQItem
+                            key={item.id}
+                            question={item.question}
+                            answer={item.answer}
+                            isOpen={openIds.has(item.id)}
+                            onToggle={() => toggleItem(item.id)}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  </div>
+                ))
+              )}
             </div>
           </main>
         </div>
