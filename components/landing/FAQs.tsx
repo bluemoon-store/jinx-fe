@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDown } from 'lucide-react'
+import { CentralIcon } from '@central-icons-react/all'
 import { useEffect, useMemo, useState } from 'react'
 
 type FaqCategoryId = 'general' | 'orders' | 'replacements' | 'refunds'
@@ -55,19 +55,25 @@ function FAQItem({
   onToggle: () => void
 }) {
   return (
-    <div className="rounded-num-8 border-darkslateblue border border-solid bg-gray-200">
+    <div className="rounded-num-8 border-darkslateblue border border-solid bg-gray-100">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="rounded-num-8 border-darkslateblue lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 border border-solid bg-gray-200 p-4 text-left sm:gap-3 sm:p-5"
+        className="rounded-num-8 border-darkslateblue lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 border border-solid bg-gray-100 p-4 text-left sm:gap-3 sm:p-5"
       >
         <b className="tracking-num--0_01 sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
           {question}
         </b>
         <div className="rounded-num-8 flex shrink-0 items-center justify-center bg-white/5 p-1">
-          <ChevronDown
-            className="h-5 w-5 text-white opacity-75 transition-transform duration-300 ease-in-out"
+          <CentralIcon
+            name="IconChevronDownMedium"
+            join="round"
+            fill="outlined"
+            stroke="1"
+            radius="1"
+            size={20}
+            className="text-white opacity-75 transition-transform duration-300 ease-in-out"
             style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </div>
@@ -307,7 +313,7 @@ export default function FAQs() {
             </header>
 
             {/* Search */}
-            <div className="text-num-16 text-lightsteelblue-100 rounded-num-8 border-darkslateblue px-num-12 mt-6 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-200 py-1">
+            <div className="text-num-16 text-lightsteelblue-100 rounded-num-8 border-darkslateblue px-num-12 mt-6 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-100 py-1">
               <img
                 className="h-num-18 w-num-18 opacity-[0.5]"
                 alt=""
@@ -318,7 +324,7 @@ export default function FAQs() {
                 placeholder="Search for a question or a keyword"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-semibold text-white placeholder-white/25 outline-none focus:border-none focus:outline-none focus:ring-0 active:border-none active:outline-none"
+                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-semibold text-white placeholder-white/25 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
               />
             </div>
 

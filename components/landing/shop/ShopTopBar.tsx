@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react'
 
 export const ShopTopBar: FunctionComponent = () => {
   return (
-    <header className="py-num-0 text-num-14 text-whitesmoke-100 font-commissioner box-border flex min-h-[75px] w-full items-center justify-between gap-4 overflow-y-auto border-b-[1px] border-solid border-gray-100 px-6 lg:px-56">
+    <header className="py-num-0 text-num-14 text-whitesmoke-100 font-commissioner box-border flex min-h-[75px] w-full items-center justify-between gap-2 overflow-y-auto border-b-[1px] border-solid border-gray-100 px-4 sm:gap-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-56">
       <div className="flex items-center gap-[5px]">
         <img className="max-h-full w-[18px]" alt="" />
         <div className="tracking-num-0_02 font-extrabold">HOT SELLING PRODUCTS</div>

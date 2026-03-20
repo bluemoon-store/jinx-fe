@@ -1,9 +1,8 @@
 import { FunctionComponent } from 'react'
 import { ShopDetailHero } from './ShopDetailHero'
-import { ShopDetailPagination } from './ShopDetailPagination'
 import { ShopDetailRelatedProducts } from './ShopDetailRelatedProducts'
 import { ShopDetailRightColumn } from './ShopDetailRightColumn'
-import { ShopDetailTopNav } from './ShopDetailTopNav'
+import FAQSection from '@/components/landing/FAQSection'
 import type { ShopProductDetail as ShopProductDetailType } from './types'
 
 type Props = {
@@ -12,18 +11,23 @@ type Props = {
 
 export const ShopProductDetail: FunctionComponent<Props> = ({ product }) => {
   return (
-    <div className="text-num-14 text-ghostwhite font-commissioner w-full bg-gray-400 text-center">
-      <ShopDetailTopNav />
-
-      <main className="mx-auto flex w-full max-w-[1920px] flex-col gap-10 px-6 py-10 lg:px-56">
-        <section className="grid items-start gap-10 lg:grid-cols-[620px_1fr]">
+    <section className="text-num-14 text-ghostwhite font-commissioner w-full bg-gray-400">
+      <main className="mx-auto flex w-full max-w-[1476.9px] flex-col gap-6 px-4 pt-4 pb-6 sm:gap-8 sm:px-6 sm:pt-6 sm:pb-8 lg:gap-10 lg:px-8 lg:pb-10">
+        <section className="mb-6 grid items-start gap-6 sm:mb-8 sm:gap-8 lg:mb-10 lg:grid-cols-[minmax(280px,620px)_1fr] lg:gap-10">
           <ShopDetailHero product={product} />
           <ShopDetailRightColumn product={product} />
         </section>
 
-        <ShopDetailRelatedProducts related={product.related} />
-        <ShopDetailPagination />
+        <div className="bg-whitesmoke-300 h-px w-full" />
+
+        <div className="pt-8 sm:pt-10 lg:pt-14">
+          <ShopDetailRelatedProducts related={product.related} />
+        </div>
+
+        <div className="pt-8 sm:pt-10 lg:pt-14">
+          <FAQSection />
+        </div>
       </main>
-    </div>
+    </section>
   )
 }

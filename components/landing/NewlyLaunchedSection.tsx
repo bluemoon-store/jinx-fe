@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CentralIcon } from '@central-icons-react/all'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
@@ -115,7 +115,15 @@ export default function NewlyLaunchedSection() {
             aria-label="Previous page"
             className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
-            <ChevronLeft className="h-4 w-4 text-white" />
+            <CentralIcon
+              name="IconChevronLeft"
+              join="round"
+              fill="outlined"
+              stroke="1"
+              radius="1"
+              size={16}
+              className="text-white"
+            />
           </button>
 
           <div className="border-darkslateblue flex items-center gap-[7.5px] rounded-[30px] border-[1.5px] border-solid bg-gray-200 px-[9px] py-[9px] shadow-[0px_15px_15px_rgba(0,0,0,0.01)]">
@@ -140,7 +148,15 @@ export default function NewlyLaunchedSection() {
             aria-label="Next page"
             className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
-            <ChevronRight className="h-4 w-4 text-white" />
+            <CentralIcon
+              name="IconChevronRight"
+              join="round"
+              fill="outlined"
+              stroke="1"
+              radius="1"
+              size={16}
+              className="text-white"
+            />
           </button>
         </div>
       </div>

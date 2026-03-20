@@ -9,7 +9,7 @@ type Props = {
 
 export const ShopDetailRightColumn: FunctionComponent<Props> = ({ product }) => {
   return (
-    <section className="text-num-16 flex flex-col items-start gap-[45px] text-left">
+    <section className="text-num-16 flex min-w-0 flex-col items-start gap-6 text-left sm:gap-8 lg:gap-[45px]">
       <ShopDetailSummary product={product} />
       <ShopDetailPurchasePanel productName={product.name} />
     </section>

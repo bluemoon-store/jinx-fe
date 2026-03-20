@@ -11,26 +11,35 @@
 /* ─── Design tokens ──────────────────────────────────────── */
 @theme {
   /* Colors */
-  --color-gray-100: #1e1f30;
-  --color-gray-200: #0d1b35;
-  --color-gray-300: #071935;
+  --color-gray-100: #0d1b35;
+  --color-gray-200: #051329;
+  --color-gray-300: rgba(0, 0, 0, 0.1);
   --color-gray-400: #051329;
   --color-gray-500: #010f25;
   --color-gray-600: rgba(255, 255, 255, 0.1);
+  /* Some components reference `gray-700` (active/selected states). */
+  --color-gray-700: #071935;
   --color-white: #fff;
   --color-ghostwhite: #faf8ff;
   --color-fuchsia-100: #ec39ff;
   --color-fuchsia-200: #eb2dff;
-  --color-whitesmoke-100: #eee;
-  --color-whitesmoke-200: rgba(238, 238, 238, 0.75);
-  --color-whitesmoke-300: rgba(238, 238, 238, 0.1);
+  /* Aliases for classes without shade suffix (e.g. `bg-fuchsia`). */
+  --color-fuchsia: #eb2dff;
+  --color-whitesmoke-100: #f8fafc;
+  --color-whitesmoke-200: #eee;
+  --color-whitesmoke-300: rgba(238, 238, 238, 0.05);
+  /* Border shades referenced by shop detail pages. */
+  --color-whitesmoke-400: rgba(238, 238, 238, 0.25);
+  --color-whitesmoke-500: rgba(238, 238, 238, 0.35);
   --color-darkslateblue: #152950;
   --color-saddlebrown: #441500;
   --color-dodgerblue: #0070d1;
   --color-mediumvioletred-100: #d91b90;
   --color-mediumvioletred-200: rgba(217, 27, 144, 0.1);
+  --color-mediumvioletred: rgba(217, 27, 144, 0.1);
   --color-mediumslateblue-100: #005eff;
   --color-mediumslateblue-200: rgba(139, 92, 246, 0.1);
+  --color-mediumslateblue: rgba(139, 92, 246, 0.1);
   --color-lightsteelblue-100: #c3c3e3;
   --color-lightsteelblue-200: #9ea0c6;
   --color-coral: rgba(246, 138, 92, 0.1);
@@ -49,7 +58,10 @@
   /* Spacing (used for w, h, p, m, gap, inset, etc.) */
   --spacing-num-0: 0px;
   --spacing-num-4: 4px;
+  --spacing-num-6: 6px;
+  --spacing-num-10: 10px;
   --spacing-num-12: 12px;
+  --spacing-num-15: 15px;
   --spacing-num-16: 16px;
   --spacing-num-18: 18px;
   --spacing-num-19: 19px;
@@ -74,6 +86,7 @@
   --radius-num-6: 6px;
   --radius-num-6_2: 6.2px;
   --radius-num-8: 8px;
+  --radius-num-12: 12px;
   --radius-num-30: 30px;
   --radius-num-50: 50%;
   --radius-num-99: 99px;
