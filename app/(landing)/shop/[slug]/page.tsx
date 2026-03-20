@@ -3,6 +3,7 @@ import { ShopProductDetail } from '@/components/landing/shop/detail/ShopProductD
 import type { ShopProductDetail as ShopProductDetailType } from '@/components/landing/shop/detail/types'
 import Navbar from '@/components/landing/Navbar'
 import Footer from '@/components/landing/Footer'
+import { ShopDetailRevealWrapper } from '@/components/landing/shop/detail/ShopDetailRevealWrapper'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -68,7 +69,9 @@ const ProductViewPage: FunctionComponent<PageProps> = async ({ params }) => {
     <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-12 text-left sm:pt-[75px]">
       <Navbar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <ShopProductDetail product={product} />
+        <ShopDetailRevealWrapper>
+          <ShopProductDetail product={product} />
+        </ShopDetailRevealWrapper>
       </div>
       <Footer />
     </div>

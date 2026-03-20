@@ -12,7 +12,7 @@ type Props = {
 export const ShopProductDetail: FunctionComponent<Props> = ({ product }) => {
   return (
     <section className="text-num-14 text-ghostwhite font-commissioner w-full bg-gray-400">
-      <main className="mx-auto flex w-full max-w-[1476.9px] flex-col gap-6 px-4 pt-4 pb-6 sm:gap-8 sm:px-6 sm:pt-6 sm:pb-8 lg:gap-10 lg:px-8 lg:pb-10">
+      <main className="mx-auto flex w-full max-w-[1476.9px] flex-col gap-6 px-4 py-4 sm:gap-8 sm:px-6 sm:py-6 lg:gap-6 lg:px-8 lg:py-8">
         <section className="mb-6 grid items-start gap-6 sm:mb-8 sm:gap-8 lg:mb-10 lg:grid-cols-[minmax(280px,620px)_1fr] lg:gap-10">
           <ShopDetailHero product={product} />
           <ShopDetailRightColumn product={product} />

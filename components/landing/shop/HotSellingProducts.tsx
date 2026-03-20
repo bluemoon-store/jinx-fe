@@ -1,5 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
+'use client'
+
 import CentralIcon from '@central-icons-react/all'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState } from 'react'
+
+import { Reveal } from '@/components/ui/reveal'
 
 type HotSellingItem = {
   name: string
@@ -19,78 +24,120 @@ const ITEMS: HotSellingItem[] = [
 ]
 
 export const HotSellingProducts: FunctionComponent = () => {
+  const [isHidden, setIsHidden] = useState(false)
+
   return (
     <>
-      <header className="py-num-0 text-whitesmoke-100 font-commissioner sm:text-num-14 box-border flex min-h-[56px] w-full items-center justify-between gap-2 overflow-y-auto border-b-[1px] border-solid border-gray-100 text-xs sm:min-h-[75px] sm:gap-4 lg:gap-4">
-        <div className="flex min-w-0 items-center gap-1.5 sm:gap-[5px]">
-          <CentralIcon
-            name="IconFire3"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="1"
-            size={20}
-            color="#FF2A2A"
-          />
-          <div className="tracking-num-0_02 truncate text-xs font-extrabold sm:text-sm">
-            HOT SELLING PRODUCTS
+      <Reveal variant="fade-up">
+        <header className="text-whitesmoke-100 font-commissioner sm:text-num-14 box-border flex min-h-[56px] w-full items-center justify-between gap-2 overflow-y-auto border-b-[1px] border-solid border-gray-100 py-4 text-xs sm:min-h-[75px] sm:gap-4 lg:gap-4">
+          <div className="flex min-w-0 items-center gap-1.5 sm:gap-[5px]">
+            <CentralIcon
+              name="IconFire3"
+              join="round"
+              fill="filled"
+              stroke="1"
+              radius="1"
+              size={20}
+              color="#FF2A2A"
+            />
+            <div className="tracking-num-0_02 truncate text-xs font-extrabold sm:text-sm">
+              HOT SELLING PRODUCTS
+            </div>
           </div>
-        </div>
-        <button
-          type="button"
-          className="border-darkslateblue font-commissioner sm:text-num-14 flex min-h-[44px] shrink-0 items-center justify-center gap-1.5 rounded-3xl border-[1.2px] border-solid bg-gray-200 px-3 py-2 text-xs text-white shadow-[0px_12px_12px_rgba(0,_0,_0,_0.01)] sm:gap-2"
-        >
-          <span className="leading-num-20 font-semibold">Hide Products</span>
-          <CentralIcon
-            name="IconChevronDownMedium"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="1"
-            size={20}
-          />
-        </button>
-      </header>
+          <button
+            type="button"
+            onClick={() => setIsHidden((v) => !v)}
+            className="border-darkslateblue font-commissioner sm:text-num-14 flex min-h-[44px] shrink-0 items-center justify-center gap-1.5 rounded-3xl border-[1.2px] border-solid bg-[#0D1B35] px-4 py-2 text-xs text-white shadow-[0px_12px_12px_rgba(0,_0,_0,_0.01)] sm:gap-2"
+          >
+            <span className="leading-num-20 font-semibold">
+              {isHidden ? 'Show Products' : 'Hide Products'}
+            </span>
+            <CentralIcon
+              name="IconChevronDownMedium"
+              join="round"
+              fill="filled"
+              stroke="1"
+              radius="1"
+              size={20}
+              className="transition-transform duration-300 ease-in-out"
+              style={{ transform: isHidden ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            />
+          </button>
+        </header>
+      </Reveal>
 
-      <section className="w-full">
-        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
-          {ITEMS.map((item, idx) => (
-            <div
-              key={`${item.name}-${idx}`}
-              className="rounded-num-8 box-border flex w-full min-w-0 flex-col items-start overflow-hidden p-3 [background:linear-gradient(180deg,_rgba(255,_42,_42,_0),_rgba(255,_42,_42,_0.25))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(76.58deg,_#ff2a2a,_rgba(255,_42,_42,_0))_border-box,_linear-gradient(237.38deg,_#ff2a2a,_rgba(255,_42,_42,_0))_border-box] [border:1px_solid_transparent]"
-            >
-              <div className="flex w-full items-center gap-3 sm:gap-[17px]">
-                <img
-                  className="h-12 w-12 shrink-0 scale-110 object-contain sm:h-[60px] sm:w-[60px]"
-                  alt=""
-                  src={'/icons/best-buy.svg'}
-                />
+      {!isHidden && (
+        <section className="w-full">
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
+            {ITEMS.map((item, idx) => (
+              <Reveal
+                key={`${item.name}-${idx}`}
+                variant="scale-in"
+                delay={idx * 70}
+                className="w-full"
+              >
+                <div
+                  className="rounded-num-8 relative z-10 w-full overflow-hidden p-px"
+                  style={{
+                    boxShadow:
+                      '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
+                  }}
+                >
+                  {/* Running light around the border */}
+                  <div
+                    className="pointer-events-none absolute z-0 aspect-square w-[220%]"
+                    style={{
+                      top: '50%',
+                      left: '50%',
+                      background:
+                        'conic-gradient(from 0deg, rgba(255,42,42,0.65) 0deg, rgba(255,107,107,0.7) 60deg, rgba(255,120,80,0.28) 120deg, rgba(255,120,80,0.18) 210deg, rgba(255,42,42,0.55) 260deg, rgba(255,107,107,0.6) 320deg)',
+                      animation: 'border-spin 3.2s linear infinite',
+                    }}
+                  />
 
-                <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">
-                  <div className="flex items-center gap-1 sm:gap-[5px]">
-                    <div className="tracking-num-0_02 truncate text-[14px] leading-[20px] font-extrabold uppercase sm:text-[20px] sm:leading-[20px]">
-                      {item.name}
-                    </div>
-                    <div className="font-heydex flex items-center gap-1.5 text-[#FF2A2A] sm:gap-2">
-                      <div className="tracking-num-0.02 text-xs font-extrabold sm:text-sm">
-                        Hot
+                  {/* Inner card */}
+                  <div
+                    className="rounded-num-8 relative z-10 flex w-full min-w-0 flex-col overflow-hidden p-3"
+                    style={{
+                      background:
+                        'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                    }}
+                  >
+                    <div className="flex w-full items-center gap-3 sm:gap-[17px]">
+                      <img
+                        className="h-12 w-12 shrink-0 scale-110 object-contain sm:h-[60px] sm:w-[60px]"
+                        alt=""
+                        src={'/icons/best-buy.svg'}
+                      />
+
+                      <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">
+                        <div className="flex items-center gap-1 sm:gap-[5px]">
+                          <div className="tracking-num-0_02 truncate text-sm leading-[20px] font-extrabold uppercase sm:text-base sm:leading-[20px]">
+                            {item.name}
+                          </div>
+                          <div className="font-heydex flex items-center gap-1.5 text-[#FF2A2A] sm:gap-2">
+                            <div className="tracking-num-0.02 text-base font-extrabold sm:text-lg">
+                              Hot
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center gap-0.5 text-sm">
+                          <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
+                          <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
+                            <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                              $2.50
+                            </b>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center gap-0.5 text-sm">
-                    <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                      <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                        $2.50
-                      </b>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
     </>
   )
 }
