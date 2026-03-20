@@ -2,51 +2,36 @@ import { FunctionComponent } from 'react'
 
 import { HotSellingProducts } from '@/components/landing/shop/HotSellingProducts'
 import { ShopCategorySidebar } from '@/components/landing/shop/ShopCategorySidebar'
-import { ShopDecorations } from '@/components/landing/shop/ShopDecorations'
-import { ShopLoadMore } from '@/components/landing/shop/ShopLoadMore'
-import { ShopProductsGrid } from '@/components/landing/shop/ShopProductsGrid'
-import { ShopProductsHeader } from '@/components/landing/shop/ShopProductsHeader'
-import { ShopProgress } from '@/components/landing/shop/ShopProgress'
-import { ShopSearchBar } from '@/components/landing/shop/ShopSearchBar'
-import { ShopTopBar } from '@/components/landing/shop/ShopTopBar'
 import Navbar from '@/components/landing/Navbar'
 import HowToPurchaseSection from '@/components/landing/HowToPurchaseSection'
 import FAQSection from '@/components/landing/FAQSection'
 import Footer from '@/components/landing/Footer'
+import { ShopProductsSection } from '@/components/landing/shop/ShopProductsSection'
 
 const CatalogPageFilled: FunctionComponent = () => {
   return (
-    <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 text-left">
+    <div className="text-ghostwhite font-nata-sans sm:text-num-14 flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-12 text-left text-sm sm:pt-[75px]">
       <Navbar />
 
-      <main className="mx-auto flex w-full max-w-[1920px] flex-1 flex-col gap-6 py-6 pt-12 sm:gap-8 sm:py-8 sm:pt-[75px] lg:gap-12 lg:py-10">
-        <ShopTopBar />
-
-        <div className="mx-auto w-full max-w-[1474px] px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-56">
+      <main className="mx-auto flex w-full max-w-[1920px] flex-1 flex-col gap-4 sm:gap-6 lg:gap-12">
+        <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
           <HotSellingProducts />
         </div>
 
-        <div className="flex w-full flex-col gap-6 px-4 sm:gap-8 sm:px-6 lg:px-8 xl:px-24 2xl:px-56">
-          <ShopDecorations />
-
-          <section className="grid items-start gap-6 text-left sm:grid-cols-[224px_1fr] sm:gap-8">
+        <div className="mx-auto flex w-full max-w-[1476.9px] flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:gap-8 lg:px-8">
+          <section className="grid items-start gap-4 text-left sm:grid-cols-[224px_1fr] sm:gap-6 lg:gap-8">
             <ShopCategorySidebar />
 
-            <div className="flex min-w-0 flex-col gap-4">
-              <ShopProductsHeader />
-              <ShopSearchBar />
-              <ShopProductsGrid />
-
-              <div className="flex flex-col items-center justify-between gap-4 pt-4 sm:flex-row">
-                <ShopLoadMore />
-                <ShopProgress />
-              </div>
-            </div>
+            <ShopProductsSection />
           </section>
         </div>
 
-        <HowToPurchaseSection />
-        <FAQSection />
+        <div className="mt-14">
+          <HowToPurchaseSection />
+        </div>
+        <div className="my-14">
+          <FAQSection />
+        </div>
       </main>
 
       <Footer />
