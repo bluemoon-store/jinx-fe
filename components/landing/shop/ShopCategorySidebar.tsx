@@ -53,7 +53,7 @@ export const ShopCategorySidebar: FunctionComponent<{
               onMouseLeave={() => setHoveredLabel(null)}
               className={[
                 isSelected
-                  ? 'rounded-num-8 border-[#3B3161] sm:p-num-10 flex min-h-[44px] shrink-0 items-center gap-2 border-[1px] border-solid p-3 text-left text-white [background:linear-gradient(90deg,_rgba(235,_45,_255,_0.2),_rgba(235,_45,_255,_0)),_linear-gradient(#071935,_#071935)] sm:w-full'
+                  ? 'rounded-num-8 sm:p-num-10 flex min-h-[44px] shrink-0 items-center gap-2 border-[1px] border-solid border-[#3B3161] p-3 text-left text-white [background:linear-gradient(90deg,_rgba(235,_45,_255,_0.2),_rgba(235,_45,_255,_0)),_linear-gradient(#071935,_#071935)] sm:w-full'
                   : 'rounded-num-12 sm:px-num-15 flex min-h-[44px] shrink-0 items-center gap-2 px-3 py-2 sm:w-full',
                 isHoverActive ? 'bg-gray-700' : '',
               ].join(' ')}

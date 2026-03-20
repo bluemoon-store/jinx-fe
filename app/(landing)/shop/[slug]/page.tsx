@@ -26,7 +26,12 @@ const ProductViewPage: FunctionComponent = () => {
       related: [
         { id: 'airbnb', name: 'AIRBNB', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg' },
         { id: 'venmo', name: 'VENMO', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg' },
-        { id: 'dunkin', name: 'DUNKIN DONUTS', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
+        {
+          id: 'dunkin',
+          name: 'DUNKIN DONUTS',
+          fromPrice: '$2.50',
+          imageSrc: '/icons/starbucks.svg',
+        },
         { id: 'affirm', name: 'AFFIRM', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg' },
         { id: 'mod', name: 'MOD PIZZA', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
         {
@@ -48,14 +53,29 @@ const ProductViewPage: FunctionComponent = () => {
           fromPrice: '$2.50',
           imageSrc: '/icons/starbucks.svg',
         },
-        { id: 'seat-geek', name: 'SEAT GEEK', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
+        {
+          id: 'seat-geek',
+          name: 'SEAT GEEK',
+          fromPrice: '$2.50',
+          imageSrc: '/icons/starbucks.svg',
+        },
         { id: 'chipotle', name: 'CHIPOTLE', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
         { id: 'walmart', name: 'WALMART', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
         { id: 'target', name: 'TARGET', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
         { id: 'amazon', name: 'AMAZON', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
-        { id: 'starbucks', name: 'STARBUCKS', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
+        {
+          id: 'starbucks',
+          name: 'STARBUCKS',
+          fromPrice: '$2.50',
+          imageSrc: '/icons/starbucks.svg',
+        },
         { id: 'subway', name: 'SUBWAY', fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
-        { id: 'applebee', name: "APPLEBEE'S", fromPrice: '$2.50', imageSrc: '/icons/starbucks.svg' },
+        {
+          id: 'applebee',
+          name: "APPLEBEE'S",
+          fromPrice: '$2.50',
+          imageSrc: '/icons/starbucks.svg',
+        },
         {
           id: 'bath-body',
           name: 'BATH & BODY WORKS',

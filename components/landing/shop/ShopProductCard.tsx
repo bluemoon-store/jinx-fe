@@ -25,16 +25,18 @@ export const ShopProductCard: FunctionComponent<Props> = ({
         alt=""
         src={imageSrc}
       />
-      <div className="flex w-full flex-col items-center gap-0.5 text-center max-w-none sm:max-w-none">
+      <div className="flex w-full max-w-none flex-col items-center gap-0.5 text-center sm:max-w-none">
         <div className="flex items-center justify-center self-stretch">
           <div className="tracking-num-0_02 truncate text-xs font-extrabold uppercase sm:text-sm">
             {name}
           </div>
         </div>
         <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center justify-center gap-0.5 text-sm">
-          <div className="text-[#C0BABF] leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
+          <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
           <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-            <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{fromPrice}</b>
+            <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+              {fromPrice}
+            </b>
           </div>
         </div>
       </div>

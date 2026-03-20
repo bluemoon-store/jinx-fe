@@ -51,7 +51,7 @@ export const ShopDetailTopNav: FunctionComponent = () => {
         <div className="rounded-num-12 px-num-0 flex items-center justify-center gap-2 self-stretch py-[26px]">
           <div className="flex shrink-0 items-center justify-center gap-2 self-stretch">
             <div className="rounded-num-8 border-whitesmoke-500 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center border-[1px] border-solid bg-gray-300 pt-px pb-0.5">
-              <div className="flex h-num-18 w-[82.8px] items-center justify-center">
+              <div className="h-num-18 flex w-[82.8px] items-center justify-center">
                 <div className="flex items-center justify-center gap-2.5">
                   <img className="h-4 w-4" alt="" />
                   <img className="h-num-18 w-[30.8px] rounded-[31.5px]" alt="" />

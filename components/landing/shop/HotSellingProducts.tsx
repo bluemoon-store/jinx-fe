@@ -89,7 +89,7 @@ export const HotSellingProducts: FunctionComponent = () => {
               >
                 <Link
                   href={`/shop/${slugify(item.name)}`}
-                  className="block rounded-num-8 relative z-10 w-full overflow-hidden p-px"
+                  className="rounded-num-8 relative z-10 block w-full overflow-hidden p-px"
                   style={{
                     boxShadow:
                       '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
