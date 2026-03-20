@@ -4,7 +4,6 @@
 import { FunctionComponent, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 
-import { Reveal } from '@/components/ui/reveal'
 import { ShopProductDetail } from '@/components/landing/shop/detail/ShopProductDetail'
 import type { ShopProductDetail as ShopProductDetailType } from '@/components/landing/shop/detail/types'
 import Navbar from '@/components/landing/Navbar'
@@ -76,9 +75,7 @@ const ProductViewPage: FunctionComponent = () => {
     <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-12 text-left sm:pt-[75px]">
       <Navbar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Reveal variant="fade-in">
-          <ShopProductDetail product={product} />
-        </Reveal>
+        <ShopProductDetail product={product} />
       </div>
       <Footer />
     </div>

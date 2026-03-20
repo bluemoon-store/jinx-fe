@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent } from 'react'
 
@@ -5,17 +6,26 @@ type Props = {
   name: string
   fromPrice: string
   imageSrc: string
+  detailHref: `/shop/${string}`
 }
 
-export const ShopProductCard: FunctionComponent<Props> = ({ name, fromPrice, imageSrc }) => {
+export const ShopProductCard: FunctionComponent<Props> = ({
+  name,
+  fromPrice,
+  imageSrc,
+  detailHref,
+}) => {
   return (
-    <div className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-2 border-[1px] border-solid bg-[#0D1B35] p-3 sm:gap-3">
+    <Link
+      href={detailHref}
+      className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-2 border-[1px] border-solid bg-[#0D1B35] p-3 sm:gap-3"
+    >
       <img
         className="max-w-num-257 rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
         alt=""
         src={imageSrc}
       />
-      <div className="flex w-full max-w-36 flex-col items-center gap-0.5">
+      <div className="flex w-full flex-col items-center gap-0.5 text-center max-w-none sm:max-w-none">
         <div className="flex items-center justify-center self-stretch">
           <div className="tracking-num-0_02 truncate text-xs font-extrabold uppercase sm:text-sm">
             {name}
@@ -28,10 +38,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({ name, fromPrice, ima
           </div>
         </div>
       </div>
-      <button
-        type="button"
-        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 flex min-h-[44px] w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 py-2 text-left text-white sm:gap-[5px] sm:py-1.5"
-      >
+      <div className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 flex min-h-[44px] w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 py-2 text-left text-white sm:gap-[5px] sm:py-1.5">
         <CentralIcon
           name="IconZap"
           join="round"
@@ -42,7 +49,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({ name, fromPrice, ima
           color="#FFFFFF"
         />
         <span className="tracking-num--0_01 leading-num-26 font-semibold">Quick Buy</span>
-      </button>
-    </div>
+      </div>
+    </Link>
   )
 }

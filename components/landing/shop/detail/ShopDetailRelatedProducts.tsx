@@ -89,7 +89,7 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
                   src={item.src}
                 />
 
-                <div className="flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
+                <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
                   <div className="flex items-center justify-center self-stretch">
                     <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
                       {item.name}

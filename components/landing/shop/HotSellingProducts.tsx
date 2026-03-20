@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client'
 
+import Link from 'next/link'
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useState } from 'react'
 
@@ -22,6 +23,15 @@ const ITEMS: HotSellingItem[] = [
   { name: 'BEST BUY' },
   { name: 'Dominos' },
 ]
+
+const slugify = (value: string) => {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
 
 export const HotSellingProducts: FunctionComponent = () => {
   const [isHidden, setIsHidden] = useState(false)
@@ -72,12 +82,14 @@ export const HotSellingProducts: FunctionComponent = () => {
             {ITEMS.map((item, idx) => (
               <Reveal
                 key={`${item.name}-${idx}`}
-                variant="scale-in"
+                variant="fade-up"
                 delay={idx * 70}
+                rootMargin="0px 0px -20px 0px"
                 className="w-full"
               >
-                <div
-                  className="rounded-num-8 relative z-10 w-full overflow-hidden p-px"
+                <Link
+                  href={`/shop/${slugify(item.name)}`}
+                  className="block rounded-num-8 relative z-10 w-full overflow-hidden p-px"
                   style={{
                     boxShadow:
                       '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
@@ -132,7 +144,7 @@ export const HotSellingProducts: FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               </Reveal>
             ))}
           </div>

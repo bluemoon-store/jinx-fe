@@ -1,9 +1,19 @@
 'use client'
 
 import { CentralIcon } from '@central-icons-react/all'
+import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
+
+const slugify = (value: string) => {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
 
 const allItems = [
   // Page 1
@@ -82,26 +92,28 @@ export default function NewlyLaunchedSection() {
               delay={idx * 70}
               className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent] lg:gap-3"
             >
-              <img
-                className="rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-                alt=""
-                src={item.src}
-              />
-              <div className="flex w-full flex-col items-center gap-0.5">
-                <div className="flex items-center justify-center self-stretch">
-                  <div className="tracking-num-0_02 text-sm font-extrabold uppercase lg:text-base">
-                    {item.name}
+              <Link href={`/shop/${slugify(item.name)}`} className="block w-full">
+                <img
+                  className="rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+                  alt=""
+                  src={item.src}
+                />
+                <div className="flex w-full flex-col items-center gap-0.5">
+                  <div className="flex items-center justify-center self-stretch">
+                    <div className="tracking-num-0_02 text-sm font-extrabold uppercase lg:text-base">
+                      {item.name}
+                    </div>
+                  </div>
+                  <div className="font-commissioner text-whitesmoke-200 flex items-center justify-center gap-0.5 text-sm lg:text-base">
+                    <div className="font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                      from{' '}
+                    </div>
+                    <div className="rounded-num-6 flex items-center justify-center px-1.5 py-0.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
+                      <b className="[text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">$2.50</b>
+                    </div>
                   </div>
                 </div>
-                <div className="font-commissioner text-whitesmoke-200 flex items-center justify-center gap-0.5 text-sm lg:text-base">
-                  <div className="font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                    from{' '}
-                  </div>
-                  <div className="rounded-num-6 flex items-center justify-center px-1.5 py-0.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                    <b className="[text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">$2.50</b>
-                  </div>
-                </div>
-              </div>
+              </Link>
             </Reveal>
           ))}
         </div>

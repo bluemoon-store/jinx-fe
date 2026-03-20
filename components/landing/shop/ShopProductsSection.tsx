@@ -54,6 +54,15 @@ const TOTAL_PRODUCTS = 100
 const PAGE_SIZE = 12
 const INITIAL_VISIBLE = 12
 
+const slugify = (value: string) => {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
 export const ShopProductsSection = ({ selectedCategory }: Props) => {
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
@@ -146,6 +155,7 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
                 name={p.name}
                 fromPrice={p.fromPrice}
                 imageSrc={p.imageSrc}
+                detailHref={`/shop/${slugify(p.name)}`}
               />
             ))}
           </div>

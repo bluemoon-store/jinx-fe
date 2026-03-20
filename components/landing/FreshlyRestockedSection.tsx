@@ -1,9 +1,19 @@
 'use client'
 
 import { CentralIcon } from '@central-icons-react/all'
+import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
+
+const slugify = (value: string) => {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
 
 const allItems = [
   // Page 1
@@ -91,28 +101,30 @@ export default function FreshlyRestockedSection() {
               delay={idx * 70}
               className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
-              <img
-                className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
-                alt=""
-                src={item.src}
-              />
-              <div className="flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
-                <div className="flex items-center justify-center self-stretch">
-                  <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
-                    {item.name}
+              <Link href={`/shop/${slugify(item.name)}`} className="block w-full">
+                <img
+                  className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
+                  alt=""
+                  src={item.src}
+                />
+                <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
+                  <div className="flex items-center justify-center self-stretch">
+                    <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
+                      {item.name}
+                    </div>
+                  </div>
+                  <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
+                    <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                      from{' '}
+                    </div>
+                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
+                      <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                        $2.50
+                      </b>
+                    </div>
                   </div>
                 </div>
-                <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
-                  <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                    from{' '}
-                  </div>
-                  <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
-                    <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                      $2.50
-                    </b>
-                  </div>
-                </div>
-              </div>
+              </Link>
             </Reveal>
           ))}
         </div>
