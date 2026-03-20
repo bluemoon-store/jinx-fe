@@ -9,7 +9,7 @@ const Navbar: FunctionComponent = () => {
   const [themeSwitchOn, setThemeSwitchOn] = useState(true)
 
   const navLinks = [
-    { label: 'Shop', href: '#', icon: '/icons/IconBasket1-1.svg' },
+    { label: 'Shop', href: '/shop', icon: '/icons/IconBasket1-1.svg' },
     { label: 'Drops', href: '#', icon: '/icons/IconGift1.svg' },
     { label: 'FAQs', href: '/faqs', icon: '/icons/IconCircleQuestionmark.svg' },
     { label: 'Support', href: '#', icon: '/icons/IconRescueRing.svg' },

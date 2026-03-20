@@ -1,6 +1,7 @@
 'use client'
 
 import { CentralIcon } from '@central-icons-react/all'
+import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
@@ -11,6 +12,7 @@ type Props = {
 }
 
 type RelatedItem = {
+  id: string
   name: string
   src?: string
   fromPrice: string
@@ -21,6 +23,7 @@ const ITEMS_PER_PAGE = 10
 
 export const ShopDetailRelatedProducts = ({ related }: Props) => {
   const allItems: RelatedItem[] = related.map((p) => ({
+    id: p.id,
     name: p.name,
     src: p.imageSrc,
     fromPrice: p.fromPrice,
@@ -74,35 +77,37 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
         <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
           {items.map((item, idx) => (
             <Reveal
-              key={`${item.name}-${idx}`}
+              key={`${item.id}-${idx}`}
               variant="fade-up"
               delay={idx * 70}
               className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
-              <img
-                className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
-                alt=""
-                src={item.src}
-              />
+              <Link href={`/shop/${item.id}`} className="w-full">
+                <img
+                  className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
+                  alt=""
+                  src={item.src}
+                />
 
-              <div className="flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
-                <div className="flex items-center justify-center self-stretch">
-                  <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
-                    {item.name}
+                <div className="flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
+                  <div className="flex items-center justify-center self-stretch">
+                    <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
+                      {item.name}
+                    </div>
+                  </div>
+
+                  <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
+                    <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                      from{' '}
+                    </div>
+                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
+                      <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                        {item.fromPrice}
+                      </b>
+                    </div>
                   </div>
                 </div>
-
-                <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
-                  <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                    from{' '}
-                  </div>
-                  <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
-                    <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                      {item.fromPrice}
-                    </b>
-                  </div>
-                </div>
-              </div>
+              </Link>
             </Reveal>
           ))}
         </div>

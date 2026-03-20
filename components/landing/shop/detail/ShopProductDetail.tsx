@@ -1,3 +1,5 @@
+'use client'
+
 import { FunctionComponent } from 'react'
 import { ShopDetailHero } from './ShopDetailHero'
 import { ShopDetailRelatedProducts } from './ShopDetailRelatedProducts'
