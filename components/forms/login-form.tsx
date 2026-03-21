@@ -2,36 +2,24 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import * as z from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-
-const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-})
-
-type LoginFormValues = z.infer<typeof loginSchema>
+import { useAuth } from '@/hooks/use-auth'
+import { loginSchema, type LoginInput } from '@/lib/validations'
 
 export function LoginForm() {
+  const { login } = useAuth()
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
+  } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   })
 
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      // TODO: implement login logic
-      console.warn('Login:', data.email)
-      toast.success('Logged in successfully!')
-    } catch {
-      toast.error('Failed to login. Please try again.')
-    }
+  const onSubmit = async (data: LoginInput) => {
+    await login(data)
   }
 
   return (

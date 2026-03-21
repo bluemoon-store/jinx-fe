@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthModal } from '@/components/auth/auth-modal-context'
+import { useAppStore } from '@/lib/store'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
 import Link from 'next/link'
@@ -11,6 +12,7 @@ const Navbar: FunctionComponent = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const { openAuthModal, isAuthenticated } = useAuthModal()
+  const logout = useAppStore((s) => s.logout)
   // start in dark mode (switch to the right / pink)
   const [themeSwitchOn, setThemeSwitchOn] = useState(true)
   const isLoggedIn = isAuthenticated
@@ -181,6 +183,13 @@ const Navbar: FunctionComponent = () => {
                   alt=""
                   src="/icons/Ellipse 1.svg"
                 />
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5 text-white"
+                >
+                  <span className="tracking-num--0_01 leading-num-28 font-semibold">Log Out</span>
+                </button>
               </div>
             </>
           )}

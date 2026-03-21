@@ -2,13 +2,20 @@
 
 import AuthModalLayer from '@/components/auth/AuthModalLayer'
 import { AuthModalProvider } from '@/components/auth/auth-modal-context'
+import { useAppStore } from '@/lib/store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Toaster } from 'sonner'
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const initializeAuth = useAppStore((s) => s.initializeAuth)
+
+  useEffect(() => {
+    initializeAuth()
+  }, [initializeAuth])
+
   const [queryClient] = useState(
     () =>
       new QueryClient({

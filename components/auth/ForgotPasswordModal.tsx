@@ -1,12 +1,16 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { FunctionComponent, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+import { forgotPasswordSchema, type ForgotPasswordInput } from '@/lib/validations'
 
 export type ForgotPasswordAProps = {
   onClose?: () => void
   onBackToSignIn?: () => void
-  onSendOtp?: () => void
+  onSendOtp?: (email: string) => Promise<void>
   onCreateAccount?: () => void
 }
 
@@ -16,13 +20,16 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
   onSendOtp,
   onCreateAccount,
 }) => {
-  const [email, setEmail] = useState('')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordInput>({ resolver: zodResolver(forgotPasswordSchema) })
 
   return (
     <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-sm shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
       <main className="flex w-[448px] max-w-full flex-col items-start gap-[15px]">
         <div className="flex flex-col items-start gap-4 self-stretch">
-          {/* Title row */}
           <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch text-xl">
             <div className="flex items-center justify-between gap-5 self-stretch">
               <button
@@ -68,7 +75,6 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
             <div className="h-px w-full self-stretch bg-gray-100" />
           </header>
 
-          {/* Message block */}
           <section className="text-ghostwhite rounded-num-8 box-border flex min-w-[416px] flex-col items-start self-stretch bg-gray-100 p-3">
             <div className="flex items-start self-stretch">
               <div className="flex flex-1 flex-col items-start gap-0.5">
@@ -82,8 +88,10 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
             </div>
           </section>
 
-          {/* Form */}
-          <section className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch">
+          <form
+            className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch"
+            onSubmit={handleSubmit((data) => onSendOtp?.(data.email))}
+          >
             <div className="flex flex-col items-start gap-2 self-stretch">
               <label htmlFor="forgot-email" className="leading-num-20 font-semibold">
                 Email Address
@@ -101,31 +109,34 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
                 />
                 <input
                   id="forgot-email"
-                  name="email"
                   type="email"
                   autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address"
                   className="tracking-num--0_01 leading-num-28 h-7 min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 font-semibold text-white shadow-none ring-0 outline-none placeholder:font-semibold placeholder:text-white placeholder:opacity-25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none"
+                  {...register('email')}
                 />
               </div>
+              {errors.email && (
+                <p className="text-num-12 text-[#C0242A] font-semibold">{errors.email.message}</p>
+              )}
             </div>
             <button
-              type="button"
-              onClick={onSendOtp}
-              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <div className="tracking-num--0_01 leading-num-28 font-semibold">Send OTP</div>
+              <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                {isSubmitting ? 'Sending…' : 'Send OTP'}
+              </div>
             </button>
-          </section>
+          </form>
         </div>
 
         <div className="h-px w-full self-stretch bg-gray-100" />
 
         <footer className="text-num-16 text-lightsteelblue font-commissioner flex items-center justify-center gap-2.5 self-stretch text-center">
           <div className="tracking-num--0_01 leading-num-28 text-lightsteelblue-200 font-semibold">
-            Don’t have an account?
+            Don't have an account?
           </div>
           <button
             type="button"
@@ -145,7 +156,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
 export type ForgotPasswordBProps = {
   onClose?: () => void
   onBackToEmail?: () => void
-  onContinueToReset?: () => void
+  onContinueToReset?: (otp: string) => Promise<void>
   onCreateAccount?: () => void
 }
 
@@ -157,6 +168,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
 }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [resendSeconds, setResendSeconds] = useState(120)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (resendSeconds <= 0) return
@@ -171,6 +183,17 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
     setOtp((prev) => prev.map((v, i) => (i === index ? next : v)))
   }
 
+  const handleSubmit = async () => {
+    const otpString = otp.join('')
+    if (otpString.length < 6) return
+    setIsSubmitting(true)
+    try {
+      await onContinueToReset?.(otpString)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const resendMinutes = Math.floor(resendSeconds / 60)
   const resendRemainSeconds = String(resendSeconds % 60).padStart(2, '0')
 
@@ -178,7 +201,6 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
     <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-[14px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
       <main className="flex w-[448px] max-w-full flex-col items-start gap-[15px]">
         <div className="flex flex-col items-start gap-4 self-stretch">
-          {/* Title row */}
           <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch text-[20px]">
             <div className="flex items-center justify-between gap-5 self-stretch">
               <button
@@ -224,7 +246,6 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
             <div className="h-px w-full self-stretch bg-gray-100" />
           </header>
 
-          {/* Message block */}
           <section className="rounded-num-8 p-num-12 text-ghostwhite box-border flex min-w-[416px] flex-col items-start self-stretch bg-gray-100">
             <div className="flex items-start self-stretch">
               <div className="flex flex-1 flex-col items-start gap-0.5">
@@ -238,7 +259,6 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
             </div>
           </section>
 
-          {/* Form */}
           <section className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch">
             <div className="flex flex-col items-start gap-2 self-stretch">
               <div className="leading-5 font-semibold">One Time Passcode</div>
@@ -264,16 +284,29 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
             </div>
             <button
               type="button"
-              onClick={onContinueToReset}
-              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+              onClick={handleSubmit}
+              disabled={isSubmitting || otp.join('').length < 6}
+              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <div className="tracking-num--0_01 leading-num-28 font-semibold">Reset Password</div>
+              <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                {isSubmitting ? 'Verifying…' : 'Reset Password'}
+              </div>
             </button>
             <div className="text-lightsteelblue-200 flex items-center justify-center gap-2 self-stretch text-center">
-              <div className="leading-5 font-semibold">{`Didn’t receive an OTP? `}</div>
-              <div className="leading-5 font-semibold text-white">
-                {`Resend (${resendMinutes}:${resendRemainSeconds} mins)`}
-              </div>
+              <div className="leading-5 font-semibold">{`Didn't receive an OTP? `}</div>
+              {resendSeconds > 0 ? (
+                <div className="leading-5 font-semibold text-white">
+                  {`Resend (${resendMinutes}:${resendRemainSeconds} mins)`}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="leading-5 font-semibold text-white underline"
+                  onClick={() => setResendSeconds(120)}
+                >
+                  Resend
+                </button>
+              )}
             </div>
           </section>
         </div>
@@ -282,7 +315,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
 
         <footer className="text-num-16 text-lightsteelblue font-commissioner flex items-center justify-center gap-2.5 self-stretch text-center">
           <div className="tracking-num--0_01 leading-num-28 text-lightsteelblue-200 font-semibold">
-            Don’t have an account?
+            Don't have an account?
           </div>
           <button
             type="button"

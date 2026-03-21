@@ -8,7 +8,10 @@
       "Bash(cat app/layout.tsx 2>/dev/null || find app -name \"layout.tsx\" | head -5 | xargs cat)",
       "Bash(node -e \"console.log\\(require\\('./node_modules/tailwindcss/package.json'\\).version\\)\")",
       "Bash(yarn add:*)",
-      "Bash(yarn remove:*)"
+      "Bash(yarn remove:*)",
+      "Bash(ls -la /Users/beiryu/Development/Echodzns/bluemoon/bluemoon-fe/*.ts)",
+      "Bash(ls:*)",
+      "Bash(grep -r \"useAppStore\\\\|useAuthModal\" /Users/beiryu/Development/Echodzns/bluemoon/bluemoon-fe --include=*.ts --include=*.tsx)"
     ]
   }
 }

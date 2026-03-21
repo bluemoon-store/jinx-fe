@@ -1,12 +1,17 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import { FunctionComponent, useId, useMemo, useState } from 'react'
+import { FunctionComponent, useId, useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+import { registerSchema, type RegisterInput } from '@/lib/validations'
 
 export type SignUpModalProps = {
   onClose?: () => void
   onSignIn?: () => void
+  onRegisterSuccess?: (data: RegisterInput) => Promise<void>
 }
 
 const inputRowClass =
@@ -21,23 +26,26 @@ const passwordRowClass =
 const ERROR_RULE = 'text-[#C0242A]'
 const OK_RULE = 'text-limegreen'
 
-const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn }) => {
+const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, onRegisterSuccess }) => {
   const termsId = useId()
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [termsAccepted, setTermsAccepted] = useState(false)
 
-  const passwordRules = useMemo(() => {
-    const hasLen = password.length >= 8
-    const hasMixed =
-      /[0-9]/.test(password) && /[A-Z]/.test(password) && /[a-z]/.test(password)
-    const hasSpecial = /[#@!]/.test(password)
-    return { hasLen, hasMixed, hasSpecial }
-  }, [password])
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
+  })
+
+  const password = watch('password', '')
+  const passwordRules = {
+    hasLen: password.length >= 8,
+    hasMixed: /[0-9]/.test(password) && /[A-Z]/.test(password) && /[a-z]/.test(password),
+    hasSpecial: /[#@!]/.test(password),
+  }
 
   return (
     <div className="text-ghostwhite font-nata-sans box-border flex w-full lg:w-fit flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-[30px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)]">
@@ -54,7 +62,6 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
               </div>
             </header>
 
-            {/* Decorative watermark + hero image stacked in one grid cell (no absolute positioning) */}
             <div className="relative grid min-h-0 grid-cols-1 grid-rows-1">
               <div className="z-0 col-start-1 row-start-1 flex items-center justify-center overflow-visible">
                 <img
@@ -107,10 +114,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
         <main className="text-whitesmoke-100 flex w-[512px] flex-col items-start gap-[15px] text-left text-[20px]">
           <form
             className="flex flex-col items-center gap-4 self-stretch"
-            onSubmit={(e) => {
-              e.preventDefault()
-              onSignIn?.()
-            }}
+            onSubmit={handleSubmit((data) => onRegisterSuccess?.(data))}
           >
             <div className="flex flex-col items-start gap-3 self-stretch">
               <div className="flex items-center justify-between gap-5 self-stretch">
@@ -142,8 +146,8 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
             <div className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch">
               <div className="flex flex-col items-start gap-3 self-stretch">
                 <div className="flex flex-col items-start gap-2 self-stretch">
-                  <label htmlFor="signup-username" className="leading-num-20 font-semibold">
-                    Username{' '}
+                  <label htmlFor="signup-name" className="leading-num-20 font-semibold">
+                    Name
                   </label>
                   <div className={inputRowClass}>
                     <CentralIcon
@@ -157,16 +161,19 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                       className="shrink-0"
                     />
                     <input
-                      id="signup-username"
-                      name="username"
+                      id="signup-name"
                       type="text"
-                      autoComplete="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Create username"
+                      autoComplete="name"
+                      placeholder="Your name"
                       className={inputClass}
+                      {...register('name')}
                     />
                   </div>
+                  {errors.name && (
+                    <p className="text-num-12 text-[#C0242A] font-semibold">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col items-start gap-2 self-stretch">
                   <label htmlFor="signup-email" className="leading-num-20 font-semibold">
@@ -185,15 +192,18 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                     />
                     <input
                       id="signup-email"
-                      name="email"
                       type="email"
                       autoComplete="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="Your email address"
                       className={inputClass}
+                      {...register('email')}
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-num-12 text-[#C0242A] font-semibold">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-start gap-2 self-stretch">
@@ -217,13 +227,11 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                     />
                     <input
                       id="signup-password"
-                      name="password"
                       type={showPassword ? 'text' : 'password'}
                       autoComplete="new-password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="Your password"
                       className={inputClass}
+                      {...register('password')}
                     />
                   </div>
                   <button
@@ -314,13 +322,11 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                     />
                     <input
                       id="signup-confirm"
-                      name="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
                       autoComplete="new-password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm your password"
                       className={inputClass}
+                      {...register('confirmPassword')}
                     />
                   </div>
                   <button
@@ -343,6 +349,11 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                     />
                   </button>
                 </div>
+                {errors.confirmPassword && (
+                  <p className="text-num-12 text-[#C0242A] font-semibold">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
               </div>
               <label
                 htmlFor={termsId}
@@ -351,26 +362,23 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                 <input
                   id={termsId}
                   type="checkbox"
-                  checked={termsAccepted}
-                  onChange={(e) => setTermsAccepted(e.target.checked)}
                   className="peer sr-only"
+                  {...register('termsAccepted')}
                 />
                 <span
                   aria-hidden
                   className="rounded-num-8 peer-checked:border-fuchsia peer-checked:bg-fuchsia box-border flex h-6 w-6 shrink-0 items-center justify-center border border-solid border-[#18263E] bg-gray-100"
                 >
-                  {termsAccepted ? (
-                    <CentralIcon
-                      name="IconCheckmark2"
-                      join="round"
-                      fill="filled"
-                      stroke="2"
-                      radius="1"
-                      size={14}
-                      ariaHidden={true}
-                      className="text-white"
-                    />
-                  ) : null}
+                  <CentralIcon
+                    name="IconCheckmark2"
+                    join="round"
+                    fill="filled"
+                    stroke="2"
+                    radius="1"
+                    size={14}
+                    ariaHidden={true}
+                    className="hidden text-white peer-checked:block"
+                  />
                 </span>
                 <div className="text-lightsteelblue-200 leading-num-20 font-semibold">
                   <span>{`I agree to the `}</span>
@@ -384,12 +392,18 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn })
                   <span> of Jinx Store.</span>
                 </div>
               </label>
+              {errors.termsAccepted && (
+                <p className="text-num-12 text-[#C0242A] font-semibold">
+                  {errors.termsAccepted.message}
+                </p>
+              )}
               <button
                 type="submit"
-                className="bg-fuchsia py-num-12 text-num-16 flex w-full cursor-pointer items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+                disabled={isSubmitting}
+                className="bg-fuchsia py-num-12 text-num-16 flex w-full cursor-pointer items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                  Create Acccount
+                  {isSubmitting ? 'Creating account…' : 'Create Account'}
                 </div>
               </button>
             </div>

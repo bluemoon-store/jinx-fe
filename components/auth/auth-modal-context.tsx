@@ -2,6 +2,8 @@
 
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
+import { useAppStore } from '@/lib/store'
+
 export type AuthModalView = 'signin' | 'signup' | 'forgot' | 'forgot-otp' | 'reset' | null
 
 type AuthModalContextValue = {
@@ -9,15 +11,13 @@ type AuthModalContextValue = {
   isAuthenticated: boolean
   openAuthModal: (view: Exclude<AuthModalView, null>) => void
   closeAuthModal: () => void
-  signIn: () => void
-  signOut: () => void
 }
 
 const AuthModalContext = createContext<AuthModalContextValue | null>(null)
 
 export function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const [view, setView] = useState<AuthModalView>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const isAuthenticated = useAppStore((s) => s.isAuthenticated)
 
   const openAuthModal = useCallback((v: Exclude<AuthModalView, null>) => {
     setView(v)
@@ -27,18 +27,9 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
     setView(null)
   }, [])
 
-  const signIn = useCallback(() => {
-    setIsAuthenticated(true)
-    setView(null)
-  }, [])
-
-  const signOut = useCallback(() => {
-    setIsAuthenticated(false)
-  }, [])
-
   const value = useMemo(
-    () => ({ view, isAuthenticated, openAuthModal, closeAuthModal, signIn, signOut }),
-    [view, isAuthenticated, openAuthModal, closeAuthModal, signIn, signOut],
+    () => ({ view, isAuthenticated, openAuthModal, closeAuthModal }),
+    [view, isAuthenticated, openAuthModal, closeAuthModal],
   )
 
   return <AuthModalContext.Provider value={value}>{children}</AuthModalContext.Provider>

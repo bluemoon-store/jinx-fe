@@ -1,6 +1,17 @@
 export const APP_NAME = 'Jinx.to'
 export const APP_DESCRIPTION = 'Modern web application'
 
+export const TOKEN_KEYS = {
+  ACCESS_TOKEN: 'bluemoon_access_token',
+  REFRESH_TOKEN: 'bluemoon_refresh_token',
+} as const
+
+export const COOKIE_KEYS = {
+  ACCESS_TOKEN: 'access-token',
+} as const
+
+export const STORAGE_KEY = 'bluemoon-auth-storage'
+
 export const ROUTES = {
   HOME: '/',
   DASHBOARD: '/dashboard',

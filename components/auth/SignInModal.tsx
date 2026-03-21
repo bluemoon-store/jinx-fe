@@ -1,11 +1,15 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { FunctionComponent, useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+import { loginSchema, type LoginInput } from '@/lib/validations'
 
 export type SignInModalProps = {
   onClose?: () => void
-  onContinueToDashboard?: () => void
+  onContinueToDashboard?: (data: LoginInput) => Promise<void>
   onForgotPassword?: () => void
   onSignUp?: () => void
 }
@@ -25,19 +29,19 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
   onForgotPassword,
   onSignUp,
 }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) })
 
   return (
     <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
       <main className="text-whitesmoke-100 flex w-[419px] flex-col items-start gap-[15px]">
         <form
           className="flex flex-col items-start gap-4 self-stretch"
-          onSubmit={(e) => {
-            e.preventDefault()
-            onContinueToDashboard?.()
-          }}
+          onSubmit={handleSubmit((data) => onContinueToDashboard?.(data))}
         >
           <div className="flex flex-col items-start gap-3 self-stretch">
             <div className="flex items-center justify-between gap-5 self-stretch">
@@ -69,12 +73,12 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
 
           <div className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch">
             <div className="flex flex-col items-start gap-2 self-stretch">
-              <label htmlFor="signin-username" className="leading-num-20 font-semibold">
-                Username{' '}
+              <label htmlFor="signin-email" className="leading-num-20 font-semibold">
+                Email Address
               </label>
               <div className={inputRowClass}>
                 <CentralIcon
-                  name="IconPeopleCircle"
+                  name="IconEmail1"
                   join="round"
                   fill="filled"
                   stroke="2"
@@ -84,16 +88,17 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
                   className="shrink-0"
                 />
                 <input
-                  id="signin-username"
-                  name="username"
-                  type="text"
-                  autoComplete="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter username"
+                  id="signin-email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="Enter your email"
                   className={inputClass}
+                  {...register('email')}
                 />
               </div>
+              {errors.email && (
+                <p className="text-num-12 text-[#C0242A] font-semibold">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="flex flex-col items-start gap-2 self-stretch">
@@ -114,13 +119,11 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
                   />
                   <input
                     id="signin-password"
-                    name="password"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     className={inputClass}
+                    {...register('password')}
                   />
                 </div>
                 <button
@@ -141,14 +144,20 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
                   />
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-num-12 text-[#C0242A] font-semibold">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex w-full cursor-pointer items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+              disabled={isSubmitting}
+              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex w-full cursor-pointer items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                Continue to Dashboard
+                {isSubmitting ? 'Signing in…' : 'Continue to Dashboard'}
               </div>
             </button>
 
@@ -166,7 +175,7 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
 
         <footer className="text-num-16 text-lightsteelblue font-commissioner flex items-center justify-center gap-2.5 self-stretch text-center">
           <div className="tracking-num--0_01 leading-num-28 text-lightsteelblue-200 font-semibold">
-            Don’t have an account?
+            Don't have an account?
           </div>
           <button
             type="button"
