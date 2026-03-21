@@ -5,7 +5,7 @@ const Footer: FunctionComponent = () => {
   return (
     <footer className="border-darkslateblue text-ghostwhite box-border flex w-full flex-col items-start gap-6 border-t border-solid bg-gray-500 px-4 py-4 text-left text-base sm:gap-8 sm:px-6 sm:py-8 sm:text-[18px] lg:gap-[41px] lg:px-8 lg:py-[60px] xl:px-14 2xl:px-[223px]">
       {/* Top row: logo, tagline, payment methods, support button */}
-      <div className="flex w-full max-w-[1474px] flex-col content-center items-center gap-6 self-stretch sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-5 sm:gap-y-4 lg:flex-nowrap">
+      <div className="flex w-full flex-col content-center items-center gap-6 self-stretch sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-5 sm:gap-y-4 lg:flex-nowrap">
         <div className="flex min-w-0 flex-col items-center gap-4 sm:flex-1 sm:flex-row sm:items-center sm:justify-start sm:gap-5">
           <img
             className="h-10 w-16 shrink-0 sm:h-[45.3px] sm:w-[82px]"
@@ -59,7 +59,7 @@ const Footer: FunctionComponent = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-num-8 border-darkslateblue py-num-4 text-num-16 font-commissioner box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid bg-[#0D1B35] px-6 text-white sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center">
+        <div className="rounded-num-8 border-darkslateblue py-num-4 text-num-16 font-commissioner box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid bg-[#0D1B35] px-6 text-white sm:ml-auto sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center">
           <img className="h-4 w-4" alt="" src="/icons/IconRescueRing.svg" />
           <b className="tracking-num--0_01 leading-num-28">Support</b>
         </div>

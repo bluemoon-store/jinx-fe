@@ -34,8 +34,8 @@ function NavItem({
       className={[
         'rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5 text-left',
         isActive
-          ? 'border border-solid border-white/15 text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
-          : 'text-white/90 hover:bg-white/5 hover:text-white',
+          ? 'border border-solid border-[#2F3057] text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+          : 'text-white/90 hover:bg-[#0D1B35] hover:text-white',
       ].join(' ')}
     >
       <span className="leading-num-20 font-semibold">{label}</span>
@@ -297,7 +297,15 @@ export default function FAQs() {
             {/* Header */}
             <header className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2 text-[18px]">
-                <img className="h-5 w-5" alt="" src="/icons/IconBubbleQuestion.svg" />
+                <CentralIcon
+                  name="IconBubbleQuestion"
+                  join="round"
+                  fill="filled"
+                  stroke="2"
+                  radius="1"
+                  size={24}
+                  color="#FF00FF"
+                />
                 <h1 className="tracking-num-0.02 leading-num-28 font-semibold">
                   Frequently asked questions
                 </h1>
@@ -314,17 +322,21 @@ export default function FAQs() {
 
             {/* Search */}
             <div className="text-num-16 text-lightsteelblue-100 rounded-num-8 border-darkslateblue px-num-12 mt-6 flex w-full items-center gap-2 overflow-hidden border border-solid bg-gray-100 py-1">
-              <img
-                className="h-num-18 w-num-18 opacity-[0.5]"
-                alt=""
-                src="/icons/IconMagnifyingGlass.svg"
+              <CentralIcon
+                name="IconMagnifyingGlass"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={20}
+                className="text-white/50"
               />
               <input
                 type="text"
                 placeholder="Search for a question or a keyword"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-semibold text-white placeholder-white/25 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
+                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 px-0 font-semibold text-white placeholder-white/25 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
               />
             </div>
 

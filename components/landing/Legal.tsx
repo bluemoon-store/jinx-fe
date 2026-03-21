@@ -29,8 +29,8 @@ function NavItem({
       className={[
         'rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5 text-left',
         isActive
-          ? 'border border-solid border-white/15 text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
-          : 'text-white/90 hover:bg-white/5 hover:text-white',
+          ? 'border border-solid border-[#2F3057] text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+          : 'text-white/90 hover:bg-[#0D1B35] hover:text-white',
       ].join(' ')}
     >
       <span className="leading-num-20 font-semibold">{label}</span>
@@ -420,6 +420,8 @@ export default function Legal() {
                 Last Revised: {activeSection.lastRevised}
               </div>
             </header>
+
+            <div className="h-px w-full bg-white/10" />
 
             {activeSection.content}
           </main>
