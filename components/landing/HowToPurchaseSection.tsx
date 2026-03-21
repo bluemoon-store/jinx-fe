@@ -60,7 +60,7 @@ const HowToPurchaseSection: FunctionComponent = () => {
                   key={step.id}
                   type="button"
                   className={cn(
-                    'group rounded-num-8 focus-visible:ring-cornflowerblue box-border flex w-full flex-col justify-end border-[1px] border-solid border-darkslateblue p-4 text-left text-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none hover:border-cornflowerblue sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
+                    'group rounded-num-8 focus-visible:ring-cornflowerblue border-darkslateblue hover:border-cornflowerblue box-border flex w-full flex-col justify-end border-[1px] border-solid p-4 text-left text-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
                     '[background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)] hover:[background:linear-gradient(180deg,_rgba(92,_133,_246,_0),_rgba(92,_133,_246,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
                   )}
                 >

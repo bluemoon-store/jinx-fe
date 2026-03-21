@@ -26,7 +26,11 @@ const passwordRowClass =
 const ERROR_RULE = 'text-[#C0242A]'
 const OK_RULE = 'text-limegreen'
 
-const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, onRegisterSuccess }) => {
+const SignUpModal: FunctionComponent<SignUpModalProps> = ({
+  onClose,
+  onSignIn,
+  onRegisterSuccess,
+}) => {
   const termsId = useId()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -48,7 +52,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, o
   }
 
   return (
-    <div className="text-ghostwhite font-nata-sans box-border flex w-full lg:w-fit flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-[30px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)]">
+    <div className="text-ghostwhite font-nata-sans box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-[30px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
       <div className="flex items-start gap-6 self-stretch">
         {/* Left: hero + marketing */}
         <section className="rounded-num-8 flex min-h-0 w-[335px] shrink-0 flex-col self-stretch overflow-x-hidden overflow-y-visible [background:linear-gradient(180deg,_#4e2bff,_#b600c7)]">
@@ -170,7 +174,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, o
                     />
                   </div>
                   {errors.name && (
-                    <p className="text-num-12 text-[#C0242A] font-semibold">
+                    <p className="text-num-12 font-semibold text-[#C0242A]">
                       {errors.name.message}
                     </p>
                   )}
@@ -200,7 +204,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, o
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-num-12 text-[#C0242A] font-semibold">
+                    <p className="text-num-12 font-semibold text-[#C0242A]">
                       {errors.email.message}
                     </p>
                   )}
@@ -350,7 +354,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, o
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-num-12 text-[#C0242A] font-semibold">
+                  <p className="text-num-12 font-semibold text-[#C0242A]">
                     {errors.confirmPassword.message}
                   </p>
                 )}
@@ -393,7 +397,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({ onClose, onSignIn, o
                 </div>
               </label>
               {errors.termsAccepted && (
-                <p className="text-num-12 text-[#C0242A] font-semibold">
+                <p className="text-num-12 font-semibold text-[#C0242A]">
                   {errors.termsAccepted.message}
                 </p>
               )}

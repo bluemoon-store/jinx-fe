@@ -1,12 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
-import {
-  loginAction,
-  logoutAction,
-  registerAction,
-  refreshTokenAction,
-} from '@/actions/auth'
+import { loginAction, logoutAction, registerAction, refreshTokenAction } from '@/actions/auth'
 import type { User } from '@/types/api'
 import type { LoginInput, RegisterInput } from './validations'
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from './token'
@@ -83,6 +78,12 @@ export const useAppStore = create<AppState>()(
         },
 
         initializeAuth: async () => {
+          // If user is already restored from Zustand persist, trust it.
+          // Any stale session will be caught by the first real 401 API response.
+          if (get().user) {
+            set({ isAuthenticated: true, isLoading: false })
+            return
+          }
           const accessToken = getAccessToken()
           if (!accessToken) {
             set({ user: null, isAuthenticated: false, isLoading: false })

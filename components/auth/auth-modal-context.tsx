@@ -29,7 +29,7 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo(
     () => ({ view, isAuthenticated, openAuthModal, closeAuthModal }),
-    [view, isAuthenticated, openAuthModal, closeAuthModal],
+    [view, isAuthenticated, openAuthModal, closeAuthModal]
   )
 
   return <AuthModalContext.Provider value={value}>{children}</AuthModalContext.Provider>

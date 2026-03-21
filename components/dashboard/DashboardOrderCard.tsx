@@ -26,15 +26,15 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
 
   return (
     <div className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid bg-[#0D1B35] p-3">
-      <div className="relative flex aspect-[257/125] w-full items-center justify-center overflow-hidden rounded-num-8 shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+      <div className="rounded-num-8 relative flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
         <img className="h-full w-full scale-110 object-cover" alt="" src="/icons/airbnb.svg" />
       </div>
       <div className="flex w-36 flex-col items-center gap-1.5">
         <div className="tracking-num-0_02 truncate text-center text-sm font-extrabold uppercase sm:text-base">
           {brand}
         </div>
-        <div className="font-commissioner flex items-center justify-center gap-1.5 text-xs sm:text-num-14">
-          <span className="text-[#EEEEEEBF] leading-num-24 shrink-0 whitespace-nowrap font-medium">
+        <div className="font-commissioner sm:text-num-14 flex items-center justify-center gap-1.5 text-xs">
+          <span className="leading-num-24 shrink-0 font-medium whitespace-nowrap text-[#EEEEEEBF]">
             {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
           </span>
           <span className="h-3.5 w-px bg-white/25" aria-hidden />

@@ -146,9 +146,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({
     if (!q) return MOCK_ORDERS
     return MOCK_ORDERS.filter(
       (o) =>
-        o.brand.toLowerCase().includes(q) ||
-        o.id.includes(q) ||
-        o.price.toLowerCase().includes(q),
+        o.brand.toLowerCase().includes(q) || o.id.includes(q) || o.price.toLowerCase().includes(q)
     )
   }, [searchQuery])
 
@@ -169,7 +167,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({
       <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
         <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
         <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">No orders match</b>
-        <p className="text-lightsteelblue-100 max-w-[411px] text-sm leading-6 font-medium sm:text-num-14">
+        <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
           Try another search or clear filters to see your orders.
         </p>
       </div>
@@ -197,7 +195,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({
         >
           <button
             type="button"
-            className="text-lightsteelblue-200 hover:text-ghostwhite flex min-h-11 min-w-11 items-center justify-center rounded-num-8 transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+            className="text-lightsteelblue-200 hover:text-ghostwhite rounded-num-8 flex min-h-11 min-w-11 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-30"
             disabled={safePage <= 0}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             aria-label="Previous page"
@@ -230,7 +228,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({
           </div>
           <button
             type="button"
-            className="text-lightsteelblue-200 hover:text-ghostwhite flex min-h-11 min-w-11 items-center justify-center rounded-num-8 transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+            className="text-lightsteelblue-200 hover:text-ghostwhite rounded-num-8 flex min-h-11 min-w-11 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-30"
             disabled={safePage >= pageCount - 1}
             onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
             aria-label="Next page"

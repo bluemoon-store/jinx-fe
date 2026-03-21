@@ -90,9 +90,7 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
           >
             <div className="text-limegreen flex flex-col items-start gap-4 self-stretch">
               <div className="flex flex-col items-start gap-2 self-stretch">
-                <div className="leading-num-20 text-lightsteelblue-200 font-semibold">
-                  Password
-                </div>
+                <div className="leading-num-20 text-lightsteelblue-200 font-semibold">Password</div>
                 <div className={passwordRowClass}>
                   <div className="flex min-w-0 flex-1 items-center gap-2">
                     <CentralIcon
@@ -181,7 +179,7 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
                   </>
                 )}
                 {errors.newPassword && (
-                  <p className="text-num-12 text-[#C0242A] font-semibold">
+                  <p className="text-num-12 font-semibold text-[#C0242A]">
                     {errors.newPassword.message}
                   </p>
                 )}
@@ -214,7 +212,9 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
                     type="button"
                     className="rounded-num-8 flex h-7 w-7 shrink-0 items-center justify-center bg-[#051329] p-1.5"
                     onClick={() => setShowConfirmPassword((v) => !v)}
-                    aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    aria-label={
+                      showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'
+                    }
                     aria-pressed={showConfirmPassword}
                   >
                     <CentralIcon
@@ -229,7 +229,7 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-num-12 text-[#C0242A] font-semibold">
+                  <p className="text-num-12 font-semibold text-[#C0242A]">
                     {errors.confirmPassword.message}
                   </p>
                 )}

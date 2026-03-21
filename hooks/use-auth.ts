@@ -1,13 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
 
-import {
-  forgotPasswordAction,
-  resetPasswordAction,
-  verifyOtpAction,
-} from '@/actions/auth'
+import { forgotPasswordAction, resetPasswordAction, verifyOtpAction } from '@/actions/auth'
 import { ROUTES } from '@/lib/constants'
 import { useAppStore } from '@/lib/store'
 import type { LoginInput, RegisterInput } from '@/lib/validations'
@@ -19,10 +14,9 @@ export function useAuth() {
   async function handleLogin(data: LoginInput): Promise<boolean> {
     try {
       await login(data)
-      toast.success('Welcome back!')
+      router.push(ROUTES.DASHBOARD)
       return true
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? 'Invalid email or password')
+    } catch {
       return false
     }
   }
@@ -30,10 +24,8 @@ export function useAuth() {
   async function handleRegister(data: RegisterInput): Promise<boolean> {
     try {
       await register(data)
-      toast.success('Account created successfully!')
       return true
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? 'Could not create account')
+    } catch {
       return false
     }
   }
@@ -46,10 +38,8 @@ export function useAuth() {
   async function handleForgotPassword(email: string): Promise<boolean> {
     try {
       await forgotPasswordAction({ email })
-      toast.success('OTP sent to your email')
       return true
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? 'Could not send OTP')
+    } catch {
       return false
     }
   }
@@ -58,8 +48,7 @@ export function useAuth() {
     try {
       await verifyOtpAction({ email, otp })
       return true
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? 'Invalid OTP')
+    } catch {
       return false
     }
   }
@@ -71,10 +60,8 @@ export function useAuth() {
   ): Promise<boolean> {
     try {
       await resetPasswordAction({ email, otp, newPassword })
-      toast.success('Password reset successfully. Please log in.')
       return true
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? 'Could not reset password')
+    } catch {
       return false
     }
   }

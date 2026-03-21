@@ -117,7 +117,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
                 />
               </div>
               {errors.email && (
-                <p className="text-num-12 text-[#C0242A] font-semibold">{errors.email.message}</p>
+                <p className="text-num-12 font-semibold text-[#C0242A]">{errors.email.message}</p>
               )}
             </div>
             <button

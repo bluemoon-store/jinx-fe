@@ -39,7 +39,7 @@ const AuthModalLayer: FunctionComponent = () => {
       const ok = await login(data)
       if (ok) closeAuthModal()
     },
-    [login, closeAuthModal],
+    [login, closeAuthModal]
   )
 
   const handleRegister = useCallback(
@@ -47,7 +47,7 @@ const AuthModalLayer: FunctionComponent = () => {
       const ok = await register(data)
       if (ok) closeAuthModal()
     },
-    [register, closeAuthModal],
+    [register, closeAuthModal]
   )
 
   const handleSendOtp = useCallback(
@@ -58,7 +58,7 @@ const AuthModalLayer: FunctionComponent = () => {
         openAuthModal('forgot-otp')
       }
     },
-    [forgotPassword, openAuthModal],
+    [forgotPassword, openAuthModal]
   )
 
   const handleVerifyOtp = useCallback(
@@ -66,7 +66,7 @@ const AuthModalLayer: FunctionComponent = () => {
       const ok = await verifyOtp(forgotEmail, otp)
       if (ok) openAuthModal('reset')
     },
-    [verifyOtp, forgotEmail, openAuthModal],
+    [verifyOtp, forgotEmail, openAuthModal]
   )
 
   const handleResetPassword = useCallback(
@@ -78,7 +78,7 @@ const AuthModalLayer: FunctionComponent = () => {
         openAuthModal('signin')
       }
     },
-    [resetPassword, forgotEmail, closeAuthModal, openAuthModal],
+    [resetPassword, forgotEmail, closeAuthModal, openAuthModal]
   )
 
   if (!view) return null
@@ -92,7 +92,7 @@ const AuthModalLayer: FunctionComponent = () => {
         onClick={closeAuthModal}
       />
       <div
-        className="relative z-10 max-h-[90vh] w-full max-w-[min(100vw-2rem,960px)] overflow-y-auto overflow-x-auto"
+        className="relative z-10 max-h-[90vh] w-full max-w-[min(100vw-2rem,960px)] overflow-x-auto overflow-y-auto"
         role="dialog"
         aria-modal="true"
       >
