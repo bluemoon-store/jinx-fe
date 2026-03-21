@@ -119,7 +119,7 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
           name="IconMagnifyingGlass2"
           join="round"
           fill="filled"
-          stroke="1"
+          stroke="2"
           radius="1"
           size={20}
           color="#FFFFFF"

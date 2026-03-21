@@ -1,12 +1,10 @@
 'use client'
 
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
 
 const HowToPurchaseSection: FunctionComponent = () => {
-  const [selectedStep, setSelectedStep] = useState<number | null>(null)
-
   const steps = [
     {
       id: 1,
@@ -56,19 +54,14 @@ const HowToPurchaseSection: FunctionComponent = () => {
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:px-6 lg:mt-10 lg:px-8">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-4">
           {steps.map((step, idx) => {
-            const isSelected = selectedStep === step.id
-
             return (
               <Reveal key={step.id} variant="fade-up" delay={idx * 120}>
                 <button
                   key={step.id}
                   type="button"
-                  onClick={() => setSelectedStep(step.id)}
                   className={cn(
-                    'rounded-num-8 focus-visible:ring-cornflowerblue box-border flex w-full flex-col justify-end border-[1px] border-solid p-4 text-left text-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
-                    isSelected
-                      ? 'border-cornflowerblue [background:linear-gradient(180deg,_rgba(92,_133,_246,_0),_rgba(92,_133,_246,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
-                      : 'border-darkslateblue [background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
+                    'group rounded-num-8 focus-visible:ring-cornflowerblue box-border flex w-full flex-col justify-end border-[1px] border-solid border-darkslateblue p-4 text-left text-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none hover:border-cornflowerblue sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
+                    '[background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)] hover:[background:linear-gradient(180deg,_rgba(92,_133,_246,_0),_rgba(92,_133,_246,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
                   )}
                 >
                   <div className="mx-auto flex w-full max-w-[325.5px] flex-col items-center gap-2 lg:gap-3">
@@ -76,8 +69,7 @@ const HowToPurchaseSection: FunctionComponent = () => {
                     <div className="flex items-center justify-center gap-2.5 self-stretch lg:gap-3">
                       <div
                         className={cn(
-                          'border-darkslateblue flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-solid bg-white/5 opacity-40 transition-opacity duration-200 lg:h-10 lg:w-10',
-                          isSelected ? 'opacity-100' : 'opacity-40'
+                          'border-darkslateblue flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-solid bg-white/5 opacity-40 transition-opacity duration-200 group-hover:opacity-100 lg:h-10 lg:w-10'
                         )}
                       >
                         <img className="h-5 w-5 lg:h-6 lg:w-6" alt="" src={step.iconSrc} />

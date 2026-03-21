@@ -99,7 +99,7 @@ export default function FreshlyRestockedSection() {
               key={item.name}
               variant="fade-up"
               delay={idx * 70}
-              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
+              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-[#0D1B35] p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
               <Link href={`/shop/${slugify(item.name)}`} className="block w-full">
                 <img

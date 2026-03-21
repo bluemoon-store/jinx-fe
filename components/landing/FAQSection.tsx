@@ -101,9 +101,7 @@ const FAQItem: FunctionComponent<{
 )
 
 const FAQSection: FunctionComponent = () => {
-  const [openIds, setOpenIds] = useState<Set<number>>(
-    new Set(faqData.filter((f) => f.defaultOpen).map((f) => f.id))
-  )
+  const [openIds, setOpenIds] = useState<Set<number>>(new Set())
 
   const allOpen = openIds.size === faqData.length
 

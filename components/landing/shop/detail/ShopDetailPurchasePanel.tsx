@@ -226,7 +226,10 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
         </div>
 
         <div className="text-num-16 flex min-h-[44px] flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
-          <div className="py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]">
+          <button
+            type="button"
+            className="py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]"
+          >
             <CentralIcon
               name="IconBasket1"
               join="round"
@@ -237,8 +240,11 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
               className="text-white"
             />
             <div className="tracking-num--0_01 leading-num-28 font-semibold">Add to Cart</div>
-          </div>
-          <div className="bg-fuchsia py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]">
+          </button>
+          <button
+            type="button"
+            className="bg-fuchsia py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+          >
             <CentralIcon
               name="IconDollar"
               join="round"
@@ -249,12 +255,13 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
               className="text-white"
             />
             <div className="tracking-num--0_01 leading-num-28 font-semibold">Checkout</div>
-          </div>
+          </button>
         </div>
       </div>
 
+      <div className="border-darkslateblue h-px w-full border-t border-solid" />
+
       <div className="font-nata-sans flex flex-col items-start gap-4 self-stretch text-center sm:gap-5">
-        <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
         <div className="flex flex-wrap items-center justify-center gap-1.5 self-stretch sm:gap-[5px]">
           <div className="tracking-num-0_02 font-extrabold">EVERY PURCHASE WITH</div>
           <div className="font-heydex flex items-center p-1 text-fuchsia-200">
@@ -334,8 +341,9 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
             </div>
           </div>
         </div>
-        <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
       </div>
+
+      <div className="border-darkslateblue h-px w-full border-t border-solid" />
 
       <div className="flex w-full flex-col items-start gap-4">
         <div className="rounded-num-12 sm:p-num-18 box-border flex w-full flex-col items-start overflow-hidden bg-gray-100 p-4">

@@ -1,5 +1,7 @@
 'use client'
 
+import AuthModalLayer from '@/components/auth/AuthModalLayer'
+import { AuthModalProvider } from '@/components/auth/auth-modal-context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
@@ -22,8 +24,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        {children}
-        <Toaster richColors position="top-right" />
+        <AuthModalProvider>
+          {children}
+          <AuthModalLayer />
+          <Toaster richColors position="top-right" />
+        </AuthModalProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

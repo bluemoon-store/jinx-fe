@@ -107,6 +107,9 @@
   --tracking-num-0_02: 0.02em;
   --tracking-num--0_01: -0.01em;
 
+  /* Opacity tokens */
+  --opacity-num-0_5: 0.5;
+
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
@@ -241,6 +244,10 @@
 @layer base {
   body {
     @apply m-0 leading-[normal];
+  }
+
+  button {
+    cursor: pointer;
   }
 
   *,
