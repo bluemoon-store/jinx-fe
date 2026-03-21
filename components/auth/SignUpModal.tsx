@@ -45,6 +45,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
   })
 
   const password = watch('password', '')
+  const termsAccepted = watch('termsAccepted') === true
   const passwordRules = {
     hasLen: password.length >= 8,
     hasMixed: /[0-9]/.test(password) && /[A-Z]/.test(password) && /[a-z]/.test(password),
@@ -101,14 +102,12 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                   Get instant access to your favorite brands and services.
                 </div>
               </div>
-              <div className="border-darkslateblue flex items-center gap-[7.5px] rounded-[30px] border-[1.5px] border-solid bg-gray-200 px-[9px] py-[9px] shadow-[0px_15px_15px_rgba(0,0,0,0.01)]">
-                <div className="flex items-center justify-center gap-[7.5px]">
-                  <div className="h-num-9 w-[22.5px] rounded-[10.13px] bg-white" />
-                  <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
-                  <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
-                  <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
-                  <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
-                </div>
+              <div className="flex items-center justify-center gap-[7.5px]">
+                <div className="h-num-9 w-[22.5px] rounded-[10.13px] bg-white" />
+                <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
+                <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
+                <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
+                <div className="h-num-9 w-[9px] rounded-[50%] bg-white opacity-[0.25]" />
               </div>
             </footer>
           </div>
@@ -381,7 +380,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                     radius="1"
                     size={14}
                     ariaHidden={true}
-                    className="hidden text-white peer-checked:block"
+                    className={termsAccepted ? 'block text-white' : 'hidden text-white'}
                   />
                 </span>
                 <div className="text-lightsteelblue-200 leading-num-20 font-semibold">
