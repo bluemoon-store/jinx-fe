@@ -17,6 +17,8 @@ interface AppState {
   logout: () => Promise<void>
   refreshTokens: () => Promise<string>
   initializeAuth: () => Promise<void>
+  /** Merge fields into the current user (e.g. after enabling 2FA). No-op if logged out. */
+  updateUser: (partial: Partial<User>) => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -59,6 +61,12 @@ export const useAppStore = create<AppState>()(
           }
           clearTokens()
           set({ user: null, isAuthenticated: false, isLoading: false })
+        },
+
+        updateUser: (partial) => {
+          const u = get().user
+          if (!u) return
+          set({ user: { ...u, ...partial } })
         },
 
         refreshTokens: async () => {

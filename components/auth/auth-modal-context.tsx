@@ -4,7 +4,16 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 import { useAppStore } from '@/lib/store'
 
-export type AuthModalView = 'signin' | 'signup' | 'forgot' | 'forgot-otp' | 'reset' | null
+export type AuthModalView =
+  | 'signin'
+  | 'signup'
+  | 'forgot'
+  | 'forgot-otp'
+  | 'reset'
+  | '2fa-enable'
+  | '2fa-disable'
+  | 'delete-account'
+  | null
 
 type AuthModalContextValue = {
   view: AuthModalView

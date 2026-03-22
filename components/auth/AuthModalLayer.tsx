@@ -6,7 +6,11 @@ import { ForgotPasswordA, ForgotPasswordB } from '@/components/auth/ForgotPasswo
 import ResetPasswordModal from '@/components/auth/ResetPasswordModal'
 import SignInModal from '@/components/auth/SignInModal'
 import SignUpModal from '@/components/auth/SignUpModal'
+import DeleteAccountModal from '@/components/auth/DeleteAccountModal'
+import TwoFactorDisableModal from '@/components/auth/TwoFactorDisableModal'
+import TwoFactorEnableModal from '@/components/auth/TwoFactorEnableModal'
 import { useAuth } from '@/hooks/use-auth'
+import { useAppStore } from '@/lib/store'
 import type { LoginInput, RegisterInput } from '@/lib/validations'
 
 import { useAuthModal } from './auth-modal-context'
@@ -14,9 +18,16 @@ import { useAuthModal } from './auth-modal-context'
 /** Set to false when forgot-password / OTP / reset-password APIs are ready. */
 const MOCK_FORGOT_PASSWORD_FLOW = true
 
+/** Set to false when 2FA enroll / disable APIs are wired. */
+const MOCK_TWO_FACTOR_FLOW = true
+
+/** Set to false when account deletion API is wired (use password in request). */
+const MOCK_DELETE_ACCOUNT_FLOW = true
+
 const AuthModalLayer: FunctionComponent = () => {
   const { view, closeAuthModal, openAuthModal } = useAuthModal()
   const { login, register, forgotPassword, verifyOtp, resetPassword, logout } = useAuth()
+  const updateUser = useAppStore((s) => s.updateUser)
   const [forgotEmail, setForgotEmail] = useState('')
 
   useEffect(() => {
@@ -99,6 +110,36 @@ const AuthModalLayer: FunctionComponent = () => {
     [resetPassword, forgotEmail, closeAuthModal, logout]
   )
 
+  const handleTwoFactorEnableVerify = useCallback(async () => {
+    if (MOCK_TWO_FACTOR_FLOW) {
+      updateUser({ twoFactorEnabled: true })
+      closeAuthModal()
+      return
+    }
+  }, [updateUser, closeAuthModal])
+
+  const handleTwoFactorDisable = useCallback(
+    async (_password: string, _code: string) => {
+      if (MOCK_TWO_FACTOR_FLOW) {
+        updateUser({ twoFactorEnabled: false })
+        closeAuthModal()
+        return
+      }
+    },
+    [updateUser, closeAuthModal]
+  )
+
+  const handleDeleteAccount = useCallback(
+    async (_password: string) => {
+      if (MOCK_DELETE_ACCOUNT_FLOW) {
+        closeAuthModal()
+        await logout()
+        return
+      }
+    },
+    [closeAuthModal, logout]
+  )
+
   if (!view) return null
 
   return (
@@ -147,6 +188,15 @@ const AuthModalLayer: FunctionComponent = () => {
         )}
         {view === 'reset' && (
           <ResetPasswordModal onClose={closeAuthModal} onResetSuccess={handleResetPassword} />
+        )}
+        {view === '2fa-enable' && (
+          <TwoFactorEnableModal onClose={closeAuthModal} onVerifySuccess={handleTwoFactorEnableVerify} />
+        )}
+        {view === '2fa-disable' && (
+          <TwoFactorDisableModal onClose={closeAuthModal} onDisableSuccess={handleTwoFactorDisable} />
+        )}
+        {view === 'delete-account' && (
+          <DeleteAccountModal onClose={closeAuthModal} onDeleteConfirm={handleDeleteAccount} />
         )}
       </div>
     </div>

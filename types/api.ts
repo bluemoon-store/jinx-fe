@@ -10,6 +10,8 @@ export interface User {
   email: string
   avatar?: string
   role: 'admin' | 'user' | 'moderator'
+  /** When true, account has TOTP 2FA enabled (optional until backend sends it). */
+  twoFactorEnabled?: boolean
   createdAt: string
   updatedAt: string
 }
