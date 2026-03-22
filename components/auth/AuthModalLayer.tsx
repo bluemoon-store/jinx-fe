@@ -11,6 +11,9 @@ import type { LoginInput, RegisterInput } from '@/lib/validations'
 
 import { useAuthModal } from './auth-modal-context'
 
+/** Set to false when forgot-password / OTP / reset-password APIs are ready. */
+const MOCK_FORGOT_PASSWORD_FLOW = true
+
 const AuthModalLayer: FunctionComponent = () => {
   const { view, closeAuthModal, openAuthModal } = useAuthModal()
   const { login, register, forgotPassword, verifyOtp, resetPassword } = useAuth()
@@ -52,6 +55,11 @@ const AuthModalLayer: FunctionComponent = () => {
 
   const handleSendOtp = useCallback(
     async (email: string) => {
+      if (MOCK_FORGOT_PASSWORD_FLOW) {
+        setForgotEmail(email)
+        openAuthModal('forgot-otp')
+        return
+      }
       const ok = await forgotPassword(email)
       if (ok) {
         setForgotEmail(email)
@@ -63,6 +71,10 @@ const AuthModalLayer: FunctionComponent = () => {
 
   const handleVerifyOtp = useCallback(
     async (otp: string) => {
+      if (MOCK_FORGOT_PASSWORD_FLOW) {
+        openAuthModal('reset')
+        return
+      }
       const ok = await verifyOtp(forgotEmail, otp)
       if (ok) openAuthModal('reset')
     },
@@ -71,6 +83,12 @@ const AuthModalLayer: FunctionComponent = () => {
 
   const handleResetPassword = useCallback(
     async (newPassword: string) => {
+      if (MOCK_FORGOT_PASSWORD_FLOW) {
+        setForgotEmail('')
+        closeAuthModal()
+        openAuthModal('signin')
+        return
+      }
       const ok = await resetPassword(forgotEmail, '', newPassword)
       if (ok) {
         setForgotEmail('')
@@ -84,7 +102,7 @@ const AuthModalLayer: FunctionComponent = () => {
   if (!view) return null
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:px-8">
       <button
         type="button"
         className="absolute inset-0 bg-black/60"
@@ -92,7 +110,7 @@ const AuthModalLayer: FunctionComponent = () => {
         onClick={closeAuthModal}
       />
       <div
-        className="relative z-10 max-h-[90vh] w-full max-w-[min(100vw-2rem,960px)] overflow-x-auto overflow-y-auto"
+        className="relative z-10 max-h-[90dvh] w-full max-w-[min(100vw-2rem,960px)] overflow-x-hidden overflow-y-auto sm:max-h-[90vh]"
         role="dialog"
         aria-modal="true"
       >

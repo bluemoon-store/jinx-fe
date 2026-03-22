@@ -27,15 +27,15 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
   } = useForm<ForgotPasswordInput>({ resolver: zodResolver(forgotPasswordSchema) })
 
   return (
-    <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-sm shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
-      <main className="flex w-[448px] max-w-full flex-col items-start gap-[15px]">
+    <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-base shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] sm:p-5 sm:text-lg lg:max-w-none lg:w-fit lg:p-6 lg:text-[20px]">
+      <main className="text-whitesmoke-100 flex w-full min-w-0 flex-col items-start gap-3 sm:gap-[15px]">
         <div className="flex flex-col items-start gap-4 self-stretch">
-          <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch text-xl">
-            <div className="flex items-center justify-between gap-5 self-stretch">
+          <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch">
+            <div className="flex items-center gap-2 self-stretch sm:gap-5">
               <button
                 type="button"
                 onClick={onBackToSignIn}
-                className="rounded-num-8 flex h-[30px] w-[30px] items-center justify-center border border-solid border-[#18263E] p-0"
+                className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
                 aria-label="Back to log in"
               >
                 <CentralIcon
@@ -49,15 +49,15 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
                   className="text-white/50"
                 />
               </button>
-              <div className="flex items-center">
-                <div className="leading-num-28 font-extrabold tracking-[0.02em] uppercase">
+              <div className="flex min-w-0 flex-1 items-center justify-center px-1">
+                <div className="text-center text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                   FORGOT PASSWORD
                 </div>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-num-8 flex h-[30px] w-[30px] items-center justify-center border border-solid border-[#18263E] p-0"
+                className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
                 aria-label="Close"
               >
                 <CentralIcon
@@ -75,13 +75,13 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
             <div className="h-px w-full self-stretch bg-gray-100" />
           </header>
 
-          <section className="text-ghostwhite rounded-num-8 box-border flex min-w-[416px] flex-col items-start self-stretch bg-gray-100 p-3">
+          <section className="text-ghostwhite rounded-num-8 box-border flex w-full min-w-0 flex-col items-start self-stretch bg-gray-100 p-3 sm:p-4">
             <div className="flex items-start self-stretch">
-              <div className="flex flex-1 flex-col items-start gap-0.5">
-                <b className="tracking-num--0_01 flex h-[19px] shrink-0 items-center self-stretch leading-[18px]">
+              <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                <b className="tracking-num--0_01 text-sm leading-snug font-bold sm:text-base sm:leading-[18px]">
                   Enter Registered Email Address
                 </b>
-                <div className="text-lightsteelblue-100 self-stretch text-[13px] leading-[17px] font-medium">
+                <div className="text-lightsteelblue-100 self-stretch text-xs leading-snug font-medium sm:text-[13px] sm:leading-[17px]">
                   You will receive a One Time Passcode to login to your account.
                 </div>
               </div>
@@ -89,14 +89,14 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
           </section>
 
           <form
-            className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch"
+            className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-3 self-stretch sm:gap-[13px]"
             onSubmit={handleSubmit((data) => onSendOtp?.(data.email))}
           >
             <div className="flex flex-col items-start gap-2 self-stretch">
               <label htmlFor="forgot-email" className="leading-num-20 font-semibold">
                 Email Address
               </label>
-              <div className="rounded-num-8 text-lightsteelblue-200 px-num-12 text-num-16 focus-within:border-fuchsia focus-within:text-fuchsia flex items-center gap-2.5 self-stretch overflow-hidden border border-solid border-[#18263E] bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]">
+              <div className="rounded-num-8 text-lightsteelblue-200 px-num-12 text-sm focus-within:border-fuchsia focus-within:text-fuchsia flex min-h-11 items-center gap-2.5 self-stretch overflow-hidden border border-solid border-[#18263E] bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:text-num-16">
                 <CentralIcon
                   name="IconEmail1"
                   join="round"
@@ -123,7 +123,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-fuchsia text-num-16 mt-2 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
                 {isSubmitting ? 'Sending…' : 'Send OTP'}
@@ -134,14 +134,14 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
 
         <div className="h-px w-full self-stretch bg-gray-100" />
 
-        <footer className="text-num-16 text-lightsteelblue font-commissioner flex items-center justify-center gap-2.5 self-stretch text-center">
+        <footer className="text-num-16 text-lightsteelblue font-commissioner flex flex-row flex-wrap items-center justify-center gap-2.5 self-stretch text-center">
           <div className="tracking-num--0_01 leading-num-28 text-lightsteelblue-200 font-semibold">
             Don't have an account?
           </div>
           <button
             type="button"
             onClick={onCreateAccount}
-            className="flex items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]"
+            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))] [-webkit-tap-highlight-color:transparent]"
           >
             <div className="tracking-num--0_01 leading-num-28 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
               Create Account
@@ -198,15 +198,15 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
   const resendRemainSeconds = String(resendSeconds % 60).padStart(2, '0')
 
   return (
-    <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-[14px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
-      <main className="flex w-[448px] max-w-full flex-col items-start gap-[15px]">
+    <section className="text-ghostwhite font-nata-sans mx-auto box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-left text-base shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] sm:p-5 sm:text-lg lg:max-w-none lg:w-fit lg:p-6 lg:text-[20px]">
+      <main className="text-whitesmoke-100 flex w-full min-w-0 flex-col items-start gap-3 sm:gap-[15px]">
         <div className="flex flex-col items-start gap-4 self-stretch">
-          <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch text-[20px]">
-            <div className="flex items-center justify-between gap-5 self-stretch">
+          <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch">
+            <div className="flex items-center gap-2 self-stretch sm:gap-5">
               <button
                 type="button"
                 onClick={onBackToEmail}
-                className="rounded-num-8 flex h-[30px] w-[30px] items-center justify-center border border-solid border-[#18263E] p-0"
+                className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
                 aria-label="Back to email step"
               >
                 <CentralIcon
@@ -220,15 +220,15 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
                   className="text-white/50"
                 />
               </button>
-              <div className="flex items-center">
-                <div className="leading-num-28 font-extrabold tracking-[0.02em] uppercase">
+              <div className="flex min-w-0 flex-1 items-center justify-center px-1">
+                <div className="text-center text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                   FORGOT PASSWORD
                 </div>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-num-8 flex h-[30px] w-[30px] items-center justify-center border border-solid border-[#18263E] p-0"
+                className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
                 aria-label="Close"
               >
                 <CentralIcon
@@ -246,27 +246,27 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
             <div className="h-px w-full self-stretch bg-gray-100" />
           </header>
 
-          <section className="rounded-num-8 p-num-12 text-ghostwhite box-border flex min-w-[416px] flex-col items-start self-stretch bg-gray-100">
+          <section className="rounded-num-8 p-num-12 text-ghostwhite box-border flex w-full min-w-0 flex-col items-start self-stretch bg-gray-100 sm:p-4">
             <div className="flex items-start self-stretch">
-              <div className="flex flex-1 flex-col items-start gap-0.5">
-                <b className="tracking-num--0_01 flex h-[19px] shrink-0 items-center self-stretch leading-[18px]">
+              <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                <b className="tracking-num--0_01 text-sm leading-snug font-bold sm:text-base sm:leading-[18px]">
                   Enter OTP received on your registered email address
                 </b>
-                <div className="text-lightsteelblue-100 self-stretch text-[13px] leading-[17px] font-medium">
+                <div className="text-lightsteelblue-100 self-stretch text-xs leading-snug font-medium sm:text-[13px] sm:leading-[17px]">
                   Enter the 6 digit passcode to reset your password.
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch">
+          <section className="text-num-14 text-lightsteelblue font-commissioner flex w-full min-w-0 flex-col items-start gap-3 self-stretch sm:gap-[13px]">
             <div className="flex flex-col items-start gap-2 self-stretch">
-              <div className="leading-5 font-semibold">One Time Passcode</div>
-              <div className="text-num-16 flex items-start gap-2 self-stretch">
+              <div className="text-sm leading-5 font-semibold sm:text-num-14">One Time Passcode</div>
+              <div className="grid w-full min-w-0 grid-cols-6 gap-1 self-stretch sm:gap-2">
                 {otp.map((digit, index) => (
                   <div
                     key={`otp-${index}`}
-                    className="rounded-num-8 focus-within:border-fuchsia flex flex-1 items-center justify-center overflow-hidden border border-solid border-[#18263E] bg-gray-100 px-2 py-[9px] transition-[border-color,box-shadow] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                    className="rounded-num-8 focus-within:border-fuchsia flex min-h-11 min-w-0 items-center justify-center overflow-hidden border border-solid border-[#18263E] bg-gray-100 px-1 py-2 transition-[border-color,box-shadow] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:px-2 sm:py-[9px]"
                   >
                     <input
                       inputMode="numeric"
@@ -274,7 +274,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
                       maxLength={1}
                       value={digit}
                       onChange={(e) => updateOtp(index, e.target.value)}
-                      className="tracking-num--0_01 leading-num-28 h-7 w-full appearance-none border-0 bg-transparent p-0 text-center font-semibold text-white shadow-none ring-0 outline-none placeholder:text-white/25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none"
+                      className="tracking-num--0_01 leading-num-28 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-semibold text-white shadow-none ring-0 outline-none placeholder:text-white/25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7 sm:text-num-16"
                       placeholder="0"
                       aria-label={`OTP digit ${index + 1}`}
                     />
@@ -286,22 +286,22 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || otp.join('').length < 6}
-              className="bg-fuchsia py-num-12 text-num-16 mt-2 flex items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-fuchsia text-num-16 mt-2 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
                 {isSubmitting ? 'Verifying…' : 'Reset Password'}
               </div>
             </button>
-            <div className="text-lightsteelblue-200 flex items-center justify-center gap-2 self-stretch text-center">
-              <div className="leading-5 font-semibold">{`Didn't receive an OTP? `}</div>
+            <div className="text-lightsteelblue-200 flex flex-col items-center justify-center gap-1 self-stretch text-center sm:flex-row sm:flex-wrap sm:gap-2">
+              <div className="text-sm leading-5 font-semibold sm:text-num-14">{`Didn't receive an OTP? `}</div>
               {resendSeconds > 0 ? (
-                <div className="leading-5 font-semibold text-white">
+                <div className="text-sm leading-5 font-semibold text-white sm:text-num-14">
                   {`Resend (${resendMinutes}:${resendRemainSeconds} mins)`}
                 </div>
               ) : (
                 <button
                   type="button"
-                  className="leading-5 font-semibold text-white underline"
+                  className="min-h-11 text-sm leading-5 font-semibold text-white underline sm:min-h-0 sm:text-num-14"
                   onClick={() => setResendSeconds(120)}
                 >
                   Resend
@@ -313,14 +313,14 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
 
         <div className="h-px w-full self-stretch bg-gray-100" />
 
-        <footer className="text-num-16 text-lightsteelblue font-commissioner flex items-center justify-center gap-2.5 self-stretch text-center">
+        <footer className="text-num-16 text-lightsteelblue font-commissioner flex flex-row flex-wrap items-center justify-center gap-2.5 self-stretch text-center">
           <div className="tracking-num--0_01 leading-num-28 text-lightsteelblue-200 font-semibold">
             Don't have an account?
           </div>
           <button
             type="button"
             onClick={onCreateAccount}
-            className="flex items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]"
+            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))] [-webkit-tap-highlight-color:transparent]"
           >
             <div className="tracking-num--0_01 leading-num-28 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
               Create Account

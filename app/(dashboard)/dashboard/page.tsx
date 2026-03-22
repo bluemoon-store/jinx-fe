@@ -3,7 +3,7 @@
 import { DashboardDeletionSection } from '@/components/dashboard/DashboardDeletionSection'
 import { DashboardOrdersSection } from '@/components/dashboard/DashboardOrdersSection'
 import { DashboardSecuritySection } from '@/components/dashboard/DashboardSecuritySection'
-import { DashboardSettingsSection } from '@/components/dashboard/DashboardSettingsSection'
+import { DashboardGeneralSection } from '@/components/dashboard/DashboardGeneralSection'
 import Footer from '@/components/landing/Footer'
 import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
@@ -146,7 +146,7 @@ const UserDashboardHomeEmpty: FunctionComponent = () => {
                       name={headerIcon as any}
                       join="round"
                       fill="filled"
-                      stroke="1"
+                      stroke="2"
                       radius="1"
                       size={16}
                       ariaHidden={true}
@@ -185,7 +185,7 @@ const UserDashboardHomeEmpty: FunctionComponent = () => {
                 </Reveal>
               ) : selectedSidebar === 'General' ? (
                 <Reveal variant="fade-up" delay={140}>
-                  <DashboardSettingsSection />
+                  <DashboardGeneralSection />
                 </Reveal>
               ) : selectedSidebar === 'Security' ? (
                 <Reveal variant="fade-up" delay={140}>

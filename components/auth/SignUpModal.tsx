@@ -15,13 +15,19 @@ export type SignUpModalProps = {
 }
 
 const inputRowClass =
-  'rounded-num-8 border-[#18263E] text-lightsteelblue-200 px-num-12 text-num-16 flex items-center gap-2.5 self-stretch overflow-hidden border border-solid bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:border-fuchsia focus-within:text-fuchsia focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]'
+  'rounded-num-8 border-[#18263E] text-lightsteelblue-200 px-num-12 text-sm sm:text-num-16 flex min-h-11 items-center gap-2.5 self-stretch overflow-hidden border border-solid bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:border-fuchsia focus-within:text-fuchsia focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]'
 
 const inputClass =
   'tracking-num--0_01 leading-num-28 font-semibold min-w-0 h-7 flex-1 appearance-none border-0 bg-transparent p-0 text-white shadow-none outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:font-semibold placeholder:text-white placeholder:opacity-25'
 
 const passwordRowClass =
-  'rounded-num-8 border-[#18263E] text-lightsteelblue-200 px-num-12 text-num-16 flex items-center justify-between gap-5 self-stretch overflow-hidden border border-solid bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:border-fuchsia focus-within:text-fuchsia focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]'
+  'rounded-num-8 border-[#18263E] text-lightsteelblue-200 px-num-12 text-sm sm:text-num-16 flex min-h-11 items-center justify-between gap-3 self-stretch overflow-hidden border border-solid bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:border-fuchsia focus-within:text-fuchsia focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:gap-5'
+
+const passwordVisibilityHitClass =
+  'inline-flex shrink-0 touch-manipulation items-center justify-center rounded-num-8 p-2 [-webkit-tap-highlight-color:transparent] sm:p-0'
+
+const passwordVisibilityFaceClass =
+  'flex h-7 w-7 items-center justify-center rounded-num-8 bg-[#051329] p-1.5'
 
 const ERROR_RULE = 'text-[#C0242A]'
 const OK_RULE = 'text-limegreen'
@@ -53,38 +59,42 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
   }
 
   return (
-    <div className="text-ghostwhite font-nata-sans box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-[30px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] lg:w-fit">
-      <div className="flex items-start gap-6 self-stretch">
-        {/* Left: hero + marketing */}
-        <section className="rounded-num-8 flex min-h-0 w-[335px] shrink-0 flex-col self-stretch overflow-x-hidden overflow-y-visible [background:linear-gradient(180deg,_#4e2bff,_#b600c7)]">
+    <div className="text-ghostwhite font-nata-sans box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-base shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] sm:p-5 lg:p-6">
+      <div className="flex min-w-0 flex-col items-stretch gap-4 self-stretch lg:flex-row lg:items-stretch lg:gap-6">
+        {/* Left: hero + marketing (desktop only — hidden on mobile) */}
+        <section className="hidden rounded-num-8 min-h-0 w-[335px] shrink-0 flex-col overflow-x-hidden overflow-y-visible [background:linear-gradient(180deg,_#4e2bff,_#b600c7)] lg:flex">
           <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr_auto]">
-            <header className="flex flex-col items-center gap-4 px-6 pt-[27px]">
-              <img className="h-[58px] w-[105px]" alt="" src="/icons/Jin X-1.svg" />
-              <div className="self-stretch leading-8 font-black tracking-[0.02em] uppercase">
+            <header className="flex flex-col items-center gap-3 px-4 pt-5 sm:gap-4 sm:px-6 sm:pt-[27px]">
+              <img
+                className="h-12 w-[86px] object-contain sm:h-[58px] sm:w-[105px]"
+                alt=""
+                src="/icons/Jin X-1.svg"
+              />
+              <div className="self-stretch text-2xl leading-7 font-black tracking-[0.02em] uppercase sm:text-[28px] sm:leading-8">
                 Drop in.
                 <br />
                 Cash out.
               </div>
             </header>
 
-            <div className="relative grid min-h-0 grid-cols-1 grid-rows-1">
+            <div className="relative grid min-h-[200px] grid-cols-1 grid-rows-1 sm:min-h-[260px] lg:min-h-0">
               <div className="z-0 col-start-1 row-start-1 flex items-center justify-center overflow-visible">
                 <img
-                  className="pointer-events-none h-full w-full max-w-none scale-200 object-contain"
+                  className="pointer-events-none h-full w-full max-w-none scale-125 object-contain sm:scale-150 lg:scale-200"
                   alt=""
                   src="/icons/splash-hero.svg"
                 />
               </div>
-              <div className="z-10 col-start-1 row-start-1 flex items-center justify-center overflow-hidden px-[13px]">
+              <div className="z-10 col-start-1 row-start-1 flex items-center justify-center overflow-hidden px-2 sm:px-[13px]">
                 <img
-                  className="h-[310px] w-[308px] shrink-0 object-cover"
+                  className="h-auto max-h-[200px] w-full max-w-[min(100%,308px)] object-contain sm:max-h-[260px] lg:h-[310px] lg:w-[308px] lg:max-h-none lg:shrink-0 lg:object-cover"
                   alt=""
                   src="/icons/sign-up-left.png"
                 />
               </div>
             </div>
 
-            <footer className="text-num-16 mx-auto flex w-full max-w-[232px] flex-col items-center gap-4 px-6 pb-[21.5px] text-left text-white">
+            <footer className="text-num-16 mx-auto flex w-full max-w-[232px] flex-col items-center gap-3 px-4 pb-4 text-left text-white sm:gap-4 sm:px-6 sm:pb-[21.5px]">
               <div className="flex flex-col items-center justify-center gap-[5px] self-stretch">
                 <CentralIcon
                   name="IconClockAlert"
@@ -98,7 +108,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                 <div className="leading-6 font-extrabold tracking-[0.02em] uppercase">
                   Instant Access
                 </div>
-                <div className="leading-num-20 font-commissioner self-stretch text-center font-medium opacity-[0.75]">
+                <div className="text-sm leading-num-20 font-commissioner self-stretch text-center font-medium opacity-[0.75] sm:text-num-16">
                   Get instant access to your favorite brands and services.
                 </div>
               </div>
@@ -114,22 +124,22 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
         </section>
 
         {/* Right: create account form */}
-        <main className="text-whitesmoke-100 flex w-[512px] flex-col items-start gap-[15px] text-left text-[20px]">
+        <main className="text-whitesmoke-100 flex min-h-0 w-full min-w-0 flex-1 flex-col items-start gap-3 text-left text-base sm:gap-[15px] sm:text-lg lg:text-[20px]">
           <form
             className="flex flex-col items-center gap-4 self-stretch"
             onSubmit={handleSubmit((data) => onRegisterSuccess?.(data))}
           >
             <div className="flex flex-col items-start gap-3 self-stretch">
-              <div className="flex items-center justify-between gap-5 self-stretch">
-                <div className="flex items-center">
-                  <div className="leading-num-28 font-extrabold tracking-[0.02em] uppercase">
+              <div className="flex items-center justify-between gap-2 self-stretch sm:gap-5">
+                <div className="flex min-w-0 flex-1 items-center">
+                  <div className="text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                     Create account
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-num-8 flex h-[30px] w-[30px] shrink-0 items-center justify-center border border-solid border-[#18263E] p-0"
+                  className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
                   aria-label="Close"
                 >
                   <CentralIcon
@@ -146,7 +156,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
               </div>
               <div className="h-px w-full self-stretch bg-gray-100" />
             </div>
-            <div className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-[13px] self-stretch">
+            <div className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-3 self-stretch sm:gap-[13px]">
               <div className="flex flex-col items-start gap-3 self-stretch">
                 <div className="flex flex-col items-start gap-2 self-stretch">
                   <label htmlFor="signup-name" className="leading-num-20 font-semibold">
@@ -239,26 +249,28 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                   </div>
                   <button
                     type="button"
-                    className="rounded-num-8 flex h-7 w-7 shrink-0 items-center justify-center bg-[#051329] p-1.5"
+                    className={passwordVisibilityHitClass}
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     aria-pressed={showPassword}
                   >
-                    <CentralIcon
-                      name={showPassword ? 'IconEyeOpen' : 'IconEyeSlash'}
-                      join="round"
-                      fill="outlined"
-                      stroke="2"
-                      radius="1"
-                      size={18}
-                      ariaHidden={true}
-                    />
+                    <span className={passwordVisibilityFaceClass}>
+                      <CentralIcon
+                        name={showPassword ? 'IconEyeOpen' : 'IconEyeSlash'}
+                        join="round"
+                        fill="outlined"
+                        stroke="2"
+                        radius="1"
+                        size={18}
+                        ariaHidden={true}
+                      />
+                    </span>
                   </button>
                 </div>
                 {password.length > 0 && (
                   <>
                     <div
-                      className={`flex items-center gap-[5px] opacity-[0.75] transition-colors duration-200 ${passwordRules.hasLen ? OK_RULE : ERROR_RULE}`}
+                      className={`flex items-start gap-[5px] opacity-[0.75] transition-colors duration-200 sm:items-center ${passwordRules.hasLen ? OK_RULE : ERROR_RULE}`}
                     >
                       <CentralIcon
                         name={passwordRules.hasLen ? 'IconCircleCheck' : 'IconCrossSmall'}
@@ -273,7 +285,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                       <div className="leading-num-20 font-semibold">At least 8 characters</div>
                     </div>
                     <div
-                      className={`flex items-center gap-[5px] opacity-[0.75] transition-colors duration-200 ${passwordRules.hasMixed ? OK_RULE : ERROR_RULE}`}
+                      className={`flex items-start gap-[5px] opacity-[0.75] transition-colors duration-200 sm:items-center ${passwordRules.hasMixed ? OK_RULE : ERROR_RULE}`}
                     >
                       <CentralIcon
                         name={passwordRules.hasMixed ? 'IconCircleCheck' : 'IconCrossSmall'}
@@ -288,7 +300,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                       <div className="leading-num-20 font-semibold">{`At least one number, uppercase & lowercase letter`}</div>
                     </div>
                     <div
-                      className={`flex items-center gap-[5px] opacity-[0.75] transition-colors duration-200 ${passwordRules.hasSpecial ? OK_RULE : ERROR_RULE}`}
+                      className={`flex items-start gap-[5px] opacity-[0.75] transition-colors duration-200 sm:items-center ${passwordRules.hasSpecial ? OK_RULE : ERROR_RULE}`}
                     >
                       <CentralIcon
                         name={passwordRules.hasSpecial ? 'IconCircleCheck' : 'IconCrossSmall'}
@@ -334,22 +346,24 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                   </div>
                   <button
                     type="button"
-                    className="rounded-num-8 flex h-7 w-7 shrink-0 items-center justify-center bg-[#051329] p-1.5"
+                    className={passwordVisibilityHitClass}
                     onClick={() => setShowConfirmPassword((v) => !v)}
                     aria-label={
                       showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'
                     }
                     aria-pressed={showConfirmPassword}
                   >
-                    <CentralIcon
-                      name={showConfirmPassword ? 'IconEyeOpen' : 'IconEyeSlash'}
-                      join="round"
-                      fill="outlined"
-                      stroke="2"
-                      radius="1"
-                      size={18}
-                      ariaHidden={true}
-                    />
+                    <span className={passwordVisibilityFaceClass}>
+                      <CentralIcon
+                        name={showConfirmPassword ? 'IconEyeOpen' : 'IconEyeSlash'}
+                        join="round"
+                        fill="outlined"
+                        stroke="2"
+                        radius="1"
+                        size={18}
+                        ariaHidden={true}
+                      />
+                    </span>
                   </button>
                 </div>
                 {errors.confirmPassword && (
@@ -360,7 +374,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
               </div>
               <label
                 htmlFor={termsId}
-                className="flex cursor-pointer items-center gap-3 self-stretch text-left"
+                className="flex cursor-pointer flex-row items-center gap-3 self-stretch text-left"
               >
                 <input
                   id={termsId}
@@ -383,7 +397,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
                     className={termsAccepted ? 'block text-white' : 'hidden text-white'}
                   />
                 </span>
-                <div className="text-lightsteelblue-200 leading-num-20 font-semibold">
+                <div className="min-w-0 flex-1 text-lightsteelblue-200 leading-num-20 font-semibold">
                   <span>{`I agree to the `}</span>
                   <Link href="/legal?section=terms" className="text-white">
                     Terms of Service
@@ -403,7 +417,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-fuchsia py-num-12 text-num-16 flex w-full cursor-pointer items-center justify-center self-stretch rounded-[7.79px] px-4 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] disabled:cursor-not-allowed disabled:opacity-60"
+                className="bg-fuchsia text-num-16 box-border flex w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <div className="tracking-num--0_01 leading-num-28 font-semibold">
                   {isSubmitting ? 'Creating account…' : 'Create Account'}
@@ -412,14 +426,14 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
             </div>
           </form>
           <div className="h-px w-full self-stretch bg-gray-100" />
-          <div className="text-num-16 text-lightsteelblue font-commissioner flex items-center justify-center gap-2.5 self-stretch text-center">
+          <div className="text-num-16 text-lightsteelblue font-commissioner flex flex-row flex-wrap items-center justify-center gap-2.5 self-stretch text-center">
             <div className="tracking-num--0_01 leading-num-28 font-semibold">
               Already have an account?
             </div>
             <button
               type="button"
               onClick={onSignIn}
-              className="flex items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]"
+              className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))] [-webkit-tap-highlight-color:transparent]"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
                 Log In
