@@ -16,7 +16,7 @@ const MOCK_FORGOT_PASSWORD_FLOW = true
 
 const AuthModalLayer: FunctionComponent = () => {
   const { view, closeAuthModal, openAuthModal } = useAuthModal()
-  const { login, register, forgotPassword, verifyOtp, resetPassword } = useAuth()
+  const { login, register, forgotPassword, verifyOtp, resetPassword, logout } = useAuth()
   const [forgotEmail, setForgotEmail] = useState('')
 
   useEffect(() => {
@@ -86,17 +86,17 @@ const AuthModalLayer: FunctionComponent = () => {
       if (MOCK_FORGOT_PASSWORD_FLOW) {
         setForgotEmail('')
         closeAuthModal()
-        openAuthModal('signin')
+        await logout()
         return
       }
       const ok = await resetPassword(forgotEmail, '', newPassword)
       if (ok) {
         setForgotEmail('')
         closeAuthModal()
-        openAuthModal('signin')
+        await logout()
       }
     },
-    [resetPassword, forgotEmail, closeAuthModal, openAuthModal]
+    [resetPassword, forgotEmail, closeAuthModal, logout]
   )
 
   if (!view) return null
@@ -110,7 +110,7 @@ const AuthModalLayer: FunctionComponent = () => {
         onClick={closeAuthModal}
       />
       <div
-        className="relative z-10 max-h-[90dvh] w-full max-w-[min(100vw-2rem,960px)] overflow-x-hidden overflow-y-auto sm:max-h-[90vh]"
+        className="relative z-10 flex max-h-[90dvh] w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-x-hidden overflow-y-auto sm:max-h-[90vh]"
         role="dialog"
         aria-modal="true"
       >
