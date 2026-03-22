@@ -160,8 +160,8 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const pageOrders = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE)
 
   const filterBar = (
-    <div className="text-lightsteelblue-100 lg:text-num-16 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:flex lg:flex-wrap lg:items-stretch lg:gap-3">
-      <div className="rounded-num-8 px-num-12 lg:col-span-none flex min-h-11 min-w-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-0 sm:col-span-2 lg:min-w-[min(100%,240px)] lg:flex-1">
+    <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
+      <div className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
         <CentralIcon
           name="IconMagnifyingGlass"
           join="round"
@@ -180,77 +180,80 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
           className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-semibold text-white placeholder-white/50 outline-none focus:ring-0"
         />
       </div>
-      <div className="rounded-num-8 px-num-12 flex min-h-11 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2 lg:shrink-0">
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-          Status
-        </span>
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-          All
-        </span>
-        <CentralIcon
-          name="IconChevronDownMedium"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={16}
-          ariaHidden={true}
-          className="shrink-0"
-        />
-      </div>
-      <div className="rounded-num-8 px-num-12 flex min-h-11 min-w-0 flex-wrap items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2 lg:shrink-0">
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-          Payment Method
-        </span>
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-          All
-        </span>
-        <CentralIcon
-          name="IconChevronDownMedium"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={16}
-          ariaHidden={true}
-          className="shrink-0"
-        />
-      </div>
-      <div className="rounded-num-8 px-num-12 flex min-h-11 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2 lg:shrink-0">
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-          Sort by
-        </span>
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-          Newest
-        </span>
-        <CentralIcon
-          name="IconChevronDownMedium"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={16}
-          ariaHidden={true}
-          className="shrink-0"
-        />
-      </div>
-      <div className="rounded-num-8 px-num-12 lg:col-span-none flex min-h-11 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2 sm:col-span-2 lg:w-auto lg:shrink-0">
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-          View
-        </span>
-        <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-          Grid
-        </span>
-        <CentralIcon
-          name="IconChevronDownMedium"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={16}
-          ariaHidden={true}
-          className="shrink-0"
-        />
+
+      <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:gap-3 lg:w-auto lg:shrink-0 lg:justify-end">
+        <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2">
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            Status
+          </span>
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
+            All
+          </span>
+          <CentralIcon
+            name="IconChevronDownMedium"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            ariaHidden={true}
+            className="shrink-0"
+          />
+        </div>
+        <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 flex-wrap items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2">
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            Payment Method
+          </span>
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
+            All
+          </span>
+          <CentralIcon
+            name="IconChevronDownMedium"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            ariaHidden={true}
+            className="shrink-0"
+          />
+        </div>
+        <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2">
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            Sort by
+          </span>
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
+            Newest
+          </span>
+          <CentralIcon
+            name="IconChevronDownMedium"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            ariaHidden={true}
+            className="shrink-0"
+          />
+        </div>
+        <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2">
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            View
+          </span>
+          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
+            Grid
+          </span>
+          <CentralIcon
+            name="IconChevronDownMedium"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            ariaHidden={true}
+            className="shrink-0"
+          />
+        </div>
       </div>
     </div>
   )
@@ -273,7 +276,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
       {filterBar}
-      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
         {pageOrders.map((o) => (
           <DashboardOrderCard
             key={o.id}

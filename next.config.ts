@@ -5,6 +5,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 const nextConfig: NextConfig = {
+  // Default is bottom-left — overlaps the dashboard mobile menu FAB.
+  devIndicators: {
+    position: 'bottom-right',
+  },
   images: {
     remotePatterns: [
       {

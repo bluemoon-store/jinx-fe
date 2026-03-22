@@ -1,6 +1,9 @@
 'use client'
 
+import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
+import { CartEmptyDropdownPanel } from '@/components/landing/CartEmptyDropdownPanel'
+import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { useAppStore } from '@/lib/store'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
@@ -9,9 +12,18 @@ import { usePathname } from 'next/navigation'
 import { FunctionComponent, useEffect, useRef, useState } from 'react'
 
 const Navbar: FunctionComponent = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileNavMenuOpen, setMobileNavMenuOpen] = useState(false)
+  const [mobileUserMenuOpen, setMobileUserMenuOpen] = useState(false)
   const [desktopUserMenuOpen, setDesktopUserMenuOpen] = useState(false)
+  const [userMenuHoverKey, setUserMenuHoverKey] = useState<string | null>(null)
+  const [logOutModalOpen, setLogOutModalOpen] = useState(false)
+  const [cartMenuOpen, setCartMenuOpen] = useState(false)
   const desktopUserMenuRef = useRef<HTMLDivElement>(null)
+  const desktopCartMenuRef = useRef<HTMLDivElement>(null)
+  const mobileUserMenuRef = useRef<HTMLDivElement>(null)
+  const mobileCartMenuRef = useRef<HTMLDivElement>(null)
+  const mobileNavPanelRef = useRef<HTMLDivElement>(null)
+  const mobileHamburgerRef = useRef<HTMLButtonElement>(null)
   const pathname = usePathname()
   const { openAuthModal, isAuthenticated } = useAuthModal()
   const logout = useAppStore((s) => s.logout)
@@ -41,6 +53,71 @@ const Navbar: FunctionComponent = () => {
     document.addEventListener('mousedown', onDoc)
     return () => document.removeEventListener('mousedown', onDoc)
   }, [desktopUserMenuOpen])
+
+  useEffect(() => {
+    if (!desktopUserMenuOpen && !mobileNavMenuOpen && !mobileUserMenuOpen) {
+      setUserMenuHoverKey(null)
+    }
+  }, [desktopUserMenuOpen, mobileNavMenuOpen, mobileUserMenuOpen])
+
+  useEffect(() => {
+    if (!mobileUserMenuOpen) return
+    const onDoc = (e: MouseEvent) => {
+      if (mobileUserMenuRef.current && !mobileUserMenuRef.current.contains(e.target as Node)) {
+        setMobileUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onDoc)
+    return () => document.removeEventListener('mousedown', onDoc)
+  }, [mobileUserMenuOpen])
+
+  useEffect(() => {
+    if (!mobileNavMenuOpen) return
+    const onDoc = (e: MouseEvent) => {
+      const t = e.target as Node
+      if (mobileNavPanelRef.current?.contains(t)) return
+      if (mobileHamburgerRef.current?.contains(t)) return
+      setMobileNavMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    return () => document.removeEventListener('mousedown', onDoc)
+  }, [mobileNavMenuOpen])
+
+  useEffect(() => {
+    if (!cartMenuOpen) return
+    const onDoc = (e: MouseEvent) => {
+      const t = e.target as Node
+      if (desktopCartMenuRef.current?.contains(t)) return
+      if (mobileCartMenuRef.current?.contains(t)) return
+      setCartMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    return () => document.removeEventListener('mousedown', onDoc)
+  }, [cartMenuOpen])
+
+  const closeDesktopUserMenu = () => setDesktopUserMenuOpen(false)
+
+  const userDropdownLinks = [
+    {
+      key: 'orders',
+      label: 'Orders',
+      icon: 'IconBasket2' as const,
+      href: DASHBOARD_PATHS.orders,
+    },
+    {
+      key: 'wallet',
+      label: 'Wallet',
+      icon: 'IconBanknote2' as const,
+      href: DASHBOARD_PATHS.wallet,
+      trailing: '$0.00',
+    },
+    {
+      key: 'settings',
+      label: 'Settings',
+      icon: 'IconSettingsSliderThree' as const,
+      href: DASHBOARD_PATHS.general,
+    },
+  ]
 
   const themeToggleButton = (className: string) => (
     <button
@@ -195,14 +272,36 @@ const Navbar: FunctionComponent = () => {
             <>
               <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
               <div className="flex h-[46px] shrink-0 items-center gap-2">
-                <div className="rounded-num-8 border-whitesmoke-300 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-gray-700">
-                  <img className="h-[24px] w-[24px]" alt="" src="/icons/IconBasket1-2.svg" />
+                <div className="relative shrink-0" ref={desktopCartMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCartMenuOpen((o) => !o)
+                      setDesktopUserMenuOpen(false)
+                    }}
+                    aria-expanded={cartMenuOpen}
+                    aria-haspopup="dialog"
+                    aria-label="Shopping cart"
+                    className={`rounded-num-8 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-gray-700 transition-colors ${
+                      cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
+                    }`}
+                  >
+                    <img className="h-[24px] w-[24px]" alt="" src="/icons/IconBasket1-2.svg" />
+                  </button>
+                  {cartMenuOpen && (
+                    <div className="absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2">
+                      <CartEmptyDropdownPanel onNavigate={() => setCartMenuOpen(false)} />
+                    </div>
+                  )}
                 </div>
                 <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
                 <div className="relative shrink-0" ref={desktopUserMenuRef}>
                   <button
                     type="button"
-                    onClick={() => setDesktopUserMenuOpen((o) => !o)}
+                    onClick={() => {
+                      setDesktopUserMenuOpen((o) => !o)
+                      setCartMenuOpen(false)
+                    }}
                     aria-expanded={desktopUserMenuOpen}
                     aria-haspopup="true"
                     className="rounded-num-8 block max-h-full w-10 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-200"
@@ -215,19 +314,69 @@ const Navbar: FunctionComponent = () => {
                   </button>
                   {desktopUserMenuOpen && (
                     <div
-                      className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[180px] flex-col gap-1 border border-solid border-gray-100 bg-gray-400/95 py-2 shadow-lg backdrop-blur-md"
+                      className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[232px] flex-col border border-solid border-white/10 bg-[#071935] py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
                       role="menu"
                     >
+                      {userDropdownLinks.map((item) => (
+                        <Link
+                          key={item.key}
+                          href={item.href as Route}
+                          role="menuitem"
+                          onClick={closeDesktopUserMenu}
+                          onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                          onMouseLeave={() => setUserMenuHoverKey(null)}
+                          className={`group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#14253F] ${
+                            item.trailing ? 'justify-between gap-3' : ''
+                          }`}
+                        >
+                          <span className="flex min-w-0 items-center gap-2.5">
+                            <CentralIcon
+                              name={item.icon as any}
+                              join="round"
+                              fill="filled"
+                              stroke="2"
+                              radius="1"
+                              size={20}
+                              color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
+                              ariaHidden={true}
+                            />
+                            <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                              {item.label}
+                            </span>
+                          </span>
+                          {item.trailing ? (
+                            <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                              {item.trailing}
+                            </span>
+                          ) : null}
+                        </Link>
+                      ))}
+                      <div
+                        className="border-whitesmoke-300 mx-3 my-1.5 border-t border-solid"
+                        role="separator"
+                      />
                       <button
                         type="button"
                         role="menuitem"
                         onClick={() => {
-                          logout()
-                          setDesktopUserMenuOpen(false)
+                          setLogOutModalOpen(true)
+                          closeDesktopUserMenu()
                         }}
-                        className="rounded-num-8 mx-1 flex min-h-[40px] items-center justify-center gap-2 border border-solid border-transparent px-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                        onMouseEnter={() => setUserMenuHoverKey('logout')}
+                        onMouseLeave={() => setUserMenuHoverKey(null)}
+                        className="group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#14253F]"
                       >
-                        <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                        <CentralIcon
+                          name="IconArrowBoxLeft"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={20}
+                          color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
+                          ariaHidden={true}
+                        />
+                        <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
                           Log Out
                         </span>
                       </button>
@@ -290,22 +439,120 @@ const Navbar: FunctionComponent = () => {
               </span>
             </button>
             {/* Cart */}
-            <div className="rounded-num-8 border-whitesmoke-300 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-gray-700">
-              <img className="h-5 w-5" alt="" src="/icons/IconBasket1-2.svg" />
+            <div className="relative shrink-0" ref={mobileCartMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setCartMenuOpen((o) => !o)
+                  setMobileUserMenuOpen(false)
+                  setMobileNavMenuOpen(false)
+                }}
+                aria-expanded={cartMenuOpen}
+                aria-haspopup="dialog"
+                aria-label="Shopping cart"
+                className={`rounded-num-8 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-gray-700 transition-colors ${
+                  cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
+                }`}
+              >
+                <img className="h-5 w-5" alt="" src="/icons/IconBasket1-2.svg" />
+              </button>
+              {cartMenuOpen && (
+                <div className="absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2">
+                  <CartEmptyDropdownPanel onNavigate={() => setCartMenuOpen(false)} />
+                </div>
+              )}
             </div>
-            {/* Avatar — taps to open menu */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-              className="shrink-0"
-            >
-              <img
-                className="rounded-num-8 h-9 w-9 object-cover"
-                alt=""
-                src="/icons/Ellipse 1.svg"
-              />
-            </button>
+            {/* Avatar — account menu only (separate from hamburger nav) */}
+            <div className="relative shrink-0" ref={mobileUserMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileUserMenuOpen((o) => !o)
+                  setMobileNavMenuOpen(false)
+                  setCartMenuOpen(false)
+                }}
+                aria-expanded={mobileUserMenuOpen}
+                aria-haspopup="true"
+                aria-label="Open account menu"
+                className="block"
+              >
+                <img
+                  className="rounded-num-8 h-9 w-9 object-cover"
+                  alt=""
+                  src="/icons/Ellipse 1.svg"
+                />
+              </button>
+              {mobileUserMenuOpen && (
+                <div
+                  className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[232px] flex-col border border-solid border-white/10 bg-[#071935] py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+                  role="menu"
+                >
+                  {userDropdownLinks.map((item) => (
+                    <Link
+                      key={item.key}
+                      href={item.href as Route}
+                      role="menuitem"
+                      className={`group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#14253F] ${
+                        item.trailing ? 'justify-between gap-3' : ''
+                      }`}
+                      onClick={() => setMobileUserMenuOpen(false)}
+                      onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                      onMouseLeave={() => setUserMenuHoverKey(null)}
+                    >
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <CentralIcon
+                          name={item.icon as any}
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={20}
+                          color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
+                          ariaHidden={true}
+                        />
+                        <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                          {item.label}
+                        </span>
+                      </span>
+                      {item.trailing ? (
+                        <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                          {item.trailing}
+                        </span>
+                      ) : null}
+                    </Link>
+                  ))}
+                  <div
+                    className="border-whitesmoke-300 mx-3 my-1.5 border-t border-solid"
+                    role="separator"
+                  />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#14253F]"
+                    onClick={() => {
+                      setLogOutModalOpen(true)
+                      setMobileUserMenuOpen(false)
+                    }}
+                    onMouseEnter={() => setUserMenuHoverKey('logout')}
+                    onMouseLeave={() => setUserMenuHoverKey(null)}
+                  >
+                    <CentralIcon
+                      name="IconArrowBoxLeft"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={20}
+                      color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
+                      ariaHidden={true}
+                    />
+                    <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                      Log Out
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -337,15 +584,21 @@ const Navbar: FunctionComponent = () => {
           </>
         )}
 
-        {/* Hamburger */}
+        {/* Hamburger — site nav + Help only (separate from avatar account menu) */}
         <button
+          ref={mobileHamburgerRef}
           type="button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onClick={() => {
+            setMobileNavMenuOpen((o) => !o)
+            setMobileUserMenuOpen(false)
+            setCartMenuOpen(false)
+          }}
           className="flex h-11 min-h-[44px] w-11 min-w-[44px] items-center justify-center rounded-lg"
-          aria-label="Toggle menu"
+          aria-expanded={mobileNavMenuOpen}
+          aria-label="Toggle navigation menu"
         >
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {mobileMenuOpen ? (
+            {mobileNavMenuOpen ? (
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -364,10 +617,12 @@ const Navbar: FunctionComponent = () => {
         </button>
       </div>
 
-      {/* Mobile menu dropdown */}
-      {mobileMenuOpen && (
-        <div className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1 border-b border-gray-100 bg-gray-400/95 px-4 py-4 backdrop-blur-md lg:hidden">
-          {/* Nav links */}
+      {/* Mobile: hamburger sheet — nav links + Help only */}
+      {mobileNavMenuOpen && (
+        <div
+          ref={mobileNavPanelRef}
+          className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1 border-b border-gray-100 bg-gray-400/95 px-4 py-4 backdrop-blur-md lg:hidden"
+        >
           {navLinks.map((link) =>
             link.href.startsWith('/') ? (
               <Link
@@ -376,7 +631,7 @@ const Navbar: FunctionComponent = () => {
                 className={`rounded-num-8 flex min-h-[44px] items-center gap-2.5 px-4 text-base font-semibold ${
                   isActiveLink(link.href) ? 'bg-gray-300 text-white' : 'opacity-80'
                 }`}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => setMobileNavMenuOpen(false)}
                 aria-current={isActiveLink(link.href) ? 'page' : undefined}
               >
                 <CentralIcon
@@ -398,7 +653,7 @@ const Navbar: FunctionComponent = () => {
                 className={`rounded-num-8 flex min-h-[44px] items-center gap-2.5 px-4 text-base font-semibold ${
                   isActiveLink(link.href) ? 'bg-gray-300 text-white' : 'opacity-80'
                 }`}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => setMobileNavMenuOpen(false)}
               >
                 <CentralIcon
                   name={navLinks.find((l) => l.href === link.href)?.icon as any}
@@ -414,33 +669,29 @@ const Navbar: FunctionComponent = () => {
             )
           )}
 
-          {/* User section — only shown when logged in */}
-          {isLoggedIn && (
-            <div className="mt-2 flex flex-col gap-2 border-t border-solid border-white/10 pt-4">
-              <button
-                type="button"
-                className="rounded-num-8 border-whitesmoke-300 flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid bg-gray-700/60 px-4 text-base font-semibold text-white"
-              >
-                <span className="flex items-center gap-2.5">
-                  <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconRescueRing.svg" />
-                  Help
-                </span>
-                <b className="tracking-num--0_01 text-base leading-none">0</b>
-              </button>
-              <button
-                type="button"
-                className="rounded-num-8 border-whitesmoke-300 flex min-h-[44px] items-center justify-center gap-2 border border-solid bg-gray-700/60 px-4 text-base font-semibold text-white"
-                onClick={() => {
-                  logout()
-                  setMobileMenuOpen(false)
-                }}
-              >
-                Log Out
-              </button>
-            </div>
-          )}
+          <div className="mt-2 border-t border-solid border-white/10 pt-3">
+            <button
+              type="button"
+              className="rounded-num-8 border-whitesmoke-300 flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid bg-gray-700/60 px-4 text-base font-semibold text-white transition-colors hover:bg-gray-700"
+            >
+              <span className="flex items-center gap-2.5">
+                <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconRescueRing.svg" />
+                Help
+              </span>
+              <b className="tracking-num--0_01 text-base leading-none">0</b>
+            </button>
+          </div>
         </div>
       )}
+
+      <LogOutConfirmModal
+        open={logOutModalOpen}
+        onClose={() => setLogOutModalOpen(false)}
+        onConfirm={async () => {
+          await logout()
+          setLogOutModalOpen(false)
+        }}
+      />
     </header>
   )
 }

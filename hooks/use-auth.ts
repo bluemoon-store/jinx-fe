@@ -14,7 +14,7 @@ export function useAuth() {
   async function handleLogin(data: LoginInput): Promise<boolean> {
     try {
       await login(data)
-      router.push(ROUTES.DASHBOARD)
+      router.push(ROUTES.DASHBOARD_ORDERS)
       return true
     } catch {
       return false

@@ -15,9 +15,10 @@ export const STORAGE_KEY = 'bluemoon-auth-storage'
 export const ROUTES = {
   HOME: '/',
   DASHBOARD: '/dashboard',
+  DASHBOARD_ORDERS: '/dashboard/orders',
   LOGIN: '/login',
   REGISTER: '/register',
-  SETTINGS: '/dashboard/settings',
+  SETTINGS: '/dashboard/general',
 } as const
 
 export const PAGINATION = {
