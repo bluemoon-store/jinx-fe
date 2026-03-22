@@ -215,7 +215,7 @@ const Navbar: FunctionComponent = () => {
                   </button>
                   {desktopUserMenuOpen && (
                     <div
-                      className="absolute top-full right-0 z-50 mt-2 flex min-w-[180px] flex-col gap-1 rounded-num-8 border border-solid border-gray-100 bg-gray-400/95 py-2 shadow-lg backdrop-blur-md"
+                      className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[180px] flex-col gap-1 border border-solid border-gray-100 bg-gray-400/95 py-2 shadow-lg backdrop-blur-md"
                       role="menu"
                     >
                       <button
@@ -225,9 +225,11 @@ const Navbar: FunctionComponent = () => {
                           logout()
                           setDesktopUserMenuOpen(false)
                         }}
-                        className="mx-1 flex min-h-[40px] items-center justify-center gap-2 rounded-num-8 border border-solid border-transparent px-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                        className="rounded-num-8 mx-1 flex min-h-[40px] items-center justify-center gap-2 border border-solid border-transparent px-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                       >
-                        <span className="tracking-num--0_01 leading-num-28 font-semibold">Log Out</span>
+                        <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                          Log Out
+                        </span>
                       </button>
                     </div>
                   )}
@@ -283,7 +285,7 @@ const Navbar: FunctionComponent = () => {
             {/* Wallet */}
             <button className="rounded-num-8 box-border flex h-9 shrink-0 items-center justify-center gap-1 bg-fuchsia-200 px-2 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]">
               <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
-              <span className="font-nata-sans tracking-num--0_01 text-sm font-extrabold leading-none">
+              <span className="font-nata-sans tracking-num--0_01 text-sm leading-none font-extrabold">
                 $0.00
               </span>
             </button>
@@ -328,7 +330,9 @@ const Navbar: FunctionComponent = () => {
                 size={16}
                 ariaHidden={true}
               />
-              <span className="tracking-num--0_01 leading-num-28 font-semibold">Create Account</span>
+              <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                Create Account
+              </span>
             </button>
           </>
         )}

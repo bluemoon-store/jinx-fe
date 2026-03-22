@@ -51,7 +51,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
                 />
               </button>
               <div className="flex min-w-0 flex-1 items-center justify-center px-1">
-                <div className="text-center text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+                <div className="leading-num-28 text-center text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                   FORGOT PASSWORD
                 </div>
               </div>
@@ -97,7 +97,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
               <label htmlFor="forgot-email" className="leading-num-20 font-semibold">
                 Email Address
               </label>
-              <div className="rounded-num-8 text-lightsteelblue-200 px-num-12 text-sm focus-within:border-fuchsia focus-within:text-fuchsia flex min-h-11 items-center gap-2.5 self-stretch overflow-hidden border border-solid border-[#18263E] bg-gray-100 py-2.5 transition-[border-color,box-shadow,color] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:text-num-16">
+              <div className="rounded-num-8 text-lightsteelblue-200 px-num-12 focus-within:border-fuchsia focus-within:text-fuchsia sm:text-num-16 flex min-h-11 items-center gap-2.5 self-stretch overflow-hidden border border-solid border-[#18263E] bg-gray-100 py-2.5 text-sm transition-[border-color,box-shadow,color] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]">
                 <CentralIcon
                   name="IconEmail1"
                   join="round"
@@ -124,7 +124,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-fuchsia text-num-16 mt-2 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-fuchsia text-num-16 sm:py-num-12 mt-2 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
                 {isSubmitting ? 'Sending…' : 'Send OTP'}
@@ -142,7 +142,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
           <button
             type="button"
             onClick={onCreateAccount}
-            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))] [-webkit-tap-highlight-color:transparent]"
+            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [-webkit-tap-highlight-color:transparent] [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]"
           >
             <div className="tracking-num--0_01 leading-num-28 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
               Create Account
@@ -249,7 +249,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
                 />
               </button>
               <div className="flex min-w-0 flex-1 items-center justify-center px-1">
-                <div className="text-center text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+                <div className="leading-num-28 text-center text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                   FORGOT PASSWORD
                 </div>
               </div>
@@ -289,12 +289,14 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
 
           <section className="text-num-14 text-lightsteelblue font-commissioner flex w-full min-w-0 flex-col items-start gap-3 self-stretch sm:gap-[13px]">
             <div className="flex flex-col items-start gap-2 self-stretch">
-              <div className="text-sm leading-5 font-semibold sm:text-num-14">One Time Passcode</div>
+              <div className="sm:text-num-14 text-sm leading-5 font-semibold">
+                One Time Passcode
+              </div>
               <div className="grid w-full min-w-0 grid-cols-6 gap-1.5 self-stretch sm:gap-2">
                 {otp.map((digit, index) => (
                   <div
                     key={`otp-${index}`}
-                    className="rounded-num-8 focus-within:border-fuchsia flex min-h-11 min-w-0 max-w-full items-center justify-center overflow-hidden border border-solid border-[#18263E] bg-gray-100 px-1 py-2 transition-[border-color,box-shadow] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:px-2 sm:py-[9px]"
+                    className="rounded-num-8 focus-within:border-fuchsia flex min-h-11 max-w-full min-w-0 items-center justify-center overflow-hidden border border-solid border-[#18263E] bg-gray-100 px-1 py-2 transition-[border-color,box-shadow] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:px-2 sm:py-[9px]"
                   >
                     <input
                       ref={(el) => {
@@ -306,7 +308,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
                       value={digit}
                       onChange={(e) => updateOtp(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className="tracking-num--0_01 leading-num-28 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-semibold text-white shadow-none ring-0 outline-none placeholder:text-white/25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7 sm:text-num-16"
+                      className="tracking-num--0_01 leading-num-28 sm:text-num-16 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-semibold text-white shadow-none ring-0 outline-none placeholder:text-white/25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7"
                       placeholder="0"
                       aria-label={`OTP digit ${index + 1}`}
                     />
@@ -318,22 +320,22 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || otp.join('').length < 6}
-              className="bg-fuchsia text-num-16 mt-2 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-fuchsia text-num-16 sm:py-num-12 mt-2 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
                 {isSubmitting ? 'Verifying…' : 'Reset Password'}
               </div>
             </button>
             <div className="text-lightsteelblue-200 flex flex-col items-center justify-center gap-1 self-stretch text-center sm:flex-row sm:flex-wrap sm:gap-2">
-              <div className="text-sm leading-5 font-semibold sm:text-num-14">{`Didn't receive an OTP? `}</div>
+              <div className="sm:text-num-14 text-sm leading-5 font-semibold">{`Didn't receive an OTP? `}</div>
               {resendSeconds > 0 ? (
-                <div className="text-sm leading-5 font-semibold text-white sm:text-num-14">
+                <div className="sm:text-num-14 text-sm leading-5 font-semibold text-white">
                   {`Resend (${resendMinutes}:${resendRemainSeconds} mins)`}
                 </div>
               ) : (
                 <button
                   type="button"
-                  className="min-h-11 text-sm leading-5 font-semibold text-white underline sm:min-h-0 sm:text-num-14"
+                  className="sm:text-num-14 min-h-11 text-sm leading-5 font-semibold text-white underline sm:min-h-0"
                   onClick={() => setResendSeconds(120)}
                 >
                   Resend
@@ -352,7 +354,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
           <button
             type="button"
             onClick={onCreateAccount}
-            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))] [-webkit-tap-highlight-color:transparent]"
+            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [-webkit-tap-highlight-color:transparent] [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]"
           >
             <div className="tracking-num--0_01 leading-num-28 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
               Create Account

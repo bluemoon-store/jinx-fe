@@ -190,10 +190,16 @@ const AuthModalLayer: FunctionComponent = () => {
           <ResetPasswordModal onClose={closeAuthModal} onResetSuccess={handleResetPassword} />
         )}
         {view === '2fa-enable' && (
-          <TwoFactorEnableModal onClose={closeAuthModal} onVerifySuccess={handleTwoFactorEnableVerify} />
+          <TwoFactorEnableModal
+            onClose={closeAuthModal}
+            onVerifySuccess={handleTwoFactorEnableVerify}
+          />
         )}
         {view === '2fa-disable' && (
-          <TwoFactorDisableModal onClose={closeAuthModal} onDisableSuccess={handleTwoFactorDisable} />
+          <TwoFactorDisableModal
+            onClose={closeAuthModal}
+            onDisableSuccess={handleTwoFactorDisable}
+          />
         )}
         {view === 'delete-account' && (
           <DeleteAccountModal onClose={closeAuthModal} onDeleteConfirm={handleDeleteAccount} />

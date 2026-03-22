@@ -96,7 +96,7 @@ const TwoFactorDisableModal: FunctionComponent<TwoFactorDisableModalProps> = ({
         <header className="font-nata-sans flex w-full min-w-0 flex-col items-start gap-3 self-stretch">
           <div className="flex items-center justify-between gap-2 self-stretch sm:gap-5">
             <div className="flex min-w-0 flex-1 items-center">
-              <h2 className="text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+              <h2 className="leading-num-28 text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                 2 factor authentication
               </h2>
             </div>
@@ -121,7 +121,7 @@ const TwoFactorDisableModal: FunctionComponent<TwoFactorDisableModalProps> = ({
           <div className="h-px w-full self-stretch bg-gray-100" />
         </header>
 
-        <p className="text-num-14 font-commissioner leading-5 font-medium text-[#9EA0C6] sm:text-num-14">
+        <p className="text-num-14 font-commissioner sm:text-num-14 leading-5 font-medium text-[#9EA0C6]">
           To disable Two Factor Authentication, enter your password and the current code from your
           authenticator app.
         </p>
@@ -179,7 +179,7 @@ const TwoFactorDisableModal: FunctionComponent<TwoFactorDisableModalProps> = ({
           </div>
 
           <div className="flex flex-col items-start gap-2 self-stretch">
-            <div className="text-sm leading-5 font-semibold text-[#9EA0C6] sm:text-num-14">
+            <div className="sm:text-num-14 text-sm leading-5 font-semibold text-[#9EA0C6]">
               2FA Code
             </div>
             <div className="grid w-full min-w-0 grid-cols-6 gap-1.5 self-stretch sm:gap-2">
@@ -230,7 +230,7 @@ const TwoFactorDisableModal: FunctionComponent<TwoFactorDisableModalProps> = ({
                 className={understood ? 'block text-white' : 'hidden text-white'}
               />
             </span>
-            <div className="min-w-0 flex-1 text-lightsteelblue-200 leading-num-20 font-semibold">
+            <div className="text-lightsteelblue-200 leading-num-20 min-w-0 flex-1 font-semibold">
               Yes, I understand that disabling 2FA will reduce my account security and increase the
               potential for unauthorized access.
             </div>

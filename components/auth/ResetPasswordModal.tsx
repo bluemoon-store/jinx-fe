@@ -52,7 +52,7 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
           <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch text-base sm:text-lg lg:text-[20px]">
             <div className="flex items-center justify-between gap-2 self-stretch sm:gap-5">
               <div className="flex min-w-0 flex-1 items-center">
-                <div className="text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+                <div className="leading-num-28 text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                   RESET PASSWORD
                 </div>
               </div>
@@ -249,7 +249,7 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-fuchsia text-num-16 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-fuchsia text-num-16 sm:py-num-12 box-border flex touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
                 {isSubmitting ? 'Resetting…' : 'Reset Password'}

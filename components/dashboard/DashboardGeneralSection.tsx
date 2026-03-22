@@ -229,7 +229,7 @@ export const DashboardGeneralSection: FunctionComponent = () => {
 
       {/* Figma variant: verified email row — hidden until backend; card is w-fit when shown */}
       <footer className="mt-auto hidden w-full min-w-0 justify-end">
-        <div className="rounded-num-8 border-darkslateblue text-sm sm:text-num-16 box-border flex w-fit max-w-full min-w-0 flex-col items-start justify-center overflow-hidden border border-solid bg-gray-100 p-4 sm:p-5">
+        <div className="rounded-num-8 border-darkslateblue sm:text-num-16 box-border flex w-fit max-w-full min-w-0 flex-col items-start justify-center overflow-hidden border border-solid bg-gray-100 p-4 text-sm sm:p-5">
           <div className="flex w-fit max-w-full items-center justify-center">
             <div className="rounded-num-8 flex w-fit max-w-full min-w-0 flex-wrap items-center justify-center gap-2 overflow-hidden sm:gap-3">
               <div className="flex min-w-0 items-center gap-2">

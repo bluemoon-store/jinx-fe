@@ -80,7 +80,7 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
         <header className="font-nata-sans flex w-full min-w-0 flex-col items-start gap-3 self-stretch">
           <div className="flex items-center justify-between gap-2 self-stretch sm:gap-5">
             <div className="flex min-w-0 flex-1 items-center">
-              <h2 className="text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+              <h2 className="leading-num-28 text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                 2 factor authentication
               </h2>
             </div>
@@ -105,11 +105,11 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
           <div className="h-px w-full self-stretch bg-gray-100" />
         </header>
 
-        <p className="text-num-14 font-commissioner leading-5 font-medium text-[#9EA0C6] sm:text-num-14">
+        <p className="text-num-14 font-commissioner sm:text-num-14 leading-5 font-medium text-[#9EA0C6]">
           Scan the QR code with your authenticator app or manually input the key.
         </p>
 
-        <div className="mx-auto w-fit max-w-full rounded-xl bg-gradient-to-b from-[#3B82F6] via-[#8B5CF6] to-fuchsia p-[3px] shadow-[0_0_24px_rgba(235,45,255,0.15)]">
+        <div className="to-fuchsia mx-auto w-fit max-w-full rounded-xl bg-gradient-to-b from-[#3B82F6] via-[#8B5CF6] p-[3px] shadow-[0_0_24px_rgba(235,45,255,0.15)]">
           <div className="flex rounded-[10px] bg-gray-200 p-2 sm:p-3">
             <img
               src="/icons/qr-code.svg"
@@ -141,11 +141,11 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
         <div className="h-px w-full self-stretch bg-gray-100" aria-hidden />
 
         <section className="text-num-14 font-commissioner flex w-full min-w-0 flex-col items-start gap-3 self-stretch sm:gap-[13px]">
-          <p className="text-sm leading-5 font-medium text-[#9EA0C6] sm:text-num-14">
+          <p className="sm:text-num-14 text-sm leading-5 font-medium text-[#9EA0C6]">
             Enter the current code from your authentication app to proceed.
           </p>
           <div className="flex flex-col items-start gap-2 self-stretch">
-            <div className="text-sm leading-5 font-semibold text-[#9EA0C6] sm:text-num-14">
+            <div className="sm:text-num-14 text-sm leading-5 font-semibold text-[#9EA0C6]">
               Enter Code
             </div>
             <div className="grid w-full min-w-0 grid-cols-6 gap-1.5 self-stretch sm:gap-2">
@@ -173,7 +173,7 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
             type="button"
             onClick={handleVerify}
             disabled={isSubmitting || otp.join('').length < 6}
-            className="bg-fuchsia text-num-16 mt-1 box-border flex w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
+            className="bg-fuchsia text-num-16 sm:py-num-12 mt-1 box-border flex w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <span className="tracking-num--0_01 leading-num-28 font-semibold text-white">
               {isSubmitting ? 'Verifying…' : 'Verify'}

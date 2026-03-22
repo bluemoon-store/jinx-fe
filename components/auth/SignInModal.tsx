@@ -52,7 +52,7 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
           <div className="flex flex-col items-start gap-3 self-stretch">
             <div className="flex items-center justify-between gap-2 self-stretch sm:gap-5">
               <div className="flex min-w-0 flex-1 items-center">
-                <div className="text-lg leading-num-28 font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+                <div className="leading-num-28 text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
                   LOG IN
                 </div>
               </div>
@@ -162,7 +162,7 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-fuchsia text-num-16 mt-2 box-border flex w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-fuchsia text-num-16 sm:py-num-12 mt-2 box-border flex w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="tracking-num--0_01 leading-num-28 font-semibold">
                 {isSubmitting ? 'Signing in…' : 'Continue to Dashboard'}
@@ -188,7 +188,7 @@ const SignInModal: FunctionComponent<SignInModalProps> = ({
           <button
             type="button"
             onClick={onSignUp}
-            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))] [-webkit-tap-highlight-color:transparent]"
+            className="flex touch-manipulation items-center justify-center rounded-md px-1.5 py-0 text-white [-webkit-tap-highlight-color:transparent] [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]"
           >
             <div className="tracking-num--0_01 leading-num-28 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
               Create Account
