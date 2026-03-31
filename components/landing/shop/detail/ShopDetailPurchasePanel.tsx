@@ -4,6 +4,8 @@
 import { FunctionComponent, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
+import { useCartStore } from '@/lib/cart-store'
+
 type Props = {
   productName: string
 }
@@ -44,6 +46,8 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
     STATE_OPTIONS[0].id
   )
   const [quantity, setQuantity] = useState(1)
+
+  const addItem = useCartStore((s) => s.addItem)
 
   const selectedVariant =
     VARIANT_OPTIONS.find((v) => v.id === selectedVariantId) ?? VARIANT_OPTIONS[0]
@@ -240,7 +244,21 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       </div>
 
       <div className="text-num-16 flex min-h-[44px] flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
-        <button type="button" className={addToCartButtonClassName}>
+        <button
+          type="button"
+          className={addToCartButtonClassName}
+          onClick={() =>
+            addItem(
+              {
+                id: productName,
+                name: productName,
+                variantLabel: selectedVariant.label,
+                stateCode: selectedState.label,
+              },
+              quantity
+            )
+          }
+        >
           <CentralIcon
             name="IconBasket1"
             join="round"

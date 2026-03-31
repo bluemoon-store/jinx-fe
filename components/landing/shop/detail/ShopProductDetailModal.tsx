@@ -14,15 +14,11 @@ type Props = {
 const ADD_TO_CART_MODAL_CLASS =
   'py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-[#0D1B35] shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
 
-const ShopProductDetailModal: FunctionComponent<Props> = ({
-  productName,
-  imageSrc,
-  onClose,
-}) => {
+const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSrc, onClose }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
 
   return (
-    <section className="text-ghostwhite font-commissioner border-darkslateblue box-border mx-auto my-auto flex w-full max-w-[860px] flex-col items-start overflow-x-hidden overflow-y-auto rounded-xl border-[1px] border-solid bg-gray-400 px-5 py-[18px] text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)]">
+    <section className="text-ghostwhite font-commissioner border-darkslateblue mx-auto my-auto box-border flex w-full max-w-[860px] flex-col items-start overflow-x-hidden overflow-y-auto rounded-xl border-[1px] border-solid bg-gray-400 px-5 py-[18px] text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)]">
       <div className="flex flex-col items-center gap-5 self-stretch">
         <header className="flex flex-col items-start gap-3 self-stretch">
           <div className="flex items-center justify-between gap-5 self-stretch">
@@ -53,7 +49,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({
         <div className="text-whitesmoke-200 flex items-start justify-center gap-5 self-stretch text-center text-[12px]">
           <div className="flex flex-col items-start justify-center">
             <div className="flex flex-col items-start self-stretch">
-              <div className="border-whitesmoke-300 flex flex-col items-center justify-center gap-4 overflow-hidden rounded-num-8 border-[1.8px] border-solid bg-gray-100 px-4 pt-6 pb-4 sm:gap-5 sm:px-6 sm:pt-8 sm:pb-5 md:px-8 md:pt-10 md:pb-5 lg:px-12 lg:pt-[50px] lg:pb-[25px] xl:px-[50px]">
+              <div className="border-whitesmoke-300 rounded-num-8 flex flex-col items-center justify-center gap-4 overflow-hidden border-[1.8px] border-solid bg-gray-100 p-4 sm:gap-5 sm:p-6 md:p-8 lg:p-[25px]">
                 <div className="h-full w-full overflow-hidden rounded-[14.61px] shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)]">
                   <img
                     alt=""
@@ -125,7 +121,9 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({
                   radius="1"
                   size={20}
                   className="text-white opacity-75 transition-transform duration-300 ease-in-out"
-                  style={{ transform: isProductDescriptionOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  style={{
+                    transform: isProductDescriptionOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  }}
                 />
               </button>
 
@@ -151,9 +149,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({
                           <span className="font-medium">Alternative Crust Upgrade</span>
                         </li>
                         <li>
-                          <span className="font-medium">
-                            or $1 donation to non-profit partners
-                          </span>
+                          <span className="font-medium">or $1 donation to non-profit partners</span>
                         </li>
                       </ul>
                     </div>
@@ -170,9 +166,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({
                           <span className="font-medium">Free Delivery</span>
                         </li>
                         <li>
-                          <span className="font-medium">
-                            or $2 donation to non-profit partners
-                          </span>
+                          <span className="font-medium">or $2 donation to non-profit partners</span>
                         </li>
                       </ul>
                     </div>
@@ -192,9 +186,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({
                           <span className="font-medium">Any Single Menu Item</span>
                         </li>
                         <li>
-                          <span className="font-medium">
-                            or $3 donation to non-profit partners
-                          </span>
+                          <span className="font-medium">or $3 donation to non-profit partners</span>
                         </li>
                       </ul>
                     </div>

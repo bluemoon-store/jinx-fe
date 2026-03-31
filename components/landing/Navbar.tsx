@@ -2,7 +2,7 @@
 
 import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
-import { CartEmptyDropdownPanel } from '@/components/landing/CartEmptyDropdownPanel'
+import CartDropdownPanel from '@/components/landing/CartDropdownPanel'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { useAppStore } from '@/lib/store'
 import CentralIcon from '@central-icons-react/all'
@@ -290,7 +290,7 @@ const Navbar: FunctionComponent = () => {
                   </button>
                   {cartMenuOpen && (
                     <div className="absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2">
-                      <CartEmptyDropdownPanel onNavigate={() => setCartMenuOpen(false)} />
+                      <CartDropdownPanel />
                     </div>
                   )}
                 </div>
@@ -458,7 +458,7 @@ const Navbar: FunctionComponent = () => {
               </button>
               {cartMenuOpen && (
                 <div className="absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2">
-                  <CartEmptyDropdownPanel onNavigate={() => setCartMenuOpen(false)} />
+                  <CartDropdownPanel />
                 </div>
               )}
             </div>
