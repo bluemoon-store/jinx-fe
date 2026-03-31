@@ -3,8 +3,10 @@
 
 import { CentralIcon } from '@central-icons-react/all'
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { ShopProductCard } from './ShopProductCard'
+import ShopProductDetailModal from './detail/ShopProductDetailModal'
 
 type Props = {
   selectedCategory: string
@@ -66,6 +68,12 @@ const slugify = (value: string) => {
 export const ShopProductsSection = ({ selectedCategory }: Props) => {
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
+  const [quickBuyProduct, setQuickBuyProduct] = useState<ShopListItem | null>(null)
+  const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    setQuickBuyPortalEl(document.body)
+  }, [])
 
   const allProducts: ShopListItem[] = useMemo(() => {
     return Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
@@ -156,6 +164,7 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
                 fromPrice={p.fromPrice}
                 imageSrc={p.imageSrc}
                 detailHref={`/shop/${slugify(p.name)}`}
+                onQuickBuy={() => setQuickBuyProduct(p)}
               />
             ))}
           </div>
@@ -195,6 +204,30 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
               </div>
             </div>
           </div>
+          {quickBuyProduct &&
+            quickBuyPortalEl &&
+            createPortal(
+              <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6 lg:px-8">
+                <button
+                  type="button"
+                  className="absolute inset-0 bg-black/60"
+                  aria-label="Close quick buy dialog"
+                  onClick={() => setQuickBuyProduct(null)}
+                />
+                <div
+                  className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
+                  role="dialog"
+                  aria-modal="true"
+                >
+                  <ShopProductDetailModal
+                    productName={quickBuyProduct.name}
+                    imageSrc={quickBuyProduct.imageSrc}
+                    onClose={() => setQuickBuyProduct(null)}
+                  />
+                </div>
+              </div>,
+              quickBuyPortalEl
+            )}
         </>
       )}
     </div>

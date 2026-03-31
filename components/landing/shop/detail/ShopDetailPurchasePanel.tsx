@@ -19,11 +19,22 @@ const STATE_OPTIONS = [
   { id: 'cd', label: 'CD', flagSrc: '/icons/flag.svg' },
 ] as const
 
-export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName }) => {
-  const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
-  const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
-  const [isProductWarrantyOpen, setIsProductWarrantyOpen] = useState(false)
+type PurchaseControlsProps = {
+  productName: string
+  /** Override Add to Cart button classes (e.g. Quick Buy modal uses #0D1B35). */
+  addToCartButtonClassName?: string
+  /** z-index for open dropdown menus (raise in modals so lists paint above the card). */
+  dropdownZClass?: string
+}
 
+const DEFAULT_ADD_TO_CART_CLASS =
+  'py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
+
+export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps> = ({
+  productName,
+  addToCartButtonClassName = DEFAULT_ADD_TO_CART_CLASS,
+  dropdownZClass = 'z-20',
+}) => {
   const [isVariantOpen, setIsVariantOpen] = useState(false)
   const [isStateOpen, setIsStateOpen] = useState(false)
   const [selectedVariantId, setSelectedVariantId] = useState<
@@ -44,24 +55,90 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
   const onIncrementQuantity = () => setQuantity((q) => Math.min(99, q + 1))
 
   return (
-    <>
-      <div className="rounded-num-12 text-lightsteelblue-200 box-border flex w-full flex-col items-start gap-4 bg-gray-100 p-4 sm:gap-5 sm:p-5">
-        <div className="flex flex-col items-start gap-2 self-stretch">
-          <div className="leading-num-20 font-semibold">Select Variant</div>
-          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-gray-400 text-white">
+    <div className="text-lightsteelblue-200 flex w-full flex-col items-start gap-4">
+      <div className="flex flex-col items-start gap-2 self-stretch">
+        <div className="leading-num-20 font-semibold">Select Variant</div>
+        <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-[#0D1B35] text-white">
+          <button
+            type="button"
+            aria-label={`Select variant for ${productName}`}
+            aria-expanded={isVariantOpen}
+            onClick={() => {
+              setIsVariantOpen((v) => !v)
+              setIsStateOpen(false)
+            }}
+            className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch"
+          >
+            <div className="flex min-w-0 items-center">
+              <div className="tracking-num--0_01 leading-num-28 truncate font-semibold">
+                {selectedVariant.label}
+              </div>
+            </div>
+            <CentralIcon
+              name="IconChevronDownMedium"
+              join="round"
+              fill="outlined"
+              stroke="1"
+              radius="1"
+              size={20}
+              className="text-white opacity-75 transition-transform duration-300 ease-in-out"
+              style={{ transform: isVariantOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            />
+          </button>
+
+          {isVariantOpen && (
+            <div
+              className={`rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 ${dropdownZClass} -mt-[1px] overflow-hidden border border-solid bg-gray-400`}
+            >
+              <div className="flex flex-col">
+                {VARIANT_OPTIONS.map((option, idx) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    aria-label={`Choose ${option.label}`}
+                    onClick={() => {
+                      setSelectedVariantId(option.id)
+                      setIsVariantOpen(false)
+                    }}
+                    className={[
+                      'px-num-12 py-num-10 text-num-16 w-full text-left',
+                      'hover:bg-gray-300/20',
+                      idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
+                    ].join(' ')}
+                  >
+                    <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                      {option.label}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col items-stretch gap-4 self-stretch sm:flex-row sm:gap-5">
+        <div className="flex flex-1 flex-col items-start gap-2">
+          <div className="leading-num-20 font-semibold">Select State</div>
+          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-[#0D1B35] text-white">
             <button
               type="button"
-              aria-label={`Select variant for ${productName}`}
-              aria-expanded={isVariantOpen}
+              aria-label={`Select state for ${productName}`}
+              aria-expanded={isStateOpen}
               onClick={() => {
-                setIsVariantOpen((v) => !v)
-                setIsStateOpen(false)
+                setIsStateOpen((v) => !v)
+                setIsVariantOpen(false)
               }}
               className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch"
             >
-              <div className="flex min-w-0 items-center">
-                <div className="tracking-num--0_01 leading-num-28 truncate font-semibold">
-                  {selectedVariant.label}
+              <div className="flex min-w-0 items-center gap-2">
+                <img
+                  className="h-full max-h-[18px] w-full max-w-[28px] object-cover"
+                  alt=""
+                  src={selectedState.flagSrc}
+                />
+                <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                  {selectedState.label}
                 </div>
               </div>
               <CentralIcon
@@ -72,21 +149,23 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
                 radius="1"
                 size={20}
                 className="text-white opacity-75 transition-transform duration-300 ease-in-out"
-                style={{ transform: isVariantOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                style={{ transform: isStateOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
               />
             </button>
 
-            {isVariantOpen && (
-              <div className="rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 z-20 -mt-[1px] overflow-hidden border border-solid bg-gray-400">
+            {isStateOpen && (
+              <div
+                className={`rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 ${dropdownZClass} -mt-[1px] overflow-hidden border border-solid bg-gray-400`}
+              >
                 <div className="flex flex-col">
-                  {VARIANT_OPTIONS.map((option, idx) => (
+                  {STATE_OPTIONS.map((option, idx) => (
                     <button
                       key={option.id}
                       type="button"
                       aria-label={`Choose ${option.label}`}
                       onClick={() => {
-                        setSelectedVariantId(option.id)
-                        setIsVariantOpen(false)
+                        setSelectedStateId(option.id)
+                        setIsStateOpen(false)
                       }}
                       className={[
                         'px-num-12 py-num-10 text-num-16 w-full text-left',
@@ -94,8 +173,15 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
                         idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
                       ].join(' ')}
                     >
-                      <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                        {option.label}
+                      <div className="flex min-w-0 items-center gap-2">
+                        <img
+                          className="h-full max-h-[18px] w-full max-w-[28px] object-cover"
+                          alt=""
+                          src={option.flagSrc}
+                        />
+                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                          {option.label}
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -105,158 +191,96 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
           </div>
         </div>
 
-        <div className="flex flex-col items-stretch gap-4 self-stretch sm:flex-row sm:gap-5">
-          <div className="flex flex-1 flex-col items-start gap-2">
-            <div className="leading-num-20 font-semibold">Select State</div>
-            <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-gray-400 text-white">
+        <div className="flex flex-1 flex-col items-start gap-2">
+          <div className="leading-num-20 font-semibold">Select Quantity</div>
+          <div className="rounded-num-8 border-whitesmoke-300 px-num-12 py-num-10 text-num-16 w-full overflow-hidden border-[1px] border-solid bg-[#0D1B35] text-white">
+            <div className="flex items-center justify-between gap-5 self-stretch">
               <button
                 type="button"
-                aria-label={`Select state for ${productName}`}
-                aria-expanded={isStateOpen}
-                onClick={() => {
-                  setIsStateOpen((v) => !v)
-                  setIsVariantOpen(false)
-                }}
-                className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch"
+                aria-label="Decrease quantity"
+                onClick={onDecrementQuantity}
+                className="flex items-center justify-center"
               >
-                <div className="flex min-w-0 items-center gap-2">
-                  <img
-                    className="h-full max-h-[18px] w-full max-w-[28px] object-cover"
-                    alt=""
-                    src={selectedState.flagSrc}
-                  />
-                  <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                    {selectedState.label}
-                  </div>
-                </div>
                 <CentralIcon
-                  name="IconChevronDownMedium"
+                  name="IconMinusLarge"
                   join="round"
                   fill="outlined"
-                  stroke="1"
+                  stroke="2"
                   radius="1"
-                  size={20}
-                  className="text-white opacity-75 transition-transform duration-300 ease-in-out"
-                  style={{ transform: isStateOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  size={16}
+                  className="text-whitesmoke-200"
                 />
               </button>
 
-              {isStateOpen && (
-                <div className="rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 z-20 -mt-[1px] overflow-hidden border border-solid bg-gray-400">
-                  <div className="flex flex-col">
-                    {STATE_OPTIONS.map((option, idx) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        aria-label={`Choose ${option.label}`}
-                        onClick={() => {
-                          setSelectedStateId(option.id)
-                          setIsStateOpen(false)
-                        }}
-                        className={[
-                          'px-num-12 py-num-10 text-num-16 w-full text-left',
-                          'hover:bg-gray-300/20',
-                          idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
-                        ].join(' ')}
-                      >
-                        <div className="flex min-w-0 items-center gap-2">
-                          <img
-                            className="h-full max-h-[18px] w-full max-w-[28px] object-cover"
-                            alt=""
-                            src={option.flagSrc}
-                          />
-                          <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                            {option.label}
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+              <div className="flex items-center">
+                <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                  {quantityText}
                 </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-1 flex-col items-start gap-2">
-            <div className="leading-num-20 font-semibold">Select Quantity</div>
-            <div className="rounded-num-8 border-whitesmoke-300 px-num-12 py-num-10 text-num-16 w-full overflow-hidden border-[1px] border-solid bg-gray-400 text-white">
-              <div className="flex items-center justify-between gap-5 self-stretch">
-                <button
-                  type="button"
-                  aria-label="Decrease quantity"
-                  onClick={onDecrementQuantity}
-                  className="flex items-center justify-center"
-                >
-                  <CentralIcon
-                    name="IconMinusLarge"
-                    join="round"
-                    fill="outlined"
-                    stroke="2"
-                    radius="1"
-                    size={16}
-                    className="text-whitesmoke-200"
-                  />
-                </button>
-
-                <div className="flex items-center">
-                  <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                    {quantityText}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  aria-label="Increase quantity"
-                  onClick={onIncrementQuantity}
-                  className="flex items-center justify-center"
-                >
-                  <CentralIcon
-                    name="IconPlusLarge"
-                    join="round"
-                    fill="outlined"
-                    stroke="2"
-                    radius="1"
-                    size={16}
-                    className="text-whitesmoke-200"
-                  />
-                </button>
               </div>
+
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                onClick={onIncrementQuantity}
+                className="flex items-center justify-center"
+              >
+                <CentralIcon
+                  name="IconPlusLarge"
+                  join="round"
+                  fill="outlined"
+                  stroke="2"
+                  radius="1"
+                  size={16}
+                  className="text-whitesmoke-200"
+                />
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="text-num-16 flex min-h-[44px] flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
-          <button
-            type="button"
-            className="py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]"
-          >
-            <CentralIcon
-              name="IconBasket1"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              className="text-white"
-            />
-            <div className="tracking-num--0_01 leading-num-28 font-semibold">Add to Cart</div>
-          </button>
-          <button
-            type="button"
-            className="bg-fuchsia py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
-          >
-            <CentralIcon
-              name="IconDollar"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              className="text-white"
-            />
-            <div className="tracking-num--0_01 leading-num-28 font-semibold">Checkout</div>
-          </button>
-        </div>
+      <div className="text-num-16 flex min-h-[44px] flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
+        <button type="button" className={addToCartButtonClassName}>
+          <CentralIcon
+            name="IconBasket1"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            className="text-white"
+          />
+          <div className="tracking-num--0_01 leading-num-28 font-semibold">Add to Cart</div>
+        </button>
+        <button
+          type="button"
+          className="bg-fuchsia py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+        >
+          <CentralIcon
+            name="IconDollar"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            className="text-white"
+          />
+          <div className="tracking-num--0_01 leading-num-28 font-semibold">Checkout</div>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName }) => {
+  const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
+  const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
+  const [isProductWarrantyOpen, setIsProductWarrantyOpen] = useState(false)
+
+  return (
+    <>
+      <div className="rounded-num-12 text-lightsteelblue-200 box-border flex w-full flex-col items-start gap-4 bg-gray-100 p-4 sm:gap-5 sm:p-5">
+        <ShopDetailPurchaseControls productName={productName} />
       </div>
 
       <div className="border-darkslateblue h-px w-full border-t border-solid" />
