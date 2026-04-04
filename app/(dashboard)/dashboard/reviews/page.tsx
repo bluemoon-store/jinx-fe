@@ -1,5 +1,5 @@
-import { DashboardComingSoonSection } from '@/components/dashboard/DashboardComingSoonSection'
+import { DashboardReviewsSection } from '@/components/dashboard/DashboardReviewsSection'
 
 export default function DashboardReviewsPage() {
-  return <DashboardComingSoonSection />
+  return <DashboardReviewsSection />
 }

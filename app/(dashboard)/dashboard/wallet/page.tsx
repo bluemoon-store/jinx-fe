@@ -1,5 +1,5 @@
-import { DashboardComingSoonSection } from '@/components/dashboard/DashboardComingSoonSection'
+import { DashboardWalletSection } from '@/components/dashboard/DashboardWalletSection'
 
 export default function DashboardWalletPage() {
-  return <DashboardComingSoonSection />
+  return <DashboardWalletSection />
 }
