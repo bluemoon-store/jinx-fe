@@ -201,7 +201,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="min-w-0 flex-1">
-            <h2 className="tracking-num-0_02 text-base font-bold leading-7 text-white sm:text-lg">
+            <h2 className="tracking-num-0_02 text-base leading-7 font-bold text-white sm:text-lg">
               Balance History
             </h2>
             <p className="text-lightsteelblue-200 mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
@@ -306,12 +306,15 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="tracking-num-0_02 text-base font-bold leading-7 text-white">
+                      <div className="tracking-num-0_02 text-base leading-7 font-bold text-white">
                         {tx.title}
                       </div>
                       <div className="text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
                         <span>{tx.date}</span>
-                        <span className="hidden h-3 w-px bg-[#152950] sm:inline-block" aria-hidden />
+                        <span
+                          className="hidden h-3 w-px bg-[#152950] sm:inline-block"
+                          aria-hidden
+                        />
                         <span>{tx.time}</span>
                       </div>
                     </div>

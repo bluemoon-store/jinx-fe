@@ -19,7 +19,8 @@ export const useCartStore = create<CartState>()((set) => ({
   addItem: (item, quantity) =>
     set((state) => {
       const existingIndex = state.items.findIndex(
-        (i) => i.id === item.id && i.variantLabel === item.variantLabel && i.stateCode === item.stateCode
+        (i) =>
+          i.id === item.id && i.variantLabel === item.variantLabel && i.stateCode === item.stateCode
       )
 
       if (existingIndex >= 0) {
@@ -43,4 +44,3 @@ export const useCartStore = create<CartState>()((set) => ({
     }),
   clear: () => set({ items: [] }),
 }))
-

@@ -115,7 +115,7 @@ const ReviewRow: FunctionComponent<{ row: ReviewPurchaseRow }> = ({ row }) => {
   return (
     <div className="border-darkslateblue flex flex-col gap-3 border-b border-solid p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5">
       <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-        <div className="flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden rounded-num-8 bg-[#0D1B35] shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+        <div className="rounded-num-8 flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
           <img className="max-h-full max-w-full object-contain" alt="" src={row.logoSrc} />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -278,7 +278,9 @@ export const DashboardReviewsSection: FunctionComponent = () => {
         {filterBar}
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
           <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
-          <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">No purchases match</b>
+          <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
+            No purchases match
+          </b>
           <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
             Try another search to find orders you can review.
           </p>
