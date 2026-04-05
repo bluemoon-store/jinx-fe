@@ -1,9 +1,6 @@
 'use client'
 
-import { CentralIcon } from '@central-icons-react/all'
 import Link from 'next/link'
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
 
 const slugify = (value: string) => {
@@ -22,43 +19,9 @@ const allItems = [
   { name: 'NORD VPN', src: '/icons/starbucks.svg' },
   { name: 'INSTACART', src: '/icons/starbucks.svg' },
   { name: 'FANDUEL', src: '/icons/starbucks.svg' },
-  // Page 2
-  { name: 'NETFLIX', src: '/icons/starbucks.svg' },
-  { name: 'AMAZON', src: '/icons/starbucks.svg' },
-  { name: 'SPOTIFY', src: '/icons/starbucks.svg' },
-  { name: 'APPLE', src: '/icons/starbucks.svg' },
-  { name: 'GOOGLE PLAY', src: '/icons/starbucks.svg' },
-  // Page 3
-  { name: 'UBER', src: '/icons/starbucks.svg' },
-  { name: 'DOORDASH', src: '/icons/starbucks.svg' },
-  { name: 'GRUBHUB', src: '/icons/starbucks.svg' },
-  { name: 'CHIPOTLE', src: '/icons/starbucks.svg' },
-  { name: 'DOMINOS', src: '/icons/starbucks.svg' },
-  // Page 4
-  { name: 'XBOX', src: '/icons/starbucks.svg' },
-  { name: 'PLAYSTATION', src: '/icons/starbucks.svg' },
-  { name: 'STEAM', src: '/icons/starbucks.svg' },
-  { name: 'ROBLOX', src: '/icons/starbucks.svg' },
-  { name: 'NINTENDO', src: '/icons/starbucks.svg' },
-  // Page 5
-  { name: 'AIRBNB', src: '/icons/starbucks.svg' },
-  { name: 'HOTELS.COM', src: '/icons/starbucks.svg' },
-  { name: 'EXPEDIA', src: '/icons/starbucks.svg' },
-  { name: 'DELTA', src: '/icons/starbucks.svg' },
-  { name: 'UNITED', src: '/icons/starbucks.svg' },
 ]
 
-const ITEMS_PER_PAGE = 5
-const TOTAL_PAGES = Math.ceil(allItems.length / ITEMS_PER_PAGE)
-
 export default function NewlyLaunchedSection() {
-  const [page, setPage] = useState(0)
-
-  const items = allItems.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE)
-
-  const prev = () => setPage((p) => Math.max(0, p - 1))
-  const next = () => setPage((p) => Math.min(TOTAL_PAGES - 1, p + 1))
-
   return (
     <section className="text-base lg:text-[20px]">
       {/* Section header */}
@@ -85,9 +48,9 @@ export default function NewlyLaunchedSection() {
       {/* Products grid */}
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:px-6 lg:mt-10 lg:px-8">
         <div className="grid grid-cols-1 justify-items-center gap-3 sm:grid-cols-3 lg:gap-[17px] xl:grid-cols-5">
-          {items.map((item, idx) => (
+          {allItems.map((item, idx) => (
             <Reveal
-              key={item.name}
+              key={`${item.name}-${idx}`}
               variant="fade-up"
               delay={idx * 70}
               className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent] lg:gap-3"
@@ -118,59 +81,33 @@ export default function NewlyLaunchedSection() {
           ))}
         </div>
 
-        {/* Pagination */}
-        <div className="mt-6 flex w-full items-center justify-center gap-3 lg:mt-8">
-          <button
-            type="button"
-            onClick={prev}
-            disabled={page === 0}
-            aria-label="Previous page"
-            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
-          >
-            <CentralIcon
-              name="IconChevronLeft"
-              join="round"
-              fill="outlined"
-              stroke="1"
-              radius="1"
-              size={16}
-              className="text-white"
-            />
-          </button>
-
-          <div className="border-darkslateblue flex items-center gap-[7.5px] rounded-[30px] border-[1.5px] border-solid bg-gray-200 px-[9px] py-[9px] shadow-[0px_15px_15px_rgba(0,0,0,0.01)]">
-            {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setPage(i)}
-                aria-label={`Go to page ${i + 1}`}
-                className={cn(
-                  'rounded-[13.5px] bg-white transition-all duration-300',
-                  i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25'
-                )}
-              />
-            ))}
+        <Reveal variant="fade-up" delay={allItems.length * 70}>
+          <div className="mt-8 flex justify-center sm:mt-10">
+            <Link
+              href="/shop"
+              className="border-darkslateblue rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 text-center text-base text-white shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
+            >
+              <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                View All Products
+              </span>
+              <svg
+                className="h-2 w-[5px] shrink-0 text-white"
+                viewBox="0 0 6 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M1 1l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
           </div>
-
-          <button
-            type="button"
-            onClick={next}
-            disabled={page === TOTAL_PAGES - 1}
-            aria-label="Next page"
-            className="border-darkslateblue flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-gray-200 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
-          >
-            <CentralIcon
-              name="IconChevronRight"
-              join="round"
-              fill="outlined"
-              stroke="1"
-              radius="1"
-              size={16}
-              className="text-white"
-            />
-          </button>
-        </div>
+        </Reveal>
       </div>
     </section>
   )

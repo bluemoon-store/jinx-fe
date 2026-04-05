@@ -1,134 +1,147 @@
 'use client'
 
-import type { FunctionComponent } from 'react'
+import { Fragment, type FunctionComponent } from 'react'
 
 import CentralIcon from '@central-icons-react/all'
 
+import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
 
 import { CartEmptyDropdownPanel } from './CartEmptyDropdownPanel'
 
+/** Temporarily use Canada flag asset for all regions. */
+const CANADA_FLAG_SRC = '/icons/flag.svg'
+
+const CartDivider: FunctionComponent = () => (
+  <div className="h-px w-full shrink-0 bg-white/10" role="separator" />
+)
+
+const formatUsd = (amount: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
+
+type CartLineProps = {
+  item: CartItem
+  onDelta: (delta: number) => void
+}
+
+const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
+  <div className="flex w-full min-w-0 items-center gap-3">
+    <div
+      className="h-10 w-10 shrink-0 rounded-lg bg-gray-300/25 ring-1 ring-white/10"
+      aria-hidden
+    />
+    <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5">
+      <b className="tracking-num--0_01 leading-num-20">{item.name}</b>
+      <div className="flex flex-wrap items-center gap-2 text-center text-[#C3C3E3]">
+        <div className="leading-num-20 font-medium">{item.variantLabel}</div>
+        <div className="border-whitesmoke-200/10 box-border h-px w-[9px] shrink-0 border-t border-solid" />
+        <div className="flex items-center gap-1.5">
+          <div className="h-num-14_4 w-num-19_2 grid shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
+            <img
+              className="col-span-full row-span-full h-full w-full object-cover"
+              alt=""
+              src={CANADA_FLAG_SRC}
+              width={24}
+              height={18}
+            />
+          </div>
+          <div className="leading-num-20 font-medium">{item.stateCode}</div>
+        </div>
+      </div>
+    </div>
+    <div className="text-num-16 ms-3 box-border flex shrink-0 items-center gap-2.5 overflow-hidden rounded-lg border border-white/10 bg-gray-100 px-2 py-1 text-white sm:ms-4">
+      <button
+        type="button"
+        aria-label="Decrease quantity"
+        className="flex items-center justify-center"
+        onClick={() => onDelta(-1)}
+      >
+        <CentralIcon
+          name="IconMinusLarge"
+          join="round"
+          fill="outlined"
+          stroke="2"
+          radius="1"
+          size={14}
+          className="h-3.5 w-3.5"
+        />
+      </button>
+      <div className="flex items-center">
+        <div className="tracking-num--0_01 leading-7 font-semibold">
+          {item.quantity.toString().padStart(2, '0')}
+        </div>
+      </div>
+      <button
+        type="button"
+        aria-label="Increase quantity"
+        className="flex items-center justify-center"
+        onClick={() => onDelta(1)}
+      >
+        <CentralIcon
+          name="IconPlusLarge"
+          join="round"
+          fill="outlined"
+          stroke="2"
+          radius="1"
+          size={14}
+          className="h-3.5 w-3.5"
+        />
+      </button>
+    </div>
+  </div>
+)
+
 export const CartDropdownPanel: FunctionComponent = () => {
   const items = useCartStore((s) => s.items)
+  const adjustItemQuantity = useCartStore((s) => s.adjustItemQuantity)
 
   if (!items.length) {
     return <CartEmptyDropdownPanel />
   }
 
-  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
+  const cartTotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
+
+  const lineKey = (item: CartItem) => `${item.id}-${item.variantLabel}-${item.stateCode}`
 
   return (
     <div
-      className="p-num-15 w-full max-w-[320px] rounded-lg border border-solid border-white/10 bg-gray-200 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+      className="p-num-15 w-max max-w-[min(100vw-2rem,480px)] min-w-0 shrink-0 rounded-lg border border-solid border-white/10 bg-gray-200 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
       role="dialog"
       aria-label="Shopping cart"
     >
-      <div className="gap-num-15 text-num-14 text-ghostwhite font-commissioner flex flex-col text-left">
-        <div className="flex items-center gap-3">
-          <img className="max-h-full w-10" alt="" />
-          <div className="flex flex-1 flex-col items-start justify-center gap-0.5">
-            <b className="tracking-num--0_01 leading-num-20">{items[0]?.name ?? 'Cart item'}</b>
-            <div className="text-lightsteelblue flex items-center gap-2 text-center">
-              <div className="leading-num-20 font-medium">
-                {items[0]?.variantLabel ?? 'Variant'}
-              </div>
-              <div className="border-whitesmoke-200 box-border h-px w-[9px] border-t" />
-              <div className="flex items-center gap-1.5">
-                <div className="h-num-14_4 w-num-19_2 box-border shrink-0 overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
-                  <img className="w-num-19_2 h-num-14_4 object-cover" alt="" />
-                  <div className="w-num-19_2 h-num-14_4 [background:linear-gradient(240.64deg,rgba(255,255,255,0.3),rgba(0,0,0,0.27)_26.27%,rgba(255,255,255,0.26)_37%,rgba(0,0,0,0.55)_48.7%,rgba(0,0,0,0.24)_59.44%,rgba(255,255,255,0.3)_73.64%,rgba(39,39,39,0.22)_90.15%,rgba(0,0,0,0.2))]" />
-                </div>
-                <div className="leading-num-20 font-medium">{items[0]?.stateCode ?? 'AB'}</div>
-              </div>
-            </div>
-          </div>
-          <div className="box-border flex items-center gap-2.5 overflow-hidden rounded-lg border border-white/10 bg-gray-100 px-2 py-1 text-[16px] text-white">
-            <CentralIcon
-              name="IconMinusLarge"
-              join="round"
-              fill="outlined"
-              stroke="2"
-              radius="1"
-              size={14}
-              className="h-3.5 w-3.5"
+      <div className="gap-num-15 text-num-14 text-ghostwhite font-commissioner flex w-full min-w-0 flex-col text-left">
+        {items.map((item) => (
+          <Fragment key={lineKey(item)}>
+            <CartLine
+              item={item}
+              onDelta={(delta) =>
+                adjustItemQuantity(
+                  {
+                    id: item.id,
+                    variantLabel: item.variantLabel,
+                    stateCode: item.stateCode,
+                  },
+                  delta
+                )
+              }
             />
-            <div className="flex items-center">
-              <div className="tracking-num--0_01 leading-7 font-semibold">
-                {totalQuantity.toString().padStart(2, '0')}
-              </div>
-            </div>
-            <CentralIcon
-              name="IconPlusLarge"
-              join="round"
-              fill="outlined"
-              stroke="2"
-              radius="1"
-              size={14}
-              className="h-3.5 w-3.5"
-            />
-          </div>
-        </div>
-
-        <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
-
-        {items.slice(1).map((item) => (
-          <div
-            key={`${item.id}-${item.variantLabel}-${item.stateCode}`}
-            className="flex items-center gap-3"
-          >
-            <img className="h-10 w-10" alt="" />
-            <div className="flex flex-1 flex-col items-start justify-center gap-0.5">
-              <b className="tracking-num--0_01 leading-num-20">{item.name}</b>
-              <div className="text-lightsteelblue flex items-center gap-2 text-center">
-                <div className="leading-num-20 font-medium">{item.variantLabel}</div>
-                <div className="border-whitesmoke-200 box-border h-px w-[9px] border-t" />
-                <div className="flex items-center gap-1.5">
-                  <div className="h-num-14_4 w-num-19_2 box-border shrink-0 overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
-                    <img className="w-num-19_2 h-num-14_4 object-cover" alt="" />
-                    <div className="w-num-19_2 h-num-14_4 [background:linear-gradient(240.64deg,rgba(255,255,255,0.3),rgba(0,0,0,0.27)_26.27%,rgba(255,255,255,0.26)_37%,rgba(0,0,0,0.55)_48.7%,rgba(0,0,0,0.24)_59.44%,rgba(255,255,255,0.3)_73.64%,rgba(39,39,39,0.22)_90.15%,rgba(0,0,0,0.2))]" />
-                  </div>
-                  <div className="leading-num-20 font-medium">{item.stateCode}</div>
-                </div>
-              </div>
-            </div>
-            <div className="box-border flex items-center gap-2.5 overflow-hidden rounded-lg border border-white/10 bg-gray-100 px-2 py-1 text-[16px] text-white">
-              <CentralIcon
-                name="IconMinusLarge"
-                join="round"
-                fill="outlined"
-                stroke="2"
-                radius="1"
-                size={14}
-                className="h-3.5 w-3.5"
-              />
-              <div className="flex items-center">
-                <div className="tracking-num--0_01 leading-7 font-semibold">
-                  {item.quantity.toString().padStart(2, '0')}
-                </div>
-              </div>
-              <CentralIcon
-                name="IconPlusLarge"
-                join="round"
-                fill="outlined"
-                stroke="2"
-                radius="1"
-                size={14}
-                className="h-3.5 w-3.5"
-              />
-            </div>
-          </div>
+            <CartDivider />
+          </Fragment>
         ))}
 
-        <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
-
-        <div className="text-lightsteelblue flex items-center justify-between gap-5 self-stretch text-center text-[13px]">
+        <div className="flex items-center justify-between gap-5 self-stretch text-center text-[13px] text-[#C3C3E3]">
           <div className="leading-num-20 font-medium">Cart Total</div>
-          <b className="text-[16px] leading-6 text-white [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-            {totalQuantity.toString().padStart(2, '0')} item{totalQuantity === 1 ? '' : 's'}
+          <b className="text-num-16 leading-6 text-white [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            {formatUsd(cartTotal)}
           </b>
         </div>
 
-        <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
+        <CartDivider />
 
         <div className="flex items-start self-stretch text-white">
           <button
@@ -139,13 +152,13 @@ export const CartDropdownPanel: FunctionComponent = () => {
               Proceed to Checkout
             </div>
             <CentralIcon
-              name="IconArrowRight"
+              name="IconChevronRightMedium"
               join="round"
-              fill="filled"
+              fill="outlined"
               stroke="2"
               radius="1"
-              size={10}
-              className="h-[6.7px] w-[3.3px]"
+              size={14}
+              className="shrink-0 text-white"
             />
           </button>
         </div>

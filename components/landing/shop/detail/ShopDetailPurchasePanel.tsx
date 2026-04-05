@@ -11,14 +11,17 @@ type Props = {
 }
 
 const VARIANT_OPTIONS = [
-  { id: 'fully', label: '$50 Points | Fully Unlocked' },
-  { id: 'partial', label: '$25 Points | Partially Unlocked' },
+  { id: 'fully', label: '$50 Points | Fully Unlocked', unitPrice: 50 },
+  { id: 'partial', label: '$25 Points | Partially Unlocked', unitPrice: 25 },
 ] as const
 
+/** Temporarily use Canada flag for all regions. */
+const CANADA_FLAG_SRC = '/icons/flag.svg'
+
 const STATE_OPTIONS = [
-  { id: 'ab', label: 'AB', flagSrc: '/icons/flag.svg' },
-  { id: 'bc', label: 'BC', flagSrc: '/icons/flag.svg' },
-  { id: 'cd', label: 'CD', flagSrc: '/icons/flag.svg' },
+  { id: 'ab', label: 'AB', flagSrc: CANADA_FLAG_SRC },
+  { id: 'bc', label: 'BC', flagSrc: CANADA_FLAG_SRC },
+  { id: 'cd', label: 'CD', flagSrc: CANADA_FLAG_SRC },
 ] as const
 
 type PurchaseControlsProps = {
@@ -254,6 +257,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                 name: productName,
                 variantLabel: selectedVariant.label,
                 stateCode: selectedState.label,
+                unitPrice: selectedVariant.unitPrice,
               },
               quantity
             )

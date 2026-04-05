@@ -5,12 +5,18 @@ export type CartItem = {
   name: string
   variantLabel: string
   stateCode: string
+  /** Unit price in USD (dollars, not cents). */
+  unitPrice: number
   quantity: number
 }
 
 type CartState = {
   items: CartItem[]
   addItem: (item: Omit<CartItem, 'quantity'>, quantity: number) => void
+  adjustItemQuantity: (
+    key: Pick<CartItem, 'id' | 'variantLabel' | 'stateCode'>,
+    delta: number
+  ) => void
   clear: () => void
 }
 
@@ -41,6 +47,24 @@ export const useCartStore = create<CartState>()((set) => ({
           },
         ],
       }
+    }),
+  adjustItemQuantity: (key, delta) =>
+    set((state) => {
+      const idx = state.items.findIndex(
+        (i) =>
+          i.id === key.id &&
+          i.variantLabel === key.variantLabel &&
+          i.stateCode === key.stateCode
+      )
+      if (idx < 0) return state
+      const next = [...state.items]
+      const q = Math.max(0, Math.min(99, next[idx].quantity + delta))
+      if (q === 0) {
+        next.splice(idx, 1)
+      } else {
+        next[idx] = { ...next[idx], quantity: q }
+      }
+      return { items: next }
     }),
   clear: () => set({ items: [] }),
 }))

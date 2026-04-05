@@ -213,6 +213,34 @@ const SellingSection: FunctionComponent = () => {
             </Reveal>
           ))}
         </div>
+
+        <Reveal variant="fade-up" delay={items.length * 70}>
+          <div className="mt-8 flex justify-center sm:mt-10">
+            <Link
+              href="/shop"
+              className="border-darkslateblue shadow-[0px_15px_15px_rgba(0,0,0,0.01)] rounded-num-30 box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 text-center text-base text-white font-commissioner transition-opacity hover:opacity-90 sm:w-auto"
+            >
+              <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                View All Products
+              </span>
+              <svg
+                className="h-2 w-[5px] shrink-0 text-white"
+                viewBox="0 0 6 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M1 1l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

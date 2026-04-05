@@ -46,9 +46,17 @@ const allItems = [
   { name: 'ZARA', src: '/icons/airbnb.svg' },
   { name: 'NIKE', src: '/icons/airbnb.svg' },
   { name: 'ADIDAS', src: '/icons/airbnb.svg' },
+  // Page 6
+  { name: 'AMAZON', src: '/icons/airbnb.svg' },
+  { name: 'EBAY', src: '/icons/airbnb.svg' },
+  { name: 'WALMART', src: '/icons/airbnb.svg' },
+  { name: 'TARGET', src: '/icons/airbnb.svg' },
+  { name: 'BEST BUY', src: '/icons/airbnb.svg' },
+  { name: 'COSTCO', src: '/icons/airbnb.svg' },
+  { name: 'CVS', src: '/icons/airbnb.svg' },
 ]
 
-const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 10
 const TOTAL_PAGES = Math.ceil(allItems.length / ITEMS_PER_PAGE)
 
 export default function FreshlyRestockedSection() {
