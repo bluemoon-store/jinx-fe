@@ -1,6 +1,6 @@
 'use client'
 
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, Suspense, useState } from 'react'
 
 import { HotSellingProducts } from '@/components/landing/shop/HotSellingProducts'
 import { ShopCategorySidebar } from '@/components/landing/shop/ShopCategorySidebar'
@@ -33,7 +33,9 @@ const CatalogPageFilled: FunctionComponent = () => {
             </Reveal>
 
             <Reveal variant="slide-right" delay={120} className="min-w-0">
-              <ShopProductsSection selectedCategory={selectedCategory} />
+              <Suspense fallback={<div className="min-h-[120px] w-full" aria-hidden />}>
+                <ShopProductsSection selectedCategory={selectedCategory} />
+              </Suspense>
             </Reveal>
           </section>
         </div>

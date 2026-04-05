@@ -2,6 +2,7 @@
 'use client'
 
 import { CentralIcon } from '@central-icons-react/all'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -66,7 +67,12 @@ const slugify = (value: string) => {
 }
 
 export const ShopProductsSection = ({ selectedCategory }: Props) => {
-  const [query, setQuery] = useState('')
+  const searchParams = useSearchParams()
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
+
+  useEffect(() => {
+    setQuery(searchParams.get('q') ?? '')
+  }, [searchParams])
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const [quickBuyProduct, setQuickBuyProduct] = useState<ShopListItem | null>(null)
   const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
