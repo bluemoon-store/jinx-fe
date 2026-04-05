@@ -3,8 +3,10 @@
 import { Fragment, type FunctionComponent } from 'react'
 
 import CentralIcon from '@central-icons-react/all'
+import Link from 'next/link'
 
 import type { CartItem } from '@/lib/cart-store'
+import { formatUsd } from '@/lib/cart-format'
 import { useCartStore } from '@/lib/cart-store'
 
 import { CartEmptyDropdownPanel } from './CartEmptyDropdownPanel'
@@ -15,14 +17,6 @@ const CANADA_FLAG_SRC = '/icons/flag.svg'
 const CartDivider: FunctionComponent = () => (
   <div className="h-px w-full shrink-0 bg-white/10" role="separator" />
 )
-
-const formatUsd = (amount: number) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
 
 type CartLineProps = {
   item: CartItem
@@ -144,8 +138,8 @@ export const CartDropdownPanel: FunctionComponent = () => {
         <CartDivider />
 
         <div className="flex items-start self-stretch text-white">
-          <button
-            type="button"
+          <Link
+            href="/checkout"
             className="bg-fuchsia flex h-[38px] flex-1 items-center justify-center gap-2 rounded-lg px-3 pt-px pb-0.5 shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
           >
             <div className="tracking-num--0_01 leading-[26px] font-semibold">
@@ -160,7 +154,7 @@ export const CartDropdownPanel: FunctionComponent = () => {
               size={14}
               className="shrink-0 text-white"
             />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

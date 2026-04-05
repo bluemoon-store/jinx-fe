@@ -8,6 +8,8 @@ export type CartItem = {
   /** Unit price in USD (dollars, not cents). */
   unitPrice: number
   quantity: number
+  /** Optional product image for cart / checkout line art. */
+  thumbUrl?: string
 }
 
 type CartState = {

@@ -1,6 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client'
 
+import type { Route } from 'next'
+import { useRouter } from 'next/navigation'
 import { FunctionComponent, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
@@ -53,6 +55,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   )
   const [quantity, setQuantity] = useState(1)
 
+  const router = useRouter()
   const addItem = useCartStore((s) => s.addItem)
 
   const selectedVariant =
@@ -281,6 +284,19 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         <button
           type="button"
           className="bg-fuchsia py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+          onClick={() => {
+            addItem(
+              {
+                id: productName,
+                name: productName,
+                variantLabel: selectedVariant.label,
+                stateCode: selectedState.label,
+                unitPrice: selectedVariant.unitPrice,
+              },
+              quantity
+            )
+            router.push('/checkout' as Route)
+          }}
         >
           <CentralIcon
             name="IconDollar"
