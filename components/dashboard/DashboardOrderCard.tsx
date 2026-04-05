@@ -5,7 +5,7 @@ import { FunctionComponent } from 'react'
 
 export type DashboardOrderStatus = 'paid' | 'pending' | 'expired'
 
-type Props = {
+export type DashboardOrderSummaryProps = {
   id: string
   brand: string
   itemCount: number
@@ -13,7 +13,12 @@ type Props = {
   status: DashboardOrderStatus
 }
 
-const statusConfig: Record<DashboardOrderStatus, { label: string; icon: string; color: string }> = {
+type Props = DashboardOrderSummaryProps
+
+export const dashboardOrderStatusConfig: Record<
+  DashboardOrderStatus,
+  { label: string; icon: string; color: string }
+> = {
   paid: { label: 'Paid', icon: 'IconCircleCheck', color: 'text-seagreen' },
   pending: { label: 'Pending', icon: 'IconClockAlert', color: 'text-[#FF7009]' },
   expired: { label: 'Expired', icon: 'IconCrossSmall', color: 'text-lightsteelblue-200' },
@@ -26,12 +31,12 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
   price,
   status,
 }) => {
-  const cfg = statusConfig[status]
+  const cfg = dashboardOrderStatusConfig[status]
 
   return (
     <Link
       href={`/dashboard/orders/${id}` as Route}
-      className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid bg-[#0D1B35] p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-fuchsia/50 focus-visible:ring-2 focus-visible:outline-none"
+      className="rounded-num-8 border-darkslateblue focus-visible:ring-fuchsia/50 box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid bg-[#0D1B35] p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-2 focus-visible:outline-none"
     >
       <div className="rounded-num-8 flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
         <img className="h-full w-full scale-110 object-cover" alt="" src="/icons/airbnb.svg" />

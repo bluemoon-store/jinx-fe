@@ -11,6 +11,7 @@ import {
   useOrderReviewStore,
 } from '@/lib/order-review-store'
 
+import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { DashboardReviewsPopup } from '@/components/dashboard/DashboardReviewsPopup'
 
 const PAGE_SIZE = 8
@@ -20,49 +21,6 @@ const addReviewBtnClass =
 
 const ratedBadgeClass =
   'font-commissioner relative box-border inline-flex w-fit max-w-full items-center gap-3 rounded-xl border border-solid border-[rgba(238,238,238,0.1)] bg-gray-200 py-1.5 px-3 text-left text-num-15_35 leading-num-21_93 text-ghostwhite'
-
-/** Figma: summary + fuchsia track/fill (#eb2dff / 25% track) + pill button on gray-100 (#0d1b35) + darkslateblue border (#152950). */
-const ReviewsLoadMoreFooter: FunctionComponent<{
-  shown: number
-  total: number
-  onLoadMore: () => void
-  canLoadMore: boolean
-}> = ({ shown, total, onLoadMore, canLoadMore }) => {
-  const ratio = total > 0 ? shown / total : 0
-
-  return (
-    <div className="font-commissioner relative flex w-full flex-col items-center justify-center gap-5 pt-2 text-center text-base text-white sm:gap-5">
-      <div className="flex w-full max-w-[261px] flex-col items-center justify-center gap-2.5">
-        <div className="flex items-center justify-center">
-          <p className="relative leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-            Showing {shown} out of {total}
-          </p>
-        </div>
-        <div className="relative h-[3.5px] w-[196px] max-w-full">
-          <div
-            className="bg-fuchsia/25 absolute top-0 left-0 h-[3px] w-full rounded-lg shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
-            aria-hidden
-          />
-          <div
-            className="bg-fuchsia absolute top-[0.5px] left-0 h-[3px] max-w-full rounded-lg shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
-            style={{ width: `${ratio * 100}%` }}
-            aria-hidden
-          />
-        </div>
-      </div>
-      <button
-        type="button"
-        disabled={!canLoadMore}
-        onClick={onLoadMore}
-        className="border-darkslateblue rounded-num-30 flex items-center justify-center border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:cursor-not-allowed disabled:opacity-25"
-      >
-        <span className="relative leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-          Load More
-        </span>
-      </button>
-    </div>
-  )
-}
 
 const ReviewRow: FunctionComponent<{
   row: ReviewPurchaseRow
@@ -306,7 +264,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
       </div>
 
       <nav aria-label="Review list load more">
-        <ReviewsLoadMoreFooter
+        <DashboardLoadMoreFooter
           shown={shown}
           total={filtered.length}
           canLoadMore={canLoadMore}

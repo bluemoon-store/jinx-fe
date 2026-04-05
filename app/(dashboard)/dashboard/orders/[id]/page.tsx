@@ -108,7 +108,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
         <article className="text-num-16 font-commissioner box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid border-gray-600 bg-gray-100 p-5 text-left text-white sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
           {/* Product preview & primary actions */}
           <section className="flex w-full min-w-0 flex-col gap-5 lg:max-w-[min(100%,447px)] lg:shrink-0">
-            <div className="aspect-447/255 flex w-full max-h-[255px] items-center justify-center overflow-hidden rounded-num-12 shadow-[0px_0px_12px_rgba(0,0,0,0.45)]">
+            <div className="rounded-num-12 flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden shadow-[0px_0px_12px_rgba(0,0,0,0.45)]">
               <img
                 className="h-full w-full object-cover"
                 alt=""
@@ -133,7 +133,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   ariaHidden={true}
                   className="shrink-0 text-white"
                 />
-                <span className="tracking-num--0_01 leading-num-28 font-semibold">Purchase Again</span>
+                <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                  Purchase Again
+                </span>
               </button>
               <button
                 type="button"
@@ -155,9 +157,11 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       radius="1"
                       size={18}
                       ariaHidden={true}
-                      className="shrink-0 text-lightsteelblue-100"
+                      className="text-lightsteelblue-100 shrink-0"
                     />
-                    <span className="tracking-num--0_01 leading-num-28 font-semibold">Mark as Unused</span>
+                    <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                      Mark as Unused
+                    </span>
                   </>
                 ) : (
                   <>
@@ -169,9 +173,11 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       radius="1"
                       size={18}
                       ariaHidden={true}
-                      className="shrink-0 text-lightsteelblue-100"
+                      className="text-lightsteelblue-100 shrink-0"
                     />
-                    <span className="tracking-num--0_01 leading-num-28 font-semibold">Mark as Used</span>
+                    <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                      Mark as Used
+                    </span>
                   </>
                 )}
               </button>
@@ -183,7 +189,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               <span className="leading-num-20 font-semibold">Facing Issues?</span>
               <button
                 type="button"
-                className="text-ghostwhite rounded-num-8 px-num-12 flex items-center gap-2 bg-[#19263F] py-1.5 text-num-15_35 font-semibold leading-num-21_93 transition-colors hover:bg-[#1f2d4a]"
+                className="text-ghostwhite rounded-num-8 px-num-12 text-num-15_35 leading-num-21_93 flex items-center gap-2 bg-[#19263F] py-1.5 font-semibold transition-colors hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
                   name="IconRescueRing"
@@ -203,7 +209,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
           <div className="text-whitesmoke-100 flex min-w-0 flex-1 flex-col gap-6 sm:gap-8 lg:text-[18px]">
             <header className="font-nata-sans flex flex-col gap-2 self-stretch">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="leading-8 font-extrabold tracking-num-0_02 uppercase">
+                <h1 className="tracking-num-0_02 leading-8 font-extrabold uppercase">
                   {order.brand}
                 </h1>
                 <div className="px-num-12 text-lightsteelblue-100 font-commissioner flex items-center gap-2 rounded-xl bg-[#19263F] py-1.5 text-[13px]">
@@ -221,14 +227,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     radius="1"
                     size={18}
                     ariaHidden={true}
-                    className={
-                      markedAsUsed ? 'shrink-0' : `shrink-0 ${paymentStatusIconClass}`
-                    }
+                    className={markedAsUsed ? 'shrink-0' : `shrink-0 ${paymentStatusIconClass}`}
                   />
                   <span className="leading-num-20 font-semibold">{statusBadgeLabel}</span>
                 </div>
               </div>
-              <div className="text-num-16 font-commissioner flex flex-wrap items-center gap-x-num-15 gap-y-2 text-white">
+              <div className="text-num-16 font-commissioner gap-x-num-15 flex flex-wrap items-center gap-y-2 text-white">
                 <span className="tracking-num--0_01 leading-num-28 font-semibold opacity-75">
                   {order.price}
                 </span>
@@ -250,8 +254,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
             </header>
 
-            <div className="rounded-num-8 border-fuchsia font-nata-sans gap-num-15 flex flex-wrap items-center justify-center self-stretch border border-dashed p-6 sm:p-9 text-[22px] sm:text-[24px] [background:linear-gradient(180deg,rgba(235,45,255,0),rgba(235,45,255,0.25))]">
-              <span className="leading-8 font-extrabold tracking-num-0_02 uppercase break-all text-center">
+            <div className="rounded-num-8 border-fuchsia font-nata-sans gap-num-15 flex flex-wrap items-center justify-center self-stretch border border-dashed p-6 text-[22px] [background:linear-gradient(180deg,rgba(235,45,255,0),rgba(235,45,255,0.25))] sm:p-9 sm:text-[24px]">
+              <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">
                 {redeemCodeForOrder(order.id)}
               </span>
               <button
@@ -272,14 +276,16 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             </div>
 
             <div className="text-num-16 text-ghostwhite flex flex-col gap-4 self-stretch">
-              <div className="rounded-num-12 border-gray-600 box-border flex w-full flex-col items-start overflow-hidden border border-solid bg-gray-200 p-4 sm:p-5">
+              <div className="rounded-num-12 box-border flex w-full flex-col items-start overflow-hidden border border-solid border-gray-600 bg-gray-200 p-4 sm:p-5">
                 <button
                   type="button"
                   aria-expanded={isProcessToRedeemOpen}
                   className="flex w-full items-center justify-between gap-0 self-stretch"
                   onClick={() => setIsProcessToRedeemOpen((v) => !v)}
                 >
-                  <b className="tracking-num--0_01 leading-num-28 flex-1 text-left">Process to Redeem</b>
+                  <b className="tracking-num--0_01 leading-num-28 flex-1 text-left">
+                    Process to Redeem
+                  </b>
                   <CentralIcon
                     name="IconChevronDownMedium"
                     join="round"
@@ -336,7 +342,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 </div>
               </div>
 
-              <div className="rounded-num-12 border-gray-600 box-border flex w-full flex-col items-start overflow-hidden border border-solid bg-gray-200 p-4 sm:p-5">
+              <div className="rounded-num-12 box-border flex w-full flex-col items-start overflow-hidden border border-solid border-gray-600 bg-gray-200 p-4 sm:p-5">
                 <button
                   type="button"
                   aria-expanded={isOrderWarrantyOpen}
@@ -369,14 +375,16 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                         <div className="leading-num-24 opacity-[0.8]">
                           <b>Warranty Coverage</b>
                           <p className="m-0">
-                            If your code is invalid or cannot be applied, we will help you resolve it
-                            as quickly as possible.
+                            If your code is invalid or cannot be applied, we will help you resolve
+                            it as quickly as possible.
                           </p>
                         </div>
 
                         <div className="leading-num-24 opacity-[0.8]">
                           <b>How to Request Help</b>
-                          <p className="m-0">Contact support within 48 hours with your order details.</p>
+                          <p className="m-0">
+                            Contact support within 48 hours with your order details.
+                          </p>
                           <ul className="m-0 pl-[21px] text-[length:inherit]">
                             <li className="mb-0">
                               <span className="font-medium">Include your order id</span> and
@@ -409,16 +417,19 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   size={20}
                   ariaHidden={true}
                 />
-                <h2 id="order-details-heading" className="leading-num-28 font-bold tracking-num-0_02">
+                <h2
+                  id="order-details-heading"
+                  className="leading-num-28 tracking-num-0_02 font-bold"
+                >
                   Order Details
                 </h2>
               </div>
 
               <div className="text-num-14 text-lightsteelblue-200 flex flex-col gap-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:gap-3">
-                  <div className="rounded-num-8 border-gray-600 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid bg-gray-200">
+                  <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Order ID</span>
-                    <span className="text-num-16 flex min-w-0 items-center gap-2 font-semibold tracking-num--0_01 text-white">
+                    <span className="text-num-16 tracking-num--0_01 flex min-w-0 items-center gap-2 font-semibold text-white">
                       <span className="truncate">{orderDisplayId(order.id)}</span>
                       <button
                         type="button"
@@ -437,9 +448,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       </button>
                     </span>
                   </div>
-                  <div className="rounded-num-8 border-gray-600 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid bg-gray-200">
+                  <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Payment Status</span>
-                    <span className="text-num-16 flex items-center gap-1.5 font-semibold tracking-num--0_01 text-white">
+                    <span className="text-num-16 tracking-num--0_01 flex items-center gap-1.5 font-semibold text-white">
                       <CentralIcon
                         name={paymentIcon as 'IconCircleCheck'}
                         join="round"
@@ -455,17 +466,17 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </div>
                 </div>
 
-                <div className="rounded-num-8 border-gray-600 py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid bg-gray-200">
+                <div className="rounded-num-8 py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                   <span className="leading-num-20 font-semibold">Variant</span>
-                  <span className="text-num-16 max-w-full text-right font-semibold tracking-num--0_01 text-white sm:max-w-[65%]">
+                  <span className="text-num-16 tracking-num--0_01 max-w-full text-right font-semibold text-white sm:max-w-[65%]">
                     1 Year | 4K Ultra HD | Single Account Gift Card
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  <div className="rounded-num-8 border-gray-600 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid bg-gray-200">
+                  <div className="rounded-num-8 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Country</span>
-                    <span className="text-num-16 flex items-center gap-2 font-semibold tracking-num--0_01 text-white">
+                    <span className="text-num-16 tracking-num--0_01 flex items-center gap-2 font-semibold text-white">
                       <img
                         className="h-num-19 w-[26px] shrink-0 rounded-sm border border-white/10 object-cover shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
                         alt=""
@@ -474,9 +485,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       CA
                     </span>
                   </div>
-                  <div className="rounded-num-8 border-gray-600 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid bg-gray-200">
+                  <div className="rounded-num-8 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Quantity</span>
-                    <span className="text-num-16 font-semibold tracking-num--0_01 text-white">
+                    <span className="text-num-16 tracking-num--0_01 font-semibold text-white">
                       {String(order.itemCount).padStart(2, '0')}
                     </span>
                   </div>
@@ -497,7 +508,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   size={18}
                   ariaHidden={true}
                 />
-                <h2 id="add-review-heading" className="leading-num-28 font-bold tracking-num-0_02">
+                <h2 id="add-review-heading" className="leading-num-28 tracking-num-0_02 font-bold">
                   Add Review
                 </h2>
               </div>
@@ -564,7 +575,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     if (rating < 1) return
                     setReviewSent(true)
                   }}
-                  className="bg-fuchsia text-num-16 flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold tracking-num--0_01 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="bg-fuchsia text-num-16 tracking-num--0_01 flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {reviewSent ? 'Review submitted' : 'Submit Review'}
                 </button>

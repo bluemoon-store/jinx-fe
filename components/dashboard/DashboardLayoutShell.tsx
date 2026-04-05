@@ -246,26 +246,26 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                   {isOrderDetail ? (
                     <nav
                       aria-label="Breadcrumb"
-                      className="font-commissioner flex min-w-0 flex-wrap items-center gap-2 text-base leading-num-28 sm:text-lg md:text-num-16"
+                      className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-wrap items-center gap-2 text-base sm:text-lg"
                     >
                       <Link
                         href={DASHBOARD_PATHS.orders as Route}
-                        className="text-lightsteelblue-200 hover:text-ghostwhite shrink-0 font-medium transition-colors"
+                        className="hover:text-ghostwhite shrink-0 font-medium text-[#3F4A5A] transition-colors"
                       >
                         Orders
                       </Link>
                       <CentralIcon
-                        name="IconChevronRightSmall"
+                        name="IconChevronRightMedium"
                         join="round"
                         fill="filled"
                         stroke="2"
                         radius="1"
                         size={16}
                         ariaHidden={true}
-                        className="shrink-0 text-lightsteelblue-200"
+                        className="shrink-0 text-[#3F4A5A]"
                       />
                       <span
-                        className="text-ghostwhite min-w-0 truncate font-bold tracking-num-0_02"
+                        className="text-ghostwhite tracking-num-0_02 min-w-0 truncate font-bold"
                         aria-current="page"
                       >
                         {breadcrumbCurrentLabel}

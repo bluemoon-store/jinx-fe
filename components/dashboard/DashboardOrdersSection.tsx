@@ -1,13 +1,22 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
-import { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useOrderReviewStore } from '@/lib/order-review-store'
 
+import { DashboardLoadMoreFooter } from './DashboardLoadMoreFooter'
 import { DashboardOrderCard } from './DashboardOrderCard'
+import { DashboardOrderRow } from './DashboardOrderRow'
 
 const PAGE_SIZE = 12
+
+type OrdersViewMode = 'grid' | 'list'
+
+const VIEW_OPTIONS: { value: OrdersViewMode; label: string }[] = [
+  { value: 'grid', label: 'Grid' },
+  { value: 'list', label: 'List' },
+]
 
 type Props = {
   onFilteredCountChange?: (count: number) => void
@@ -16,7 +25,10 @@ type Props = {
 export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCountChange }) => {
   const orders = useOrderReviewStore((s) => s.orders)
   const [orderSearch, setOrderSearch] = useState('')
-  const [page, setPage] = useState(0)
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const [viewMode, setViewMode] = useState<OrdersViewMode>('grid')
+  const [viewMenuOpen, setViewMenuOpen] = useState(false)
+  const viewMenuRef = useRef<HTMLDivElement>(null)
 
   const filtered = useMemo(() => {
     const q = orderSearch.trim().toLowerCase()
@@ -32,12 +44,29 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   }, [filtered.length, onFilteredCountChange])
 
   useEffect(() => {
-    setPage(0)
+    setVisibleCount(Math.min(PAGE_SIZE, filtered.length))
   }, [orderSearch, filtered.length])
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const safePage = Math.min(page, pageCount - 1)
-  const pageOrders = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE)
+  useEffect(() => {
+    if (!viewMenuOpen) return
+    const onDoc = (e: MouseEvent) => {
+      if (viewMenuRef.current?.contains(e.target as Node)) return
+      setViewMenuOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setViewMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDoc)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [viewMenuOpen])
+
+  const shown = Math.min(visibleCount, filtered.length)
+  const canLoadMore = shown < filtered.length
+  const visibleOrders = filtered.slice(0, shown)
 
   const filterBar = (
     <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
@@ -116,23 +145,58 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             className="shrink-0"
           />
         </div>
-        <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-2">
-          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-            View
-          </span>
-          <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-            Grid
-          </span>
-          <CentralIcon
-            name="IconChevronDownMedium"
-            join="round"
-            fill="filled"
-            stroke="2"
-            radius="1"
-            size={16}
-            ariaHidden={true}
-            className="shrink-0"
-          />
+        <div className="relative w-fit max-w-full shrink-0" ref={viewMenuRef}>
+          <button
+            type="button"
+            aria-haspopup="listbox"
+            aria-expanded={viewMenuOpen}
+            aria-label="View layout"
+            onClick={() => setViewMenuOpen((o) => !o)}
+            className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+          >
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+              View
+            </span>
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
+              {VIEW_OPTIONS.find((o) => o.value === viewMode)?.label ?? 'Grid'}
+            </span>
+            <CentralIcon
+              name="IconChevronDownMedium"
+              join="round"
+              fill="filled"
+              stroke="2"
+              radius="1"
+              size={16}
+              ariaHidden={true}
+              className="shrink-0"
+            />
+          </button>
+          {viewMenuOpen ? (
+            <ul
+              role="listbox"
+              aria-label="View layout"
+              className="border-darkslateblue rounded-num-8 absolute top-full right-0 z-20 mt-1 min-w-[10.5rem] overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+            >
+              {VIEW_OPTIONS.map((opt) => (
+                <li key={opt.value} role="presentation">
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={viewMode === opt.value}
+                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                      viewMode === opt.value ? 'bg-[#16243B]' : ''
+                    }`}
+                    onClick={() => {
+                      setViewMode(opt.value)
+                      setViewMenuOpen(false)
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       </div>
     </div>
@@ -156,76 +220,42 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
       {filterBar}
-      <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-        {pageOrders.map((o) => (
-          <DashboardOrderCard
-            key={o.id}
-            id={o.id}
-            brand={o.brand}
-            itemCount={o.itemCount}
-            price={o.price}
-            status={o.status}
-          />
-        ))}
-      </div>
+      {viewMode === 'grid' ? (
+        <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          {visibleOrders.map((o) => (
+            <DashboardOrderCard
+              key={o.id}
+              id={o.id}
+              brand={o.brand}
+              itemCount={o.itemCount}
+              price={o.price}
+              status={o.status}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-num-8 divide-y divide-[#16243B] border border-solid border-[#16243B] bg-[#0B1221]">
+          {visibleOrders.map((o) => (
+            <DashboardOrderRow
+              key={o.id}
+              id={o.id}
+              brand={o.brand}
+              itemCount={o.itemCount}
+              price={o.price}
+              status={o.status}
+            />
+          ))}
+        </div>
+      )}
 
-      {pageCount > 1 ? (
-        <nav
-          className="flex items-center justify-center gap-3 pt-2 sm:gap-4"
-          aria-label="Order pages"
-        >
-          <button
-            type="button"
-            className="text-lightsteelblue-200 hover:text-ghostwhite rounded-num-8 flex min-h-11 min-w-11 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-            disabled={safePage <= 0}
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            aria-label="Previous page"
-          >
-            <CentralIcon
-              name="IconChevronLeft"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={20}
-              ariaHidden={true}
-            />
-          </button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: pageCount }, (_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setPage(i)}
-                className={
-                  i === safePage
-                    ? 'h-2 w-8 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.35)]'
-                    : 'h-2 w-2 rounded-full bg-white/25 transition-colors hover:bg-white/45'
-                }
-                aria-label={`Page ${i + 1}`}
-                aria-current={i === safePage ? 'page' : undefined}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="text-lightsteelblue-200 hover:text-ghostwhite rounded-num-8 flex min-h-11 min-w-11 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-            disabled={safePage >= pageCount - 1}
-            onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-            aria-label="Next page"
-          >
-            <CentralIcon
-              name="IconChevronRight"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={20}
-              ariaHidden={true}
-            />
-          </button>
-        </nav>
-      ) : null}
+      <nav aria-label="Order list load more">
+        <DashboardLoadMoreFooter
+          shown={shown}
+          total={filtered.length}
+          canLoadMore={canLoadMore}
+          onLoadMore={() => setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))}
+        />
+      </nav>
     </div>
   )
 }
