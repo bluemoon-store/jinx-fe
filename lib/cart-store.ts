@@ -52,9 +52,7 @@ export const useCartStore = create<CartState>()((set) => ({
     set((state) => {
       const idx = state.items.findIndex(
         (i) =>
-          i.id === key.id &&
-          i.variantLabel === key.variantLabel &&
-          i.stateCode === key.stateCode
+          i.id === key.id && i.variantLabel === key.variantLabel && i.stateCode === key.stateCode
       )
       if (idx < 0) return state
       const next = [...state.items]

@@ -218,7 +218,7 @@ const SellingSection: FunctionComponent = () => {
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href="/shop"
-              className="border-darkslateblue shadow-[0px_15px_15px_rgba(0,0,0,0.01)] rounded-num-30 box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 text-center text-base text-white font-commissioner transition-opacity hover:opacity-90 sm:w-auto"
+              className="border-darkslateblue rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 text-center text-base text-white shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
             >
               <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                 View All Products

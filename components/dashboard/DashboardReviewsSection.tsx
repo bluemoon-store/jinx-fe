@@ -2,122 +2,80 @@
 
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 
-type ReviewPurchaseRow = {
-  id: string
-  brand: string
-  logoSrc: string
-  itemCount: number
-  price: string
-  date: string
-  time: string
-}
+import { ratingStarColor } from '@/lib/rating-star-colors'
+import {
+  type OrderReview,
+  type ReviewPurchaseRow,
+  useOrderReviewStore,
+} from '@/lib/order-review-store'
 
-const MOCK_REVIEW_ROWS: ReviewPurchaseRow[] = [
-  {
-    id: '1',
-    brand: 'Airbnb',
-    logoSrc: '/icons/airbnb.svg',
-    itemCount: 2,
-    price: '$2.50',
-    date: 'March 30, 2026',
-    time: '11:11 AM',
-  },
-  {
-    id: '2',
-    brand: 'Venmo',
-    logoSrc: '/icons/netflix.svg',
-    itemCount: 2,
-    price: '$2.50',
-    date: 'March 30, 2026',
-    time: '11:11 AM',
-  },
-  {
-    id: '3',
-    brand: 'Dunkin Donuts',
-    logoSrc: '/icons/dominos.svg',
-    itemCount: 2,
-    price: '$2.50',
-    date: 'March 30, 2026',
-    time: '11:11 AM',
-  },
-  {
-    id: '4',
-    brand: 'Affirm',
-    logoSrc: '/icons/best-buy.svg',
-    itemCount: 2,
-    price: '$2.50',
-    date: 'March 30, 2026',
-    time: '11:11 AM',
-  },
-  {
-    id: '5',
-    brand: 'Starbucks',
-    logoSrc: '/icons/starbucks.svg',
-    itemCount: 1,
-    price: '$4.00',
-    date: 'March 29, 2026',
-    time: '9:20 AM',
-  },
-  {
-    id: '6',
-    brand: 'Netflix',
-    logoSrc: '/icons/netflix-1.svg',
-    itemCount: 3,
-    price: '$12.99',
-    date: 'March 28, 2026',
-    time: '4:45 PM',
-  },
-  {
-    id: '7',
-    brand: 'Chipotle',
-    logoSrc: '/icons/group-logo.svg',
-    itemCount: 2,
-    price: '$2.50',
-    date: 'March 28, 2026',
-    time: '2:00 PM',
-  },
-  {
-    id: '8',
-    brand: 'Best Buy',
-    logoSrc: '/icons/best-buy.svg',
-    itemCount: 1,
-    price: '$9.99',
-    date: 'March 27, 2026',
-    time: '6:30 PM',
-  },
-  {
-    id: '9',
-    brand: 'PlayStation',
-    logoSrc: '/icons/playstation.svg',
-    itemCount: 1,
-    price: '$59.99',
-    date: 'March 26, 2026',
-    time: '8:00 PM',
-  },
-  {
-    id: '10',
-    brand: 'Uber',
-    logoSrc: '/icons/IconBasket2.svg',
-    itemCount: 1,
-    price: '$15.00',
-    date: 'March 25, 2026',
-    time: '7:15 PM',
-  },
-]
+import { DashboardReviewsPopup } from '@/components/dashboard/DashboardReviewsPopup'
 
 const PAGE_SIZE = 8
 
 const addReviewBtnClass =
-  'rounded-num-8 box-border inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 border border-solid border-transparent bg-[#ffffff0d] px-3 py-1.5 font-inherit transition-colors hover:bg-[#ffffff18] focus:outline-none focus:ring-0'
+  'rounded-xl box-border inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 border border-solid border-transparent bg-[#ffffff0d] px-4 py-1.5 font-inherit transition-colors hover:bg-[#ffffff18] focus:outline-none focus:ring-0'
 
-const ReviewRow: FunctionComponent<{ row: ReviewPurchaseRow }> = ({ row }) => {
+const ratedBadgeClass =
+  'font-commissioner relative box-border inline-flex w-fit max-w-full items-center gap-3 rounded-xl border border-solid border-[rgba(238,238,238,0.1)] bg-gray-200 py-1.5 px-3 text-left text-num-15_35 leading-num-21_93 text-ghostwhite'
+
+/** Figma: summary + fuchsia track/fill (#eb2dff / 25% track) + pill button on gray-100 (#0d1b35) + darkslateblue border (#152950). */
+const ReviewsLoadMoreFooter: FunctionComponent<{
+  shown: number
+  total: number
+  onLoadMore: () => void
+  canLoadMore: boolean
+}> = ({ shown, total, onLoadMore, canLoadMore }) => {
+  const ratio = total > 0 ? shown / total : 0
+
   return (
-    <div className="border-darkslateblue flex flex-col gap-3 border-b border-solid p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5">
-      <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-        <div className="rounded-num-8 flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-          <img className="max-h-full max-w-full object-contain" alt="" src={row.logoSrc} />
+    <div className="font-commissioner relative flex w-full flex-col items-center justify-center gap-5 pt-2 text-center text-base text-white sm:gap-5">
+      <div className="flex w-full max-w-[261px] flex-col items-center justify-center gap-2.5">
+        <div className="flex items-center justify-center">
+          <p className="relative leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            Showing {shown} out of {total}
+          </p>
         </div>
+        <div className="relative h-[3.5px] w-[196px] max-w-full">
+          <div
+            className="bg-fuchsia/25 absolute top-0 left-0 h-[3px] w-full rounded-lg shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
+            aria-hidden
+          />
+          <div
+            className="bg-fuchsia absolute top-[0.5px] left-0 h-[3px] max-w-full rounded-lg shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
+            style={{ width: `${ratio * 100}%` }}
+            aria-hidden
+          />
+        </div>
+      </div>
+      <button
+        type="button"
+        disabled={!canLoadMore}
+        onClick={onLoadMore}
+        className="border-darkslateblue rounded-num-30 flex items-center justify-center border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:cursor-not-allowed disabled:opacity-25"
+      >
+        <span className="relative leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+          Load More
+        </span>
+      </button>
+    </div>
+  )
+}
+
+const ReviewRow: FunctionComponent<{
+  row: ReviewPurchaseRow
+  review?: OrderReview
+  onAddReview: () => void
+}> = ({ row, review, onAddReview }) => {
+  return (
+    <div className="border-darkslateblue flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 hover:bg-[#13253F] sm:gap-4 sm:p-5">
+      <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+        <div
+          className="rounded-num-8 flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+          aria-hidden
+        />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <b className="tracking-num-0_02 text-base leading-6 lg:text-[18px]">{row.brand}</b>
           <div className="text-lightsteelblue-200 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:gap-2">
@@ -133,45 +91,86 @@ const ReviewRow: FunctionComponent<{ row: ReviewPurchaseRow }> = ({ row }) => {
           </div>
         </div>
       </div>
-      <button type="button" className={addReviewBtnClass}>
-        <CentralIcon
-          name="IconPlusLarge"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={16}
-          ariaHidden={true}
-        />
-        <span className="tracking-num--0_01 sm:text-num-14 text-sm font-semibold text-[#faf7ff]">
-          Add Review
-        </span>
-      </button>
+      <div className="flex shrink-0 flex-col items-end gap-2">
+        {review ? (
+          <div className={ratedBadgeClass}>
+            <div className="relative font-semibold">Rated </div>
+            <div className="flex items-center gap-0.5">
+              <div className="relative font-semibold">{review.rating}</div>
+              <CentralIcon
+                name="IconStar"
+                join="round"
+                fill="filled"
+                stroke="1"
+                radius="3"
+                size={16}
+                ariaHidden={true}
+                className="relative h-4 w-4 shrink-0"
+                style={{ color: ratingStarColor(review.rating) }}
+              />
+            </div>
+          </div>
+        ) : null}
+        {!review ? (
+          <button type="button" onClick={onAddReview} className={addReviewBtnClass}>
+            <CentralIcon
+              name="IconPlusLarge"
+              join="round"
+              fill="filled"
+              stroke="2"
+              radius="1"
+              size={16}
+              ariaHidden={true}
+            />
+            <span className="tracking-num--0_01 sm:text-num-14 text-sm font-semibold text-[#faf7ff]">
+              Add Review
+            </span>
+          </button>
+        ) : null}
+      </div>
     </div>
   )
 }
 
 /** Reviews — purchases eligible for review; layout aligned with Orders / dashboard shell (no absolute canvas). */
 export const DashboardReviewsSection: FunctionComponent = () => {
+  const pendingReviewRows = useOrderReviewStore((s) => s.pendingReviewRows)
+  const reviewsByPurchaseRowId = useOrderReviewStore((s) => s.reviewsByPurchaseRowId)
+  const submitReviewForPurchaseRow = useOrderReviewStore((s) => s.submitReviewForPurchaseRow)
   const [search, setSearch] = useState('')
-  const [page, setPage] = useState(0)
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const [reviewDialogRow, setReviewDialogRow] = useState<ReviewPurchaseRow | null>(null)
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    if (!q) return MOCK_REVIEW_ROWS
-    return MOCK_REVIEW_ROWS.filter(
+    if (!q) return pendingReviewRows
+    return pendingReviewRows.filter(
       (r) =>
         r.brand.toLowerCase().includes(q) || r.id.includes(q) || r.price.toLowerCase().includes(q)
     )
-  }, [search])
+  }, [search, pendingReviewRows])
 
   useEffect(() => {
-    setPage(0)
+    setVisibleCount(Math.min(PAGE_SIZE, filtered.length))
   }, [search, filtered.length])
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const safePage = Math.min(page, pageCount - 1)
-  const pageRows = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE)
+  useEffect(() => {
+    if (!reviewDialogRow) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setReviewDialogRow(null)
+    }
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [reviewDialogRow])
+
+  const shown = Math.min(visibleCount, filtered.length)
+  const canLoadMore = shown < filtered.length
+  const visibleRows = filtered.slice(0, shown)
 
   const filterBar = (
     <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
@@ -294,75 +293,60 @@ export const DashboardReviewsSection: FunctionComponent = () => {
       {filterBar}
 
       <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
-        <div className="bg-[#ffffff0d] px-4 py-3 sm:px-5 sm:py-4">
-          <p className="text-lightsteelblue-200 text-sm font-medium sm:text-base">
-            Add a review for completed purchases. Your feedback helps other buyers.
-          </p>
-        </div>
         <div className="flex flex-col">
-          {pageRows.map((row) => (
-            <ReviewRow key={row.id} row={row} />
+          {visibleRows.map((row) => (
+            <ReviewRow
+              key={row.id}
+              row={row}
+              review={reviewsByPurchaseRowId[row.id]}
+              onAddReview={() => setReviewDialogRow(row)}
+            />
           ))}
         </div>
       </div>
 
-      {pageCount > 1 ? (
-        <nav
-          className="flex items-center justify-center gap-3 pt-2 sm:gap-4"
-          aria-label="Review list pages"
-        >
-          <button
-            type="button"
-            className="text-lightsteelblue-200 hover:text-ghostwhite rounded-num-8 flex min-h-11 min-w-11 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-            disabled={safePage <= 0}
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            aria-label="Previous page"
-          >
-            <CentralIcon
-              name="IconChevronLeft"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={20}
-              ariaHidden={true}
-            />
-          </button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: pageCount }, (_, i) => (
+      <nav aria-label="Review list load more">
+        <ReviewsLoadMoreFooter
+          shown={shown}
+          total={filtered.length}
+          canLoadMore={canLoadMore}
+          onLoadMore={() => setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))}
+        />
+      </nav>
+
+      {reviewDialogRow && typeof document !== 'undefined'
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[110] flex min-h-[100dvh] w-full items-center justify-center p-4 sm:p-6 lg:px-8"
+              role="presentation"
+            >
               <button
-                key={i}
                 type="button"
-                onClick={() => setPage(i)}
-                className={
-                  i === safePage
-                    ? 'h-2 w-8 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.35)]'
-                    : 'h-2 w-2 rounded-full bg-white/25 transition-colors hover:bg-white/45'
-                }
-                aria-label={`Page ${i + 1}`}
-                aria-current={i === safePage ? 'page' : undefined}
+                className="absolute inset-0 bg-black/60"
+                aria-label="Close dialog"
+                onClick={() => setReviewDialogRow(null)}
               />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="text-lightsteelblue-200 hover:text-ghostwhite rounded-num-8 flex min-h-11 min-w-11 items-center justify-center transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-            disabled={safePage >= pageCount - 1}
-            onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-            aria-label="Next page"
-          >
-            <CentralIcon
-              name="IconChevronRight"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={20}
-              ariaHidden={true}
-            />
-          </button>
-        </nav>
-      ) : null}
+              <div className="relative z-10 flex w-full max-w-[min(100vw-2rem,480px)] justify-center">
+                <DashboardReviewsPopup
+                  key={reviewDialogRow.id}
+                  brand={reviewDialogRow.brand}
+                  itemCount={reviewDialogRow.itemCount}
+                  price={reviewDialogRow.price}
+                  date={reviewDialogRow.date}
+                  time={reviewDialogRow.time}
+                  initialRating={reviewsByPurchaseRowId[reviewDialogRow.id]?.rating}
+                  initialComment={reviewsByPurchaseRowId[reviewDialogRow.id]?.comment}
+                  onClose={() => setReviewDialogRow(null)}
+                  onSubmit={({ rating, comment }) => {
+                    submitReviewForPurchaseRow(reviewDialogRow.id, { rating, comment })
+                    setReviewDialogRow(null)
+                  }}
+                />
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   )
 }

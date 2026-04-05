@@ -12,7 +12,7 @@ type Props = {
 /** Empty-cart flyout content with illustration from `/icons/cart-empty.svg`. */
 export const CartEmptyDropdownPanel: FunctionComponent<Props> = ({ onNavigate }) => (
   <div
-    className="rounded-num-8 w-max min-w-0 max-w-[min(100vw-2rem,400px)] shrink-0 border border-solid border-white/10 bg-[#071935] p-[15px] shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+    className="rounded-num-8 w-max max-w-[min(100vw-2rem,400px)] min-w-0 shrink-0 border border-solid border-white/10 bg-[#071935] p-[15px] shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
     role="dialog"
     aria-label="Shopping cart"
   >

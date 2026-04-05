@@ -30,6 +30,8 @@ type PurchaseControlsProps = {
   addToCartButtonClassName?: string
   /** z-index for open dropdown menus (raise in modals so lists paint above the card). */
   dropdownZClass?: string
+  /** Called after add to cart succeeds (e.g. close quick-buy modal). */
+  onAddToCart?: () => void
 }
 
 const DEFAULT_ADD_TO_CART_CLASS =
@@ -39,6 +41,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   productName,
   addToCartButtonClassName = DEFAULT_ADD_TO_CART_CLASS,
   dropdownZClass = 'z-20',
+  onAddToCart,
 }) => {
   const [isVariantOpen, setIsVariantOpen] = useState(false)
   const [isStateOpen, setIsStateOpen] = useState(false)
@@ -250,7 +253,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         <button
           type="button"
           className={addToCartButtonClassName}
-          onClick={() =>
+          onClick={() => {
             addItem(
               {
                 id: productName,
@@ -261,7 +264,8 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               },
               quantity
             )
-          }
+            onAddToCart?.()
+          }}
         >
           <CentralIcon
             name="IconBasket1"

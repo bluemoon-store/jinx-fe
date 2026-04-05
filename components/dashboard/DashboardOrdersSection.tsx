@@ -3,130 +3,9 @@
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 
-import { DashboardOrderCard, type DashboardOrderStatus } from './DashboardOrderCard'
+import { useOrderReviewStore } from '@/lib/order-review-store'
 
-type OrderRow = {
-  id: string
-  brand: string
-  itemCount: number
-  price: string
-  status: DashboardOrderStatus
-}
-
-const MOCK_ORDERS: OrderRow[] = [
-  {
-    id: '1',
-    brand: 'AIRBNB',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '2',
-    brand: 'VENMO',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'pending',
-  },
-  {
-    id: '3',
-    brand: "DUNKIN'",
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '4',
-    brand: 'AFFIRM',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'expired',
-  },
-  {
-    id: '5',
-    brand: 'STARBUCKS',
-    itemCount: 1,
-    price: '$4.00',
-    status: 'paid',
-  },
-  {
-    id: '6',
-    brand: 'NETFLIX',
-    itemCount: 3,
-    price: '$12.99',
-    status: 'pending',
-  },
-  {
-    id: '7',
-    brand: 'CHIPOTLE',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '8',
-    brand: 'BEST BUY',
-    itemCount: 1,
-    price: '$9.99',
-    status: 'expired',
-  },
-  {
-    id: '9',
-    brand: 'AIRBNB',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '10',
-    brand: 'VENMO',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'pending',
-  },
-  {
-    id: '11',
-    brand: "DUNKIN'",
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '12',
-    brand: 'AFFIRM',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '13',
-    brand: 'UBER',
-    itemCount: 1,
-    price: '$15.00',
-    status: 'pending',
-  },
-  {
-    id: '14',
-    brand: 'PLAYSTATION',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-  {
-    id: '15',
-    brand: 'H&M',
-    itemCount: 4,
-    price: '$24.00',
-    status: 'expired',
-  },
-  {
-    id: '16',
-    brand: 'WALMART',
-    itemCount: 2,
-    price: '$2.50',
-    status: 'paid',
-  },
-]
+import { DashboardOrderCard } from './DashboardOrderCard'
 
 const PAGE_SIZE = 12
 
@@ -135,17 +14,18 @@ type Props = {
 }
 
 export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCountChange }) => {
+  const orders = useOrderReviewStore((s) => s.orders)
   const [orderSearch, setOrderSearch] = useState('')
   const [page, setPage] = useState(0)
 
   const filtered = useMemo(() => {
     const q = orderSearch.trim().toLowerCase()
-    if (!q) return MOCK_ORDERS
-    return MOCK_ORDERS.filter(
+    if (!q) return orders
+    return orders.filter(
       (o) =>
         o.brand.toLowerCase().includes(q) || o.id.includes(q) || o.price.toLowerCase().includes(q)
     )
-  }, [orderSearch])
+  }, [orderSearch, orders])
 
   useEffect(() => {
     onFilteredCountChange?.(filtered.length)

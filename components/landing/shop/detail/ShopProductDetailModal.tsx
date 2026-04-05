@@ -200,6 +200,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSr
                 productName={productName}
                 addToCartButtonClassName={ADD_TO_CART_MODAL_CLASS}
                 dropdownZClass="z-[100]"
+                onAddToCart={onClose}
               />
             </div>
           </div>
