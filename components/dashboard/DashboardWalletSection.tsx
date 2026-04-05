@@ -48,6 +48,7 @@ const secondaryPillClass =
 
 /** Wallet — balance card, add funds, history; matches dashboard shell + Orders/Reviews layout. */
 export const DashboardWalletSection: FunctionComponent = () => {
+  const [balanceVisible, setBalanceVisible] = useState(true)
   const [historySearch, setHistorySearch] = useState('')
 
   const filteredTx = useMemo(() => {
@@ -71,31 +72,49 @@ export const DashboardWalletSection: FunctionComponent = () => {
           <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
             Account Balance
           </p>
-          <div
-            className="relative flex min-h-[202px] flex-col justify-between overflow-hidden rounded-2xl border border-solid border-[#ffffff26] p-5 sm:p-6"
-            style={{
-              background:
-                'radial-gradient(50% 50% at 100% 0%, rgba(255,45,153,1) 0%, rgba(235,45,255,1) 53%, rgba(149,9,237,1) 100%)',
-            }}
-          >
-            <div className="text-ghostwhite text-xs font-semibold tracking-wide opacity-90">
-              JINX-LKXJLKNALSDJ
+          <div className="relative flex min-h-[202px] flex-col justify-between overflow-hidden rounded-2xl border border-solid border-[#ffffff26] bg-[url('/icons/wallet-account-balance-background.png')] bg-cover bg-center bg-no-repeat p-5 sm:p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div className="text-ghostwhite min-w-0 text-xs font-semibold tracking-wide opacity-90">
+                JINX-LKXJLKNALSDJ
+              </div>
+              <img
+                className="pointer-events-none h-9 w-[76px] shrink-0 object-contain object-right sm:h-11 sm:w-[96px]"
+                alt="Jinx"
+                src="/icons/Jin X White.svg"
+              />
             </div>
             <div className="mt-auto flex flex-col gap-1">
               <span className="text-sm font-semibold text-white/90">Account Balance</span>
-              <div className="flex items-center gap-2">
-                <span className="font-nata-sans text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  $0.00
-                </span>
-                <CentralIcon
-                  name="IconBanknote2"
-                  join="round"
-                  fill="filled"
-                  stroke="2"
-                  radius="1"
-                  size={22}
-                  ariaHidden={true}
-                  className="shrink-0 text-white/90"
+              <div className="flex items-end justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span
+                    className="font-commissioner text-[24px] leading-[32px] font-bold tracking-normal text-white tabular-nums"
+                    aria-live="polite"
+                  >
+                    {balanceVisible ? '$0.00' : '$••••'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setBalanceVisible((v) => !v)}
+                    className="shrink-0 rounded p-0.5 text-[#C3C3E3] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
+                    aria-label={balanceVisible ? 'Hide account balance' : 'Show account balance'}
+                    aria-pressed={balanceVisible}
+                  >
+                    <CentralIcon
+                      name={balanceVisible ? 'IconEyeOpen' : 'IconEyeSlash'}
+                      join="round"
+                      fill="outlined"
+                      stroke="2"
+                      radius="1"
+                      size={22}
+                      ariaHidden={true}
+                    />
+                  </button>
+                </div>
+                <img
+                  className="pointer-events-none h-8 w-8 shrink-0 object-contain sm:h-9 sm:w-9"
+                  alt=""
+                  src="/icons/Chip_Card.svg"
                 />
               </div>
             </div>
@@ -135,7 +154,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     radius="1"
                     size={18}
                     ariaHidden={true}
-                    className="shrink-0 text-white/70"
+                    className="shrink-0 text-[#C3C3E3]"
                   />
                 </button>
               </div>
@@ -171,7 +190,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   radius="1"
                   size={16}
                   ariaHidden={true}
-                  className="text-white/80"
+                  className="text-[#C3C3E3]"
                 />
                 <span className="text-sm font-bold text-white">$68,487.94</span>
               </div>
@@ -187,6 +206,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   radius="1"
                   size={18}
                   ariaHidden={true}
+                  className="text-white"
                 />
                 Add Balance
               </button>
@@ -217,6 +237,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               radius="1"
               size={20}
               ariaHidden={true}
+              className="text-[#C3C3E3]"
             />
             Filter
           </button>
@@ -232,7 +253,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               radius="1"
               size={18}
               ariaHidden={true}
-              className="text-lightsteelblue-200 shrink-0"
+              className="shrink-0 text-[#C3C3E3]"
             />
             <input
               type="search"
@@ -253,7 +274,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               radius="1"
               size={16}
               ariaHidden={true}
-              className="shrink-0"
+              className="shrink-0 text-[#C3C3E3]"
             />
           </div>
           <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2">
@@ -267,7 +288,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               radius="1"
               size={16}
               ariaHidden={true}
-              className="shrink-0"
+              className="shrink-0 text-[#C3C3E3]"
             />
           </div>
         </div>
@@ -289,20 +310,16 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   className="border-darkslateblue flex flex-col gap-3 border-b border-solid p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-                    <div
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
-                        tx.kind === 'purchase' ? 'bg-[#ffffff14]' : 'bg-[#1ad82422]'
-                      }`}
-                    >
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#051329]">
                       <CentralIcon
-                        name={tx.kind === 'purchase' ? 'IconBasket2' : 'IconBanknote2'}
+                        name={tx.kind === 'purchase' ? 'IconBasket1' : 'IconCoinsAdd'}
                         join="round"
                         fill="filled"
                         stroke="2"
                         radius="1"
                         size={24}
                         ariaHidden={true}
-                        className={tx.kind === 'purchase' ? 'text-white' : 'text-[#1ad824]'}
+                        className="text-[#C3C3E3]"
                       />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -319,14 +336,10 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                  <p
-                    className={`shrink-0 text-right text-xl font-bold tracking-tight ${
-                      tx.positive ? 'text-[#1ad824]' : 'text-white'
-                    }`}
-                  >
+                  <p className="shrink-0 text-right text-xl font-bold tracking-tight text-white">
                     {tx.positive ? (
                       <>
-                        <span className="mr-0.5">+</span>
+                        <span className="mr-0.5 text-[#1ad824]">+</span>
                         {tx.amountLabel}
                       </>
                     ) : (
