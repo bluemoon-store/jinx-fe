@@ -38,11 +38,11 @@ export function Step1GuestColumn({ onContinue }: Props) {
   return (
     <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8 lg:gap-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
-        <h2 className="font-nata-sans text-xl font-extrabold tracking-[0.48px] text-ghostwhite sm:text-2xl">
+        <h2 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
           CHECKOUT
         </h2>
         <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-          <span className="text-sm font-semibold text-lightsteelblue-200 sm:text-base">
+          <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
             Already have an account?
           </span>
           <Link
@@ -142,7 +142,7 @@ export function Step1GuestColumn({ onContinue }: Props) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-fuchsia text-num-16 box-border flex min-h-11 w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 font-semibold text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-[48px] sm:py-num-12"
+          className="bg-fuchsia text-num-16 sm:py-num-12 box-border flex min-h-11 w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 font-semibold text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-[48px]"
         >
           {isSubmitting ? 'Continuing…' : 'Continue'}
         </button>

@@ -44,15 +44,23 @@ function LineItemReadonly({ item }: { item: CartItem }) {
       <div className="flex min-w-0 flex-1 items-center gap-[15px]">
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-col gap-0.5">
-          <div className="text-base font-bold leading-snug tracking-[-0.17px] text-ghostwhite sm:text-[17.5px] sm:leading-[25px]">
+          <div className="text-ghostwhite text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
             {item.name}
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-            <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">{item.variantLabel}</span>
+            <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
+              {item.variantLabel}
+            </span>
             <Image src={checkoutImg.line} alt="" width={10} height={2} />
             <div className="flex items-center gap-[7.5px]">
               <div className="relative h-[18px] w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10">
-                <Image src={FLAG_SRC} alt="" width={24} height={18} className="h-full w-full object-cover" />
+                <Image
+                  src={FLAG_SRC}
+                  alt=""
+                  width={24}
+                  height={18}
+                  className="h-full w-full object-cover"
+                />
                 <div
                   className="pointer-events-none absolute inset-0 bg-blend-overlay"
                   style={{
@@ -61,16 +69,20 @@ function LineItemReadonly({ item }: { item: CartItem }) {
                   }}
                 />
               </div>
-              <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">{item.stateCode}</span>
+              <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
+                {item.stateCode}
+              </span>
             </div>
           </div>
         </div>
       </div>
       <div className="flex w-full items-center justify-between gap-4 sm:w-[200px] sm:justify-between">
-        <div className="rounded-[10px] border-[1.25px] border-whitesmoke-300 bg-gray-100 px-1.5 py-0.5">
+        <div className="border-whitesmoke-300 rounded-[10px] border-[1.25px] bg-gray-100 px-1.5 py-0.5">
           <span className="text-xl font-semibold tracking-[-0.2px] text-white">{qtyLabel}</span>
         </div>
-        <span className="text-xl font-bold tracking-[-0.24px] text-white sm:text-2xl">{formatUsd(lineTotal)}</span>
+        <span className="text-xl font-bold tracking-[-0.24px] text-white sm:text-2xl">
+          {formatUsd(lineTotal)}
+        </span>
       </div>
     </div>
   )
@@ -87,11 +99,13 @@ export function CheckoutOverviewCard() {
   if (!items.length) {
     return (
       <div className="flex w-full max-w-[729px] flex-col gap-4 sm:gap-6">
-        <h2 className="text-center font-nata-sans text-xl font-extrabold tracking-[0.48px] text-ghostwhite sm:text-2xl">
+        <h2 className="font-nata-sans text-ghostwhite text-center text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
           CHECKOUT OVERVIEW
         </h2>
         <div className="rounded-xl border border-dashed border-white/25 bg-gray-200/50 px-4 py-8 text-center sm:px-6 sm:py-10">
-          <p className="text-sm font-semibold text-lightsteelblue-200 sm:text-base">No items in your cart.</p>
+          <p className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
+            No items in your cart.
+          </p>
           <Link
             href="/shop"
             className="mt-4 inline-flex min-h-11 items-center justify-center text-sm font-semibold text-fuchsia-200 hover:underline"
@@ -105,7 +119,7 @@ export function CheckoutOverviewCard() {
 
   return (
     <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8">
-      <h2 className="text-center font-nata-sans text-xl font-extrabold tracking-[0.48px] text-ghostwhite sm:text-2xl">
+      <h2 className="font-nata-sans text-ghostwhite text-center text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
         CHECKOUT OVERVIEW
       </h2>
 
@@ -126,27 +140,61 @@ export function CheckoutOverviewCard() {
 
         <div className="flex flex-col gap-3 rounded-xl border border-[#eeeeee1a] bg-gray-100 p-4 sm:p-5">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-sm font-semibold text-white opacity-75 sm:text-base">Payment Method</span>
+            <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
+              Payment Method
+            </span>
             <div className="flex min-w-0 items-center gap-2.5">
-              <Image src={checkoutImg.btcSmall} alt="" width={20} height={20} className="shrink-0" />
-              <span className="truncate text-sm font-semibold text-white sm:text-base">Bitcoin (BTC)</span>
+              <Image
+                src={checkoutImg.btcSmall}
+                alt=""
+                width={20}
+                height={20}
+                className="shrink-0"
+              />
+              <span className="truncate text-sm font-semibold text-white sm:text-base">
+                Bitcoin (BTC)
+              </span>
             </div>
           </div>
-          <Image src={checkoutImg.divider} alt="" width={600} height={1} className="h-px w-full opacity-80" />
+          <Image
+            src={checkoutImg.divider}
+            alt=""
+            width={600}
+            height={1}
+            className="h-px w-full opacity-80"
+          />
           <div className="flex justify-between gap-2 opacity-75">
             <span className="text-sm font-semibold text-white sm:text-base">Subtotal</span>
-            <span className="text-sm font-semibold text-white sm:text-base">{formatUsd(subtotal)}</span>
+            <span className="text-sm font-semibold text-white sm:text-base">
+              {formatUsd(subtotal)}
+            </span>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 sm:max-w-[389px]">
-              <Image src={checkoutImg.receiptTaxAlt} alt="" width={18} height={18} className="shrink-0" />
-              <span className="text-sm font-semibold text-white opacity-75 sm:text-base">Discount applied</span>
+            <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2 sm:max-w-[389px]">
+              <Image
+                src={checkoutImg.receiptTaxAlt}
+                alt=""
+                width={18}
+                height={18}
+                className="shrink-0"
+              />
+              <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
+                Discount applied
+              </span>
             </div>
-            <span className="shrink-0 text-sm font-semibold text-white sm:text-base">{formatUsd(-discount)}</span>
+            <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
+              {formatUsd(-discount)}
+            </span>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <Image src={checkoutImg.basketLine} alt="" width={18} height={18} className="shrink-0" />
+              <Image
+                src={checkoutImg.basketLine}
+                alt=""
+                width={18}
+                height={18}
+                className="shrink-0"
+              />
               <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
                 Enhanced Buyer Protection
               </span>
@@ -155,17 +203,33 @@ export function CheckoutOverviewCard() {
               {formatUsd(BUYER_PROTECTION_USD)}
             </span>
           </div>
-          <Image src={checkoutImg.divider} alt="" width={600} height={1} className="h-px w-full opacity-80" />
+          <Image
+            src={checkoutImg.divider}
+            alt=""
+            width={600}
+            height={1}
+            className="h-px w-full opacity-80"
+          />
           <div className="flex flex-wrap justify-between gap-2">
-            <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">Total amount due</span>
-            <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">{formatUsd(totalDue)}</span>
+            <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">
+              Total amount due
+            </span>
+            <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">
+              {formatUsd(totalDue)}
+            </span>
           </div>
         </div>
       </div>
 
       <div className="flex items-start gap-2 opacity-75 sm:items-center sm:gap-[5px]">
-        <Image src={checkoutImg.shield} alt="" width={18} height={18} className="mt-0.5 shrink-0 sm:mt-0" />
-        <p className="text-sm font-semibold leading-relaxed tracking-[-0.16px] text-[#c2c2e2] sm:text-base sm:leading-7">
+        <Image
+          src={checkoutImg.shield}
+          alt=""
+          width={18}
+          height={18}
+          className="mt-0.5 shrink-0 sm:mt-0"
+        />
+        <p className="text-sm leading-relaxed font-semibold tracking-[-0.16px] text-[#c2c2e2] sm:text-base sm:leading-7">
           Secure Checkout Protected by AES-256 Encryption
         </p>
       </div>
