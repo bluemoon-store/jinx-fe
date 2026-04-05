@@ -59,10 +59,10 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
   }
 
   return (
-    <div className="text-ghostwhite font-nata-sans box-border flex w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-base shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] sm:p-5 lg:p-6">
-      <div className="flex min-w-0 flex-col items-stretch gap-4 self-stretch lg:flex-row lg:items-stretch lg:gap-6">
-        {/* Left: hero + marketing (desktop only — hidden on mobile) */}
-        <section className="rounded-num-8 hidden min-h-0 w-[335px] shrink-0 flex-col overflow-x-hidden overflow-y-visible [background:linear-gradient(180deg,_#4e2bff,_#b600c7)] lg:flex">
+    <div className="text-ghostwhite font-nata-sans box-border flex max-h-[min(90dvh,90vh)] w-full flex-col items-start overflow-hidden rounded-xl border-[1px] border-solid border-gray-500 bg-gray-200 p-4 text-center text-base shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)] sm:p-5 lg:p-6">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col items-stretch gap-4 self-stretch overflow-hidden lg:flex-row lg:items-stretch lg:gap-6">
+        {/* Left: hero + marketing (desktop only — hidden on mobile) — no scroll; form scrolls in main */}
+        <section className="rounded-num-8 hidden min-h-0 w-[335px] shrink-0 flex-col overflow-hidden [background:linear-gradient(180deg,_#4e2bff,_#b600c7)] lg:flex">
           <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr_auto]">
             <header className="flex flex-col items-center gap-3 px-4 pt-5 sm:gap-4 sm:px-6 sm:pt-[27px]">
               <img
@@ -124,7 +124,7 @@ const SignUpModal: FunctionComponent<SignUpModalProps> = ({
         </section>
 
         {/* Right: create account form */}
-        <main className="text-whitesmoke-100 flex min-h-0 w-full min-w-0 flex-1 flex-col items-start gap-3 text-left text-base sm:gap-[15px] sm:text-lg lg:text-[20px]">
+        <main className="text-whitesmoke-100 flex min-h-0 w-full min-w-0 flex-1 flex-col items-start gap-3 overflow-y-auto overscroll-contain text-left text-base sm:gap-[15px] sm:text-lg lg:text-[20px]">
           <form
             className="flex flex-col items-center gap-4 self-stretch"
             onSubmit={handleSubmit((data) => onRegisterSuccess?.(data))}

@@ -98,9 +98,10 @@ const HeroSection: FunctionComponent = () => {
 
   return (
     <section className="w-full bg-[#051329]">
-      <div className="mx-auto w-full overflow-x-auto">
+      {/* Match SellingSection / NewlyLaunchedSection: centered column max width */}
+      <div className="mx-auto w-full max-w-[1476.9px] overflow-x-auto px-4 sm:px-6 lg:px-8">
         {/* Hero banner: SVG background + copy + right illustration — height/width follow content */}
-        <main className="flex w-full flex-col bg-[#051329] p-4 pb-0! md:p-8">
+        <main className="flex w-full flex-col bg-[#051329] pt-4 pb-0 md:pt-8">
           {/*
             Canvas matches hero-background.png (1476×700). Right art is hero-banner.svg (666×700)
             — same height as the background so the illustration aligns without crop or extra gutter.

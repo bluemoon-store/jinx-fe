@@ -160,6 +160,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
         {pageOrders.map((o) => (
           <DashboardOrderCard
             key={o.id}
+            id={o.id}
             brand={o.brand}
             itemCount={o.itemCount}
             price={o.price}

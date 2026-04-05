@@ -1,9 +1,12 @@
 import CentralIcon from '@central-icons-react/all'
+import type { Route } from 'next'
+import Link from 'next/link'
 import { FunctionComponent } from 'react'
 
 export type DashboardOrderStatus = 'paid' | 'pending' | 'expired'
 
 type Props = {
+  id: string
   brand: string
   itemCount: number
   price: string
@@ -17,6 +20,7 @@ const statusConfig: Record<DashboardOrderStatus, { label: string; icon: string; 
 }
 
 export const DashboardOrderCard: FunctionComponent<Props> = ({
+  id,
   brand,
   itemCount,
   price,
@@ -25,8 +29,11 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
   const cfg = statusConfig[status]
 
   return (
-    <div className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid bg-[#0D1B35] p-3">
-      <div className="rounded-num-8 relative flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+    <Link
+      href={`/dashboard/orders/${id}` as Route}
+      className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid bg-[#0D1B35] p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-fuchsia/50 focus-visible:ring-2 focus-visible:outline-none"
+    >
+      <div className="rounded-num-8 flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
         <img className="h-full w-full scale-110 object-cover" alt="" src="/icons/airbnb.svg" />
       </div>
       <div className="flex w-36 flex-col items-center gap-1.5">
@@ -64,6 +71,6 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

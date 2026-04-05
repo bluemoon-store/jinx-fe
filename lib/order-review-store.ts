@@ -137,9 +137,12 @@ type OrderReviewState = {
   pendingReviewRows: ReviewPurchaseRow[]
   /** Review đã gửi, key = `ReviewPurchaseRow.id`. */
   reviewsByPurchaseRowId: Record<string, OrderReview>
+  /** User-marked “code redeemed / used” on order detail; key = `Order.id`. */
+  markedUsedByOrderId: Record<string, boolean>
   setOrders: (orders: Order[]) => void
   setPendingReviewRows: (rows: ReviewPurchaseRow[]) => void
   upsertOrder: (order: Order) => void
+  setOrderMarkedUsed: (orderId: string, marked: boolean) => void
   submitReviewForPurchaseRow: (
     purchaseRowId: string,
     payload: Pick<OrderReview, 'rating' | 'comment'>
@@ -151,6 +154,7 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
   orders: seedOrders,
   pendingReviewRows: seedPendingReviewRows,
   reviewsByPurchaseRowId: {},
+  markedUsedByOrderId: {},
   setOrders: (orders) => set({ orders }),
   setPendingReviewRows: (pendingReviewRows) => set({ pendingReviewRows }),
   upsertOrder: (order) =>
@@ -161,6 +165,13 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
       next[idx] = order
       return { orders: next }
     }),
+  setOrderMarkedUsed: (orderId, marked) =>
+    set((state) => ({
+      markedUsedByOrderId: {
+        ...state.markedUsedByOrderId,
+        [orderId]: marked,
+      },
+    })),
   submitReviewForPurchaseRow: (purchaseRowId, payload) =>
     set((state) => ({
       reviewsByPurchaseRowId: {

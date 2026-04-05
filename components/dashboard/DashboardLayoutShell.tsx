@@ -4,12 +4,13 @@ import Footer from '@/components/landing/Footer'
 import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
+import { useOrderReviewStore } from '@/lib/order-review-store'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { FunctionComponent, ReactNode } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Drawer } from 'vaul'
 
 const accountNav = [
@@ -131,9 +132,41 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({ pathname, onN
 
 type Props = { children: ReactNode }
 
+function formatBrandForBreadcrumb(brand: string): string {
+  return brand
+    .trim()
+    .split(/\s+/)
+    .map((word) =>
+      word.length ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word
+    )
+    .join(' ')
+}
+
 export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => {
   const pathname = usePathname()
-  const header = headerByPath[pathname] ?? headerByPath[DASHBOARD_PATHS.orders]
+  const orders = useOrderReviewStore((s) => s.orders)
+
+  const isOrderDetail =
+    pathname.startsWith(`${DASHBOARD_PATHS.orders}/`) && pathname !== DASHBOARD_PATHS.orders
+
+  const orderIdFromPath = useMemo(() => {
+    if (!isOrderDetail || !pathname.startsWith(`${DASHBOARD_PATHS.orders}/`)) return ''
+    const rest = pathname.slice(DASHBOARD_PATHS.orders.length + 1)
+    return rest.split('/')[0] ?? ''
+  }, [isOrderDetail, pathname])
+
+  const orderForBreadcrumb = useMemo(
+    () => (orderIdFromPath ? orders.find((o) => o.id === orderIdFromPath) : undefined),
+    [orderIdFromPath, orders]
+  )
+
+  const breadcrumbCurrentLabel = orderForBreadcrumb
+    ? formatBrandForBreadcrumb(orderForBreadcrumb.brand)
+    : 'Order details'
+
+  const pageHeader = !isOrderDetail
+    ? (headerByPath[pathname] ?? headerByPath[DASHBOARD_PATHS.orders])
+    : null
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
@@ -210,21 +243,51 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
             <section className="relative flex min-h-[min(60vh,520px)] min-w-0 flex-col gap-4 md:min-h-0 md:gap-8">
               <Reveal variant="slide-right" delay={80}>
                 <div className="flex w-full flex-col gap-3 text-white md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5">
-                  <div className="flex items-center gap-2">
-                    <CentralIcon
-                      name={header.icon as any}
-                      join="round"
-                      fill="filled"
-                      stroke="2"
-                      radius="1"
-                      size={16}
-                      ariaHidden={true}
-                      color="#EB2DFF"
-                    />
-                    <b className="leading-num-28 tracking-num-0_02 md:text-num-16 text-base sm:text-lg">
-                      {header.title}
-                    </b>
-                  </div>
+                  {isOrderDetail ? (
+                    <nav
+                      aria-label="Breadcrumb"
+                      className="font-commissioner flex min-w-0 flex-wrap items-center gap-2 text-base leading-num-28 sm:text-lg md:text-num-16"
+                    >
+                      <Link
+                        href={DASHBOARD_PATHS.orders as Route}
+                        className="text-lightsteelblue-200 hover:text-ghostwhite shrink-0 font-medium transition-colors"
+                      >
+                        Orders
+                      </Link>
+                      <CentralIcon
+                        name="IconChevronRightSmall"
+                        join="round"
+                        fill="filled"
+                        stroke="2"
+                        radius="1"
+                        size={16}
+                        ariaHidden={true}
+                        className="shrink-0 text-lightsteelblue-200"
+                      />
+                      <span
+                        className="text-ghostwhite min-w-0 truncate font-bold tracking-num-0_02"
+                        aria-current="page"
+                      >
+                        {breadcrumbCurrentLabel}
+                      </span>
+                    </nav>
+                  ) : pageHeader ? (
+                    <div className="flex items-center gap-2">
+                      <CentralIcon
+                        name={pageHeader.icon as any}
+                        join="round"
+                        fill="filled"
+                        stroke="2"
+                        radius="1"
+                        size={16}
+                        ariaHidden={true}
+                        color="#EB2DFF"
+                      />
+                      <b className="leading-num-28 tracking-num-0_02 md:text-num-16 text-base sm:text-lg">
+                        {pageHeader.title}
+                      </b>
+                    </div>
+                  ) : null}
                   <div className="text-lightsteelblue-200 flex w-full min-w-0 flex-wrap items-center gap-2 self-stretch rounded-md bg-gray-300 px-3 py-2.5 text-xs sm:w-fit sm:self-auto sm:px-2 sm:py-1.5 sm:text-[12px]">
                     <span className="shrink-0 leading-[15px] font-semibold">ID</span>
                     <div className="text-ghostwhite flex min-w-0 items-center gap-1.5">
