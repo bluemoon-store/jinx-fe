@@ -36,18 +36,18 @@ export function Step1GuestColumn({ onContinue }: Props) {
   const termsAccepted = watch('termsAccepted') === true
 
   return (
-    <div className="flex w-full max-w-[729px] flex-col gap-10">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <h2 className="font-nata-sans text-ghostwhite text-2xl font-extrabold tracking-[0.48px]">
+    <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8 lg:gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+        <h2 className="font-nata-sans text-xl font-extrabold tracking-[0.48px] text-ghostwhite sm:text-2xl">
           CHECKOUT
         </h2>
-        <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-lightsteelblue-200 text-base font-semibold">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          <span className="text-sm font-semibold text-lightsteelblue-200 sm:text-base">
             Already have an account?
           </span>
           <Link
             href="/"
-            className="rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.14)_100%)] px-1.5 py-0 text-base font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099]"
+            className="inline-flex min-h-11 items-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.14)_100%)] px-2 py-1.5 text-sm font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099] sm:px-1.5 sm:text-base"
           >
             Log In
           </Link>
@@ -56,7 +56,7 @@ export function Step1GuestColumn({ onContinue }: Props) {
 
       <form
         onSubmit={handleSubmit(() => onContinue())}
-        className="flex w-full max-w-[766px] flex-col gap-6 rounded-xl border border-[#eeeeee1a] bg-[#010f25] p-6 sm:p-8"
+        className="flex w-full max-w-[766px] flex-col gap-5 rounded-xl border border-[#eeeeee1a] bg-[#010f25] p-4 sm:gap-6 sm:p-6 md:p-8"
         noValidate
       >
         <div className="flex flex-col gap-2">
@@ -142,7 +142,7 @@ export function Step1GuestColumn({ onContinue }: Props) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-fuchsia text-num-16 sm:py-num-12 box-border flex w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 font-semibold text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60"
+          className="bg-fuchsia text-num-16 box-border flex min-h-11 w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3.5 font-semibold text-white shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-[48px] sm:py-num-12"
         >
           {isSubmitting ? 'Continuing…' : 'Continue'}
         </button>

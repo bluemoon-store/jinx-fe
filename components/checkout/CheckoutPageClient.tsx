@@ -18,17 +18,21 @@ import { Step5Success } from '@/components/checkout/steps/Step5Success'
 
 function StepDots({ step, onStep }: { step: number; onStep: (n: number) => void }) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 py-4">
+    <div className="flex flex-wrap items-center justify-center gap-1.5 py-4 sm:gap-2">
       {[1, 2, 3, 4, 5, 6].map((n) => (
         <button
           key={n}
           type="button"
           onClick={() => onStep(n)}
-          className={`h-2.5 w-2.5 rounded-full transition-colors ${
+          className={`flex h-11 min-w-11 items-center justify-center rounded-full transition-colors ${
             n === step ? 'bg-fuchsia' : 'bg-white/20 hover:bg-white/40'
           }`}
           aria-label={`Go to step ${n}`}
-        />
+        >
+          <span
+            className={`h-2.5 w-2.5 rounded-full ${n === step ? 'bg-white' : 'bg-white/60'}`}
+          />
+        </button>
       ))}
     </div>
   )
@@ -36,9 +40,11 @@ function StepDots({ step, onStep }: { step: number; onStep: (n: number) => void 
 
 function SuccessTopBar() {
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <BackToStore />
-      <CheckoutLogo variant="default" />
+      <div className="self-end sm:self-auto">
+        <CheckoutLogo variant="default" />
+      </div>
     </div>
   )
 }
@@ -60,13 +66,13 @@ export function CheckoutPageClient() {
   if (step === 5) {
     return (
       <div
-        className="flex min-h-screen flex-col bg-gray-500 px-4 py-8"
+        className="flex min-h-screen flex-col overflow-x-hidden bg-gray-500 px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
         style={{
           background:
             'radial-gradient(50% 50% at 50% 0%, rgba(27,217,36,0.2) 0%, rgba(27,217,36,0) 100%), linear-gradient(0deg, #010f25 0%, #010f25 100%)',
         }}
       >
-        <div className="mx-auto w-full max-w-[1622px] flex-1">
+        <div className="mx-auto w-full min-w-0 max-w-[1622px] flex-1">
           <SuccessTopBar />
           <Step5Success />
           <LegalFooter />
@@ -76,22 +82,22 @@ export function CheckoutPageClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#041329]">
-      <div className="mx-auto flex max-w-[1920px] flex-col lg:min-h-screen lg:flex-row">
-        <aside className="flex flex-col border-white/5 bg-gray-500 px-5 py-8 lg:w-1/2 lg:max-w-[952px] lg:border-r lg:px-10 xl:px-16">
+    <div className="min-h-screen overflow-x-hidden bg-[#041329]">
+      <div className="mx-auto flex min-w-0 max-w-[1920px] flex-col lg:min-h-screen lg:flex-row">
+        <aside className="flex w-full min-w-0 flex-col border-white/5 bg-gray-500 px-4 py-6 sm:px-6 sm:py-8 lg:w-1/2 lg:max-w-[952px] lg:border-r lg:px-8 xl:px-12">
           <BackToStore />
-          <div className="mt-10 flex flex-1 flex-col">
+          <div className="mt-6 flex flex-1 flex-col sm:mt-8 lg:mt-10">
             {step === 1 || step === 2 || step === 3 ? <CartColumn /> : null}
             {step === 4 || step === 6 ? <CheckoutOverviewCard /> : null}
           </div>
           <LegalFooter />
         </aside>
 
-        <main className="relative flex flex-1 flex-col px-5 py-8 lg:px-10 xl:px-16">
-          <div className="flex shrink-0 justify-end">
+        <main className="relative flex w-full min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-8 xl:px-12">
+          <div className="flex shrink-0 justify-end pb-2">
             <CheckoutLogo variant="alt" />
           </div>
-          <div className="flex flex-1 flex-col pt-4 lg:pt-6">
+          <div className="flex min-w-0 flex-1 flex-col pt-2 sm:pt-4 lg:pt-6">
             {step === 1 ? <Step1GuestColumn onContinue={() => setStep(2)} /> : null}
             {step === 2 ? <BuyerProtectionPanel onContinue={() => setStep(3)} /> : null}
             {step === 3 ? <PaymentMethodPanel onContinue={() => setStep(4)} /> : null}

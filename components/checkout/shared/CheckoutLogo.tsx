@@ -12,7 +12,7 @@ export function CheckoutLogo({ variant = 'default' }: Props) {
       alt="Jinx"
       width={82}
       height={47}
-      className="h-[47px] w-[82px] shrink-0"
+      className="h-9 w-auto max-w-[72px] shrink-0 sm:h-[47px] sm:max-w-[82px]"
       priority
     />
   )

@@ -17,19 +17,19 @@ type Props = { onContinue: () => void }
 
 export function BuyerProtectionPanel({ onContinue }: Props) {
   return (
-    <div className="flex w-full max-w-[729px] flex-col gap-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
         <div className="flex items-center gap-2.5">
-          <Image src={checkoutImg.buyerShield} alt="" width={22} height={22} />
-          <h2 className="font-nata-sans text-2xl font-extrabold tracking-[0.48px] text-ghostwhite">
+          <Image src={checkoutImg.buyerShield} alt="" width={22} height={22} className="shrink-0" />
+          <h2 className="font-nata-sans text-xl font-extrabold tracking-[0.48px] text-ghostwhite sm:text-2xl">
             BUYER PROTECTION
           </h2>
         </div>
-        <span className="text-base font-semibold text-lightsteelblue-200">Secure your checkout</span>
+        <span className="text-sm font-semibold text-lightsteelblue-200 sm:text-base">Secure your checkout</span>
       </div>
 
-      <div className="flex flex-col gap-[15px]">
-        <div className="flex flex-col gap-6 rounded-xl border border-fuchsia bg-gray-500 p-6 shadow-[0px_0px_0px_3px_#eb2dff33]">
+      <div className="flex flex-col gap-4 sm:gap-[15px]">
+        <div className="flex flex-col gap-4 rounded-xl border border-fuchsia bg-gray-500 p-4 shadow-[0px_0px_0px_3px_#eb2dff33] sm:gap-6 sm:p-6">
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex min-w-0 max-w-[400px] items-center gap-2.5">
@@ -64,7 +64,7 @@ export function BuyerProtectionPanel({ onContinue }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 rounded-xl border border-[#eeeeee1a] bg-gray-500 p-6">
+        <div className="flex flex-col gap-4 rounded-xl border border-[#eeeeee1a] bg-gray-500 p-4 sm:gap-6 sm:p-6">
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex items-center gap-2.5">
@@ -93,16 +93,16 @@ export function BuyerProtectionPanel({ onContinue }: Props) {
       </div>
 
       <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-[5px] opacity-75">
-          <Image src={checkoutImg.basketDecor} alt="" width={18} height={18} />
-          <p className="text-base font-semibold leading-7 tracking-[-0.16px] text-[#c2c2e2]">
+        <div className="flex items-start gap-2 opacity-75 sm:items-center sm:gap-[5px]">
+          <Image src={checkoutImg.basketDecor} alt="" width={18} height={18} className="mt-0.5 shrink-0 sm:mt-0" />
+          <p className="text-sm font-semibold leading-relaxed tracking-[-0.16px] text-[#c2c2e2] sm:text-base sm:leading-7">
             Protected by Jinx Buyer Protection
           </p>
         </div>
         <button
           type="button"
           onClick={onContinue}
-          className="rounded-[7.79px] bg-fuchsia px-12 py-3 text-base font-semibold text-white shadow-[0px_2px_0px_#eb2dff80] hover:brightness-110"
+          className="min-h-11 w-full rounded-[7.79px] bg-fuchsia px-6 py-3 text-sm font-semibold text-white shadow-[0px_2px_0px_#eb2dff80] hover:brightness-110 sm:w-auto sm:px-12 sm:text-base"
         >
           Continue to Payment
         </button>
