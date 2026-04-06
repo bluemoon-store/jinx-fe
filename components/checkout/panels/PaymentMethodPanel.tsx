@@ -1,6 +1,10 @@
+'use client'
+
 import Image from 'next/image'
+import CentralIcon from '@central-icons-react/all'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
+import { useAuthModal } from '@/components/auth/auth-modal-context'
 
 const rows = [
   { icon: checkoutImg.btc, title: 'Bitcoin', sub: 'BTC', amount: '0.00037 BTC', w: 40, h: 40 },
@@ -25,14 +29,32 @@ const rows = [
   { icon: checkoutImg.bch, title: 'Bitcoin Cash', sub: 'BCH', amount: '0.056 BCH', w: 40, h: 40 },
 ] as const
 
-type Props = { onContinue: () => void }
+type Props = { onBack: () => void; onContinue: () => void }
 
-export function PaymentMethodPanel({ onContinue }: Props) {
+export function PaymentMethodPanel({ onBack, onContinue }: Props) {
+  const { openAuthModal } = useAuthModal()
+
   return (
     <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
         <div className="flex items-center gap-2.5">
-          <Image src={checkoutImg.buyerShield} alt="" width={22} height={22} className="shrink-0" />
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none"
+            aria-label="Back"
+          >
+            <CentralIcon
+              name="IconArrowLeft"
+              join="round"
+              fill="outlined"
+              stroke="2"
+              radius="1"
+              size={22}
+              ariaHidden={true}
+              className="text-ghostwhite shrink-0"
+            />
+          </button>
           <h2 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
             PAYMENT METHOD
           </h2>
@@ -54,7 +76,11 @@ export function PaymentMethodPanel({ onContinue }: Props) {
                 className="h-px w-full"
               />
             ) : null}
-            <div className="flex flex-wrap items-center justify-center gap-3 p-4 sm:p-[22px]">
+            <button
+              type="button"
+              onClick={onContinue}
+              className="hover:bg-[#0E1B30] focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:p-[22px]"
+            >
               <Image src={row.icon} alt="" width={row.w} height={row.h} className="shrink-0" />
               <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">
                 <div className="text-base font-bold tracking-[0.36px] text-white sm:text-lg">
@@ -67,12 +93,12 @@ export function PaymentMethodPanel({ onContinue }: Props) {
               <span className="shrink-0 text-base font-bold tracking-[0.4px] text-white sm:text-xl">
                 {row.amount}
               </span>
-            </div>
+            </button>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-col gap-[15px]">
+      <div className="flex flex-col gap-num-15">
         <span className="text-base font-semibold text-white opacity-75">Unavailable Methods</span>
         <div className="flex min-h-[88px] flex-col items-stretch justify-center gap-3 rounded-xl border border-[#eeeeee1a] bg-gray-500 px-4 py-4 sm:flex-row sm:items-center sm:px-[22px]">
           <div className="flex flex-1 items-center gap-3 opacity-50">
@@ -84,20 +110,16 @@ export function PaymentMethodPanel({ onContinue }: Props) {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-white [text-shadow:0px_0px_8.63px_#00000099] sm:text-base">
+          <button
+            type="button"
+            onClick={() => openAuthModal('signin')}
+            className="focus-visible:ring-fuchsia/40 flex items-center gap-2 text-sm font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099] transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:text-base"
+          >
             Sign in to unlock
             <Image src={checkoutImg.lockFrame} alt="" width={14} height={14} />
-          </div>
+          </button>
         </div>
       </div>
-
-      <button
-        type="button"
-        onClick={onContinue}
-        className="bg-fuchsia min-h-11 w-full rounded-lg py-3 text-sm font-semibold text-white hover:brightness-110 sm:w-auto sm:self-end sm:px-12 sm:text-base"
-      >
-        Continue
-      </button>
     </div>
   )
 }

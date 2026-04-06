@@ -7,8 +7,10 @@ import { checkoutImg } from '@/components/checkout/checkout-images'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
+import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
 
 const FLAG_SRC = '/icons/flag.svg'
+const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantLabel}-${item.stateCode}`
@@ -47,19 +49,22 @@ function CartLine({
   const qtyLabel = String(item.quantity).padStart(2, '0')
 
   return (
-    <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-1 items-center gap-[15px]">
+    <div className="flex w-full min-w-0 max-w-full flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+      <div className="flex min-w-0 flex-1 items-start gap-[15px] sm:items-center">
         <LineThumb item={item} />
-        <div className="flex min-w-0 flex-col justify-center gap-0.5">
-          <div className="text-ghostwhite text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
+        <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
+          <div className="text-ghostwhite break-words text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
             {item.name}
           </div>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-            <span className="text-sm leading-snug font-medium text-[#c2c2e2] sm:text-[17.5px] sm:leading-[25px]">
+          <div className="flex w-full min-w-0 flex-nowrap items-center gap-x-2 sm:gap-x-2.5">
+            <span
+              className="min-w-0 flex-1 truncate text-sm leading-snug font-medium text-[#c2c2e2] sm:text-[17.5px] sm:leading-[25px]"
+              title={item.variantLabel}
+            >
               {item.variantLabel}
             </span>
-            <Image src={checkoutImg.line} alt="" width={10} height={2} />
-            <div className="flex items-center gap-[7.5px]">
+            <Image src={checkoutImg.line} alt="" width={10} height={2} className="shrink-0 self-center" />
+            <div className="flex shrink-0 items-center gap-[7.5px]">
               <div className="relative h-[18px] w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
                 <Image
                   src={FLAG_SRC}
@@ -83,8 +88,8 @@ function CartLine({
           </div>
         </div>
       </div>
-      <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-3 sm:w-[283px] sm:justify-between sm:gap-6">
-        <div className="border-whitesmoke-300 flex min-h-11 items-center gap-2 rounded-[10px] border-[1.25px] bg-gray-100 px-1.5 py-1 sm:gap-[12.5px]">
+      <div className="flex w-full min-w-0 max-w-full shrink-0 flex-wrap content-center items-center justify-between gap-x-3 gap-y-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end sm:gap-x-4">
+        <div className="border-whitesmoke-300 flex min-h-11 shrink-0 items-center gap-2 rounded-[10px] border-[1.25px] bg-gray-100 px-1.5 py-1 sm:gap-[12.5px]">
           <button
             type="button"
             className="flex h-11 w-11 shrink-0 items-center justify-center"
@@ -124,9 +129,12 @@ function CartLine({
 export function CartColumn() {
   const items = useCartStore((s) => s.items)
   const adjustItemQuantity = useCartStore((s) => s.adjustItemQuantity)
+  const coverage = useBuyerProtectionStore((s) => s.coverage)
 
   const totalUnits = items.reduce((sum, i) => sum + i.quantity, 0)
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
+  const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
+  const totalDue = subtotal + buyerProtectionUsd
 
   if (!items.length) {
     return (
@@ -191,7 +199,7 @@ export function CartColumn() {
         <Image
           src={checkoutImg.divider}
           alt=""
-          width={729}
+          width={800}
           height={1}
           className="h-px w-full opacity-80"
         />
@@ -214,7 +222,7 @@ export function CartColumn() {
         <Image
           src={checkoutImg.divider}
           alt=""
-          width={729}
+          width={800}
           height={1}
           className="h-px w-full opacity-80"
         />
@@ -230,6 +238,23 @@ export function CartColumn() {
             <span className="text-sm font-semibold text-white sm:text-base">Discount applied</span>
             <span className="text-sm font-semibold text-white sm:text-base">{formatUsd(0)}</span>
           </div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <Image
+                src={checkoutImg.basketLine}
+                alt=""
+                width={18}
+                height={18}
+                className="shrink-0"
+              />
+              <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
+                {coverage === 'enhanced' ? 'Enhanced Buyer Protection' : 'Basic Coverage'}
+              </span>
+            </div>
+            <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
+              {formatUsd(buyerProtectionUsd)}
+            </span>
+          </div>
           <Image
             src={checkoutImg.divider}
             alt=""
@@ -242,7 +267,7 @@ export function CartColumn() {
               Total amount due
             </span>
             <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">
-              {formatUsd(subtotal)}
+              {formatUsd(totalDue)}
             </span>
           </div>
         </div>

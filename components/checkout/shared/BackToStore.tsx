@@ -1,16 +1,28 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import CentralIcon from '@central-icons-react/all'
 
-import { checkoutImg } from '@/components/checkout/checkout-images'
+type Props = {
+  onBack?: () => void
+  label?: string
+}
 
-export function BackToStore() {
+export function BackToStore({ onBack, label }: Props) {
   return (
-    <Link
-      href="/"
-      className="text-ghostwhite inline-flex min-h-11 w-fit shrink-0 items-center gap-2 self-start rounded-xl bg-white/[0.05] px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/10"
+    <button
+      type="button"
+      onClick={onBack}
+      className="text-ghostwhite inline-flex min-h-11 w-fit shrink-0 items-center gap-2 self-start rounded-xl bg-white/5 px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/10"
     >
-      <Image src={checkoutImg.back} alt="" width={14} height={14} />
-      Back to store
-    </Link>
+      <CentralIcon
+        name="IconArrowLeft"
+        join="round"
+        fill="outlined"
+        stroke="2"
+        radius="1"
+        size={20}
+        ariaHidden={true}
+        className="text-ghostwhite"
+      />
+      {label ?? 'Back to store'}
+    </button>
   )
 }

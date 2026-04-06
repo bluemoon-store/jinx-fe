@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
 
+import { useAuthModal } from '@/components/auth/auth-modal-context'
 import { guestCheckoutSchema } from '@/lib/validations'
 
 type GuestCheckoutFormValues = {
@@ -23,6 +24,7 @@ type Props = { onContinue: () => void }
 
 export function Step1GuestColumn({ onContinue }: Props) {
   const termsId = useId()
+  const { openAuthModal } = useAuthModal()
   const {
     register,
     handleSubmit,
@@ -45,12 +47,13 @@ export function Step1GuestColumn({ onContinue }: Props) {
           <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
             Already have an account?
           </span>
-          <Link
-            href="/"
-            className="inline-flex min-h-11 items-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.14)_100%)] px-2 py-1.5 text-sm font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099] sm:px-1.5 sm:text-base"
+          <button
+            type="button"
+            onClick={() => openAuthModal('signin')}
+            className="inline-flex items-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.14)_100%)] px-2 py-1.5 text-sm font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099] sm:px-1.5 sm:text-base"
           >
             Log In
-          </Link>
+          </button>
         </div>
       </div>
 

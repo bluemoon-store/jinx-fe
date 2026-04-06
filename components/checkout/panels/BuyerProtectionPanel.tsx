@@ -1,6 +1,8 @@
 import Image from 'next/image'
+import CentralIcon from '@central-icons-react/all'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
+import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
 
 function Benefit({ text }: { text: string }) {
   return (
@@ -19,14 +21,34 @@ function Benefit({ text }: { text: string }) {
   )
 }
 
-type Props = { onContinue: () => void }
+type Props = { onBack: () => void; onContinue: () => void }
 
-export function BuyerProtectionPanel({ onContinue }: Props) {
+export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
+  const coverage = useBuyerProtectionStore((s) => s.coverage)
+  const setCoverage = useBuyerProtectionStore((s) => s.setCoverage)
+  const isSelected = (planId: 'enhanced' | 'basic') => coverage === planId
+
   return (
     <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
-        <div className="flex items-center gap-2.5">
-          <Image src={checkoutImg.buyerShield} alt="" width={22} height={22} className="shrink-0" />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none"
+            aria-label="Back"
+          >
+            <CentralIcon
+              name="IconArrowLeft"
+              join="round"
+              fill="outlined"
+              stroke="2"
+              radius="1"
+              size={20}
+              ariaHidden={true}
+              className="text-ghostwhite"
+            />
+          </button>
           <h2 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
             BUYER PROTECTION
           </h2>
@@ -36,13 +58,28 @@ export function BuyerProtectionPanel({ onContinue }: Props) {
         </span>
       </div>
 
-      <div className="flex flex-col gap-4 sm:gap-[15px]">
-        <div className="border-fuchsia flex flex-col gap-4 rounded-xl border bg-gray-500 p-4 shadow-[0px_0px_0px_3px_#eb2dff33] sm:gap-6 sm:p-6">
+      <div className="flex flex-col gap-4 sm:gap-num-15">
+        <button
+          type="button"
+          onClick={() => setCoverage('enhanced')}
+          aria-pressed={isSelected('enhanced')}
+          className={`flex w-full flex-col gap-4 rounded-xl border bg-gray-500 p-4 text-left transition-colors sm:gap-6 sm:p-6 ${
+            isSelected('enhanced')
+              ? 'border-fuchsia shadow-[0px_0px_0px_3px_#eb2dff33]'
+              : 'border-[#eeeeee1a] hover:border-white/30'
+          }`}
+        >
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex max-w-[400px] min-w-0 items-center gap-2.5">
-                <div className="border-whitesmoke-300 bg-fuchsia flex h-5 w-5 items-center justify-center rounded-full border-[0.83px]">
-                  <div className="h-2.5 w-2.5 rounded-[5px] bg-white" />
+                <div
+                  className={`border-whitesmoke-300 flex h-5 w-5 items-center justify-center rounded-full border-[0.83px] ${
+                    isSelected('enhanced') ? 'bg-fuchsia' : 'bg-transparent'
+                  }`}
+                >
+                  {isSelected('enhanced') ? (
+                    <div className="h-2.5 w-2.5 rounded-[5px] bg-white" />
+                  ) : null}
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-lg font-bold tracking-[0.36px] text-white">
@@ -62,52 +99,73 @@ export function BuyerProtectionPanel({ onContinue }: Props) {
               </div>
               <span className="text-xl font-bold tracking-[0.4px] text-white">+5.00 USD</span>
             </div>
-            <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex max-w-[509px] flex-col gap-1">
                 <Benefit text="Full reimbursement or instant replacement for failed or missing deliveries" />
                 <Benefit text="Protection against inactive or compromised account issues" />
                 <Benefit text="Real-time tracking support for missing or delayed links" />
                 <Benefit text="24/7 priority assistance with fast-track resolution options" />
               </div>
-              <Image
-                src={checkoutImg.shield}
-                alt=""
-                width={68}
-                height={68}
-                className="mx-auto shrink-0 lg:mx-0"
+              <CentralIcon
+                name="IconShieldCheck"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={68}
+                className="mx-auto shrink-0 text-[#0E1B30] lg:mx-0"
               />
             </div>
           </div>
-        </div>
+        </button>
 
-        <div className="flex flex-col gap-4 rounded-xl border border-[#eeeeee1a] bg-gray-500 p-4 sm:gap-6 sm:p-6">
+        <button
+          type="button"
+          onClick={() => setCoverage('basic')}
+          aria-pressed={isSelected('basic')}
+          className={`flex w-full flex-col gap-4 rounded-xl border bg-gray-500 p-4 text-left transition-colors sm:gap-6 sm:p-6 ${
+            isSelected('basic')
+              ? 'border-fuchsia shadow-[0px_0px_0px_3px_#eb2dff33]'
+              : 'border-[#eeeeee1a] hover:border-white/30'
+          }`}
+        >
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex items-center gap-2.5">
-                <div className="border-whitesmoke-300 flex h-5 w-5 items-center justify-center rounded-full border" />
+                <div
+                  className={`border-whitesmoke-300 flex h-5 w-5 items-center justify-center rounded-full border ${
+                    isSelected('basic') ? 'bg-fuchsia' : 'bg-transparent'
+                  }`}
+                >
+                  {isSelected('basic') ? (
+                    <div className="h-2.5 w-2.5 rounded-[5px] bg-white" />
+                  ) : null}
+                </div>
                 <span className="text-lg font-bold tracking-[0.36px] text-white">
                   Basic Coverage
                 </span>
               </div>
               <span className="text-xl font-bold tracking-[0.4px] text-white">Free</span>
             </div>
-            <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex max-w-[509px] flex-col gap-1">
                 <Benefit text="No reimbursement or replacement coverage guaranteed" />
                 <Benefit text="Limited support availability" />
                 <Benefit text="No expedited resolution services" />
                 <Benefit text="Standard assistance only" />
               </div>
-              <Image
-                src={checkoutImg.supportIcon}
-                alt=""
-                width={68}
-                height={68}
-                className="mx-auto shrink-0 lg:mx-0"
+              <CentralIcon
+                name="IconSupport"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={68}
+                className="mx-auto shrink-0 text-[#0E1B30] lg:mx-0"
               />
             </div>
           </div>
-        </div>
+        </button>
       </div>
 
       <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">

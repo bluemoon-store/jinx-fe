@@ -240,7 +240,7 @@ const HeroSection: FunctionComponent = () => {
 
       {/* Bottom tabs from old HeroSection, placed under header banner */}
       <div className="mx-auto w-full max-w-[1476.9px] px-4 pt-6 pb-8 sm:px-6 lg:px-8">
-        <div className="flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
+        <div className="font-commissioner flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
           {tabs.map(({ label, icon }) => (
             <div key={label} className="group relative w-auto">
               <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#003bbf] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />

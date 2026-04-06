@@ -7,9 +7,10 @@ import { checkoutImg } from '@/components/checkout/checkout-images'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
+import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
 
 const FLAG_SRC = '/icons/flag.svg'
-const BUYER_PROTECTION_USD = 5
+const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantLabel}-${item.stateCode}`
@@ -23,13 +24,13 @@ function LineThumb({ item }: { item: CartItem }) {
         alt=""
         width={122}
         height={63}
-        className="h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px] sm:w-[122px]"
+        className="h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px] sm:w-num-122"
       />
     )
   }
   return (
     <div
-      className="h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px] sm:w-[122px]"
+      className="h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px] sm:w-num-122"
       aria-hidden
     />
   )
@@ -41,7 +42,7 @@ function LineItemReadonly({ item }: { item: CartItem }) {
 
   return (
     <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-1 items-center gap-[15px]">
+      <div className="flex min-w-0 flex-1 items-center gap-num-15">
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-col gap-0.5">
           <div className="text-ghostwhite text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
@@ -53,7 +54,7 @@ function LineItemReadonly({ item }: { item: CartItem }) {
             </span>
             <Image src={checkoutImg.line} alt="" width={10} height={2} />
             <div className="flex items-center gap-[7.5px]">
-              <div className="relative h-[18px] w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10">
+              <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10">
                 <Image
                   src={FLAG_SRC}
                   alt=""
@@ -89,12 +90,14 @@ function LineItemReadonly({ item }: { item: CartItem }) {
 }
 
 /** Left column: “Checkout overview” with payment breakdown (steps 4 & 6). */
-export function CheckoutOverviewCard() {
+export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNote?: boolean }) {
   const items = useCartStore((s) => s.items)
+  const coverage = useBuyerProtectionStore((s) => s.coverage)
 
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
   const discount = 0
-  const totalDue = subtotal - discount + BUYER_PROTECTION_USD
+  const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
+  const totalDue = subtotal - discount + buyerProtectionUsd
 
   if (!items.length) {
     return (
@@ -132,7 +135,7 @@ export function CheckoutOverviewCard() {
 
         <div className="flex items-center gap-2">
           <div className="h-px flex-1 bg-white/20" />
-          <span className="rounded-[99px] bg-white/10 px-3 py-1 text-[12.8px] font-semibold text-white">
+          <span className="rounded-num-99 bg-white/10 px-3 py-1 text-[12.8px] font-semibold text-white">
             Payment Details
           </span>
           <div className="h-px flex-1 bg-white/20" />
@@ -196,11 +199,11 @@ export function CheckoutOverviewCard() {
                 className="shrink-0"
               />
               <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
-                Enhanced Buyer Protection
+                {coverage === 'enhanced' ? 'Enhanced Buyer Protection' : 'Basic Coverage'}
               </span>
             </div>
             <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
-              {formatUsd(BUYER_PROTECTION_USD)}
+              {formatUsd(buyerProtectionUsd)}
             </span>
           </div>
           <Image
@@ -221,7 +224,11 @@ export function CheckoutOverviewCard() {
         </div>
       </div>
 
-      <div className="flex items-start gap-2 opacity-75 sm:items-center sm:gap-[5px]">
+      <div
+        className={`flex gap-2 opacity-75 sm:gap-[5px] ${
+          centerSecurityNote ? 'items-center justify-center text-center' : 'items-start sm:items-center'
+        }`}
+      >
         <Image
           src={checkoutImg.shield}
           alt=""

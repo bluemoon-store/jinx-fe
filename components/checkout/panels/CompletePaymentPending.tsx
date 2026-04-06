@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
@@ -6,9 +7,33 @@ import { SupportRow } from '@/components/checkout/shared/SupportRow'
 
 type Props = { onPaid?: () => void }
 
+const TOTAL_SECONDS = 20 * 60
+
 export function CompletePaymentPending({ onPaid }: Props) {
+  const [remainingSeconds, setRemainingSeconds] = useState(TOTAL_SECONDS)
+
+  useEffect(() => {
+    if (remainingSeconds <= 0) return
+
+    const id = setInterval(() => {
+      setRemainingSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(id)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(id)
+  }, [remainingSeconds])
+
+  const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0')
+  const seconds = String(remainingSeconds % 60).padStart(2, '0')
+  const progress = 1 - remainingSeconds / TOTAL_SECONDS
+
   return (
-    <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-[30px]">
+    <div className="sm:gap-num-30 flex w-full max-w-[729px] flex-col gap-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
         <h2 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
           COMPLETE PAYMENT
@@ -85,7 +110,7 @@ export function CompletePaymentPending({ onPaid }: Props) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="relative h-[18px] w-[18px]">
+            <div className="h-num-18 w-num-18 relative">
               <Image
                 src={checkoutImg.ellipseA}
                 alt=""
@@ -98,11 +123,15 @@ export function CompletePaymentPending({ onPaid }: Props) {
                 alt=""
                 width={16}
                 height={16}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                className="absolute top-1/2 left-1/2"
+                style={{
+                  transform: `translate(-50%, -50%) rotate(${progress * 360}deg)`,
+                  transformOrigin: 'center',
+                }}
               />
             </div>
             <span className="text-base font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099]">
-              16:32
+              {minutes}:{seconds}
             </span>
           </div>
         </div>
