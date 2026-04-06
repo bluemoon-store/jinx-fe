@@ -1,91 +1,69 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import { CentralIconName } from '@central-icons-react/all/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FunctionComponent, useCallback, useState } from 'react'
 
 const tabs = [
-  'Cashout',
-  'Food',
-  'Flights',
-  'Groceries',
-  'Shopping',
-  'Clothing',
-  'Gas/Oil',
-  'Tickets',
-  'Jewelry',
-  'Rentals',
-  'Streaming',
-]
-
-/** Category pills under the hero art — icon URL + label (+ optional primary style). */
-const categoryChips: {
-  icon: string
-  label: string
-  variant?: 'default' | 'primary'
-}[] = [
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconsquaregridmagnifyingglass.svg',
     label: 'All Giftcards',
+    icon: 'IconSquareGridMagnifyingGlass',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/icondollar.svg',
     label: 'Cashout',
+    icon: 'IconDollar',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconfoodbell.svg',
     label: 'Hotels',
-    variant: 'primary',
+    icon: 'IconFoodBell',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconcookies.svg',
     label: 'Food',
+    icon: 'IconCookies',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconairplane.svg',
     label: 'Flights',
+    icon: 'IconAirplane',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconapples.svg',
     label: 'Groceries',
+    icon: 'IconApples',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconshoppingbag2.svg',
     label: 'Shopping',
+    icon: 'IconShoppingBag2',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconfashion.svg',
     label: 'Clothing',
+    icon: 'IconFashion',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/icongas.svg',
     label: 'Gas/Oil',
+    icon: 'IconGas',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconticket.svg',
     label: 'Tickets',
+    icon: 'IconTicket',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconpeopleidcard.svg',
     label: 'Lifestyle',
+    icon: 'IconPeopleIdCard',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/icondiamondshine.svg',
     label: 'Jewelry',
+    icon: 'IconDiamondShine',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconcarfrontview.svg',
     label: 'Rentals',
+    icon: 'IconCarFrontView',
   },
   {
-    icon: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/iconclapboardwide.svg',
     label: 'Streaming',
+    icon: 'IconClapboardWide',
   },
 ]
-
-const chipLabelClass =
-  'flex items-center justify-center mt-[-1px] font-14-semibold font-[number:var(--14-semibold-font-weight)] text-[#eeeeee] text-[length:var(--14-semibold-font-size)] text-center tracking-[var(--14-semibold-letter-spacing)] leading-[var(--14-semibold-line-height)] whitespace-nowrap [font-style:var(--14-semibold-font-style)]'
 
 const HeroSection: FunctionComponent = () => {
   const router = useRouter()
@@ -226,12 +204,7 @@ const HeroSection: FunctionComponent = () => {
                   <img
                     className="h-[28.5px] w-[28.5px]"
                     alt="Crypto logos"
-                    src="https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---litecoin-ltc.svg"
-                  />
-                  <img
-                    className="h-[28.5px] w-[28.5px]"
-                    alt="Crypto logos USD"
-                    src="https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---usd-coin.svg"
+                    src="https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg"
                   />
                   <img
                     className="h-[28.5px] w-[28.5px]"
@@ -241,7 +214,7 @@ const HeroSection: FunctionComponent = () => {
                   <img
                     className="h-[28.5px] w-[28.5px]"
                     alt="Crypto logos"
-                    src="https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg"
+                    src="https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---litecoin-ltc.svg"
                   />
                   <img
                     className="h-[28.5px] w-[28.5px]"
@@ -268,7 +241,7 @@ const HeroSection: FunctionComponent = () => {
       {/* Bottom tabs from old HeroSection, placed under header banner */}
       <div className="mx-auto w-full max-w-[1476.9px] px-4 pt-6 pb-8 sm:px-6 lg:px-8">
         <div className="flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
-          {tabs.map((label) => (
+          {tabs.map(({ label, icon }) => (
             <div key={label} className="group relative w-auto">
               <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#003bbf] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
@@ -276,7 +249,16 @@ const HeroSection: FunctionComponent = () => {
                 type="button"
                 className="relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-sm text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2 sm:text-base"
               >
-                <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconDollar.svg" />
+                <CentralIcon
+                  name={icon as CentralIconName}
+                  join="round"
+                  fill="filled"
+                  stroke="2"
+                  radius="1"
+                  size={18}
+                  color="#FFFFFF"
+                  ariaHidden={true}
+                />
                 <span className="leading-5 font-semibold">{label}</span>
               </button>
             </div>

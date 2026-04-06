@@ -1,7 +1,10 @@
 'use client'
 
-import { FunctionComponent } from 'react'
+import { CentralIcon } from '@central-icons-react/all'
+import { FunctionComponent, useEffect, useState } from 'react'
 import Link from 'next/link'
+import { createPortal } from 'react-dom'
+import ShopProductDetailModal from '@/components/landing/shop/detail/ShopProductDetailModal'
 import { Reveal } from '@/components/ui/reveal'
 
 const slugify = (value: string) => {
@@ -96,6 +99,15 @@ const SellingSection: FunctionComponent = () => {
       },
     },
   ]
+  const [quickBuyProduct, setQuickBuyProduct] = useState<{
+    name: string
+    imageSrc: string
+  } | null>(null)
+  const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    setQuickBuyPortalEl(document.body)
+  }, [])
 
   return (
     <section>
@@ -136,7 +148,7 @@ const SellingSection: FunctionComponent = () => {
               delay={idx * 70}
               className="max-w-num-281 w-full text-lg sm:text-[20px]"
             >
-              <Link href={`/shop/${slugify(item.name)}`} className="block w-full">
+              <div className="block w-full">
                 {/* Outer: reserves space for the logo that pokes above the card */}
                 <div className="relative flex flex-col items-center pt-[50px] sm:pt-14">
                   {/* Vector 6 — flames background, behind the card, shifted down */}
@@ -184,35 +196,79 @@ const SellingSection: FunctionComponent = () => {
                       }}
                     >
                       {/* Name + price */}
-                      <div className="flex w-36 flex-col items-center gap-0.5">
-                        <div className="flex items-center justify-center gap-[5px] self-stretch">
-                          <div className="tracking-num-0.02 font-extrabold uppercase">
-                            {item.name}
+                      <Link href={`/shop/${slugify(item.name)}`} className="block">
+                        <div className="flex w-36 flex-col items-center gap-0.5">
+                          <div className="flex items-center justify-center gap-[5px] self-stretch">
+                            <div className="tracking-num-0.02 font-extrabold uppercase">
+                              {item.name}
+                            </div>
+                            <img
+                              className="h-num-20.2 w-num-31 shrink-0"
+                              alt=""
+                              src="/icons/Hot.svg"
+                            />
                           </div>
-                          <img
-                            className="h-num-20.2 w-num-31 shrink-0"
-                            alt=""
-                            src="/icons/Hot.svg"
-                          />
+                          <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
+                            <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                              from{' '}
+                            </div>
+                            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+                              <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                                {item.price}
+                              </b>
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-                          <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                            from{' '}
-                          </div>
-                          <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
-                            <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                              {item.price}
-                            </b>
-                          </div>
-                        </div>
-                      </div>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.logo.src })}
+                        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 flex min-h-[44px] w-full items-center justify-center gap-1.5 bg-[#48293D] px-4 py-2 text-white sm:gap-[5px] sm:py-1.5"
+                      >
+                        <CentralIcon
+                          name="IconZap"
+                          join="round"
+                          fill="filled"
+                          stroke="1"
+                          radius="1"
+                          size={16}
+                          className="text-white"
+                        />
+                        <span className="tracking-num--0_01 leading-num-26 font-semibold">
+                          Quick Buy
+                        </span>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             </Reveal>
           ))}
         </div>
+        {quickBuyProduct &&
+          quickBuyPortalEl &&
+          createPortal(
+            <div className="fixed inset-0 z-90 flex items-center justify-center p-4 sm:p-6 lg:px-8">
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/60"
+                aria-label="Close quick buy dialog"
+                onClick={() => setQuickBuyProduct(null)}
+              />
+              <div
+                className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
+                role="dialog"
+                aria-modal="true"
+              >
+                <ShopProductDetailModal
+                  productName={quickBuyProduct.name}
+                  imageSrc={quickBuyProduct.imageSrc}
+                  onClose={() => setQuickBuyProduct(null)}
+                />
+              </div>
+            </div>,
+            quickBuyPortalEl
+          )}
 
         <Reveal variant="fade-up" delay={items.length * 70}>
           <div className="mt-8 flex justify-center sm:mt-10">

@@ -4,6 +4,7 @@ import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import CartDropdownPanel from '@/components/landing/CartDropdownPanel'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
+import { useCartStore } from '@/lib/cart-store'
 import { useAppStore } from '@/lib/store'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
@@ -27,9 +28,11 @@ const Navbar: FunctionComponent = () => {
   const pathname = usePathname()
   const { openAuthModal, isAuthenticated } = useAuthModal()
   const logout = useAppStore((s) => s.logout)
+  const cartItems = useCartStore((s) => s.items)
   // start in dark mode (switch to the right / pink)
   const [themeSwitchOn, setThemeSwitchOn] = useState(true)
   const isLoggedIn = isAuthenticated
+  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   const navLinks = [
     { label: 'Shop', href: '/shop', icon: 'IconBasket1' },
@@ -230,13 +233,16 @@ const Navbar: FunctionComponent = () => {
                   <img className="h-4 w-4" alt="" src="/icons/IconRescueRing.svg" />
                   <b className="tracking-num--0_01 leading-num-28">0</b>
                 </button>
-                <button className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]">
+                <Link
+                  href={DASHBOARD_PATHS.wallet as Route}
+                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
+                >
                   <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
                   <span className="tracking-num--0_01 leading-num-28 font-semibold">Wallet</span>
                   <span className="font-nata-sans tracking-num--0_01 leading-num-28 font-extrabold">
                     $0.00
                   </span>
-                </button>
+                </Link>
               </>
             ) : (
               <>
@@ -268,124 +274,131 @@ const Navbar: FunctionComponent = () => {
               </>
             )}
           </div>
-          {isLoggedIn && (
-            <>
-              <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
-              <div className="flex h-[46px] shrink-0 items-center gap-2">
-                <div className="relative shrink-0" ref={desktopCartMenuRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCartMenuOpen((o) => !o)
-                      setDesktopUserMenuOpen(false)
-                    }}
-                    aria-expanded={cartMenuOpen}
-                    aria-haspopup="dialog"
-                    aria-label="Shopping cart"
-                    className={`rounded-num-8 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-gray-700 transition-colors ${
-                      cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
-                    }`}
-                  >
-                    <img className="h-[24px] w-[24px]" alt="" src="/icons/IconBasket1-2.svg" />
-                  </button>
-                  {cartMenuOpen && (
-                    <div className="absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2">
-                      <CartDropdownPanel />
-                    </div>
+          <>
+            <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+            <div className="flex h-[46px] shrink-0 items-center gap-2">
+              <div className="relative shrink-0" ref={desktopCartMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCartMenuOpen((o) => !o)
+                    setDesktopUserMenuOpen(false)
+                  }}
+                  aria-expanded={cartMenuOpen}
+                  aria-haspopup="dialog"
+                  aria-label="Shopping cart"
+                  className={`rounded-num-8 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-gray-700 transition-colors ${
+                    cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
+                  }`}
+                >
+                  <img className="h-[24px] w-[24px]" alt="" src="/icons/IconBasket1-2.svg" />
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 rounded-full bg-fuchsia px-1.5 text-[10px] font-bold leading-4 text-white">
+                      {cartItemCount}
+                    </span>
                   )}
-                </div>
-                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
-                <div className="relative shrink-0" ref={desktopUserMenuRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDesktopUserMenuOpen((o) => !o)
-                      setCartMenuOpen(false)
-                    }}
-                    aria-expanded={desktopUserMenuOpen}
-                    aria-haspopup="true"
-                    className="rounded-num-8 block max-h-full w-10 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-200"
-                  >
-                    <img
-                      className="rounded-num-8 max-h-full w-10 object-cover"
-                      alt=""
-                      src="/icons/Ellipse 1.svg"
-                    />
-                  </button>
-                  {desktopUserMenuOpen && (
-                    <div
-                      className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[232px] flex-col border border-solid border-white/10 bg-[#071935] py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
-                      role="menu"
-                    >
-                      {userDropdownLinks.map((item) => (
-                        <Link
-                          key={item.key}
-                          href={item.href as Route}
-                          role="menuitem"
-                          onClick={closeDesktopUserMenu}
-                          onMouseEnter={() => setUserMenuHoverKey(item.key)}
-                          onMouseLeave={() => setUserMenuHoverKey(null)}
-                          className={`group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#14253F] ${
-                            item.trailing ? 'justify-between gap-3' : ''
-                          }`}
-                        >
-                          <span className="flex min-w-0 items-center gap-2.5">
-                            <CentralIcon
-                              name={item.icon as any}
-                              join="round"
-                              fill="filled"
-                              stroke="2"
-                              radius="1"
-                              size={20}
-                              color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
-                              ariaHidden={true}
-                            />
-                            <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
-                              {item.label}
-                            </span>
-                          </span>
-                          {item.trailing ? (
-                            <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
-                              {item.trailing}
-                            </span>
-                          ) : null}
-                        </Link>
-                      ))}
-                      <div
-                        className="border-whitesmoke-300 mx-3 my-1.5 border-t border-solid"
-                        role="separator"
-                      />
-                      <button
-                        type="button"
-                        role="menuitem"
-                        onClick={() => {
-                          setLogOutModalOpen(true)
-                          closeDesktopUserMenu()
-                        }}
-                        onMouseEnter={() => setUserMenuHoverKey('logout')}
-                        onMouseLeave={() => setUserMenuHoverKey(null)}
-                        className="group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#14253F]"
-                      >
-                        <CentralIcon
-                          name="IconArrowBoxLeft"
-                          join="round"
-                          fill="filled"
-                          stroke="2"
-                          radius="1"
-                          size={20}
-                          color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
-                          ariaHidden={true}
-                        />
-                        <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
-                          Log Out
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                </button>
+                {cartMenuOpen && (
+                  <div className="absolute top-full right-0 z-50 mt-2">
+                    <CartDropdownPanel />
+                  </div>
+                )}
               </div>
-            </>
-          )}
+              {isLoggedIn && (
+                <>
+                  <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+                  <div className="relative shrink-0" ref={desktopUserMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDesktopUserMenuOpen((o) => !o)
+                        setCartMenuOpen(false)
+                      }}
+                      aria-expanded={desktopUserMenuOpen}
+                      aria-haspopup="true"
+                      className="rounded-num-8 block max-h-full w-10 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-200"
+                    >
+                      <img
+                        className="rounded-num-8 max-h-full w-10 object-cover"
+                        alt=""
+                        src="/icons/Ellipse 1.svg"
+                      />
+                    </button>
+                    {desktopUserMenuOpen && (
+                      <div
+                        className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[232px] flex-col border border-solid border-white/10 bg-[#071935] py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+                        role="menu"
+                      >
+                        {userDropdownLinks.map((item) => (
+                          <Link
+                            key={item.key}
+                            href={item.href as Route}
+                            role="menuitem"
+                            onClick={closeDesktopUserMenu}
+                            onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                            onMouseLeave={() => setUserMenuHoverKey(null)}
+                            className={`group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#14253F] ${
+                              item.trailing ? 'justify-between gap-3' : ''
+                            }`}
+                          >
+                            <span className="flex min-w-0 items-center gap-2.5">
+                              <CentralIcon
+                                name={item.icon as any}
+                                join="round"
+                                fill="filled"
+                                stroke="2"
+                                radius="1"
+                                size={20}
+                                color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
+                                ariaHidden={true}
+                              />
+                              <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                                {item.label}
+                              </span>
+                            </span>
+                            {item.trailing ? (
+                              <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                                {item.trailing}
+                              </span>
+                            ) : null}
+                          </Link>
+                        ))}
+                        <div
+                          className="border-whitesmoke-300 mx-3 my-1.5 border-t border-solid"
+                          role="separator"
+                        />
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setLogOutModalOpen(true)
+                            closeDesktopUserMenu()
+                          }}
+                          onMouseEnter={() => setUserMenuHoverKey('logout')}
+                          onMouseLeave={() => setUserMenuHoverKey(null)}
+                          className="group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#14253F]"
+                        >
+                          <CentralIcon
+                            name="IconArrowBoxLeft"
+                            join="round"
+                            fill="filled"
+                            stroke="2"
+                            radius="1"
+                            size={20}
+                            color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
+                            ariaHidden={true}
+                          />
+                          <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                            Log Out
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </>
         </div>
       </div>
 
@@ -429,39 +442,47 @@ const Navbar: FunctionComponent = () => {
           />
         </button>
 
+        <div className="relative shrink-0" ref={mobileCartMenuRef}>
+          <button
+            type="button"
+            onClick={() => {
+              setCartMenuOpen((o) => !o)
+              setMobileUserMenuOpen(false)
+              setMobileNavMenuOpen(false)
+            }}
+            aria-expanded={cartMenuOpen}
+            aria-haspopup="dialog"
+            aria-label="Shopping cart"
+            className={`rounded-num-8 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-gray-700 transition-colors ${
+              cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
+            }`}
+          >
+            <img className="h-5 w-5" alt="" src="/icons/IconBasket1-2.svg" />
+            {cartItemCount > 0 && (
+              <span className="absolute -top-1 -right-1 rounded-full bg-fuchsia px-1.5 text-[10px] font-bold leading-4 text-white">
+                {cartItemCount}
+              </span>
+            )}
+          </button>
+          {cartMenuOpen && (
+            <div className="absolute top-full right-0 z-50 mt-2">
+              <CartDropdownPanel />
+            </div>
+          )}
+        </div>
+
         {isLoggedIn ? (
           <>
             {/* Wallet */}
-            <button className="rounded-num-8 box-border flex h-9 shrink-0 items-center justify-center gap-1 bg-fuchsia-200 px-2 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]">
+            <Link
+              href={DASHBOARD_PATHS.wallet as Route}
+              className="rounded-num-8 box-border flex h-9 shrink-0 items-center justify-center gap-1 bg-fuchsia-200 px-2 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
+            >
               <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
               <span className="font-nata-sans tracking-num--0_01 text-sm leading-none font-extrabold">
                 $0.00
               </span>
-            </button>
-            {/* Cart */}
-            <div className="relative shrink-0" ref={mobileCartMenuRef}>
-              <button
-                type="button"
-                onClick={() => {
-                  setCartMenuOpen((o) => !o)
-                  setMobileUserMenuOpen(false)
-                  setMobileNavMenuOpen(false)
-                }}
-                aria-expanded={cartMenuOpen}
-                aria-haspopup="dialog"
-                aria-label="Shopping cart"
-                className={`rounded-num-8 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-gray-700 transition-colors ${
-                  cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
-                }`}
-              >
-                <img className="h-5 w-5" alt="" src="/icons/IconBasket1-2.svg" />
-              </button>
-              {cartMenuOpen && (
-                <div className="absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2">
-                  <CartDropdownPanel />
-                </div>
-              )}
-            </div>
+            </Link>
             {/* Avatar — account menu only (separate from hamburger nav) */}
             <div className="relative shrink-0" ref={mobileUserMenuRef}>
               <button

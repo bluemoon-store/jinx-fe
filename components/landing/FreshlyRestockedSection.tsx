@@ -2,8 +2,10 @@
 
 import { CentralIcon } from '@central-icons-react/all'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
+import ShopProductDetailModal from '@/components/landing/shop/detail/ShopProductDetailModal'
 import { Reveal } from '@/components/ui/reveal'
 
 const slugify = (value: string) => {
@@ -61,6 +63,15 @@ const TOTAL_PAGES = Math.ceil(allItems.length / ITEMS_PER_PAGE)
 
 export default function FreshlyRestockedSection() {
   const [page, setPage] = useState(0)
+  const [quickBuyProduct, setQuickBuyProduct] = useState<{
+    name: string
+    imageSrc: string
+  } | null>(null)
+  const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    setQuickBuyPortalEl(document.body)
+  }, [])
 
   const items = allItems.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE)
 
@@ -133,9 +144,49 @@ export default function FreshlyRestockedSection() {
                   </div>
                 </div>
               </Link>
+              <button
+                type="button"
+                onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.src })}
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 flex min-h-[44px] w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 py-2 text-white sm:gap-[5px] sm:py-1.5"
+              >
+                <CentralIcon
+                  name="IconZap"
+                  join="round"
+                  fill="filled"
+                  stroke="1"
+                  radius="1"
+                  size={16}
+                  className="text-white"
+                />
+                <span className="tracking-num--0_01 leading-num-26 font-semibold">Quick Buy</span>
+              </button>
             </Reveal>
           ))}
         </div>
+        {quickBuyProduct &&
+          quickBuyPortalEl &&
+          createPortal(
+            <div className="fixed inset-0 z-90 flex items-center justify-center p-4 sm:p-6 lg:px-8">
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/60"
+                aria-label="Close quick buy dialog"
+                onClick={() => setQuickBuyProduct(null)}
+              />
+              <div
+                className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
+                role="dialog"
+                aria-modal="true"
+              >
+                <ShopProductDetailModal
+                  productName={quickBuyProduct.name}
+                  imageSrc={quickBuyProduct.imageSrc}
+                  onClose={() => setQuickBuyProduct(null)}
+                />
+              </div>
+            </div>,
+            quickBuyPortalEl
+          )}
 
         {/* Pagination */}
         <div className="mt-6 flex w-full items-center justify-center gap-3 sm:mt-8 lg:mt-10">

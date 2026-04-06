@@ -69,7 +69,7 @@ const FAQItem: FunctionComponent<{
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
-      className="rounded-num-8 border-darkslateblue lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 border border-solid bg-gray-100 p-4 text-left sm:gap-3 sm:p-5"
+      className="rounded-num-8 lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 bg-gray-100 p-4 text-left sm:gap-3 sm:p-5"
     >
       <b className="tracking-num--0_01 sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
         {question}

@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
+
 import { ShopProductCard } from './ShopProductCard'
 import ShopProductDetailModal from './detail/ShopProductDetailModal'
 
@@ -108,7 +110,6 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
   const visibleProducts = filteredProducts.slice(0, visibleCount)
   const total = filteredProducts.length
   const loaded = visibleProducts.length
-  const ratio = total > 0 ? Math.max(0, Math.min(1, loaded / total)) : 0
 
   return (
     <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
@@ -175,40 +176,15 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
             ))}
           </div>
 
-          <div className="flex flex-col items-stretch justify-between gap-4 pt-4 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              disabled={loaded >= total}
-              onClick={() => setVisibleCount((v) => Math.min(total, v + PAGE_SIZE))}
-              className="border-darkslateblue font-commissioner sm:py-num-10 sm:text-num-16 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[30px] border-[1.5px] border-solid bg-[#0D1B35] px-4 py-3 text-sm text-white shadow-[0px_15px_15px_rgba(0,_0,_0,_0.01)] disabled:cursor-not-allowed disabled:opacity-25 sm:w-auto sm:gap-2.5 sm:px-6"
-            >
-              <span className="leading-num-24 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                Load More Products
-              </span>
-              <CentralIcon
-                name="IconChevronDownMedium"
-                join="round"
-                fill="filled"
-                stroke="1"
-                radius="1"
-                size={20}
-                color="#FFFFFF"
+          <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
+            <nav>
+              <DashboardLoadMoreFooter
+                shown={loaded}
+                total={total}
+                canLoadMore={loaded < total}
+                onLoadMore={() => setVisibleCount((v) => Math.min(total, v + PAGE_SIZE))}
               />
-            </button>
-
-            <div className="font-commissioner sm:text-num-16 lg:max-w-num-281 flex w-full items-center justify-between gap-3 text-sm text-white sm:gap-4">
-              <div className="rounded-num-8 bg-fuchsia/25 flex h-[3px] min-w-[60px] flex-1 overflow-hidden shadow-[0px_2px_0px_rgba(235,_45,_255,_0.25)] sm:w-[196px] sm:flex-none">
-                <div
-                  className="rounded-num-8 bg-fuchsia h-full min-w-0 shrink-0 shadow-[0px_2px_0px_rgba(235,_45,_255,_0.25)]"
-                  style={{ width: `${ratio * 100}%` }}
-                />
-              </div>
-              <div className="flex shrink-0 items-center">
-                <div className="leading-num-24 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  {loaded} of {total}
-                </div>
-              </div>
-            </div>
+            </nav>
           </div>
           {quickBuyProduct &&
             quickBuyPortalEl &&

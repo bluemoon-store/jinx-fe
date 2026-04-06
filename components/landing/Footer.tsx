@@ -27,22 +27,7 @@ const Footer: FunctionComponent = () => {
               <img
                 className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
                 alt=""
-                src="/icons/Crypto Logos/Bitcoin-1.svg"
-              />
-              <img
-                className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
-                alt=""
-                src="/icons/Crypto Logos/Litecoin LTC.svg"
-              />
-              <img
-                className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
-                alt=""
-                src="/icons/Crypto Logos/USD Coin.svg"
-              />
-              <img
-                className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
-                alt=""
-                src="/icons/Crypto Logos/Tether.svg"
+                src="/icons/Crypto Logos/Bitcoin.svg"
               />
               <div className="rounded-num-6_2 flex h-[28.5px] w-[28.5px] shrink-0 items-center justify-center bg-white">
                 <img
@@ -54,7 +39,17 @@ const Footer: FunctionComponent = () => {
               <img
                 className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
                 alt=""
-                src="/icons/Crypto Logos/Bitcoin.svg"
+                src="/icons/Crypto Logos/Tether.svg"
+              />
+              <img
+                className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
+                alt=""
+                src="/icons/Crypto Logos/Litecoin LTC.svg"
+              />
+              <img
+                className="rounded-num-6_2 h-[28.5px] w-[28.5px] shrink-0 object-contain"
+                alt=""
+                src="/icons/Crypto Logos/Bitcoin-1.svg"
               />
             </div>
           </div>
