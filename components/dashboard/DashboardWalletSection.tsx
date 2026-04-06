@@ -1,7 +1,10 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import { createPortal } from 'react-dom'
 import { FunctionComponent, useMemo, useState } from 'react'
+
+import { DashboardWalletTxnPopup } from '@/components/dashboard/DashboardWalletTxnPopup'
 
 type WalletTx = {
   id: string
@@ -11,6 +14,13 @@ type WalletTx = {
   time: string
   amountLabel: string
   positive: boolean
+  invoiceId: string
+  invoiceHref: string
+  address: string
+  addressHref: string
+  txnHash: string
+  txnHashHref: string
+  userId: string
 }
 
 const MOCK_TX: WalletTx[] = [
@@ -22,6 +32,13 @@ const MOCK_TX: WalletTx[] = [
     time: '11:11 AM',
     amountLabel: '25.00 USD',
     positive: false,
+    invoiceId: 'c3beee33-36d0-42ec-a6c9-3b81..',
+    invoiceHref: 'https://example.com/dashboard/orders/1',
+    address: '1eksalkcmnzxcsad..',
+    addressHref: 'https://www.blockchain.com/explorer/addresses/btc/1eksalkcmnzxcsad',
+    txnHash: '1sldkldasnmcxzdjeqwe..',
+    txnHashHref: 'https://www.blockchain.com/explorer/transactions/btc/1sldkldasnmcxzdjeqwe',
+    userId: 'JINX-LKXJLKNALSDJ',
   },
   {
     id: '2',
@@ -31,6 +48,13 @@ const MOCK_TX: WalletTx[] = [
     time: '1:37 PM',
     amountLabel: '5.00 USD',
     positive: true,
+    invoiceId: '31f06f90-5a41-43de-9829-6bf3..',
+    invoiceHref: 'https://example.com/dashboard/orders/2',
+    address: '1xj91jd9salkm01a..',
+    addressHref: 'https://www.blockchain.com/explorer/addresses/btc/1xj91jd9salkm01a',
+    txnHash: '87sld8djaskd77as9sd..',
+    txnHashHref: 'https://www.blockchain.com/explorer/transactions/btc/87sld8djaskd77as9sd',
+    userId: 'JINX-LKXJLKNALSDJ',
   },
   {
     id: '3',
@@ -40,6 +64,13 @@ const MOCK_TX: WalletTx[] = [
     time: '4:28 AM',
     amountLabel: '10.00 USD',
     positive: true,
+    invoiceId: 'f9dcab21-b5f5-4e5a-a281-74f0..',
+    invoiceHref: 'https://example.com/dashboard/orders/3',
+    address: '3nnxkajd0092kald..',
+    addressHref: 'https://www.blockchain.com/explorer/addresses/btc/3nnxkajd0092kald',
+    txnHash: '11aa8b9c3d7723de4ff..',
+    txnHashHref: 'https://www.blockchain.com/explorer/transactions/btc/11aa8b9c3d7723de4ff',
+    userId: 'JINX-LKXJLKNALSDJ',
   },
 ]
 
@@ -50,6 +81,7 @@ const secondaryPillClass =
 export const DashboardWalletSection: FunctionComponent = () => {
   const [balanceVisible, setBalanceVisible] = useState(true)
   const [historySearch, setHistorySearch] = useState('')
+  const [txnDialogRow, setTxnDialogRow] = useState<WalletTx | null>(null)
 
   const filteredTx = useMemo(() => {
     const q = historySearch.trim().toLowerCase()
@@ -59,7 +91,10 @@ export const DashboardWalletSection: FunctionComponent = () => {
         t.title.toLowerCase().includes(q) ||
         t.id.includes(q) ||
         t.amountLabel.toLowerCase().includes(q) ||
-        t.date.toLowerCase().includes(q)
+        t.date.toLowerCase().includes(q) ||
+        t.invoiceId.toLowerCase().includes(q) ||
+        t.address.toLowerCase().includes(q) ||
+        t.txnHash.toLowerCase().includes(q)
     )
   }, [historySearch])
 
@@ -69,7 +104,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
       <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-6 xl:gap-8">
         {/* Account balance card */}
         <div className="flex min-w-0 flex-col gap-3">
-          <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+          <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Account Balance
           </p>
           <div className="relative flex min-h-[202px] flex-col justify-between overflow-hidden rounded-2xl border border-solid border-[#ffffff26] bg-[url('/icons/wallet-account-balance-background.png')] bg-cover bg-center bg-no-repeat p-5 sm:p-6">
@@ -123,7 +158,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
 
         {/* Add balance */}
         <div className="flex min-w-0 flex-col gap-3">
-          <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+          <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Add Balance
           </p>
           <div className="rounded-num-8 border-darkslateblue flex min-h-[202px] flex-col gap-4 border border-solid bg-gray-100 p-4 sm:p-5">
@@ -215,16 +250,16 @@ export const DashboardWalletSection: FunctionComponent = () => {
         </div>
       </div>
 
-      <div className="h-px w-full bg-[#152950]" aria-hidden />
+      <div className="h-px w-full bg-darkslateblue" aria-hidden />
 
       {/* Balance history */}
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="min-w-0 flex-1">
-            <h2 className="tracking-num-0_02 text-base leading-7 font-bold text-white sm:text-lg">
+            <h2 className="tracking-num-0.02 text-base leading-7 font-bold text-white sm:text-lg">
               Balance History
             </h2>
-            <p className="text-lightsteelblue-200 mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
+            <p className="text-lightsteelblue-200 mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
               All your recent transactions using account balance
             </p>
           </div>
@@ -305,9 +340,12 @@ export const DashboardWalletSection: FunctionComponent = () => {
           <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
             <div className="flex flex-col">
               {filteredTx.map((tx) => (
-                <div
+                <button
+                  type="button"
                   key={tx.id}
-                  className="border-darkslateblue flex flex-col gap-3 border-b border-solid p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
+                  onClick={() => setTxnDialogRow(tx)}
+                  className="border-darkslateblue hover:bg-gray-700/20 focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
+                  aria-label={`View transaction details for ${tx.title} on ${tx.date}`}
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#051329]">
@@ -323,13 +361,13 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="tracking-num-0_02 text-base leading-7 font-bold text-white">
+                      <div className="tracking-num-0.02 text-base leading-7 font-bold text-white">
                         {tx.title}
                       </div>
                       <div className="text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
                         <span>{tx.date}</span>
                         <span
-                          className="hidden h-3 w-px bg-[#152950] sm:inline-block"
+                          className="bg-darkslateblue hidden h-3 w-px sm:inline-block"
                           aria-hidden
                         />
                         <span>{tx.time}</span>
@@ -346,12 +384,44 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       <>−{tx.amountLabel}</>
                     )}
                   </p>
-                </div>
+                </button>
               ))}
             </div>
           </div>
         )}
       </div>
+
+      {txnDialogRow && typeof document !== 'undefined'
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-110 flex min-h-dvh w-full items-center justify-center p-4 sm:p-6 lg:px-8"
+              role="presentation"
+            >
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/60"
+                aria-label="Close dialog"
+                onClick={() => setTxnDialogRow(null)}
+              />
+              <div className="relative z-10 flex w-full max-w-[min(100vw-2rem,480px)] justify-center">
+                <DashboardWalletTxnPopup
+                  title={txnDialogRow.title}
+                  amount={`${txnDialogRow.positive ? '+' : '-'}${txnDialogRow.amountLabel}`}
+                  invoiceId={txnDialogRow.invoiceId}
+                  invoiceHref={txnDialogRow.invoiceHref}
+                  address={txnDialogRow.address}
+                  addressHref={txnDialogRow.addressHref}
+                  txnHash={txnDialogRow.txnHash}
+                  txnHashHref={txnDialogRow.txnHashHref}
+                  dateTime={`${txnDialogRow.date} at ${txnDialogRow.time}`}
+                  userId={txnDialogRow.userId}
+                  onClose={() => setTxnDialogRow(null)}
+                />
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   )
 }
