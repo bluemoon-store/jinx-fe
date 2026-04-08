@@ -76,9 +76,18 @@ export const HotSellingProducts: FunctionComponent = () => {
         </header>
       </Reveal>
 
-      {!isHidden && (
-        <section className="w-full">
-          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
+      <section
+        aria-hidden={isHidden}
+        className={`grid w-full transition-[grid-template-rows,opacity] duration-200 ease-out ${
+          isHidden ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+        style={{
+          gridTemplateRows: isHidden ? '0fr' : '1fr',
+          willChange: 'grid-template-rows, opacity',
+        }}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
             {ITEMS.map((item, idx) => (
               <Reveal
                 key={`${item.name}-${idx}`}
@@ -148,8 +157,8 @@ export const HotSellingProducts: FunctionComponent = () => {
               </Reveal>
             ))}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </>
   )
 }
