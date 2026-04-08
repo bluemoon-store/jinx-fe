@@ -4,6 +4,7 @@ import { useTheme } from 'next-themes'
 import { Toaster as SonnerToaster, type ToasterProps } from 'sonner'
 
 import { cn } from '@/lib/utils'
+import CentralIcon from '@central-icons-react/all'
 
 type Props = ToasterProps
 
@@ -22,26 +23,30 @@ export function Toaster(props: Props) {
     ...rest
   } = props
 
-  const baseOffset = offset ?? { top: '4.75rem', right: '1.5rem' }
-  const baseMobileOffset = mobileOffset ?? { top: '3.75rem', right: '1rem' }
+  const baseOffset = offset ?? { top: '1rem', right: '1rem' }
+  const baseMobileOffset = mobileOffset ?? { top: '1rem', right: '1rem' }
 
   const defaultClassNames = {
     toast: cn(
-      'bg-gray-400/95 text-whitesmoke-100 border border-whitesmoke-400 shadow-[0_18px_45px_rgba(0,0,0,0.6)]',
-      'rounded-num-8 px-4 py-3 flex gap-3 items-start'
+      '!bg-gray-700 !text-ghostwhite !border-gray-600 border shadow-[0px_16px_16px_rgba(0,0,0,0.05),_0px_4px_4px_rgba(0,0,0,0.08)]',
+      'rounded-lg px-3 py-2 flex gap-2.5 items-center',
+      'font-commissioner text-left'
     ),
-    title: 'font-semibold text-sm',
-    description: 'mt-1 text-xs text-lightsteelblue-200',
+    title:
+      'tracking-[-0.01em] leading-6 font-semibold text-base whitespace-nowrap overflow-hidden text-ellipsis',
+    description:
+      'tracking-[-0.01em] leading-6 font-medium text-base text-ghostwhite/75 !mt-0 whitespace-nowrap overflow-hidden text-ellipsis',
     success: 'border-mediumspringgreen',
     error: 'border-red',
     info: 'border-deepskyblue-200',
     warning: 'border-darkorange',
-    content: 'flex-1 min-w-0',
-    icon: 'mt-0.5 shrink-0',
+    content: 'flex-1 min-w-0 flex items-center gap-2 overflow-hidden',
+    icon: 'shrink-0',
   }
 
   const mergedToastOptions = {
     dismissible: false,
+    unstyled: true,
     ...(toastOptions ?? {}),
     classNames: {
       ...defaultClassNames,
@@ -57,6 +62,31 @@ export function Toaster(props: Props) {
       offset={baseOffset}
       mobileOffset={baseMobileOffset}
       richColors={false}
+      icons={{
+        success: (
+          <CentralIcon
+            name="IconCheckCircle2"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={18}
+            ariaHidden={true}
+          />
+        ),
+        warning: (
+          <CentralIcon
+            name="IconExclamationTriangle"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={18}
+            ariaHidden={true}
+            className="text-[#FF2A2A]"
+          />
+        ),
+      }}
       toastOptions={mergedToastOptions}
       className={cn('z-60', className)}
       theme={theme === 'system' || !theme ? 'system' : (theme as ToasterProps['theme'])}
@@ -64,4 +94,3 @@ export function Toaster(props: Props) {
     />
   )
 }
-
