@@ -141,7 +141,7 @@ const HeroSection: FunctionComponent = () => {
                               goToShopWithSearch()
                             }
                           }}
-                          className="min-w-0 flex-1 border-none bg-transparent p-0 text-left [font-family:'Commissioner',Helvetica] text-sm leading-6 font-bold tracking-[-0.16px] text-white shadow-none ring-0 ring-offset-0 outline-none placeholder:text-white/50 focus:border-transparent focus:shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:text-base sm:leading-7"
+                          className="min-w-0 flex-1 border-none bg-transparent p-0 text-left [font-family:'Commissioner',Helvetica] text-sm leading-6 font-normal tracking-[-0.16px] text-white/75 shadow-none ring-0 ring-offset-0 outline-none placeholder:text-white/37.5 focus:border-transparent focus:shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:text-base sm:leading-7"
                           placeholder="Search for any product or bundle"
                           type="text"
                           enterKeyHint="search"

@@ -2,7 +2,7 @@
 
 import CentralIcon from '@central-icons-react/all'
 import type { KeyboardEvent } from 'react'
-import { FunctionComponent, useRef, useState } from 'react'
+import { FunctionComponent, useEffect, useRef, useState } from 'react'
 
 /** Placeholder secret until enroll API returns a real TOTP secret. */
 const MOCK_TOTP_SECRET = 'VGHSM79J4XBCR8K3Q2NYZ5DFEU6P9AWOI1L2'
@@ -16,7 +16,7 @@ const otpCellWrapClass =
   'rounded-num-8 focus-within:border-fuchsia flex min-h-11 min-w-0 max-w-full items-center justify-center overflow-hidden border border-solid border-[#18263E] bg-gray-100 px-1 py-2 transition-[border-color,box-shadow] focus-within:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] sm:px-2 sm:py-[9px]'
 
 const otpInputClass =
-  'tracking-num--0_01 leading-num-28 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-semibold text-white shadow-none ring-0 outline-none placeholder:text-white/25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7 sm:text-num-16'
+  'tracking-num--0_01 leading-num-28 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-normal text-white/75 shadow-none ring-0 outline-none placeholder:text-white/18.75 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7 sm:text-num-16'
 
 const keyInputRowClass =
   'rounded-num-8 border-[#18263E] px-num-12 text-sm sm:text-num-16 flex min-h-11 items-center justify-center self-stretch overflow-hidden border border-solid bg-gray-100 py-2.5'
@@ -24,13 +24,23 @@ const keyInputRowClass =
 const keyInputClass =
   'tracking-num--0_01 leading-num-28 text-sm font-semibold min-w-0 h-7 w-full flex-1 appearance-none border-0 bg-transparent p-0 text-center text-[#9EA0C6] shadow-none outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 sm:text-num-16'
 
+const keyButtonClass = `${keyInputRowClass} cursor-pointer touch-manipulation [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-200`
+
 const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
   onClose,
   onVerifySuccess,
 }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [copied, setCopied] = useState(false)
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([])
+  const copiedResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copiedResetTimeoutRef.current) clearTimeout(copiedResetTimeoutRef.current)
+    }
+  }, [])
 
   const focusOtpInput = (i: number) => {
     queueMicrotask(() => otpInputRefs.current[i]?.focus())
@@ -71,6 +81,18 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
       await onVerifySuccess?.()
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleCopyKey = async () => {
+    try {
+      if (!navigator?.clipboard?.writeText) return
+      await navigator.clipboard.writeText(MOCK_TOTP_SECRET)
+      setCopied(true)
+      if (copiedResetTimeoutRef.current) clearTimeout(copiedResetTimeoutRef.current)
+      copiedResetTimeoutRef.current = setTimeout(() => setCopied(false), 3000)
+    } catch {
+      // no-op (spec: no toast / no state change on failure)
     }
   }
 
@@ -126,16 +148,36 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
           <label htmlFor="twofa-manual-key" className="leading-num-20 font-semibold">
             Key
           </label>
-          <div className={keyInputRowClass}>
-            <input
-              id="twofa-manual-key"
-              readOnly
-              value={MOCK_TOTP_SECRET}
-              className={keyInputClass}
-              onFocus={(e) => e.target.select()}
-              aria-readonly="true"
-            />
-          </div>
+          <button
+            type="button"
+            onClick={handleCopyKey}
+            className={keyButtonClass}
+            aria-label="Copy 2FA key"
+          >
+            {copied ? (
+              <span
+                role="status"
+                aria-live="polite"
+                className="sm:text-num-16 flex w-full items-center justify-center gap-2 text-sm font-semibold text-white"
+              >
+                <CentralIcon
+                  name="IconCheckCircle2"
+                  join="round"
+                  fill="filled"
+                  stroke="2"
+                  radius="1"
+                  size={18}
+                  ariaHidden={true}
+                  className="text-[#0CC967]"
+                />
+                Copied
+              </span>
+            ) : (
+              <span id="twofa-manual-key" className={keyInputClass}>
+                {MOCK_TOTP_SECRET}
+              </span>
+            )}
+          </button>
         </section>
 
         <div className="h-px w-full self-stretch bg-gray-100" aria-hidden />

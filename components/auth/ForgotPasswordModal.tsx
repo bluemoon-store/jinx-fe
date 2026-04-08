@@ -113,7 +113,7 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
                   type="email"
                   autoComplete="email"
                   placeholder="Your email address"
-                  className="tracking-num--0_01 leading-num-28 h-7 min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 font-semibold text-white shadow-none ring-0 outline-none placeholder:font-semibold placeholder:text-white placeholder:opacity-25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none"
+                  className="tracking-num--0_01 leading-num-28 h-7 min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 font-normal text-white/75 shadow-none ring-0 outline-none placeholder:font-normal placeholder:text-white placeholder:opacity-[0.1875] focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none"
                   {...register('email')}
                 />
               </div>
@@ -308,7 +308,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
                       value={digit}
                       onChange={(e) => updateOtp(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className="tracking-num--0_01 leading-num-28 sm:text-num-16 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-semibold text-white shadow-none ring-0 outline-none placeholder:text-white/25 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7"
+                      className="tracking-num--0_01 leading-num-28 sm:text-num-16 h-9 w-full min-w-0 appearance-none border-0 bg-transparent p-0 text-center text-sm font-normal text-white/75 shadow-none ring-0 outline-none placeholder:text-white/18.75 focus:border-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none sm:h-7"
                       placeholder="0"
                       aria-label={`OTP digit ${index + 1}`}
                     />

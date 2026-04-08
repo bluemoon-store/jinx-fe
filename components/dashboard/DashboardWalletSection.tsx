@@ -2,9 +2,11 @@
 
 import CentralIcon from '@central-icons-react/all'
 import { createPortal } from 'react-dom'
-import { FunctionComponent, useMemo, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { DashboardWalletTxnPopup } from '@/components/dashboard/DashboardWalletTxnPopup'
+
+type WalletTxStatus = 'paid' | 'pending' | 'expired'
 
 type WalletTx = {
   id: string
@@ -14,6 +16,7 @@ type WalletTx = {
   time: string
   amountLabel: string
   positive: boolean
+  status?: WalletTxStatus
   invoiceId: string
   invoiceHref: string
   address: string
@@ -32,6 +35,7 @@ const MOCK_TX: WalletTx[] = [
     time: '11:11 AM',
     amountLabel: '25.00 USD',
     positive: false,
+    status: 'paid',
     invoiceId: 'c3beee33-36d0-42ec-a6c9-3b81..',
     invoiceHref: 'https://example.com/dashboard/orders/1',
     address: '1eksalkcmnzxcsad..',
@@ -48,6 +52,7 @@ const MOCK_TX: WalletTx[] = [
     time: '1:37 PM',
     amountLabel: '5.00 USD',
     positive: true,
+    status: 'paid',
     invoiceId: '31f06f90-5a41-43de-9829-6bf3..',
     invoiceHref: 'https://example.com/dashboard/orders/2',
     address: '1xj91jd9salkm01a..',
@@ -64,6 +69,7 @@ const MOCK_TX: WalletTx[] = [
     time: '4:28 AM',
     amountLabel: '10.00 USD',
     positive: true,
+    status: 'pending',
     invoiceId: 'f9dcab21-b5f5-4e5a-a281-74f0..',
     invoiceHref: 'https://example.com/dashboard/orders/3',
     address: '3nnxkajd0092kald..',
@@ -74,19 +80,88 @@ const MOCK_TX: WalletTx[] = [
   },
 ]
 
-const secondaryPillClass =
-  'rounded-num-8 border-darkslateblue px-num-12 box-border inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 border border-solid bg-gray-300 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-700'
+type StatusFilter = 'all' | WalletTxStatus
+
+const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'paid', label: 'Paid' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'expired', label: 'Expired' },
+]
+
+type SortOption = 'newest' | 'oldest' | 'amount_desc' | 'amount_asc'
+
+const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'amount_desc', label: 'Amount (High to Low)' },
+  { value: 'amount_asc', label: 'Amount (Low to High)' },
+]
+
+type CoinOption = {
+  value: string
+  label: string
+  iconSrc: string
+}
+
+const COIN_OPTIONS: CoinOption[] = [
+  { value: 'btc', label: 'Bitcoin', iconSrc: '/icons/Crypto Logos/Bitcoin.svg' },
+  { value: 'eth', label: 'Ethereum', iconSrc: '/icons/Crypto Logos/Ethereum ETH.svg' },
+  { value: 'usdt', label: 'Tether', iconSrc: '/icons/Crypto Logos/Tether.svg' },
+  { value: 'ltc', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
+  { value: 'bch', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
+]
 
 /** Wallet — balance card, add funds, history; matches dashboard shell + Orders/Reviews layout. */
 export const DashboardWalletSection: FunctionComponent = () => {
   const [balanceVisible, setBalanceVisible] = useState(true)
+  const [amountUnit, setAmountUnit] = useState<'USD' | 'BTC'>('USD')
+  const [selectedCoin, setSelectedCoin] = useState<CoinOption>(COIN_OPTIONS[0])
+  const [coinMenuOpen, setCoinMenuOpen] = useState(false)
+  const coinMenuRef = useRef<HTMLDivElement>(null)
   const [historySearch, setHistorySearch] = useState('')
   const [txnDialogRow, setTxnDialogRow] = useState<WalletTx | null>(null)
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [statusMenuOpen, setStatusMenuOpen] = useState(false)
+  const statusMenuRef = useRef<HTMLDivElement>(null)
+  const [sortOption, setSortOption] = useState<SortOption>('newest')
+  const [sortMenuOpen, setSortMenuOpen] = useState(false)
+  const sortMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!coinMenuOpen && !statusMenuOpen && !sortMenuOpen) return
+    const onDoc = (e: MouseEvent) => {
+      const target = e.target as Node
+      if (
+        coinMenuRef.current?.contains(target) ||
+        statusMenuRef.current?.contains(target) ||
+        sortMenuRef.current?.contains(target)
+      )
+        return
+      setCoinMenuOpen(false)
+      setStatusMenuOpen(false)
+      setSortMenuOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setCoinMenuOpen(false)
+      setStatusMenuOpen(false)
+      setSortMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDoc)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [coinMenuOpen, sortMenuOpen, statusMenuOpen])
 
   const filteredTx = useMemo(() => {
     const q = historySearch.trim().toLowerCase()
-    if (!q) return MOCK_TX
-    return MOCK_TX.filter(
+    const statusFiltered =
+      statusFilter === 'all' ? MOCK_TX : MOCK_TX.filter((t) => (t.status ?? 'paid') === statusFilter)
+    if (!q) return statusFiltered
+    return statusFiltered.filter(
       (t) =>
         t.title.toLowerCase().includes(q) ||
         t.id.includes(q) ||
@@ -96,7 +171,30 @@ export const DashboardWalletSection: FunctionComponent = () => {
         t.address.toLowerCase().includes(q) ||
         t.txnHash.toLowerCase().includes(q)
     )
-  }, [historySearch])
+  }, [historySearch, statusFilter])
+
+  const sortedTx = useMemo(() => {
+    const parseAmount = (label: string) => {
+      const n = Number(label.replace(/[^0-9.]/g, ''))
+      return Number.isFinite(n) ? n : 0
+    }
+
+    const parseDateTime = (tx: WalletTx) => {
+      const ms = Date.parse(`${tx.date} ${tx.time}`)
+      return Number.isFinite(ms) ? ms : 0
+    }
+
+    const next = [...filteredTx]
+    next.sort((a, b) => {
+      if (sortOption === 'amount_desc') return parseAmount(b.amountLabel) - parseAmount(a.amountLabel)
+      if (sortOption === 'amount_asc') return parseAmount(a.amountLabel) - parseAmount(b.amountLabel)
+
+      const aMs = parseDateTime(a)
+      const bMs = parseDateTime(b)
+      return sortOption === 'newest' ? bMs - aMs : aMs - bMs
+    })
+    return next
+  }, [filteredTx, sortOption])
 
   return (
     <div className="flex min-w-0 flex-col gap-6 sm:gap-8">
@@ -167,31 +265,60 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
                   Select Payment Method
                 </span>
-                <button
-                  type="button"
-                  className="rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left"
-                >
-                  <span className="flex min-w-0 items-center gap-2">
-                    <img
-                      className="h-7 w-7 shrink-0"
-                      alt=""
-                      src="/icons/Crypto Logos/Bitcoin.svg"
-                    />
-                    <span className="tracking-num--0_01 text-sm font-semibold text-white sm:text-base">
-                      Bitcoin
+                <div className="relative" ref={coinMenuRef}>
+                  <button
+                    type="button"
+                    aria-haspopup="listbox"
+                    aria-expanded={coinMenuOpen}
+                    aria-label="Select payment coin"
+                    onClick={() => setCoinMenuOpen((o) => !o)}
+                    className="rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <img className="h-7 w-7 shrink-0" alt="" src={selectedCoin.iconSrc} />
+                      <span className="tracking-num--0_01 text-sm font-semibold text-white sm:text-base">
+                        {selectedCoin.label}
+                      </span>
                     </span>
-                  </span>
-                  <CentralIcon
-                    name="IconChevronDownMedium"
-                    join="round"
-                    fill="filled"
-                    stroke="2"
-                    radius="1"
-                    size={18}
-                    ariaHidden={true}
-                    className="shrink-0 text-[#C3C3E3]"
-                  />
-                </button>
+                    <CentralIcon
+                      name="IconChevronDownMedium"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={18}
+                      ariaHidden={true}
+                      className="shrink-0 text-[#C3C3E3]"
+                    />
+                  </button>
+                  {coinMenuOpen ? (
+                    <ul
+                      role="listbox"
+                      aria-label="Payment coin options"
+                      className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 w-full overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                    >
+                      {COIN_OPTIONS.map((coin) => (
+                        <li key={coin.value} role="presentation">
+                          <button
+                            type="button"
+                            role="option"
+                            aria-selected={selectedCoin.value === coin.value}
+                            className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                              selectedCoin.value === coin.value ? 'bg-[#16243B]' : ''
+                            }`}
+                            onClick={() => {
+                              setSelectedCoin(coin)
+                              setCoinMenuOpen(false)
+                            }}
+                          >
+                            <img className="h-6 w-6 shrink-0" alt="" src={coin.iconSrc} />
+                            <span>{coin.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-2">
                 <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
@@ -202,11 +329,16 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     <span className="text-base font-bold text-white">$</span>
                     <span className="text-lightsteelblue-200 text-base font-semibold">0.00</span>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2 text-sm font-semibold text-white">
-                    <span>USD</span>
+                  <button
+                    type="button"
+                    onClick={() => setAmountUnit((u) => (u === 'USD' ? 'BTC' : 'USD'))}
+                    className="focus-visible:ring-fuchsia/40 flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none"
+                    aria-label={`Switch amount unit to ${amountUnit === 'USD' ? 'BTC' : 'USD'}`}
+                  >
+                    <span className={amountUnit === 'USD' ? 'text-white' : 'text-white/50'}>USD</span>
                     <span className="text-white/40">/</span>
-                    <span className="text-white/50">BTC</span>
-                  </div>
+                    <span className={amountUnit === 'BTC' ? 'text-white' : 'text-white/50'}>BTC</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -263,19 +395,6 @@ export const DashboardWalletSection: FunctionComponent = () => {
               All your recent transactions using account balance
             </p>
           </div>
-          <button type="button" className={secondaryPillClass}>
-            <CentralIcon
-              name="IconFilter1"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={20}
-              ariaHidden={true}
-              className="text-[#C3C3E3]"
-            />
-            Filter
-          </button>
         </div>
 
         <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
@@ -295,40 +414,118 @@ export const DashboardWalletSection: FunctionComponent = () => {
               value={historySearch}
               onChange={(e) => setHistorySearch(e.target.value)}
               placeholder="Search using Invoice ID, Txn Hash, Address"
-              className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-semibold text-white placeholder-white/50 outline-none focus:ring-0"
+              className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal text-white/75 placeholder-white/37.5 outline-none focus:ring-0"
             />
           </div>
-          <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2">
-            <span className="text-sm font-semibold opacity-50">Status</span>
-            <span className="text-sm font-semibold">All</span>
-            <CentralIcon
-              name="IconChevronDownMedium"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              ariaHidden={true}
-              className="shrink-0 text-[#C3C3E3]"
-            />
+          <div className="relative w-fit max-w-full shrink-0" ref={statusMenuRef}>
+            <button
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded={statusMenuOpen}
+              aria-label="Filter by status"
+              onClick={() => setStatusMenuOpen((o) => !o)}
+              className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+            >
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+                Status
+              </span>
+              <span className="text-sm font-semibold">
+                {STATUS_OPTIONS.find((o) => o.value === statusFilter)?.label ?? 'All'}
+              </span>
+              <CentralIcon
+                name="IconChevronDownMedium"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={16}
+                ariaHidden={true}
+                className="shrink-0 text-[#C3C3E3]"
+              />
+            </button>
+            {statusMenuOpen ? (
+              <ul
+                role="listbox"
+                aria-label="Status"
+                className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+              >
+                {STATUS_OPTIONS.map((opt) => (
+                  <li key={opt.value} role="presentation">
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={statusFilter === opt.value}
+                      className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                        statusFilter === opt.value ? 'bg-[#16243B]' : ''
+                      }`}
+                      onClick={() => {
+                        setStatusFilter(opt.value)
+                        setStatusMenuOpen(false)
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
-          <div className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full shrink-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2">
-            <span className="text-sm font-semibold opacity-50">Sort by</span>
-            <span className="text-sm font-semibold">Newest</span>
-            <CentralIcon
-              name="IconChevronDownMedium"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              ariaHidden={true}
-              className="shrink-0 text-[#C3C3E3]"
-            />
+          <div className="relative w-fit max-w-full shrink-0" ref={sortMenuRef}>
+            <button
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded={sortMenuOpen}
+              aria-label="Sort transactions"
+              onClick={() => setSortMenuOpen((o) => !o)}
+              className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+            >
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+                Sort by
+              </span>
+              <span className="text-sm font-semibold">
+                {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
+              </span>
+              <CentralIcon
+                name="IconChevronDownMedium"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={16}
+                ariaHidden={true}
+                className="shrink-0 text-[#C3C3E3]"
+              />
+            </button>
+            {sortMenuOpen ? (
+              <ul
+                role="listbox"
+                aria-label="Sort by"
+                className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <li key={opt.value} role="presentation">
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={sortOption === opt.value}
+                      className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                        sortOption === opt.value ? 'bg-[#16243B]' : ''
+                      }`}
+                      onClick={() => {
+                        setSortOption(opt.value)
+                        setSortMenuOpen(false)
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </div>
 
-        {filteredTx.length === 0 ? (
+        {sortedTx.length === 0 ? (
           <div className="text-ghostwhite font-commissioner flex flex-col items-center gap-2 py-12 text-center">
             <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
             <b className="tracking-num--0_01 text-base sm:text-lg">No transactions match</b>
@@ -339,7 +536,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
         ) : (
           <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
             <div className="flex flex-col">
-              {filteredTx.map((tx) => (
+              {sortedTx.map((tx) => (
                 <button
                   type="button"
                   key={tx.id}

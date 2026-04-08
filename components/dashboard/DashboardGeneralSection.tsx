@@ -4,6 +4,8 @@ import CentralIcon from '@central-icons-react/all'
 import { useTheme } from 'next-themes'
 import { FunctionComponent } from 'react'
 
+import { toast } from '@/lib/toast'
+
 const secondaryActionBtnClass =
   'rounded-num-8 border-darkslateblue px-num-12 box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden border border-solid bg-gray-300 py-2.5 font-inherit text-inherit sm:min-h-0 sm:w-auto sm:justify-start sm:py-2'
 
@@ -17,6 +19,16 @@ export const DashboardGeneralSection: FunctionComponent = () => {
   const { theme, setTheme } = useTheme()
   const selectedTheme: 'dark' | 'light' | 'system' =
     theme === 'dark' || theme === 'light' || theme === 'system' ? theme : 'system'
+
+  function themeLabel(t: 'dark' | 'light' | 'system') {
+    return t === 'dark' ? 'Dark' : t === 'light' ? 'Light' : 'System'
+  }
+
+  function toastThemeUpdated(t: 'dark' | 'light' | 'system') {
+    toast.info('Theme updated', {
+      description: `Switched to ${themeLabel(t)}.`,
+    })
+  }
 
   return (
     <section className="font-commissioner lg:gap-num-30 flex min-h-0 w-full min-w-0 flex-col gap-4 text-left text-sm text-white sm:gap-6 lg:min-h-[606px] lg:text-[18px]">
@@ -52,7 +64,15 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                 Upload
               </span>
             </button>
-            <button type="button" className={secondaryActionBtnClass}>
+            <button
+              type="button"
+              className={secondaryActionBtnClass}
+              onClick={() => {
+                toast.info('Avatar removed', {
+                  description: 'This is a demo toast (no API call yet).',
+                })
+              }}
+            >
               <CentralIcon
                 name="IconTrashCan"
                 join="round"
@@ -122,6 +142,11 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                 <button
                   type="button"
                   className={`${secondaryActionBtnClass} text-center sm:text-left`}
+                  onClick={() => {
+                    toast.info('Verification email sent', {
+                      description: 'Check your inbox (demo).',
+                    })
+                  }}
                 >
                   <CentralIcon
                     name="IconPaperPlaneTopRight"
@@ -161,7 +186,10 @@ export const DashboardGeneralSection: FunctionComponent = () => {
             <button
               type="button"
               aria-pressed={selectedTheme === 'dark'}
-              onClick={() => setTheme('dark')}
+              onClick={() => {
+                setTheme('dark')
+                toastThemeUpdated('dark')
+              }}
               className={
                 selectedTheme === 'dark'
                   ? `${themeOptionSelectedClass} sm:w-[88px]`
@@ -184,7 +212,10 @@ export const DashboardGeneralSection: FunctionComponent = () => {
             <button
               type="button"
               aria-pressed={selectedTheme === 'light'}
-              onClick={() => setTheme('light')}
+              onClick={() => {
+                setTheme('light')
+                toastThemeUpdated('light')
+              }}
               className={
                 selectedTheme === 'light' ? themeOptionSelectedClass : themeOptionUnselectedClass
               }
@@ -205,7 +236,10 @@ export const DashboardGeneralSection: FunctionComponent = () => {
             <button
               type="button"
               aria-pressed={selectedTheme === 'system'}
-              onClick={() => setTheme('system')}
+              onClick={() => {
+                setTheme('system')
+                toastThemeUpdated('system')
+              }}
               className={
                 selectedTheme === 'system' ? themeOptionSelectedClass : themeOptionUnselectedClass
               }

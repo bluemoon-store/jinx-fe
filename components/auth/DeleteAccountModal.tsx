@@ -18,7 +18,7 @@ const passwordVisibilityFaceClass =
   'flex h-7 w-7 items-center justify-center rounded-num-8 bg-[#051329] p-1.5'
 
 const inputClass =
-  'tracking-num--0_01 leading-num-28 font-semibold min-w-0 h-7 flex-1 appearance-none border-0 bg-transparent p-0 text-white shadow-none outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:font-semibold placeholder:text-white placeholder:opacity-25'
+  'tracking-num--0_01 leading-num-28 font-normal min-w-0 h-7 flex-1 appearance-none border-0 bg-transparent p-0 text-white/75 shadow-none outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:font-normal placeholder:text-white placeholder:opacity-[0.1875]'
 
 const deleteButtonClass =
   'text-num-16 box-border flex min-h-11 w-full cursor-pointer touch-manipulation items-center justify-center self-stretch rounded-[7.79px] bg-[#ff2a2a] px-4 py-3.5 text-white shadow-[0px_2px_0px_rgba(255,42,42,0.45)] [-webkit-tap-highlight-color:transparent] sm:py-num-12 disabled:cursor-not-allowed disabled:opacity-60'

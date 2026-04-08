@@ -268,7 +268,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search using Order ID, Product Name"
-          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-semibold text-white placeholder-white/50 outline-none focus:ring-0"
+          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal text-white/75 placeholder-white/37.5 outline-none focus:ring-0"
         />
       </div>
 

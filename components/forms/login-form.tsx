@@ -28,7 +28,13 @@ export function LoginForm() {
         <label htmlFor="email" className="text-sm font-medium">
           Email
         </label>
-        <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
+        <Input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          className="font-normal placeholder:opacity-75"
+          {...register('email')}
+        />
         {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
       </div>
       <div className="space-y-2">

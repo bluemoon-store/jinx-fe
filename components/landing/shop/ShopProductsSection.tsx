@@ -144,7 +144,7 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
           onChange={(e) => setQuery(e.target.value)}
           type="text"
           placeholder="Search for any product or bundle"
-          className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-semibold text-white placeholder-white/50 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
+          className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-normal text-white/75 placeholder-white/37.5 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
         />
       </div>
 

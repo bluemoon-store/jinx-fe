@@ -336,7 +336,7 @@ export default function FAQs() {
                 placeholder="Search for a question or a keyword"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 px-0 font-semibold text-white placeholder-white/25 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
+                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 px-0 font-normal text-white/75 placeholder-white/18.75 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
               />
             </div>
 
