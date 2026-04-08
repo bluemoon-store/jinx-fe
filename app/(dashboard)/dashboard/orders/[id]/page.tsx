@@ -2,6 +2,7 @@
 
 import CentralIcon from '@central-icons-react/all'
 import { Reveal } from '@/components/ui/reveal'
+import { CountryFlag } from '@/components/ui/CountryFlag'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { useOrderReviewStore } from '@/lib/order-review-store'
@@ -477,10 +478,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <div className="rounded-num-8 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Country</span>
                     <span className="text-num-16 tracking-num--0_01 flex items-center gap-2 font-semibold text-white">
-                      <img
-                        className="h-num-19 w-[26px] shrink-0 rounded-sm border border-white/10 object-cover shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
-                        alt=""
-                        src="/icons/flag.svg"
+                      <CountryFlag
+                        countryCode="CA"
+                        alt="Canada flag"
+                        className="h-num-19 w-[26px] border border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
+                        size={26}
+                        shape="rectangle"
                       />
                       CA
                     </span>

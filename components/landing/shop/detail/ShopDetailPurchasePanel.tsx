@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { FunctionComponent, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
+import { CountryFlag } from '@/components/ui/CountryFlag'
 import { useCartStore } from '@/lib/cart-store'
 
 type Props = {
@@ -18,13 +19,10 @@ const VARIANT_OPTIONS = [
   { id: 'partial', label: '$25 Points | Partially Unlocked', unitPrice: 25 },
 ] as const
 
-/** Temporarily use Canada flag for all regions. */
-const CANADA_FLAG_SRC = '/icons/flag.svg'
-
 const STATE_OPTIONS = [
-  { id: 'ab', label: 'AB', flagSrc: CANADA_FLAG_SRC },
-  { id: 'bc', label: 'BC', flagSrc: CANADA_FLAG_SRC },
-  { id: 'cd', label: 'CD', flagSrc: CANADA_FLAG_SRC },
+  { id: 'ab', label: 'AB', countryCode: 'CA' },
+  { id: 'bc', label: 'BC', countryCode: 'CA' },
+  { id: 'cd', label: 'CD', countryCode: 'CA' },
 ] as const
 
 type PurchaseControlsProps = {
@@ -148,10 +146,12 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch"
             >
               <div className="flex min-w-0 items-center gap-2">
-                <img
-                  className="h-full max-h-[18px] w-full max-w-[28px] object-cover"
-                  alt=""
-                  src={selectedState.flagSrc}
+                <CountryFlag
+                  countryCode={selectedState.countryCode}
+                  alt={`${selectedState.label} flag`}
+                  className="h-full max-h-num-18 w-full max-w-[28px]"
+                  size={28}
+                  shape="rectangle"
                 />
                 <div className="tracking-num--0_01 leading-num-28 font-semibold">
                   {selectedState.label}
@@ -190,10 +190,12 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                       ].join(' ')}
                     >
                       <div className="flex min-w-0 items-center gap-2">
-                        <img
-                          className="h-full max-h-[18px] w-full max-w-[28px] object-cover"
-                          alt=""
-                          src={option.flagSrc}
+                        <CountryFlag
+                          countryCode={option.countryCode}
+                          alt={`${option.label} flag`}
+                          className="h-full max-h-num-18 w-full max-w-[28px]"
+                          size={28}
+                          shape="rectangle"
                         />
                         <div className="tracking-num--0_01 leading-num-28 font-semibold">
                           {option.label}

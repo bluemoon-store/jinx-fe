@@ -4,12 +4,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
+import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
 import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
 
-const FLAG_SRC = '/icons/flag.svg'
 const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
@@ -66,12 +66,12 @@ function CartLine({
             <Image src={checkoutImg.line} alt="" width={10} height={2} className="shrink-0 self-center" />
             <div className="flex shrink-0 items-center gap-[7.5px]">
               <div className="relative h-[18px] w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
-                <Image
-                  src={FLAG_SRC}
-                  alt=""
-                  width={24}
-                  height={18}
-                  className="h-full w-full object-cover"
+                <CountryFlag
+                  countryCode="CA"
+                  alt="Canada flag"
+                  className="h-full w-full"
+                  size={24}
+                  shape="rectangle"
                 />
                 <div
                   className="pointer-events-none absolute inset-0 bg-blend-overlay"
