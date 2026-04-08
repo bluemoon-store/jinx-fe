@@ -71,6 +71,12 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const [sortOption, setSortOption] = useState<SortOption>('newest')
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
+  const toggleMenu = (menu: 'status' | 'payment' | 'sort' | 'view') => {
+    setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
+    setPaymentMethodMenuOpen((prev) => (menu === 'payment' ? !prev : false))
+    setSortMenuOpen((prev) => (menu === 'sort' ? !prev : false))
+    setViewMenuOpen((prev) => (menu === 'view' ? !prev : false))
+  }
 
   const filtered = useMemo(() => {
     const q = orderSearch.trim().toLowerCase()
@@ -185,7 +191,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             aria-haspopup="listbox"
             aria-expanded={statusMenuOpen}
             aria-label="Filter by status"
-            onClick={() => setStatusMenuOpen((o) => !o)}
+            onClick={() => toggleMenu('status')}
             className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
@@ -238,7 +244,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             aria-haspopup="listbox"
             aria-expanded={paymentMethodMenuOpen}
             aria-label="Filter by payment method"
-            onClick={() => setPaymentMethodMenuOpen((o) => !o)}
+            onClick={() => toggleMenu('payment')}
             className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
@@ -291,7 +297,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             aria-haspopup="listbox"
             aria-expanded={sortMenuOpen}
             aria-label="Sort orders"
-            onClick={() => setSortMenuOpen((o) => !o)}
+            onClick={() => toggleMenu('sort')}
             className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
@@ -344,7 +350,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             aria-haspopup="listbox"
             aria-expanded={viewMenuOpen}
             aria-label="View layout"
-            onClick={() => setViewMenuOpen((o) => !o)}
+            onClick={() => toggleMenu('view')}
             className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">

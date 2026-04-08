@@ -127,6 +127,11 @@ export const DashboardWalletSection: FunctionComponent = () => {
   const [sortOption, setSortOption] = useState<SortOption>('newest')
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
+  const toggleMenu = (menu: 'coin' | 'status' | 'sort') => {
+    setCoinMenuOpen((prev) => (menu === 'coin' ? !prev : false))
+    setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
+    setSortMenuOpen((prev) => (menu === 'sort' ? !prev : false))
+  }
 
   useEffect(() => {
     if (!coinMenuOpen && !statusMenuOpen && !sortMenuOpen) return
@@ -271,7 +276,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     aria-haspopup="listbox"
                     aria-expanded={coinMenuOpen}
                     aria-label="Select payment coin"
-                    onClick={() => setCoinMenuOpen((o) => !o)}
+                    onClick={() => toggleMenu('coin')}
                     className="rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left"
                   >
                     <span className="flex min-w-0 items-center gap-2">
@@ -423,7 +428,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               aria-haspopup="listbox"
               aria-expanded={statusMenuOpen}
               aria-label="Filter by status"
-              onClick={() => setStatusMenuOpen((o) => !o)}
+              onClick={() => toggleMenu('status')}
               className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
             >
               <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
@@ -476,7 +481,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               aria-haspopup="listbox"
               aria-expanded={sortMenuOpen}
               aria-label="Sort transactions"
-              onClick={() => setSortMenuOpen((o) => !o)}
+              onClick={() => toggleMenu('sort')}
               className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
             >
               <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
