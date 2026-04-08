@@ -106,7 +106,11 @@ type CoinOption = {
 
 const COIN_OPTIONS: CoinOption[] = [
   { value: 'btc', label: 'Bitcoin', iconSrc: '/icons/Crypto Logos/Bitcoin.svg' },
-  { value: 'eth', label: 'Ethereum', iconSrc: '/icons/Crypto Logos/Ethereum ETH.svg' },
+  {
+    value: 'eth',
+    label: 'Ethereum',
+    iconSrc: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg',
+  },
   { value: 'usdt', label: 'Tether', iconSrc: '/icons/Crypto Logos/Tether.svg' },
   { value: 'ltc', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
   { value: 'bch', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
@@ -164,7 +168,9 @@ export const DashboardWalletSection: FunctionComponent = () => {
   const filteredTx = useMemo(() => {
     const q = historySearch.trim().toLowerCase()
     const statusFiltered =
-      statusFilter === 'all' ? MOCK_TX : MOCK_TX.filter((t) => (t.status ?? 'paid') === statusFilter)
+      statusFilter === 'all'
+        ? MOCK_TX
+        : MOCK_TX.filter((t) => (t.status ?? 'paid') === statusFilter)
     if (!q) return statusFiltered
     return statusFiltered.filter(
       (t) =>
@@ -191,8 +197,10 @@ export const DashboardWalletSection: FunctionComponent = () => {
 
     const next = [...filteredTx]
     next.sort((a, b) => {
-      if (sortOption === 'amount_desc') return parseAmount(b.amountLabel) - parseAmount(a.amountLabel)
-      if (sortOption === 'amount_asc') return parseAmount(a.amountLabel) - parseAmount(b.amountLabel)
+      if (sortOption === 'amount_desc')
+        return parseAmount(b.amountLabel) - parseAmount(a.amountLabel)
+      if (sortOption === 'amount_asc')
+        return parseAmount(a.amountLabel) - parseAmount(b.amountLabel)
 
       const aMs = parseDateTime(a)
       const bMs = parseDateTime(b)
@@ -340,9 +348,13 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     className="focus-visible:ring-fuchsia/40 flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none"
                     aria-label={`Switch amount unit to ${amountUnit === 'USD' ? 'BTC' : 'USD'}`}
                   >
-                    <span className={amountUnit === 'USD' ? 'text-white' : 'text-white/50'}>USD</span>
+                    <span className={amountUnit === 'USD' ? 'text-white' : 'text-white/50'}>
+                      USD
+                    </span>
                     <span className="text-white/40">/</span>
-                    <span className={amountUnit === 'BTC' ? 'text-white' : 'text-white/50'}>BTC</span>
+                    <span className={amountUnit === 'BTC' ? 'text-white' : 'text-white/50'}>
+                      BTC
+                    </span>
                   </button>
                 </div>
               </div>
@@ -387,7 +399,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
         </div>
       </div>
 
-      <div className="h-px w-full bg-darkslateblue" aria-hidden />
+      <div className="bg-darkslateblue h-px w-full" aria-hidden />
 
       {/* Balance history */}
       <div className="flex min-w-0 flex-col gap-4">
@@ -452,7 +464,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               <ul
                 role="listbox"
                 aria-label="Status"
-                className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-[210px] overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
               >
                 {STATUS_OPTIONS.map((opt) => (
                   <li key={opt.value} role="presentation">
@@ -513,7 +525,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       type="button"
                       role="option"
                       aria-selected={sortOption === opt.value}
-                      className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                      className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full whitespace-nowrap px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
                         sortOption === opt.value ? 'bg-[#16243B]' : ''
                       }`}
                       onClick={() => {
@@ -546,7 +558,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   type="button"
                   key={tx.id}
                   onClick={() => setTxnDialogRow(tx)}
-                  className="border-darkslateblue hover:bg-gray-700/20 focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
+                  className="border-darkslateblue focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 hover:bg-gray-700/20 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
                   aria-label={`View transaction details for ${tx.title} on ${tx.date}`}
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">

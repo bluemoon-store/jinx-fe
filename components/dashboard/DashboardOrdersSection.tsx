@@ -16,9 +16,9 @@ const PAGE_SIZE = 12
 
 type OrdersViewMode = 'grid' | 'list'
 
-const VIEW_OPTIONS: { value: OrdersViewMode; label: string }[] = [
-  { value: 'grid', label: 'Grid' },
-  { value: 'list', label: 'List' },
+const VIEW_OPTIONS: { value: OrdersViewMode; label: string; icon: string }[] = [
+  { value: 'grid', label: 'Grid', icon: 'IconLayoutDashboard' },
+  { value: 'list', label: 'List', icon: 'IconListBullets' },
 ]
 
 type StatusFilter = 'all' | DashboardOrderStatus
@@ -32,14 +32,18 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
 
 type PaymentMethodFilter = 'all' | OrderPaymentMethod
 
-const PAYMENT_METHOD_OPTIONS: { value: PaymentMethodFilter; label: string }[] = [
+const PAYMENT_METHOD_OPTIONS: { value: PaymentMethodFilter; label: string; iconSrc?: string }[] = [
   { value: 'all', label: 'All' },
-  { value: 'bitcoin', label: 'Bitcoin' },
-  { value: 'ethereum', label: 'Ethereum' },
-  { value: 'usdt_tron', label: 'USDT (Tron)' },
-  { value: 'usdt_ethereum', label: 'USDT (Ethereum)' },
-  { value: 'litecoin', label: 'Litecoin' },
-  { value: 'bitcoin_cash', label: 'Bitcoin Cash' },
+  { value: 'bitcoin', label: 'Bitcoin', iconSrc: '/icons/Crypto Logos/Bitcoin.svg' },
+  {
+    value: 'ethereum',
+    label: 'Ethereum',
+    iconSrc: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg',
+  },
+  { value: 'usdt_tron', label: 'USDT (Tron)', iconSrc: '/icons/Crypto Logos/Tether.svg' },
+  { value: 'usdt_ethereum', label: 'USDT (Ethereum)', iconSrc: '/icons/Crypto Logos/Tether.svg' },
+  { value: 'litecoin', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
+  { value: 'bitcoin_cash', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
 ]
 
 type SortOption = 'newest' | 'oldest' | 'price_desc' | 'price_asc'
@@ -71,6 +75,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const [sortOption, setSortOption] = useState<SortOption>('newest')
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
+  const selectedViewOption = VIEW_OPTIONS.find((o) => o.value === viewMode) ?? VIEW_OPTIONS[0]
   const toggleMenu = (menu: 'status' | 'payment' | 'sort' | 'view') => {
     setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
     setPaymentMethodMenuOpen((prev) => (menu === 'payment' ? !prev : false))
@@ -80,7 +85,8 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
 
   const filtered = useMemo(() => {
     const q = orderSearch.trim().toLowerCase()
-    const statusFiltered = statusFilter === 'all' ? orders : orders.filter((o) => o.status === statusFilter)
+    const statusFiltered =
+      statusFilter === 'all' ? orders : orders.filter((o) => o.status === statusFilter)
     const methodFiltered =
       paymentMethodFilter === 'all'
         ? statusFiltered
@@ -219,20 +225,38 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             >
               {STATUS_OPTIONS.map((opt) => (
                 <li key={opt.value} role="presentation">
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={statusFilter === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                      statusFilter === opt.value ? 'bg-[#16243B]' : ''
-                    }`}
-                    onClick={() => {
-                      setStatusFilter(opt.value)
-                      setStatusMenuOpen(false)
-                    }}
-                  >
-                    {opt.label}
-                  </button>
+                  {(() => {
+                    const statusCfg =
+                      opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
+                    return (
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={statusFilter === opt.value}
+                        className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                          statusFilter === opt.value ? 'bg-[#16243B]' : ''
+                        }`}
+                        onClick={() => {
+                          setStatusFilter(opt.value)
+                          setStatusMenuOpen(false)
+                        }}
+                      >
+                        {statusCfg ? (
+                          <CentralIcon
+                            name={statusCfg.icon as any}
+                            join="round"
+                            fill="filled"
+                            stroke="1"
+                            radius="1"
+                            size={14}
+                            ariaHidden={true}
+                            className={`shrink-0 ${statusCfg.color}`}
+                          />
+                        ) : null}
+                        <span>{opt.label}</span>
+                      </button>
+                    )
+                  })()}
                 </li>
               ))}
             </ul>
@@ -276,7 +300,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                     type="button"
                     role="option"
                     aria-selected={paymentMethodFilter === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
                       paymentMethodFilter === opt.value ? 'bg-[#16243B]' : ''
                     }`}
                     onClick={() => {
@@ -284,7 +308,10 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                       setPaymentMethodMenuOpen(false)
                     }}
                   >
-                    {opt.label}
+                    {opt.iconSrc ? (
+                      <img className="h-5 w-5 shrink-0" alt="" src={opt.iconSrc} />
+                    ) : null}
+                    <span>{opt.label}</span>
                   </button>
                 </li>
               ))}
@@ -329,7 +356,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                     type="button"
                     role="option"
                     aria-selected={sortOption === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold whitespace-nowrap transition-colors hover:bg-white/10 ${
                       sortOption === opt.value ? 'bg-[#16243B]' : ''
                     }`}
                     onClick={() => {
@@ -357,7 +384,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
               View
             </span>
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-              {VIEW_OPTIONS.find((o) => o.value === viewMode)?.label ?? 'Grid'}
+              {selectedViewOption.label}
             </span>
             <CentralIcon
               name="IconChevronDownMedium"
@@ -382,7 +409,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                     type="button"
                     role="option"
                     aria-selected={viewMode === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
                       viewMode === opt.value ? 'bg-[#16243B]' : ''
                     }`}
                     onClick={() => {
@@ -390,7 +417,17 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                       setViewMenuOpen(false)
                     }}
                   >
-                    {opt.label}
+                    <CentralIcon
+                      name={opt.icon as any}
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={15}
+                      ariaHidden={true}
+                      className="shrink-0"
+                    />
+                    <span>{opt.label}</span>
                   </button>
                 </li>
               ))}

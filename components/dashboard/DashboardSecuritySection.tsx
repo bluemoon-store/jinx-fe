@@ -5,6 +5,7 @@ import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent } from 'react'
 
 import { useAppStore } from '@/lib/store'
+import { toast } from '@/lib/toast'
 
 /** Security settings — layout refactored from Figma (flex, no absolute/relative positioning). */
 export const DashboardSecuritySection: FunctionComponent = () => {
@@ -24,7 +25,12 @@ export const DashboardSecuritySection: FunctionComponent = () => {
         <div className="text-num-16 flex w-full min-w-0 shrink-0 items-stretch sm:w-auto sm:items-center">
           <button
             type="button"
-            onClick={() => openAuthModal('forgot')}
+            onClick={() => {
+              // openAuthModal('forgot')
+              toast.info('Password reset link requested', {
+                description: 'Please check your registered email inbox.',
+              })
+            }}
             className="border-whitesmoke-300 font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid bg-gray-200 px-3 py-2 text-inherit sm:min-h-0 sm:w-auto sm:justify-start"
           >
             <CentralIcon

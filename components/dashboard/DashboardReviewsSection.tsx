@@ -4,7 +4,10 @@ import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import type { DashboardOrderStatus } from '@/components/dashboard/DashboardOrderCard'
+import {
+  dashboardOrderStatusConfig,
+  type DashboardOrderStatus,
+} from '@/components/dashboard/DashboardOrderCard'
 import { ratingStarColor } from '@/lib/rating-star-colors'
 import {
   type OrderReview,
@@ -29,14 +32,18 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
 
 type PaymentMethodFilter = 'all' | OrderPaymentMethod
 
-const PAYMENT_METHOD_OPTIONS: { value: PaymentMethodFilter; label: string }[] = [
+const PAYMENT_METHOD_OPTIONS: { value: PaymentMethodFilter; label: string; iconSrc?: string }[] = [
   { value: 'all', label: 'All' },
-  { value: 'bitcoin', label: 'Bitcoin' },
-  { value: 'ethereum', label: 'Ethereum' },
-  { value: 'usdt_tron', label: 'USDT (Tron)' },
-  { value: 'usdt_ethereum', label: 'USDT (Ethereum)' },
-  { value: 'litecoin', label: 'Litecoin' },
-  { value: 'bitcoin_cash', label: 'Bitcoin Cash' },
+  { value: 'bitcoin', label: 'Bitcoin', iconSrc: '/icons/Crypto Logos/Bitcoin.svg' },
+  {
+    value: 'ethereum',
+    label: 'Ethereum',
+    iconSrc: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg',
+  },
+  { value: 'usdt_tron', label: 'USDT (Tron)', iconSrc: '/icons/Crypto Logos/Tether.svg' },
+  { value: 'usdt_ethereum', label: 'USDT (Ethereum)', iconSrc: '/icons/Crypto Logos/Tether.svg' },
+  { value: 'litecoin', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
+  { value: 'bitcoin_cash', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
 ]
 
 type SortOption = 'newest' | 'oldest' | 'price_desc' | 'price_asc'
@@ -312,20 +319,38 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             >
               {STATUS_OPTIONS.map((opt) => (
                 <li key={opt.value} role="presentation">
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={statusFilter === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                      statusFilter === opt.value ? 'bg-[#16243B]' : ''
-                    }`}
-                    onClick={() => {
-                      setStatusFilter(opt.value)
-                      setStatusMenuOpen(false)
-                    }}
-                  >
-                    {opt.label}
-                  </button>
+                  {(() => {
+                    const statusCfg =
+                      opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
+                    return (
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={statusFilter === opt.value}
+                        className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                          statusFilter === opt.value ? 'bg-[#16243B]' : ''
+                        }`}
+                        onClick={() => {
+                          setStatusFilter(opt.value)
+                          setStatusMenuOpen(false)
+                        }}
+                      >
+                        {statusCfg ? (
+                          <CentralIcon
+                            name={statusCfg.icon as any}
+                            join="round"
+                            fill="filled"
+                            stroke="1"
+                            radius="1"
+                            size={14}
+                            ariaHidden={true}
+                            className={`shrink-0 ${statusCfg.color}`}
+                          />
+                        ) : null}
+                        <span>{opt.label}</span>
+                      </button>
+                    )
+                  })()}
                 </li>
               ))}
             </ul>
@@ -369,7 +394,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                     type="button"
                     role="option"
                     aria-selected={paymentMethodFilter === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
                       paymentMethodFilter === opt.value ? 'bg-[#16243B]' : ''
                     }`}
                     onClick={() => {
@@ -377,7 +402,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                       setPaymentMethodMenuOpen(false)
                     }}
                   >
-                    {opt.label}
+                    {opt.iconSrc ? <img className="h-5 w-5 shrink-0" alt="" src={opt.iconSrc} /> : null}
+                    <span>{opt.label}</span>
                   </button>
                 </li>
               ))}
@@ -422,7 +448,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                     type="button"
                     role="option"
                     aria-selected={sortOption === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
+                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold whitespace-nowrap transition-colors hover:bg-white/10 ${
                       sortOption === opt.value ? 'bg-[#16243B]' : ''
                     }`}
                     onClick={() => {

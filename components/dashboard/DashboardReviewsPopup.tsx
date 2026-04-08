@@ -147,7 +147,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
         </div>
 
         {showReviewBox ? (
-          <div className="flex w-full flex-col self-stretch">
+          <div className="animate-fade-in motion-reduce:animate-none flex w-full flex-col self-stretch">
             <div className="flex flex-col items-start gap-2 self-stretch">
               <div className="flex items-start justify-between gap-5 self-stretch">
                 <div className={`relative ${reviewLabelClass}`}>Your review</div>
