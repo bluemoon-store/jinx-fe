@@ -1,6 +1,7 @@
 'use client'
 
 import { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import { ForgotPasswordA, ForgotPasswordB } from '@/components/auth/ForgotPasswordModal'
 import ResetPasswordModal from '@/components/auth/ResetPasswordModal'
@@ -140,72 +141,81 @@ const AuthModalLayer: FunctionComponent = () => {
     [closeAuthModal, logout]
   )
 
-  if (!view) return null
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:px-8">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/60"
-        aria-label="Close dialog"
-        onClick={closeAuthModal}
-      />
-      <div
-        className="relative z-10 flex max-h-[90dvh] w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-x-hidden overflow-y-auto sm:max-h-[90vh]"
-        role="dialog"
-        aria-modal="true"
-      >
-        {view === 'signin' && (
-          <SignInModal
-            onClose={closeAuthModal}
-            onContinueToDashboard={handleLogin}
-            onForgotPassword={() => openAuthModal('forgot')}
-            onSignUp={() => openAuthModal('signup')}
+    <AnimatePresence>
+      {view ? (
+        <motion.div
+          key="auth-layer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:px-8"
+        >
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/60"
+            aria-label="Close dialog"
+            onClick={closeAuthModal}
           />
-        )}
-        {view === 'signup' && (
-          <SignUpModal
-            onClose={closeAuthModal}
-            onSignIn={() => openAuthModal('signin')}
-            onRegisterSuccess={handleRegister}
-          />
-        )}
-        {view === 'forgot' && (
-          <ForgotPasswordA
-            onClose={closeAuthModal}
-            onBackToSignIn={() => openAuthModal('signin')}
-            onSendOtp={handleSendOtp}
-            onCreateAccount={() => openAuthModal('signup')}
-          />
-        )}
-        {view === 'forgot-otp' && (
-          <ForgotPasswordB
-            onClose={closeAuthModal}
-            onBackToEmail={() => openAuthModal('forgot')}
-            onContinueToReset={handleVerifyOtp}
-            onCreateAccount={() => openAuthModal('signup')}
-          />
-        )}
-        {view === 'reset' && (
-          <ResetPasswordModal onClose={closeAuthModal} onResetSuccess={handleResetPassword} />
-        )}
-        {view === '2fa-enable' && (
-          <TwoFactorEnableModal
-            onClose={closeAuthModal}
-            onVerifySuccess={handleTwoFactorEnableVerify}
-          />
-        )}
-        {view === '2fa-disable' && (
-          <TwoFactorDisableModal
-            onClose={closeAuthModal}
-            onDisableSuccess={handleTwoFactorDisable}
-          />
-        )}
-        {view === 'delete-account' && (
-          <DeleteAccountModal onClose={closeAuthModal} onDeleteConfirm={handleDeleteAccount} />
-        )}
-      </div>
-    </div>
+          <div
+            className="relative z-10 flex max-h-[90dvh] w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-x-hidden overflow-y-auto sm:max-h-[90vh]"
+            role="dialog"
+            aria-modal="true"
+          >
+            {view === 'signin' && (
+              <SignInModal
+                onClose={closeAuthModal}
+                onContinueToDashboard={handleLogin}
+                onForgotPassword={() => openAuthModal('forgot')}
+                onSignUp={() => openAuthModal('signup')}
+              />
+            )}
+            {view === 'signup' && (
+              <SignUpModal
+                onClose={closeAuthModal}
+                onSignIn={() => openAuthModal('signin')}
+                onRegisterSuccess={handleRegister}
+              />
+            )}
+            {view === 'forgot' && (
+              <ForgotPasswordA
+                onClose={closeAuthModal}
+                onBackToSignIn={() => openAuthModal('signin')}
+                onSendOtp={handleSendOtp}
+                onCreateAccount={() => openAuthModal('signup')}
+              />
+            )}
+            {view === 'forgot-otp' && (
+              <ForgotPasswordB
+                onClose={closeAuthModal}
+                onBackToEmail={() => openAuthModal('forgot')}
+                onContinueToReset={handleVerifyOtp}
+                onCreateAccount={() => openAuthModal('signup')}
+              />
+            )}
+            {view === 'reset' && (
+              <ResetPasswordModal onClose={closeAuthModal} onResetSuccess={handleResetPassword} />
+            )}
+            {view === '2fa-enable' && (
+              <TwoFactorEnableModal
+                onClose={closeAuthModal}
+                onVerifySuccess={handleTwoFactorEnableVerify}
+              />
+            )}
+            {view === '2fa-disable' && (
+              <TwoFactorDisableModal
+                onClose={closeAuthModal}
+                onDisableSuccess={handleTwoFactorDisable}
+              />
+            )}
+            {view === 'delete-account' && (
+              <DeleteAccountModal onClose={closeAuthModal} onDeleteConfirm={handleDeleteAccount} />
+            )}
+          </div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   )
 }
 

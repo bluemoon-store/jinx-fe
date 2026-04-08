@@ -7,6 +7,7 @@ import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { useCartStore } from '@/lib/cart-store'
 import { useAppStore } from '@/lib/store'
 import CentralIcon from '@central-icons-react/all'
+import { AnimatePresence, motion } from 'framer-motion'
 import type { Route } from 'next'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -19,7 +20,6 @@ const Navbar: FunctionComponent = () => {
   const [userMenuHoverKey, setUserMenuHoverKey] = useState<string | null>(null)
   const [logOutModalOpen, setLogOutModalOpen] = useState(false)
   const [cartMenuOpen, setCartMenuOpen] = useState(false)
-  const [cartMenuAnimateIn, setCartMenuAnimateIn] = useState(false)
   const desktopUserMenuRef = useRef<HTMLDivElement>(null)
   const desktopCartMenuRef = useRef<HTMLDivElement>(null)
   const mobileUserMenuRef = useRef<HTMLDivElement>(null)
@@ -50,13 +50,6 @@ const Navbar: FunctionComponent = () => {
     if (cartItemCount <= previousCount) return
 
     setCartMenuOpen(true)
-    setCartMenuAnimateIn(false)
-    const frame = window.requestAnimationFrame(() => setCartMenuAnimateIn(true))
-    const animationTimeout = window.setTimeout(() => setCartMenuAnimateIn(false), 220)
-    return () => {
-      window.cancelAnimationFrame(frame)
-      window.clearTimeout(animationTimeout)
-    }
   }, [cartItemCount])
 
   const navLinks = [
@@ -307,11 +300,7 @@ const Navbar: FunctionComponent = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setCartMenuOpen((o) => {
-                      const next = !o
-                      setCartMenuAnimateIn(next)
-                      return next
-                    })
+                    setCartMenuOpen((o) => !o)
                     setDesktopUserMenuOpen(false)
                   }}
                   aria-expanded={cartMenuOpen}
@@ -328,15 +317,19 @@ const Navbar: FunctionComponent = () => {
                     </span>
                   )}
                 </button>
-                {cartMenuOpen && (
-                  <div
-                    className={`absolute top-full right-0 z-50 mt-2 origin-top-right transition-all duration-200 ease-out ${
-                      cartMenuAnimateIn ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-1 scale-[0.98] opacity-95'
-                    }`}
-                  >
-                    <CartDropdownPanel />
-                  </div>
-                )}
+                <AnimatePresence>
+                  {cartMenuOpen ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="absolute top-full right-0 z-50 mt-2 origin-top-right"
+                    >
+                      <CartDropdownPanel />
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </div>
               {isLoggedIn && (
                 <>
@@ -480,11 +473,7 @@ const Navbar: FunctionComponent = () => {
           <button
             type="button"
             onClick={() => {
-              setCartMenuOpen((o) => {
-                const next = !o
-                setCartMenuAnimateIn(next)
-                return next
-              })
+              setCartMenuOpen((o) => !o)
               setMobileUserMenuOpen(false)
               setMobileNavMenuOpen(false)
             }}
@@ -502,15 +491,19 @@ const Navbar: FunctionComponent = () => {
               </span>
             )}
           </button>
-          {cartMenuOpen && (
-            <div
-              className={`absolute top-full right-0 z-50 mt-2 origin-top-right transition-all duration-200 ease-out ${
-                cartMenuAnimateIn ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-1 scale-[0.98] opacity-95'
-              }`}
-            >
-              <CartDropdownPanel />
-            </div>
-          )}
+          <AnimatePresence>
+            {cartMenuOpen ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                className="absolute top-full right-0 z-50 mt-2 origin-top-right"
+              >
+                <CartDropdownPanel />
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
 
         {isLoggedIn ? (
