@@ -29,19 +29,19 @@ export function Toaster(props: Props) {
   const defaultClassNames = {
     toast: cn(
       '!bg-gray-700 !text-ghostwhite !border-gray-600 border shadow-[0px_16px_16px_rgba(0,0,0,0.05),_0px_4px_4px_rgba(0,0,0,0.08)]',
-      'rounded-lg px-3 py-2 flex gap-2.5 items-center',
+      'rounded-lg px-3 py-2 flex gap-2.5 items-start',
       'font-commissioner text-left'
     ),
     title:
       'tracking-[-0.01em] leading-6 font-semibold text-base whitespace-nowrap overflow-hidden text-ellipsis',
     description:
-      'tracking-[-0.01em] leading-6 font-medium text-base text-ghostwhite/75 !mt-0 whitespace-nowrap overflow-hidden text-ellipsis',
+      'tracking-[-0.01em] leading-5 font-medium text-[13px] text-ghostwhite/70 !mt-0 whitespace-normal line-clamp-2',
     success: 'border-mediumspringgreen',
     error: 'border-red',
     info: 'border-deepskyblue-200',
     warning: 'border-darkorange',
-    content: 'flex-1 min-w-0 flex items-center gap-2 overflow-hidden',
-    icon: 'shrink-0',
+    content: 'flex-1 min-w-0 flex flex-col gap-0.5 overflow-hidden',
+    icon: 'shrink-0 self-center',
   }
 
   const mergedToastOptions = {
