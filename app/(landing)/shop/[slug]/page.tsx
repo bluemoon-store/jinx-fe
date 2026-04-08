@@ -92,7 +92,7 @@ const ProductViewPage: FunctionComponent = () => {
   if (!slug) return null
 
   return (
-    <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-12 text-left sm:pt-[75px]">
+    <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col overflow-x-clip bg-gray-400 pt-12 text-left sm:pt-[75px]">
       <Navbar />
       <div className="flex min-w-0 flex-1 flex-col">
         <ShopProductDetail product={product} />

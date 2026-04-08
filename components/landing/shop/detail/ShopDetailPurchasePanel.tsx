@@ -15,9 +15,15 @@ type Props = {
 }
 
 const VARIANT_OPTIONS = [
-  { id: 'fully', label: '$50 Points | Fully Unlocked', unitPrice: 50 },
-  { id: 'partial', label: '$25 Points | Partially Unlocked', unitPrice: 25 },
+  { id: 'p50', label: '$50 Points | Fully Unlocked', unitPrice: 50 },
+  { id: 'p100', label: '$100 Points | Fully Unlocked', unitPrice: 100 },
+  { id: 'p150', label: '$150 Points | Fully Unlocked', unitPrice: 150 },
 ] as const
+
+const VARIANT_DROPDOWN_BORDER_CLASS = 'border-[1px] border-solid border-[rgba(238,238,238,0.1)]'
+const VARIANT_DROPDOWN_PANEL_CLASS = `rounded-lg bg-gray-200 text-base text-white shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)] box-border ${VARIANT_DROPDOWN_BORDER_CLASS}`
+const VARIANT_DROPDOWN_ROW_CLASS =
+  'flex w-full items-center px-4 py-2 text-left font-semibold tracking-[-0.01em] leading-7'
 
 const STATE_OPTIONS = [
   { id: 'ab', label: 'AB', countryCode: 'CA' },
@@ -70,9 +76,11 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
   return (
     <div className="text-lightsteelblue-200 flex w-full flex-col items-start gap-4">
-      <div className="flex flex-col items-start gap-2 self-stretch">
+      <div className="font-commissioner flex flex-col items-start gap-2 self-stretch">
         <div className="leading-num-20 font-semibold">Select Variant</div>
-        <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-[#0D1B35] text-white">
+        <div
+          className={`relative w-full overflow-visible rounded-lg bg-gray-200 text-white ${VARIANT_DROPDOWN_BORDER_CLASS} box-border`}
+        >
           <button
             type="button"
             aria-label={`Select variant for ${productName}`}
@@ -81,50 +89,59 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               setIsVariantOpen((v) => !v)
               setIsStateOpen(false)
             }}
-            className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch"
+            className={`${VARIANT_DROPDOWN_ROW_CLASS} w-full items-center justify-between gap-5`}
           >
-            <div className="flex min-w-0 items-center">
-              <div className="tracking-num--0_01 leading-num-28 truncate font-semibold">
-                {selectedVariant.label}
-              </div>
-            </div>
+            <div className="min-w-0 flex-1 truncate">{selectedVariant.label}</div>
             <CentralIcon
               name="IconChevronDownMedium"
               join="round"
               fill="outlined"
               stroke="1"
               radius="1"
-              size={20}
-              className="text-white opacity-75 transition-transform duration-300 ease-in-out"
+              size={24}
+              className="h-6 w-6 shrink-0 text-white opacity-75 transition-transform duration-300 ease-in-out"
               style={{ transform: isVariantOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
 
           {isVariantOpen && (
             <div
-              className={`rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 ${dropdownZClass} -mt-[1px] overflow-hidden border border-solid bg-gray-400`}
+              className={`absolute top-full right-0 left-0 ${dropdownZClass} -mt-px overflow-hidden ${VARIANT_DROPDOWN_PANEL_CLASS}`}
             >
-              <div className="flex flex-col">
-                {VARIANT_OPTIONS.map((option, idx) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    aria-label={`Choose ${option.label}`}
-                    onClick={() => {
-                      setSelectedVariantId(option.id)
-                      setIsVariantOpen(false)
-                    }}
-                    className={[
-                      'px-num-12 py-num-10 text-num-16 w-full text-left',
-                      'hover:bg-gray-300/20',
-                      idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
-                    ].join(' ')}
-                  >
-                    <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                      {option.label}
-                    </div>
-                  </button>
-                ))}
+              <div className="flex flex-col divide-y divide-white/10">
+                {VARIANT_OPTIONS.map((option) => {
+                  const isSelected = option.id === selectedVariantId
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      aria-label={`Choose ${option.label}`}
+                      onClick={() => {
+                        setSelectedVariantId(option.id)
+                        setIsVariantOpen(false)
+                      }}
+                      className={[
+                        VARIANT_DROPDOWN_ROW_CLASS,
+                        'justify-between gap-5 transition-colors',
+                        isSelected ? 'bg-white/5' : 'hover:bg-white/5',
+                      ].join(' ')}
+                    >
+                      <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                      {isSelected ? (
+                        <CentralIcon
+                          name="IconCheckmark2Small"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={18}
+                          className="shrink-0 text-white"
+                          ariaHidden={true}
+                        />
+                      ) : null}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           )}
@@ -134,7 +151,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       <div className="flex flex-col items-stretch gap-4 self-stretch sm:flex-row sm:gap-5">
         <div className="flex flex-1 flex-col items-start gap-2">
           <div className="leading-num-20 font-semibold">Select State</div>
-          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-[#0D1B35] text-white">
+          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-[#051329] text-white">
             <button
               type="button"
               aria-label={`Select state for ${productName}`}
@@ -149,7 +166,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                 <CountryFlag
                   countryCode={selectedState.countryCode}
                   alt={`${selectedState.label} flag`}
-                  className="h-full max-h-num-18 w-full max-w-[28px]"
+                  className="max-h-num-18 h-full w-full max-w-[28px]"
                   size={28}
                   shape="rectangle"
                 />
@@ -174,35 +191,50 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                 className={`rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 ${dropdownZClass} -mt-[1px] overflow-hidden border border-solid bg-gray-400`}
               >
                 <div className="flex flex-col">
-                  {STATE_OPTIONS.map((option, idx) => (
-                    <button
-                      key={option.id}
-                      type="button"
-                      aria-label={`Choose ${option.label}`}
-                      onClick={() => {
-                        setSelectedStateId(option.id)
-                        setIsStateOpen(false)
-                      }}
-                      className={[
-                        'px-num-12 py-num-10 text-num-16 w-full text-left',
-                        'hover:bg-gray-300/20',
-                        idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
-                      ].join(' ')}
-                    >
-                      <div className="flex min-w-0 items-center gap-2">
-                        <CountryFlag
-                          countryCode={option.countryCode}
-                          alt={`${option.label} flag`}
-                          className="h-full max-h-num-18 w-full max-w-[28px]"
-                          size={28}
-                          shape="rectangle"
-                        />
-                        <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                          {option.label}
+                  {STATE_OPTIONS.map((option, idx) => {
+                    const isSelected = option.id === selectedStateId
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        aria-label={`Choose ${option.label}`}
+                        onClick={() => {
+                          setSelectedStateId(option.id)
+                          setIsStateOpen(false)
+                        }}
+                        className={[
+                          'px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 text-left',
+                          isSelected ? 'bg-white/5' : 'hover:bg-gray-300/20',
+                          idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
+                        ].join(' ')}
+                      >
+                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                          <CountryFlag
+                            countryCode={option.countryCode}
+                            alt={`${option.label} flag`}
+                            className="max-h-num-18 h-full w-full max-w-[28px]"
+                            size={28}
+                            shape="rectangle"
+                          />
+                          <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                            {option.label}
+                          </div>
                         </div>
-                      </div>
-                    </button>
-                  ))}
+                        {isSelected ? (
+                          <CentralIcon
+                            name="IconCheckmark2Small"
+                            join="round"
+                            fill="filled"
+                            stroke="2"
+                            radius="1"
+                            size={18}
+                            className="shrink-0 text-white"
+                            ariaHidden={true}
+                          />
+                        ) : null}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -211,7 +243,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
         <div className="flex flex-1 flex-col items-start gap-2">
           <div className="leading-num-20 font-semibold">Select Quantity</div>
-          <div className="rounded-num-8 border-whitesmoke-300 px-num-12 py-num-10 text-num-16 w-full overflow-hidden border-[1px] border-solid bg-[#0D1B35] text-white">
+          <div className="rounded-num-8 border-whitesmoke-300 px-num-12 py-num-10 text-num-16 w-full overflow-hidden border-[1px] border-solid bg-[#051329] text-white">
             <div className="flex items-center justify-between gap-5 self-stretch">
               <button
                 type="button"
@@ -321,7 +353,10 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   )
 }
 
-export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName, productImageSrc }) => {
+export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
+  productName,
+  productImageSrc,
+}) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isProductWarrantyOpen, setIsProductWarrantyOpen] = useState(false)
@@ -342,7 +377,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName,
           </div>
           <div className="tracking-num-0_02 font-extrabold">GUARANTEES</div>
         </div>
-        <div className="py-num-0 text-num-14 sm:px-num-16 flex flex-wrap items-center justify-center gap-2 px-4 text-left sm:gap-3">
+        <div className="py-num-0 text-num-14 sm:px-num-16 flex flex-wrap items-center justify-center gap-2 px-4 text-center sm:gap-3">
           <div className="rounded-num-8 border-mediumslateblue p-num-10 flex flex-col items-start border-[1px] border-solid [background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.2)),_linear-gradient(#1a0d35,_#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon
@@ -452,7 +487,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName,
                   <p className="m-0">
                     <b>50 Points&nbsp;can get you:</b>
                   </p>
-                  <ul className="m-0 pl-[21px] text-[length:inherit]">
+                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">
                       <span className="font-medium">No Name Cake</span>
                     </li>
@@ -472,7 +507,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName,
                   <p className="m-0">
                     <b>100 Points&nbsp;can get you:&nbsp;</b>
                   </p>
-                  <ul className="m-0 pl-[21px] text-[length:inherit]">
+                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">
                       <span className="font-medium">Cheesy Garlic Bread</span>
                     </li>
@@ -489,7 +524,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName,
                   <p className="m-0">
                     <b>150 Points can get you:</b>
                   </p>
-                  <ul className="m-0 pl-[21px] text-[length:inherit]">
+                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">
                       <span className="font-medium">Pizza</span>
                     </li>
@@ -559,7 +594,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName,
                       After purchase, your code will appear in your account. Enter the code at
                       checkout on the e-commerce platform.
                     </p>
-                    <ul className="m-0 pl-[21px] text-[length:inherit]">
+                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                       <li className="mb-0">
                         <span className="font-medium">If you need help</span>, contact support from
                         the page footer.
@@ -612,7 +647,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName,
                   <div className="leading-num-24 opacity-[0.8]">
                     <b>How to Request Help</b>
                     <p className="m-0">Contact support within 48 hours with your order details.</p>
-                    <ul className="m-0 pl-[21px] text-[length:inherit]">
+                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                       <li className="mb-0">
                         <span className="font-medium">Include your order id</span> and screenshot
                         (if available).

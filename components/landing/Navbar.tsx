@@ -261,41 +261,13 @@ const Navbar: FunctionComponent = () => {
                     $0.00
                   </span>
                 </Link>
-              </>
-            ) : (
-              <>
                 <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
-                <button
-                  type="button"
-                  onClick={() => openAuthModal('signin')}
-                  className="rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5 text-white"
-                >
-                  <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => openAuthModal('signup')}
-                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
-                >
-                  <CentralIcon
-                    name="IconPeople"
-                    join="round"
-                    fill="filled"
-                    stroke="1"
-                    radius="1"
-                    size={16}
-                    ariaHidden={true}
-                  />
-                  <span className="tracking-num--0_01 leading-num-28 font-semibold">
-                    Create Account
-                  </span>
-                </button>
               </>
-            )}
-          </div>
-          <>
-            <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+            ) : null}
             <div className="flex h-[46px] shrink-0 items-center gap-2">
+              {!isLoggedIn ? (
+                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+              ) : null}
               <div className="relative shrink-0" ref={desktopCartMenuRef}>
                 <button
                   type="button"
@@ -425,7 +397,37 @@ const Navbar: FunctionComponent = () => {
                 </>
               )}
             </div>
-          </>
+            {!isLoggedIn ? (
+              <>
+                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+                <button
+                  type="button"
+                  onClick={() => openAuthModal('signin')}
+                  className="rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5 text-white"
+                >
+                  <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openAuthModal('signup')}
+                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
+                >
+                  <CentralIcon
+                    name="IconPeople"
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={16}
+                    ariaHidden={true}
+                  />
+                  <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                    Create Account
+                  </span>
+                </button>
+              </>
+            ) : null}
+          </div>
         </div>
       </div>
 

@@ -96,7 +96,7 @@ const HeroSection: FunctionComponent = () => {
                 {/* Sale → Explore: vertically nudged toward middle on lg; Pay row stays at bottom */}
                 <div className="flex flex-col gap-3 sm:gap-4 lg:min-h-0 lg:flex-1 lg:justify-center xl:gap-5">
                   {/* Promo pill — stacks on narrow viewports, wraps long copy */}
-                  <div className="flex w-full max-w-full min-w-0 flex-col items-center justify-center gap-2 rounded-[60.94px] border-[0.5px] border-solid border-[#ffffff40] px-2 py-2 text-center shadow-[inset_0px_1px_0px_#ffffff40] [background:radial-gradient(50%_50%_at_47%_-32%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0.08)_100%)] sm:flex-row sm:items-center sm:justify-start sm:gap-[29.73px] sm:px-0 sm:py-1 sm:pr-3 sm:pl-1 sm:text-left">
+                  <div className="flex w-full max-w-full min-w-0 flex-col items-center justify-center gap-2 rounded-[60.94px] border-[0.5px] border-solid border-[#ffffff40] px-2 py-2 text-center shadow-[inset_0px_1px_0px_#ffffff40] [background:radial-gradient(50%_50%_at_47%_-32%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0.08)_100%)] sm:flex-row sm:items-center sm:justify-start sm:gap-2 sm:px-0 sm:py-1 sm:pr-3 sm:pl-1 sm:text-left">
                     <div className="inline-flex w-fit shrink-0 items-center justify-center gap-[5px]">
                       <div className="inline-flex items-center justify-center gap-[2.5px] rounded-[33px] border border-solid border-[#eeeeee80] bg-white px-2 py-1 shadow-[0px_1px_1px_#0000000f]">
                         <img
@@ -239,7 +239,7 @@ const HeroSection: FunctionComponent = () => {
       </div>
 
       {/* Bottom tabs from old HeroSection, placed under header banner */}
-      <div className="mx-auto w-full max-w-[1476.9px] px-4 pt-6 pb-8 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1776.9px] px-4 pt-6 pb-8 sm:px-6 lg:px-8">
         <div className="font-commissioner flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
           {tabs.map(({ label, icon }) => (
             <div key={label} className="group relative w-auto">
@@ -247,7 +247,7 @@ const HeroSection: FunctionComponent = () => {
 
               <button
                 type="button"
-                className="relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-sm text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2 sm:text-base"
+                className="relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-[14px] leading-5 text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2"
               >
                 <CentralIcon
                   name={icon as CentralIconName}
@@ -259,7 +259,7 @@ const HeroSection: FunctionComponent = () => {
                   color="#FFFFFF"
                   ariaHidden={true}
                 />
-                <span className="leading-5 font-semibold">{label}</span>
+                <span className="leading-5 font-bold tracking-[0]">{label}</span>
               </button>
             </div>
           ))}

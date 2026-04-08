@@ -115,17 +115,19 @@ export default function FreshlyRestockedSection() {
         <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
           {items.map((item, idx) => (
             <Reveal
-              key={item.name}
+              key={`${page}-${item.name}-${idx}`}
               variant="fade-up"
               delay={idx * 70}
-              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-[#0D1B35] p-4 sm:gap-3 sm:p-5 lg:p-6"
+              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-[#0D1B35] p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
-              <Link href={`/shop/${slugify(item.name)}`} className="block w-full">
-                <img
-                  className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
-                  alt=""
-                  src={item.src}
-                />
+              <Link href={`/shop/${slugify(item.name)}`} className="flex w-full flex-1 flex-col">
+                <div className="rounded-num-8 relative aspect-4/3 w-full overflow-hidden bg-[#0A162D]">
+                  <img
+                    className="block h-full w-full object-cover"
+                    alt=""
+                    src={item.src}
+                  />
+                </div>
                 <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
                   <div className="flex items-center justify-center self-stretch">
                     <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
@@ -147,7 +149,7 @@ export default function FreshlyRestockedSection() {
               <button
                 type="button"
                 onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.src })}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 flex min-h-[44px] w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 py-2 text-white sm:gap-[5px] sm:py-1.5"
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 mt-auto flex min-h-[44px] w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 py-2 text-white sm:gap-[5px] sm:py-1.5"
               >
                 <CentralIcon
                   name="IconZap"

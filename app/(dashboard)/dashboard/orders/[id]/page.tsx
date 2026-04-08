@@ -330,7 +330,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                             After purchase, your code will appear in your account. Enter the code at
                             checkout on the e-commerce platform.
                           </p>
-                          <ul className="m-0 pl-[21px] text-[length:inherit]">
+                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                             <li className="mb-0">
                               <span className="font-medium">If you need help</span>, contact support
                               from the page footer.
@@ -386,7 +386,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                           <p className="m-0">
                             Contact support within 48 hours with your order details.
                           </p>
-                          <ul className="m-0 pl-[21px] text-[length:inherit]">
+                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                             <li className="mb-0">
                               <span className="font-medium">Include your order id</span> and
                               screenshot (if available).
