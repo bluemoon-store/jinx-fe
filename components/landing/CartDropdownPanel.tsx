@@ -25,17 +25,26 @@ type CartLineProps = {
 
 const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
   <div className="flex w-full min-w-0 items-center gap-3">
-    <div
-      className="h-10 w-10 shrink-0 rounded-lg bg-gray-300/25 ring-1 ring-white/10"
-      aria-hidden
-    />
+    <div className="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-300/25 ring-1 ring-white/10">
+      {item.thumbUrl ? (
+        <img
+          className="block h-full w-full scale-110 object-cover object-center"
+          alt={`${item.name} thumbnail`}
+          src={item.thumbUrl}
+          width={56}
+          height={40}
+        />
+      ) : (
+        <div className="h-full w-full" aria-hidden />
+      )}
+    </div>
     <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5">
       <b className="tracking-num--0_01 leading-num-20">{item.name}</b>
       <div className="flex flex-wrap items-center gap-2 text-center text-[#C3C3E3]">
         <div className="leading-num-20 font-medium">{item.variantLabel}</div>
         <div className="border-whitesmoke-200/10 box-border h-px w-[9px] shrink-0 border-t border-solid" />
         <div className="flex items-center gap-1.5">
-          <div className="h-num-14_4 w-num-19_2 grid shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
+          <div className="grid h-3 w-4 shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
             <img
               className="col-span-full row-span-full h-full w-full object-cover"
               alt=""

@@ -10,6 +10,7 @@ import { useCartStore } from '@/lib/cart-store'
 
 type Props = {
   productName: string
+  productImageSrc?: string
 }
 
 const VARIANT_OPTIONS = [
@@ -28,6 +29,7 @@ const STATE_OPTIONS = [
 
 type PurchaseControlsProps = {
   productName: string
+  productImageSrc?: string
   /** Override Add to Cart button classes (e.g. Quick Buy modal uses #0D1B35). */
   addToCartButtonClassName?: string
   /** z-index for open dropdown menus (raise in modals so lists paint above the card). */
@@ -41,6 +43,7 @@ const DEFAULT_ADD_TO_CART_CLASS =
 
 export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps> = ({
   productName,
+  productImageSrc,
   addToCartButtonClassName = DEFAULT_ADD_TO_CART_CLASS,
   dropdownZClass = 'z-20',
   onAddToCart,
@@ -264,6 +267,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                 variantLabel: selectedVariant.label,
                 stateCode: selectedState.label,
                 unitPrice: selectedVariant.unitPrice,
+                thumbUrl: productImageSrc,
               },
               quantity
             )
@@ -292,6 +296,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                 variantLabel: selectedVariant.label,
                 stateCode: selectedState.label,
                 unitPrice: selectedVariant.unitPrice,
+                thumbUrl: productImageSrc,
               },
               quantity
             )
@@ -314,7 +319,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   )
 }
 
-export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName }) => {
+export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName, productImageSrc }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isProductWarrantyOpen, setIsProductWarrantyOpen] = useState(false)
@@ -322,7 +327,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({ productName 
   return (
     <>
       <div className="rounded-num-12 text-lightsteelblue-200 box-border flex w-full flex-col items-start gap-4 bg-gray-100 p-4 sm:gap-5 sm:p-5">
-        <ShopDetailPurchaseControls productName={productName} />
+        <ShopDetailPurchaseControls productName={productName} productImageSrc={productImageSrc} />
       </div>
 
       <div className="border-darkslateblue h-px w-full border-t border-solid" />

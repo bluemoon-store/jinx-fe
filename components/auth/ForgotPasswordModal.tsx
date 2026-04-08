@@ -78,11 +78,11 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
 
           <section className="text-ghostwhite rounded-num-8 box-border flex w-full min-w-0 flex-col items-start self-stretch bg-gray-100 p-3 sm:p-4">
             <div className="flex items-start self-stretch">
-              <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
-                <b className="tracking-num--0_01 text-sm leading-snug font-bold sm:text-base sm:leading-[18px]">
+              <div className="font-commissioner flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                <b className="tracking-num--0_01 text-sm leading-snug font-semibold sm:text-base sm:leading-[18px]">
                   Enter Registered Email Address
                 </b>
-                <div className="text-lightsteelblue-100 self-stretch text-xs leading-snug font-medium sm:text-[13px] sm:leading-[17px]">
+                <div className="text-lightsteelblue-100 self-stretch text-xs leading-snug font-normal sm:text-[13px] sm:leading-[17px]">
                   You will receive a One Time Passcode to login to your account.
                 </div>
               </div>
@@ -276,11 +276,11 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
 
           <section className="text-ghostwhite rounded-num-8 box-border flex w-full min-w-0 flex-col items-start self-stretch bg-gray-100 p-3 sm:p-4">
             <div className="flex items-start self-stretch">
-              <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
-                <b className="tracking-num--0_01 text-sm leading-snug font-bold sm:text-base sm:leading-[18px]">
+              <div className="font-commissioner flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                <b className="tracking-num--0_01 text-sm leading-snug font-semibold sm:text-base sm:leading-[18px]">
                   Enter OTP received on your registered email address
                 </b>
-                <div className="text-lightsteelblue-100 self-stretch text-xs leading-snug font-medium sm:text-[13px] sm:leading-[17px]">
+                <div className="text-lightsteelblue-100 self-stretch text-xs leading-snug font-normal sm:text-[13px] sm:leading-[17px]">
                   Enter the 6 digit passcode to reset your password.
                 </div>
               </div>

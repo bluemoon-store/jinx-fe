@@ -198,6 +198,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSr
             <div className="relative isolate w-full min-w-0 overflow-visible">
               <ShopDetailPurchaseControls
                 productName={productName}
+                productImageSrc={imageSrc}
                 addToCartButtonClassName={ADD_TO_CART_MODAL_CLASS}
                 dropdownZClass="z-[100]"
                 onAddToCart={onClose}

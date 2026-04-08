@@ -19,6 +19,7 @@ const Navbar: FunctionComponent = () => {
   const [userMenuHoverKey, setUserMenuHoverKey] = useState<string | null>(null)
   const [logOutModalOpen, setLogOutModalOpen] = useState(false)
   const [cartMenuOpen, setCartMenuOpen] = useState(false)
+  const [cartMenuAnimateIn, setCartMenuAnimateIn] = useState(false)
   const desktopUserMenuRef = useRef<HTMLDivElement>(null)
   const desktopCartMenuRef = useRef<HTMLDivElement>(null)
   const mobileUserMenuRef = useRef<HTMLDivElement>(null)
@@ -29,10 +30,34 @@ const Navbar: FunctionComponent = () => {
   const { openAuthModal, isAuthenticated } = useAuthModal()
   const logout = useAppStore((s) => s.logout)
   const cartItems = useCartStore((s) => s.items)
+  const prevCartItemCountRef = useRef(0)
+  const hasMountedRef = useRef(false)
   // start in dark mode (switch to the right / pink)
   const [themeSwitchOn, setThemeSwitchOn] = useState(true)
   const isLoggedIn = isAuthenticated
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true
+      prevCartItemCountRef.current = cartItemCount
+      return
+    }
+
+    const previousCount = prevCartItemCountRef.current
+    prevCartItemCountRef.current = cartItemCount
+
+    if (cartItemCount <= previousCount) return
+
+    setCartMenuOpen(true)
+    setCartMenuAnimateIn(false)
+    const frame = window.requestAnimationFrame(() => setCartMenuAnimateIn(true))
+    const animationTimeout = window.setTimeout(() => setCartMenuAnimateIn(false), 220)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.clearTimeout(animationTimeout)
+    }
+  }, [cartItemCount])
 
   const navLinks = [
     { label: 'Shop', href: '/shop', icon: 'IconBasket1' },
@@ -246,6 +271,7 @@ const Navbar: FunctionComponent = () => {
               </>
             ) : (
               <>
+                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
                 <button
                   type="button"
                   onClick={() => openAuthModal('signin')}
@@ -281,7 +307,11 @@ const Navbar: FunctionComponent = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setCartMenuOpen((o) => !o)
+                    setCartMenuOpen((o) => {
+                      const next = !o
+                      setCartMenuAnimateIn(next)
+                      return next
+                    })
                     setDesktopUserMenuOpen(false)
                   }}
                   aria-expanded={cartMenuOpen}
@@ -299,7 +329,11 @@ const Navbar: FunctionComponent = () => {
                   )}
                 </button>
                 {cartMenuOpen && (
-                  <div className="absolute top-full right-0 z-50 mt-2">
+                  <div
+                    className={`absolute top-full right-0 z-50 mt-2 origin-top-right transition-all duration-200 ease-out ${
+                      cartMenuAnimateIn ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-1 scale-[0.98] opacity-95'
+                    }`}
+                  >
                     <CartDropdownPanel />
                   </div>
                 )}
@@ -446,7 +480,11 @@ const Navbar: FunctionComponent = () => {
           <button
             type="button"
             onClick={() => {
-              setCartMenuOpen((o) => !o)
+              setCartMenuOpen((o) => {
+                const next = !o
+                setCartMenuAnimateIn(next)
+                return next
+              })
               setMobileUserMenuOpen(false)
               setMobileNavMenuOpen(false)
             }}
@@ -465,7 +503,11 @@ const Navbar: FunctionComponent = () => {
             )}
           </button>
           {cartMenuOpen && (
-            <div className="absolute top-full right-0 z-50 mt-2">
+            <div
+              className={`absolute top-full right-0 z-50 mt-2 origin-top-right transition-all duration-200 ease-out ${
+                cartMenuAnimateIn ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-1 scale-[0.98] opacity-95'
+              }`}
+            >
               <CartDropdownPanel />
             </div>
           )}
