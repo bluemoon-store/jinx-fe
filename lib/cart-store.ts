@@ -1,4 +1,7 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
+
+import { CART_STORAGE_KEY } from '@/lib/constants'
 
 export type CartItem = {
   id: string
@@ -22,49 +25,68 @@ type CartState = {
   clear: () => void
 }
 
-export const useCartStore = create<CartState>()((set) => ({
-  items: [],
-  addItem: (item, quantity) =>
-    set((state) => {
-      const existingIndex = state.items.findIndex(
-        (i) =>
-          i.id === item.id && i.variantLabel === item.variantLabel && i.stateCode === item.stateCode
-      )
+const noopStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+}
 
-      if (existingIndex >= 0) {
-        const next = [...state.items]
-        next[existingIndex] = {
-          ...next[existingIndex],
-          quantity: Math.min(99, next[existingIndex].quantity + quantity),
-        }
-        return { items: next }
-      }
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      items: [],
+      addItem: (item, quantity) =>
+        set((state) => {
+          const existingIndex = state.items.findIndex(
+            (i) =>
+              i.id === item.id &&
+              i.variantLabel === item.variantLabel &&
+              i.stateCode === item.stateCode
+          )
 
-      return {
-        items: [
-          ...state.items,
-          {
-            ...item,
-            quantity: Math.min(99, quantity),
-          },
-        ],
-      }
+          if (existingIndex >= 0) {
+            const next = [...state.items]
+            next[existingIndex] = {
+              ...next[existingIndex],
+              quantity: Math.min(99, next[existingIndex].quantity + quantity),
+            }
+            return { items: next }
+          }
+
+          return {
+            items: [
+              ...state.items,
+              {
+                ...item,
+                quantity: Math.min(99, quantity),
+              },
+            ],
+          }
+        }),
+      adjustItemQuantity: (key, delta) =>
+        set((state) => {
+          const idx = state.items.findIndex(
+            (i) =>
+              i.id === key.id && i.variantLabel === key.variantLabel && i.stateCode === key.stateCode
+          )
+          if (idx < 0) return state
+          const next = [...state.items]
+          const q = Math.max(0, Math.min(99, next[idx].quantity + delta))
+          if (q === 0) {
+            next.splice(idx, 1)
+          } else {
+            next[idx] = { ...next[idx], quantity: q }
+          }
+          return { items: next }
+        }),
+      clear: () => set({ items: [] }),
     }),
-  adjustItemQuantity: (key, delta) =>
-    set((state) => {
-      const idx = state.items.findIndex(
-        (i) =>
-          i.id === key.id && i.variantLabel === key.variantLabel && i.stateCode === key.stateCode
-      )
-      if (idx < 0) return state
-      const next = [...state.items]
-      const q = Math.max(0, Math.min(99, next[idx].quantity + delta))
-      if (q === 0) {
-        next.splice(idx, 1)
-      } else {
-        next[idx] = { ...next[idx], quantity: q }
-      }
-      return { items: next }
-    }),
-  clear: () => set({ items: [] }),
-}))
+    {
+      name: CART_STORAGE_KEY,
+      storage: createJSONStorage(() =>
+        typeof window === 'undefined' ? (noopStorage as Storage) : localStorage
+      ),
+      partialize: (state) => ({ items: state.items }),
+    }
+  )
+)

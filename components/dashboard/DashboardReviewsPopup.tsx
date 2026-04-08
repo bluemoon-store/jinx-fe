@@ -9,7 +9,7 @@ const modalShadowClass =
   'shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]'
 
 const reviewLabelClass =
-  'font-nata-sans text-num-14 leading-num-20 font-semibold tracking-normal text-[#9497BC]'
+  'font-commissioner text-num-14 leading-num-20 font-semibold tracking-normal text-[#9497BC]'
 
 export type DashboardReviewsPopupProps = {
   brand?: string
@@ -40,6 +40,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
   const [comment, setComment] = useState(initialComment ?? '')
 
   const previewRating = hoveredStar ?? rating
+  const showReviewBox = rating >= 1
 
   const handleSubmit = () => {
     if (rating < 1) return
@@ -48,7 +49,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
 
   return (
     <div
-      className={`text-ghostwhite font-nata-sans py-num-18 relative box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border border-solid border-gray-500 bg-gray-200 px-4 text-left text-base sm:px-5 ${modalShadowClass} lg:max-w-[480px] lg:text-lg`}
+      className={`text-ghostwhite font-commissioner py-num-18 relative box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border border-solid border-gray-500 bg-gray-200 px-4 text-left text-base sm:px-5 ${modalShadowClass} lg:max-w-[480px] lg:text-lg`}
     >
       <div className="flex w-full min-w-0 flex-col items-center gap-6">
         <div className="text-whitesmoke-100 flex w-full flex-col items-start gap-3 self-stretch text-base sm:text-lg lg:text-xl">
@@ -110,7 +111,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
         <div className="flex flex-col gap-3 self-stretch sm:flex-row sm:items-center sm:justify-between sm:gap-5">
           <div className={`relative ${reviewLabelClass}`}>Your rating</div>
           <div
-            className="font-nata-sans flex items-center gap-2"
+            className="font-commissioner flex items-center gap-2"
             role="group"
             aria-label="Rating"
             onMouseLeave={() => setHoveredStar(null)}
@@ -145,32 +146,37 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
           </div>
         </div>
 
-        <div className="flex flex-col items-start gap-2 self-stretch">
-          <div className="flex items-start justify-between gap-5 self-stretch">
-            <div className={`relative ${reviewLabelClass}`}>Your review</div>
-            <div className={`relative ${reviewLabelClass} opacity-50`}>Optional</div>
+        {showReviewBox ? (
+          <div className="flex w-full flex-col self-stretch">
+            <div className="flex flex-col items-start gap-2 self-stretch">
+              <div className="flex items-start justify-between gap-5 self-stretch">
+                <div className={`relative ${reviewLabelClass}`}>Your review</div>
+                <div className={`relative ${reviewLabelClass} opacity-50`}>Optional</div>
+              </div>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Tell us about what you liked or disliked"
+                rows={4}
+                className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none transition-[border-color,box-shadow] outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={rating < 1}
+              onClick={handleSubmit}
+              className="bg-fuchsia text-num-16 box-border mt-4 flex min-h-11 w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <span className="relative leading-7 tracking-[-0.01em]">Submit review</span>
+            </button>
+
+            <p className="font-commissioner text-ghostwhite relative mx-auto mt-2 flex max-w-[285px] items-center justify-center text-center text-xs leading-4 font-semibold tracking-normal italic opacity-50">
+              Your feedback helps us improve our products, services, and overall customer
+              experience.
+            </p>
           </div>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Tell us about what you liked or disliked"
-            rows={4}
-            className="text-num-16 font-nata-sans rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none transition-[border-color,box-shadow] outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
-          />
-        </div>
-
-        <button
-          type="button"
-          disabled={rating < 1}
-          onClick={handleSubmit}
-          className="bg-fuchsia text-num-16 box-border flex min-h-11 w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <span className="relative leading-7 tracking-[-0.01em]">Submit review</span>
-        </button>
-
-        <p className="font-commissioner text-ghostwhite relative flex max-w-[285px] items-center justify-center text-center text-xs leading-4 font-semibold tracking-normal italic opacity-50">
-          Your feedback helps us improve our products, services, and overall customer experience.
-        </p>
+        ) : null}
       </div>
     </div>
   )

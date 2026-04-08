@@ -3,12 +3,21 @@ import { create } from 'zustand'
 import type { DashboardOrderStatus } from '@/components/dashboard/DashboardOrderCard'
 
 /** Đơn hàng — trùng mock Orders dashboard. */
+export type OrderPaymentMethod =
+  | 'bitcoin'
+  | 'ethereum'
+  | 'usdt_tron'
+  | 'usdt_ethereum'
+  | 'litecoin'
+  | 'bitcoin_cash'
+
 export type Order = {
   id: string
   brand: string
   itemCount: number
   price: string
   status: DashboardOrderStatus
+  paymentMethod: OrderPaymentMethod
 }
 
 /** Một dòng “có thể review” trên trang Reviews (mock cũ). */
@@ -30,22 +39,22 @@ export type OrderReview = {
 }
 
 const seedOrders: Order[] = [
-  { id: '1', brand: 'AIRBNB', itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '2', brand: 'VENMO', itemCount: 2, price: '$2.50', status: 'pending' },
-  { id: '3', brand: "DUNKIN'", itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '4', brand: 'AFFIRM', itemCount: 2, price: '$2.50', status: 'expired' },
-  { id: '5', brand: 'STARBUCKS', itemCount: 1, price: '$4.00', status: 'paid' },
-  { id: '6', brand: 'NETFLIX', itemCount: 3, price: '$12.99', status: 'pending' },
-  { id: '7', brand: 'CHIPOTLE', itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '8', brand: 'BEST BUY', itemCount: 1, price: '$9.99', status: 'expired' },
-  { id: '9', brand: 'AIRBNB', itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '10', brand: 'VENMO', itemCount: 2, price: '$2.50', status: 'pending' },
-  { id: '11', brand: "DUNKIN'", itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '12', brand: 'AFFIRM', itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '13', brand: 'UBER', itemCount: 1, price: '$15.00', status: 'pending' },
-  { id: '14', brand: 'PLAYSTATION', itemCount: 2, price: '$2.50', status: 'paid' },
-  { id: '15', brand: 'H&M', itemCount: 4, price: '$24.00', status: 'expired' },
-  { id: '16', brand: 'WALMART', itemCount: 2, price: '$2.50', status: 'paid' },
+  { id: '1', brand: 'AIRBNB', itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'bitcoin' },
+  { id: '2', brand: 'VENMO', itemCount: 2, price: '$2.50', status: 'pending', paymentMethod: 'ethereum' },
+  { id: '3', brand: "DUNKIN'", itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'usdt_tron' },
+  { id: '4', brand: 'AFFIRM', itemCount: 2, price: '$2.50', status: 'expired', paymentMethod: 'litecoin' },
+  { id: '5', brand: 'STARBUCKS', itemCount: 1, price: '$4.00', status: 'paid', paymentMethod: 'bitcoin_cash' },
+  { id: '6', brand: 'NETFLIX', itemCount: 3, price: '$12.99', status: 'pending', paymentMethod: 'usdt_ethereum' },
+  { id: '7', brand: 'CHIPOTLE', itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'ethereum' },
+  { id: '8', brand: 'BEST BUY', itemCount: 1, price: '$9.99', status: 'expired', paymentMethod: 'bitcoin' },
+  { id: '9', brand: 'AIRBNB', itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'usdt_ethereum' },
+  { id: '10', brand: 'VENMO', itemCount: 2, price: '$2.50', status: 'pending', paymentMethod: 'litecoin' },
+  { id: '11', brand: "DUNKIN'", itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'bitcoin_cash' },
+  { id: '12', brand: 'AFFIRM', itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'usdt_tron' },
+  { id: '13', brand: 'UBER', itemCount: 1, price: '$15.00', status: 'pending', paymentMethod: 'bitcoin' },
+  { id: '14', brand: 'PLAYSTATION', itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'ethereum' },
+  { id: '15', brand: 'H&M', itemCount: 4, price: '$24.00', status: 'expired', paymentMethod: 'usdt_ethereum' },
+  { id: '16', brand: 'WALMART', itemCount: 2, price: '$2.50', status: 'paid', paymentMethod: 'litecoin' },
 ]
 
 const seedPendingReviewRows: ReviewPurchaseRow[] = [

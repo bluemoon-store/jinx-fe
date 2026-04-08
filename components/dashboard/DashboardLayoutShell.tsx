@@ -246,7 +246,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                   {isOrderDetail ? (
                     <nav
                       aria-label="Breadcrumb"
-                      className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-wrap items-center gap-2 text-base sm:text-lg"
+                      className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-wrap items-center gap-2 text-base"
                     >
                       <Link
                         href={DASHBOARD_PATHS.orders as Route}
@@ -283,7 +283,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                         ariaHidden={true}
                         color="#EB2DFF"
                       />
-                      <b className="leading-num-28 tracking-num-0_02 md:text-num-16 text-base sm:text-lg">
+                      <b className="leading-num-28 tracking-num-0_02 text-num-16">
                         {pageHeader.title}
                       </b>
                     </div>
@@ -294,16 +294,40 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                       <span className="leading-[15px] font-semibold break-all">
                         JNX-LKXJLKNALSDJ
                       </span>
-                      <CentralIcon
-                        name="IconSquareBehindSquare1"
-                        join="round"
-                        fill="filled"
-                        stroke="2"
-                        radius="1"
-                        size={16}
-                        ariaHidden={true}
-                        className="shrink-0"
-                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          // TODO: replace with real order ID when wired
+                          const valueToCopy = 'JNX-LKXJLKNALSDJ'
+                          navigator.clipboard
+                            .writeText(valueToCopy)
+                            .then(() => {
+                              import('@/lib/toast').then(({ toast }) => {
+                                toast.success('Copied to clipboard', {
+                                  description: valueToCopy,
+                                })
+                              })
+                            })
+                            .catch(() => {
+                              import('@/lib/toast').then(({ toast }) => {
+                                toast.error('Could not copy. Please try again.')
+                              })
+                            })
+                        }}
+                        aria-label="Copy ID"
+                        className="inline-flex h-5 w-5 items-center justify-center text-current"
+                      >
+                        <CentralIcon
+                          name="IconSquareBehindSquare1"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={16}
+                          ariaHidden={true}
+                          className="shrink-0"
+                        />
+                      </button>
                     </div>
                   </div>
                 </div>

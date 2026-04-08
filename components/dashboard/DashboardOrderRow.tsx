@@ -17,7 +17,7 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
   const displayName = formatOrderBrandLabel(brand)
 
   return (
-    <div className="flex w-full min-w-0 flex-row items-center gap-3 bg-[#071935] px-3 py-3 transition-colors hover:bg-[#13253F] sm:gap-4 sm:px-4 sm:py-3.5 md:px-5">
+    <div className="group flex w-full min-w-0 flex-row items-center gap-3 bg-[#071935] px-3 py-3 transition-colors hover:bg-[#13253F] sm:gap-4 sm:px-4 sm:py-3.5 md:px-5">
       <div className="rounded-num-8 flex h-12 w-[4.75rem] shrink-0 items-center justify-center overflow-hidden bg-[#FF5A5F] shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28">
         <img className="h-full w-full scale-110 object-cover" alt="" src="/icons/airbnb.svg" />
       </div>
@@ -54,7 +54,7 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
 
       <Link
         href={`/dashboard/orders/${id}` as Route}
-        className="text-ghostwhite font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 shrink-0 bg-[#13253F] px-3 py-2 text-xs font-semibold focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm"
+        className="text-ghostwhite font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 shrink-0 bg-[#13253F] px-3 py-2 text-xs font-semibold transition-colors group-hover:bg-white/10 focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm"
       >
         View Details
       </Link>

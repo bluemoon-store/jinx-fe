@@ -2,12 +2,12 @@
 
 import AuthModalLayer from '@/components/auth/AuthModalLayer'
 import { AuthModalProvider } from '@/components/auth/auth-modal-context'
+import { Toaster } from '@/components/ui/sonner'
 import { useAppStore } from '@/lib/store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
 import { useEffect, useState } from 'react'
-import { Toaster } from 'sonner'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const initializeAuth = useAppStore((s) => s.initializeAuth)
@@ -34,7 +34,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <AuthModalProvider>
           {children}
           <AuthModalLayer />
-          <Toaster richColors position="top-right" />
+          <Toaster />
         </AuthModalProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
