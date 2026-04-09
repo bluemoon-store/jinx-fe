@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
-import { IconReceiptTax } from '@/components/icons/central-icons'
 import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'

@@ -69,4 +69,3 @@ On clicking **Dark / Light / System**:
 - Clicking **Resend Verification** shows an **info** toast.
 - Clicking any theme option updates theme as before and shows an **info** toast describing the selected theme.
 - No TypeScript or lint issues introduced.
-

@@ -13,6 +13,7 @@
 ### Task 1: Confetti overlay component
 
 **Files:**
+
 - Create: `components/checkout/shared/ConfettiCanvas.tsx`
 
 - [ ] **Step 1: Create `ConfettiCanvas` with imperative `fire()`**
@@ -26,6 +27,7 @@ export const ConfettiCanvas = forwardRef<ConfettiHandle, { durationMs?: number }
 ```
 
 Implementation requirements:
+
 - Uses `requestAnimationFrame` loop and stops after `durationMs` (default 1500ms)
 - Calls `window.matchMedia('(prefers-reduced-motion: reduce)')` and no-ops when true
 - Scales for DPR and resizes on window resize
@@ -40,12 +42,14 @@ Run dev server and verify canvas does not block clicks.
 ### Task 2: Fire on step=5 enter
 
 **Files:**
+
 - Modify: `components/checkout/CheckoutPageClient.tsx`
 
 - [ ] **Step 1: Mount `ConfettiCanvas` only for `step === 5`**
 - [ ] **Step 2: Use `useEffect` to call `fire()` once on enter**
 
 Acceptance:
+
 - Visiting `/checkout?step=5` fires confetti one time.
 - Navigating away/back re-fires once per entry.
 
@@ -54,6 +58,7 @@ Acceptance:
 ### Task 3: Fire on “CLICK TO UNSEAL”
 
 **Files:**
+
 - Modify: `components/checkout/steps/Step5Success.tsx`
 
 - [ ] **Step 1: Add optional callback prop**
@@ -67,6 +72,7 @@ export function Step5Success({ onUnseal }: { onUnseal?: () => void }) { ... }
 Convert that block to a `button type="button"` (keep same styles) and call `onUnseal?.()` on click.
 
 Acceptance:
+
 - Clicking “CLICK TO UNSEAL” triggers confetti again.
 
 ---
@@ -76,4 +82,3 @@ Acceptance:
 - [ ] **Reduced motion**: If OS setting “Reduce motion” is enabled, confetti does not run.
 - [ ] **Cleanup**: No runaway timers/RAF after effect ends.
 - [ ] **Visual**: Confetti is visible over the success page but doesn’t change layout.
-

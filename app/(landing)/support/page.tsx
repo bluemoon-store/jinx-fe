@@ -47,7 +47,10 @@ export default function SupportPage() {
 
             <p className="text-lightsteelblue-200 text-base">
               For quick answers, browse our{' '}
-              <Link href="/faqs" className="text-ghostwhite font-semibold underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white">
+              <Link
+                href="/faqs"
+                className="text-ghostwhite font-semibold underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white"
+              >
                 FAQs
               </Link>
               .

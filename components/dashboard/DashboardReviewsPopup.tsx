@@ -147,7 +147,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
         </div>
 
         {showReviewBox ? (
-          <div className="animate-fade-in motion-reduce:animate-none flex w-full flex-col self-stretch">
+          <div className="animate-fade-in flex w-full flex-col self-stretch motion-reduce:animate-none">
             <div className="flex flex-col items-start gap-2 self-stretch">
               <div className="flex items-start justify-between gap-5 self-stretch">
                 <div className={`relative ${reviewLabelClass}`}>Your review</div>
@@ -166,7 +166,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
               type="button"
               disabled={rating < 1}
               onClick={handleSubmit}
-              className="bg-fuchsia text-num-16 box-border mt-4 flex min-h-11 w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-40"
+              className="bg-fuchsia text-num-16 mt-4 box-border flex min-h-11 w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <span className="relative leading-7 tracking-[-0.01em]">Submit review</span>
             </button>

@@ -102,30 +102,30 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
   const code = demoRedeemCodeForItem(item)
 
   return (
-    <div className="border-whitesmoke-300 w-full max-w-[560px] flex flex-col gap-4 rounded-xl border-[1.5px] bg-gray-100 p-4 text-left sm:gap-5 sm:p-6 md:p-num-30">
+    <div className="border-whitesmoke-300 md:p-num-30 flex w-full max-w-[560px] flex-col gap-4 rounded-xl border-[1.5px] bg-gray-100 p-4 text-left sm:gap-5 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3 sm:gap-num-15">
+        <div className="sm:gap-num-15 flex min-w-0 items-start gap-3">
           {item.thumbUrl ? (
             <Image
               src={item.thumbUrl}
               alt=""
               width={122}
               height={63}
-              className="h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px] sm:w-num-122"
+              className="sm:w-num-122 h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px]"
             />
           ) : (
             <div
-              className="h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px] sm:w-num-122"
+              className="sm:w-num-122 h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px]"
               aria-hidden
             />
           )}
           <div className="min-w-0">
-            <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 sm:gap-x-2.5">
-              <span className="text-ghostwhite max-w-full wrap-break-word text-base font-bold sm:text-[17.5px]">
+            <div className="flex max-w-full min-w-0 flex-wrap items-center gap-x-2 sm:gap-x-2.5">
+              <span className="text-ghostwhite max-w-full text-base font-bold wrap-break-word sm:text-[17.5px]">
                 {item.name}
               </span>
               <div className="flex shrink-0 items-center gap-2">
-                <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
+                <div className="h-num-18 relative w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
                   <CountryFlag
                     countryCode="CA"
                     alt="Canada flag"
@@ -153,7 +153,9 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
             </div>
           </div>
         </div>
-        <span className="shrink-0 text-xl font-bold text-white sm:text-2xl">{formatUsd(lineTotal)}</span>
+        <span className="shrink-0 text-xl font-bold text-white sm:text-2xl">
+          {formatUsd(lineTotal)}
+        </span>
       </div>
       <Image
         src={checkoutImg.divider}
@@ -172,7 +174,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
               type="button"
               onClick={() => copyToClipboard(code)}
               aria-label="Copy code"
-              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
+              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
             >
               <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
             </button>
@@ -233,7 +235,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
               <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
               <div className="pt-num-6 pb-num-6 w-full">
                 <div className="text-lightsteelblue-200 flex flex-col items-start gap-3 text-sm sm:text-base">
-                  <p className="m-0 text-white font-semibold">{item.name}</p>
+                  <p className="m-0 font-semibold text-white">{item.name}</p>
                   <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">Variant: {item.variantLabel}</li>
                     <li className="mb-0">Region: {item.stateCode}</li>
@@ -257,7 +259,9 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
             className="flex w-full items-center justify-between gap-0 self-stretch"
             onClick={() => setIsWarrantyOpen((v) => !v)}
           >
-            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-white">Warranty</b>
+            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-white">
+              Warranty
+            </b>
             <CentralIcon
               name="IconChevronDownMedium"
               join="round"
@@ -278,7 +282,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
               <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
               <div className="pt-num-6 pb-num-6 w-full">
                 <div className="text-lightsteelblue-200 flex flex-col items-start gap-3 text-sm sm:text-base">
-                  <p className="m-0 text-white font-semibold">Warranty Coverage</p>
+                  <p className="m-0 font-semibold text-white">Warranty Coverage</p>
                   <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">
                       If this {item.name} code is invalid or cannot be applied, we will help resolve
@@ -334,7 +338,13 @@ export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
     return (
       <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
         <div className="flex flex-col items-center gap-3 py-12">
-          <Image className="h-12 w-12 opacity-90 sm:h-[50px] sm:w-[50px]" alt="" src="/icons/not-found.svg" width={50} height={50} />
+          <Image
+            className="h-12 w-12 opacity-90 sm:h-[50px] sm:w-[50px]"
+            alt=""
+            src="/icons/not-found.svg"
+            width={50}
+            height={50}
+          />
           <h1 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
             PAYMENT SUCCESSFUL
           </h1>
@@ -349,7 +359,7 @@ export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
 
   return (
     <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
-      <div className="flex flex-col items-center gap-6 text-center sm:gap-num-30">
+      <div className="sm:gap-num-30 flex flex-col items-center gap-6 text-center">
         <Image
           src={checkoutImg.subscriptionTick}
           alt=""
@@ -368,7 +378,7 @@ export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
         <InvoiceBadge />
       </div>
 
-      <div className="flex w-full min-w-0 max-w-[1920px] flex-wrap justify-center gap-6 sm:gap-8">
+      <div className="flex w-full max-w-[1920px] min-w-0 flex-wrap justify-center gap-6 sm:gap-8">
         {items.map((item) => (
           <SuccessCard key={itemKey(item)} item={item} onUnseal={onUnseal} />
         ))}

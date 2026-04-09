@@ -79,9 +79,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
     <div className="text-lightsteelblue-200 flex w-full flex-col items-start gap-4">
       <div className="font-commissioner flex flex-col items-start gap-2 self-stretch">
         <div className="leading-num-20 font-semibold">Select Variant</div>
-        <div
-          className="relative w-full overflow-visible rounded-lg bg-gray-200 text-white border-[1px] border-solid border-[rgba(238,238,238,0.1)] box-border"
-        >
+        <div className="relative box-border w-full overflow-visible rounded-lg border-[1px] border-solid border-[rgba(238,238,238,0.1)] bg-gray-200 text-white">
           <button
             type="button"
             aria-label={`Select variant for ${productName}`}
@@ -324,7 +322,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         </button>
         <button
           type="button"
-          className="bg-fuchsia box-border py-num-8 px-num-16 flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+          className="bg-fuchsia py-num-8 px-num-16 box-border flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
           onClick={() => {
             addItem(
               {

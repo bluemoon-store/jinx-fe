@@ -24,9 +24,16 @@ type DetailRowProps = {
   href?: string
 }
 
-const DetailRow: FunctionComponent<DetailRowProps> = ({ label, value, underlined = false, href }) => (
+const DetailRow: FunctionComponent<DetailRowProps> = ({
+  label,
+  value,
+  underlined = false,
+  href,
+}) => (
   <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-    <span className="leading-num-20 text-num-14 text-lightsteelblue-200 font-semibold">{label}</span>
+    <span className="leading-num-20 text-num-14 text-lightsteelblue-200 font-semibold">
+      {label}
+    </span>
     {href ? (
       <a
         href={href}
@@ -34,7 +41,7 @@ const DetailRow: FunctionComponent<DetailRowProps> = ({ label, value, underlined
         rel="noopener noreferrer"
         className={`tracking-num--0_01 text-num-16 leading-num-28 text-lightsteelblue-200 font-semibold ${
           underlined ? 'underline' : ''
-        } hover:text-white focus-visible:ring-fuchsia/40 rounded-sm transition-colors focus-visible:ring-2 focus-visible:outline-none`}
+        } focus-visible:ring-fuchsia/40 rounded-sm transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-none`}
       >
         {value}
       </a>
@@ -64,7 +71,7 @@ export const DashboardWalletTxnPopup: FunctionComponent<DashboardWalletTxnPopupP
   onClose,
 }) => {
   return (
-    <div className="font-nata-sans w-full max-w-[440px] overflow-hidden rounded-xl border border-solid border-gray-500 bg-gray-200 px-5 py-num-18 text-left shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]">
+    <div className="font-nata-sans py-num-18 w-full max-w-[440px] overflow-hidden rounded-xl border border-solid border-gray-500 bg-gray-200 px-5 text-left shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]">
       <div className="flex flex-col gap-5">
         <header className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-4">

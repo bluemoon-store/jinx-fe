@@ -236,7 +236,8 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             >
               <div className={siteSelectDropdownList}>
                 {STATUS_OPTIONS.map((opt) => {
-                  const statusCfg = opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
+                  const statusCfg =
+                    opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
                   return (
                     <button
                       key={opt.value}

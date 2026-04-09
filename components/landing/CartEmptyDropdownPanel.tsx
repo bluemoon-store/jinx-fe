@@ -13,7 +13,7 @@ type Props = {
 /** Empty-cart flyout content with illustration from `/icons/cart-empty.svg`. */
 export const CartEmptyDropdownPanel: FunctionComponent<Props> = ({ onNavigate }) => (
   <div
-    className={`w-max max-w-[min(100vw-2rem,400px)] min-w-0 shrink-0 p-num-15 ${siteSelectDropdownPanel}`}
+    className={`p-num-15 w-max max-w-[min(100vw-2rem,400px)] min-w-0 shrink-0 ${siteSelectDropdownPanel}`}
     role="dialog"
     aria-label="Shopping cart"
   >

@@ -50,7 +50,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
       <button
         type="button"
         onClick={handleQuickBuyClick}
-        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 box-border flex h-10 w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 py-num-8 text-left text-white sm:gap-[5px]"
+        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-left text-white sm:gap-[5px]"
       >
         <CentralIcon
           name="IconZap"

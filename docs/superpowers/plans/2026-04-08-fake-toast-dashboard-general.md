@@ -21,6 +21,7 @@
 ### Task 1: Add toast triggers for avatar buttons (A)
 
 **Files:**
+
 - Modify: `components/dashboard/DashboardGeneralSection.tsx`
 
 - [ ] **Step 1: Add toast import**
@@ -63,6 +64,7 @@ Expected: an info toast appears (top-right).
 ### Task 2: Add toast trigger for resend verification (B)
 
 **Files:**
+
 - Modify: `components/dashboard/DashboardGeneralSection.tsx`
 
 - [ ] **Step 1: Wire the Resend Verification button (B)**
@@ -87,6 +89,7 @@ Expected: info toast appears.
 ### Task 3: Add toast trigger for theme preference (C)
 
 **Files:**
+
 - Modify: `components/dashboard/DashboardGeneralSection.tsx`
 
 - [ ] **Step 1: Add a small helper to map theme label**
@@ -122,6 +125,7 @@ Expected: theme changes as before and info toast message reflects the selected o
 ### Task 4: Quality gate (types/lints) and verification
 
 **Files:**
+
 - Modify: `components/dashboard/DashboardGeneralSection.tsx`
 
 - [ ] **Step 1: Typecheck/lint**
@@ -147,4 +151,3 @@ git commit -m "feat: trigger info toasts for dashboard general actions"
 - If toast spamming becomes an issue, wrap each handler with:
   - `const canToast = createActionThrottle(750)` and guard before calling `toast.info(...)`.
 - The actions remain “fake” until backend wiring is added later.
-

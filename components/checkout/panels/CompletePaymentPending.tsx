@@ -94,7 +94,7 @@ export function CompletePaymentPending({ onPaid }: Props) {
               type="button"
               onClick={() => copyToClipboard(DEMO_PAYMENT_ADDRESS)}
               aria-label="Copy payment address"
-              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
+              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
             >
               <Image src={checkoutImg.copyFrame} alt="" width={28} height={28} />
             </button>
@@ -106,7 +106,9 @@ export function CompletePaymentPending({ onPaid }: Props) {
           <div className="border-whitesmoke-300 flex min-h-11 items-center justify-between gap-2 rounded-lg border bg-gray-100 px-2 py-2 sm:px-3 sm:py-2.5">
             <Image src={checkoutImg.coins} alt="" width={18} height={18} className="shrink-0" />
             <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-2">
-              <span className="text-sm font-semibold text-white sm:text-base">{DEMO_PAYMENT_AMOUNT_BTC}</span>
+              <span className="text-sm font-semibold text-white sm:text-base">
+                {DEMO_PAYMENT_AMOUNT_BTC}
+              </span>
               <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">≈</span>
               <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
                 25.03 USD
@@ -116,7 +118,7 @@ export function CompletePaymentPending({ onPaid }: Props) {
               type="button"
               onClick={() => copyToClipboard(DEMO_PAYMENT_AMOUNT_BTC)}
               aria-label="Copy amount to pay"
-              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
+              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
             >
               <Image src={checkoutImg.copyFrame} alt="" width={28} height={28} />
             </button>

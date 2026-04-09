@@ -290,7 +290,7 @@ const Navbar: FunctionComponent = () => {
                 >
                   <img className="h-[24px] w-[24px]" alt="" src="/icons/IconBasket1-2.svg" />
                   {cartItemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 rounded-full bg-fuchsia px-1.5 text-[10px] font-bold leading-4 text-white">
+                    <span className="bg-fuchsia absolute -top-1 -right-1 rounded-full px-1.5 text-[10px] leading-4 font-bold text-white">
                       {cartItemCount}
                     </span>
                   )}
@@ -492,7 +492,7 @@ const Navbar: FunctionComponent = () => {
           >
             <img className="h-5 w-5" alt="" src="/icons/IconBasket1-2.svg" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 rounded-full bg-fuchsia px-1.5 text-[10px] font-bold leading-4 text-white">
+              <span className="bg-fuchsia absolute -top-1 -right-1 rounded-full px-1.5 text-[10px] leading-4 font-bold text-white">
                 {cartItemCount}
               </span>
             )}

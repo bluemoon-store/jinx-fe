@@ -79,7 +79,7 @@ export function PaymentMethodPanel({ onBack, onContinue }: Props) {
             <button
               type="button"
               onClick={onContinue}
-              className="hover:bg-[#0E1B30] focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:p-[22px]"
+              className="focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:p-[22px]"
             >
               <Image src={row.icon} alt="" width={row.w} height={row.h} className="shrink-0" />
               <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">
@@ -98,7 +98,7 @@ export function PaymentMethodPanel({ onBack, onContinue }: Props) {
         ))}
       </div>
 
-      <div className="flex flex-col gap-num-15">
+      <div className="gap-num-15 flex flex-col">
         <span className="text-base font-semibold text-white opacity-75">Unavailable Methods</span>
         <div className="flex min-h-[88px] flex-col items-stretch justify-center gap-3 rounded-xl border border-[#eeeeee1a] bg-gray-500 px-4 py-4 sm:flex-row sm:items-center sm:px-[22px]">
           <div className="flex flex-1 items-center gap-3 opacity-50">
@@ -113,7 +113,7 @@ export function PaymentMethodPanel({ onBack, onContinue }: Props) {
           <button
             type="button"
             onClick={() => openAuthModal('signin')}
-            className="focus-visible:ring-fuchsia/40 flex items-center gap-2 text-sm font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099] transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:text-base"
+            className="focus-visible:ring-fuchsia/40 flex items-center gap-2 text-sm font-semibold text-white transition-opacity [text-shadow:0px_0px_8.63px_#00000099] hover:opacity-85 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:text-base"
           >
             Sign in to unlock
             <Image src={checkoutImg.lockFrame} alt="" width={14} height={14} />

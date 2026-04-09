@@ -15,4 +15,3 @@ export const useBuyerProtectionStore = create<BuyerProtectionState>()((set) => (
   coverage: 'basic',
   setCoverage: (coverage) => set({ coverage }),
 }))
-

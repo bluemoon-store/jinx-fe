@@ -71,7 +71,7 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
         </span>
       </div>
 
-      <div className="flex flex-col gap-4 sm:gap-num-15">
+      <div className="sm:gap-num-15 flex flex-col gap-4">
         <button
           type="button"
           onClick={() => setCoverage('enhanced')}
@@ -112,7 +112,9 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
               </div>
               <span
                 className={`text-xl font-bold tracking-[0.4px] text-white transition-colors duration-300 ${
-                  highlightPlan === 'enhanced' ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]' : ''
+                  highlightPlan === 'enhanced'
+                    ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]'
+                    : ''
                 }`}
               >
                 +5.00 USD
@@ -166,7 +168,9 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
               </div>
               <span
                 className={`text-xl font-bold tracking-[0.4px] text-white transition-colors duration-300 ${
-                  highlightPlan === 'basic' ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]' : ''
+                  highlightPlan === 'basic'
+                    ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]'
+                    : ''
                 }`}
               >
                 Free

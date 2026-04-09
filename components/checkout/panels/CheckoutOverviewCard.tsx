@@ -26,13 +26,13 @@ function LineThumb({ item }: { item: CartItem }) {
         alt=""
         width={122}
         height={63}
-        className="h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px] sm:w-num-122"
+        className="sm:w-num-122 h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px]"
       />
     )
   }
   return (
     <div
-      className="h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px] sm:w-num-122"
+      className="sm:w-num-122 h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px]"
       aria-hidden
     />
   )
@@ -44,15 +44,15 @@ function LineItemReadonly({ item }: { item: CartItem }) {
 
   return (
     <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-1 items-center gap-num-15">
+      <div className="gap-num-15 flex min-w-0 flex-1 items-center">
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-col gap-0.5">
-          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 sm:gap-x-2.5">
-            <span className="text-ghostwhite max-w-full break-words text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
+          <div className="flex max-w-full min-w-0 flex-wrap items-center gap-x-2 sm:gap-x-2.5">
+            <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] break-words sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
             </span>
             <div className="flex shrink-0 items-center gap-[7.5px]">
-              <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
+              <div className="h-num-18 relative w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
                 <CountryFlag
                   countryCode="CA"
                   alt="Canada flag"
@@ -202,7 +202,9 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
                 Discount applied
               </span>
               {appliedPromo ? (
-                <span className="text-fuchsia text-sm font-bold sm:text-base">{appliedPromo.code}</span>
+                <span className="text-fuchsia text-sm font-bold sm:text-base">
+                  {appliedPromo.code}
+                </span>
               ) : null}
             </div>
             <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
@@ -254,7 +256,9 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
 
       <div
         className={`flex gap-2 opacity-75 sm:gap-[5px] ${
-          centerSecurityNote ? 'items-center justify-center text-center' : 'items-start sm:items-center'
+          centerSecurityNote
+            ? 'items-center justify-center text-center'
+            : 'items-start sm:items-center'
         }`}
       >
         <Image

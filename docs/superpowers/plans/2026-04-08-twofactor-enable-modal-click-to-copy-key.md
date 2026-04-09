@@ -13,14 +13,17 @@
 ## File structure
 
 **Modify:**
+
 - `components/auth/TwoFactorEnableModal.tsx`: Add copy handler + copied state; render Key row as a semantic button with conditional content (key vs “Copied” state).
 
 **Docs (already written):**
+
 - `docs/superpowers/specs/2026-04-08-twofactor-enable-modal-click-to-copy-key-spec.md`
 
 ## Task 1: Add “Copied” state + clipboard copy handler
 
 **Files:**
+
 - Modify: `components/auth/TwoFactorEnableModal.tsx`
 
 - [ ] **Step 1: Add state + timeout ref**
@@ -37,6 +40,7 @@
 ## Task 2: Render the Key row as a clickable, accessible control
 
 **Files:**
+
 - Modify: `components/auth/TwoFactorEnableModal.tsx`
 
 - [ ] **Step 1: Replace the Key row wrapper with a `button`**
@@ -52,6 +56,7 @@
 ## Task 3: Verification
 
 **Files:**
+
 - Lint: `components/auth/TwoFactorEnableModal.tsx`
 
 - [ ] **Step 1: Lint the touched file**
@@ -72,4 +77,3 @@
 
 - [ ] `git add components/auth/TwoFactorEnableModal.tsx docs/superpowers/plans/2026-04-08-twofactor-enable-modal-click-to-copy-key.md`
 - [ ] `git commit -m "feat: click-to-copy 2FA key row"`
-

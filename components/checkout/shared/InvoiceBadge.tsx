@@ -30,7 +30,7 @@ export function InvoiceBadge({ id = 'JINX-LKXJLKNALSDJ' }: Props) {
           type="button"
           onClick={copyInvoiceId}
           aria-label="Copy invoice ID"
-          className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-80 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
+          className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-80 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
         >
           <Image src={checkoutImg.invoiceCopy} alt="" width={14} height={14} />
         </button>

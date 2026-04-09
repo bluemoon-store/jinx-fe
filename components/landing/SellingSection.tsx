@@ -222,8 +222,10 @@ const SellingSection: FunctionComponent = () => {
                       </Link>
                       <button
                         type="button"
-                        onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.logo.src })}
-                        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#48293D] px-4 py-num-8 text-white sm:gap-[5px]"
+                        onClick={() =>
+                          setQuickBuyProduct({ name: item.name, imageSrc: item.logo.src })
+                        }
+                        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#48293D] px-4 text-white sm:gap-[5px]"
                       >
                         <CentralIcon
                           name="IconZap"

@@ -311,13 +311,13 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 <button
                   type="button"
                   onClick={handleCopyRedeemCode}
-                  className="tracking-num-0_02 flex w-full min-w-0 cursor-pointer touch-manipulation items-center justify-center gap-num-15 rounded-md text-center leading-8 font-extrabold uppercase [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/40"
+                  className="tracking-num-0_02 gap-num-15 focus-visible:ring-fuchsia/40 flex w-full min-w-0 cursor-pointer touch-manipulation items-center justify-center rounded-md text-center leading-8 font-extrabold uppercase [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
                   aria-label="Copy redeem code"
                 >
                   <span
                     role="status"
                     aria-live="polite"
-                    className="flex items-center justify-center gap-num-15"
+                    className="gap-num-15 flex items-center justify-center"
                   >
                     <CentralIcon
                       name="IconCheckCircle2"
@@ -340,7 +340,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <button
                     type="button"
                     onClick={handleCopyRedeemCode}
-                    className="shrink-0 touch-manipulation rounded-md p-1 [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/40"
+                    className="focus-visible:ring-fuchsia/40 shrink-0 touch-manipulation rounded-md p-1 [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
                     aria-label="Copy redeem code"
                   >
                     <CentralIcon
@@ -522,10 +522,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     <button
                       type="button"
                       onClick={handleCopyOrderId}
-                      className="text-num-16 tracking-num--0_01 flex min-w-0 max-w-full flex-1 items-center justify-end gap-2 rounded-md font-semibold text-white touch-manipulation [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/40 sm:max-w-[min(100%,280px)]"
+                      className="text-num-16 tracking-num--0_01 focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold text-white [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none sm:max-w-[min(100%,280px)]"
                       aria-label={`Copy order ID ${orderDisplayId(order.id)}`}
                     >
-                      <span className="min-w-0 truncate text-right">{orderDisplayId(order.id)}</span>
+                      <span className="min-w-0 truncate text-right">
+                        {orderDisplayId(order.id)}
+                      </span>
                       <CentralIcon
                         name="IconSquareBehindSquare1"
                         join="round"
@@ -647,7 +649,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 </div>
 
                 {showReviewBox ? (
-                  <div className="animate-fade-in motion-reduce:animate-none flex w-full flex-col gap-4 self-stretch">
+                  <div className="animate-fade-in flex w-full flex-col gap-4 self-stretch motion-reduce:animate-none">
                     <div className="flex flex-col gap-2">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <span className="leading-num-20 font-semibold">Your Review</span>
@@ -658,7 +660,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                         onChange={(e) => setComment(e.target.value)}
                         placeholder="Tell us about what you liked or disliked"
                         rows={4}
-                        className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none outline-none transition-[border-color,box-shadow] placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                        className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none transition-[border-color,box-shadow] outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
                       />
                     </div>
 

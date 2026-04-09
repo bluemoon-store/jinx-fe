@@ -122,11 +122,7 @@ export default function FreshlyRestockedSection() {
             >
               <Link href={`/shop/${slugify(item.name)}`} className="flex w-full flex-1 flex-col">
                 <div className="rounded-num-8 relative aspect-4/3 w-full overflow-hidden bg-[#0A162D]">
-                  <img
-                    className="block h-full w-full object-cover"
-                    alt=""
-                    src={item.src}
-                  />
+                  <img className="block h-full w-full object-cover" alt="" src={item.src} />
                 </div>
                 <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
                   <div className="flex items-center justify-center self-stretch">
@@ -149,7 +145,7 @@ export default function FreshlyRestockedSection() {
               <button
                 type="button"
                 onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.src })}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 py-num-8 text-white sm:gap-[5px]"
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px]"
               >
                 <CentralIcon
                   name="IconZap"

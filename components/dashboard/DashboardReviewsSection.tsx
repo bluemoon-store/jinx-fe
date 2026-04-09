@@ -330,7 +330,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             >
               <div className={siteSelectDropdownList}>
                 {STATUS_OPTIONS.map((opt) => {
-                  const statusCfg = opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
+                  const statusCfg =
+                    opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
                   return (
                     <button
                       key={opt.value}
@@ -417,7 +418,9 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                       setPaymentMethodMenuOpen(false)
                     }}
                   >
-                    {opt.iconSrc ? <img className="h-5 w-5 shrink-0" alt="" src={opt.iconSrc} /> : null}
+                    {opt.iconSrc ? (
+                      <img className="h-5 w-5 shrink-0" alt="" src={opt.iconSrc} />
+                    ) : null}
                     <span>{opt.label}</span>
                   </button>
                 ))}

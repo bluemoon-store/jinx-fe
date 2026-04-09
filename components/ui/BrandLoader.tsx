@@ -7,14 +7,15 @@ type BrandLoaderProps = {
   iconClassName?: string
 }
 
-export function BrandLoader({ label, fullScreen = false, className, iconClassName }: BrandLoaderProps) {
+export function BrandLoader({
+  label,
+  fullScreen = false,
+  className,
+  iconClassName,
+}: BrandLoaderProps) {
   return (
     <div
-      className={cn(
-        'flex items-center justify-center',
-        fullScreen && 'min-h-screen',
-        className
-      )}
+      className={cn('flex items-center justify-center', fullScreen && 'min-h-screen', className)}
       role="status"
       aria-live="polite"
       aria-label={label ?? 'Loading'}
