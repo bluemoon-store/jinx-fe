@@ -7,40 +7,48 @@ import { useState } from 'react'
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
 import { SupportRow } from '@/components/checkout/shared/SupportRow'
+import { CountryFlag } from '@/components/ui/CountryFlag'
+import { formatUsd } from '@/lib/cart-format'
+import type { CartItem } from '@/lib/cart-store'
+import { useCartStore } from '@/lib/cart-store'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
+import { toast } from '@/lib/toast'
 
-const SUCCESS_CARDS = [
-  {
-    title: 'Venmo',
-    credits: '$250 Credits',
-    price: '$3.00',
-    thumb: checkoutImg.productVenmoS,
-    contents: checkoutImg.contentsS1,
-    code: 'EF - ABDS - 11354 - DOEOP',
-    sealed: false,
-    rating: 0,
-  },
-  {
-    title: 'Airbnb',
-    credits: '$2500 Credits',
-    price: '$11.00',
-    thumb: checkoutImg.productAirbnbS,
-    contents: checkoutImg.contentsS2,
-    code: '',
-    sealed: true,
-    rating: 0,
-  },
-  {
-    title: 'Airbnb',
-    credits: '$2500 Credits',
-    price: '$11.00',
-    thumb: checkoutImg.productAirbnbS2,
-    contents: checkoutImg.contentsS3,
-    code: '',
-    sealed: true,
-    rating: 0,
-  },
-] as const
+function itemKey(item: CartItem) {
+  return `${item.id}-${item.variantLabel}-${item.stateCode}`
+}
+
+function hashString(value: string) {
+  // Deterministic, small non-crypto hash for demo codes (no backend yet).
+  let h = 0
+  for (let i = 0; i < value.length; i += 1) {
+    h = (h * 31 + value.charCodeAt(i)) | 0
+  }
+  return Math.abs(h)
+}
+
+function demoRedeemCodeForItem(item: CartItem) {
+  const base = `${item.id}|${item.variantLabel}|${item.stateCode}|${item.unitPrice}`
+  const h = hashString(base).toString(36).toUpperCase().padStart(10, '0')
+  const a = h.slice(0, 2)
+  const b = h.slice(2, 6)
+  const c = h.slice(6, 11)
+  const d = h.slice(11, 15)
+  return `${a} - ${b} - ${c} - ${d}`.replace(/\s+-\s+$/g, '')
+}
+
+async function copyToClipboard(value: string, description?: string) {
+  try {
+    if (!navigator?.clipboard?.writeText) {
+      toast.error('Could not copy. Please try again.')
+      return
+    }
+    await navigator.clipboard.writeText(value)
+    toast.success('Copied to clipboard', { description: description ?? value })
+  } catch {
+    toast.error('Could not copy. Please try again.')
+  }
+}
 
 function RatingStarsInteractive({ initialRating }: { initialRating: number }) {
   const [rating, setRating] = useState(() => Math.min(5, Math.max(0, Math.round(initialRating))))
@@ -85,59 +93,66 @@ function RatingStarsInteractive({ initialRating }: { initialRating: number }) {
   )
 }
 
-function SuccessCard({
-  title,
-  credits,
-  price,
-  thumb,
-  contents,
-  code,
-  sealed,
-  initialRating,
-  onUnseal,
-}: {
-  title: string
-  credits: string
-  price: string
-  thumb: string
-  contents: string
-  code: string
-  sealed: boolean
-  initialRating: number
-  onUnseal?: () => void
-}) {
+function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void }) {
+  const [revealed, setRevealed] = useState(false)
+  const [isProcessOpen, setIsProcessOpen] = useState(false)
+  const [isWarrantyOpen, setIsWarrantyOpen] = useState(false)
+  const lineTotal = item.unitPrice * item.quantity
+  const code = demoRedeemCodeForItem(item)
+
   return (
-    <div className="border-whitesmoke-300 flex flex-col gap-4 rounded-xl border-[1.5px] bg-gray-100 p-4 sm:gap-5 sm:p-6 md:p-num-30">
+    <div className="border-whitesmoke-300 w-full max-w-[560px] flex flex-col gap-4 rounded-xl border-[1.5px] bg-gray-100 p-4 text-left sm:gap-5 sm:p-6 md:p-num-30">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 items-center gap-3 sm:gap-num-15">
-          <Image
-            src={thumb}
-            alt=""
-            width={122}
-            height={63}
-            className="h-12 w-24 shrink-0 object-contain sm:h-[63px] sm:w-num-122"
-          />
+        <div className="flex min-w-0 items-start gap-3 sm:gap-num-15">
+          {item.thumbUrl ? (
+            <Image
+              src={item.thumbUrl}
+              alt=""
+              width={122}
+              height={63}
+              className="h-12 w-24 shrink-0 rounded-lg object-cover sm:h-[63px] sm:w-num-122"
+            />
+          ) : (
+            <div
+              className="h-12 w-24 shrink-0 rounded-lg bg-white/5 ring-1 ring-white/10 sm:h-[63px] sm:w-num-122"
+              aria-hidden
+            />
+          )}
           <div className="min-w-0">
-            <div className="text-ghostwhite text-base font-bold sm:text-[17.5px]">{title}</div>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[#c2c2e2] sm:text-[17.5px]">
-              <span className="opacity-75">{credits}</span>
-              <Image src={checkoutImg.line} alt="" width={10} height={2} />
-              <div className="flex items-center gap-2">
-                <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border border-black/10">
-                  <Image
-                    src={contents}
-                    alt=""
-                    width={24}
-                    height={18}
-                    className="h-full w-full object-cover"
+            <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 sm:gap-x-2.5">
+              <span className="text-ghostwhite max-w-full break-words text-base font-bold sm:text-[17.5px]">
+                {item.name}
+              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
+                  <CountryFlag
+                    countryCode="CA"
+                    alt="Canada flag"
+                    className="h-full w-full"
+                    size={24}
+                    shape="rectangle"
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0 bg-blend-overlay"
+                    style={{
+                      background:
+                        'linear-gradient(225deg,rgba(255,255,255,0.3)_0%,rgba(0,0,0,0.27)_26%,rgba(255,255,255,0.26)_37%,rgba(0,0,0,0.55)_49%,rgba(0,0,0,0.24)_59%,rgba(255,255,255,0.3)_74%,rgba(39,39,39,0.22)_90%,rgba(0,0,0,0.2)_100%)',
+                    }}
                   />
                 </div>
-                <span>CA</span>
+                <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
+                  {item.stateCode}
+                </span>
               </div>
+            </div>
+            <div className="mt-1 flex items-center gap-2 text-sm text-[#c2c2e2] sm:text-[17.5px]">
+              <span className="min-w-0 truncate opacity-75" title={item.variantLabel}>
+                {item.variantLabel}
+              </span>
             </div>
           </div>
         </div>
-        <span className="shrink-0 text-xl font-bold text-white sm:text-2xl">{price}</span>
+        <span className="shrink-0 text-xl font-bold text-white sm:text-2xl">{formatUsd(lineTotal)}</span>
       </div>
       <Image
         src={checkoutImg.divider}
@@ -146,10 +161,13 @@ function SuccessCard({
         height={1}
         className="h-px w-full opacity-60"
       />
-      {sealed ? (
+      {!revealed ? (
         <button
           type="button"
-          onClick={onUnseal}
+          onClick={() => {
+            onUnseal?.()
+            setRevealed(true)
+          }}
           className="relative flex cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-dashed border-fuchsia-100 bg-linear-to-b from-white/25 to-transparent px-4 py-5 text-left sm:flex-row sm:gap-3 sm:px-9 sm:py-6"
           style={{
             backgroundImage: `url(${checkoutImg.unsealBg})`,
@@ -174,24 +192,108 @@ function SuccessCard({
           <span className="font-nata-sans text-center text-base font-extrabold tracking-[0.48px] break-all text-slate-50 sm:text-2xl">
             {code}
           </span>
-          <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
+          <button
+            type="button"
+            onClick={() => copyToClipboard(code)}
+            aria-label="Copy code"
+            className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
+          >
+            <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
+          </button>
         </div>
       )}
       <div className="flex flex-col gap-3">
-        <button
-          type="button"
-          className="border-whitesmoke-300 text-ghostwhite flex min-h-11 items-center justify-between rounded-lg border bg-gray-200 p-3 text-left text-sm font-bold sm:text-base"
-        >
-          Process to Redeem
-          <Image src={checkoutImg.chevronRight} alt="" width={18} height={18} />
-        </button>
-        <button
-          type="button"
-          className="border-whitesmoke-300 text-ghostwhite flex min-h-11 items-center justify-between rounded-lg border bg-gray-200 p-3 text-left text-sm font-bold sm:text-base"
-        >
-          Warranty
-          <Image src={checkoutImg.chevronRight} alt="" width={18} height={18} />
-        </button>
+        <div className="rounded-num-12 box-border flex w-full flex-col items-start overflow-hidden border border-solid border-gray-600 bg-gray-200 p-4">
+          <button
+            type="button"
+            aria-expanded={isProcessOpen}
+            className="flex w-full items-center justify-between gap-0 self-stretch"
+            onClick={() => setIsProcessOpen((v) => !v)}
+          >
+            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-white">
+              Process to Redeem
+            </b>
+            <CentralIcon
+              name="IconChevronDownMedium"
+              join="round"
+              fill="outlined"
+              stroke="1"
+              radius="1"
+              size={20}
+              className="text-white opacity-75 transition-transform duration-300 ease-in-out"
+              style={{ transform: isProcessOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            />
+          </button>
+
+          <div
+            className="grid w-full transition-[grid-template-rows] duration-300 ease-in-out"
+            style={{ gridTemplateRows: isProcessOpen ? '1fr' : '0fr' }}
+          >
+            <div className="w-full overflow-hidden">
+              <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
+              <div className="pt-num-6 pb-num-6 w-full">
+                <div className="text-lightsteelblue-200 flex flex-col items-start gap-3 text-sm sm:text-base">
+                  <p className="m-0 text-white font-semibold">{item.name}</p>
+                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                    <li className="mb-0">Variant: {item.variantLabel}</li>
+                    <li className="mb-0">Region: {item.stateCode}</li>
+                    <li className="mb-0">Total paid: {formatUsd(lineTotal)}</li>
+                    <li>
+                      {revealed
+                        ? `Use code ${code} at checkout on the product platform.`
+                        : 'Unseal this product to reveal your redeem code first.'}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-num-12 box-border flex w-full flex-col items-start overflow-hidden border border-solid border-gray-600 bg-gray-200 p-4">
+          <button
+            type="button"
+            aria-expanded={isWarrantyOpen}
+            className="flex w-full items-center justify-between gap-0 self-stretch"
+            onClick={() => setIsWarrantyOpen((v) => !v)}
+          >
+            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-white">Warranty</b>
+            <CentralIcon
+              name="IconChevronDownMedium"
+              join="round"
+              fill="outlined"
+              stroke="1"
+              radius="1"
+              size={20}
+              className="text-white opacity-75 transition-transform duration-300 ease-in-out"
+              style={{ transform: isWarrantyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            />
+          </button>
+
+          <div
+            className="grid w-full transition-[grid-template-rows] duration-300 ease-in-out"
+            style={{ gridTemplateRows: isWarrantyOpen ? '1fr' : '0fr' }}
+          >
+            <div className="w-full overflow-hidden">
+              <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
+              <div className="pt-num-6 pb-num-6 w-full">
+                <div className="text-lightsteelblue-200 flex flex-col items-start gap-3 text-sm sm:text-base">
+                  <p className="m-0 text-white font-semibold">Warranty Coverage</p>
+                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                    <li className="mb-0">
+                      If this {item.name} code is invalid or cannot be applied, we will help resolve
+                      it as quickly as possible.
+                    </li>
+                    <li>
+                      Contact support within 48 hours and include your product ({item.variantLabel})
+                      and region ({item.stateCode}).
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <Image
         src={checkoutImg.divider}
@@ -215,10 +317,10 @@ function SuccessCard({
           <span className="text-lg font-bold tracking-[0.36px] text-white">Add Review</span>
         </div>
         <div className="border-whitesmoke-300 flex flex-col gap-4 rounded-xl border border-solid bg-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:p-5">
-          <span className="font-nata-sans text-num-14 leading-num-20 font-semibold tracking-normal text-[#9497BC]">
+          <span className="font-commissioner text-num-14 leading-num-20 font-semibold tracking-normal text-[#9497BC]">
             Your rating
           </span>
-          <RatingStarsInteractive initialRating={initialRating} />
+          <RatingStarsInteractive initialRating={0} />
         </div>
       </div>
     </div>
@@ -226,6 +328,25 @@ function SuccessCard({
 }
 
 export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
+  const items = useCartStore((s) => s.items)
+
+  if (!items.length) {
+    return (
+      <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
+        <div className="flex flex-col items-center gap-3 py-12">
+          <Image className="h-12 w-12 opacity-90 sm:h-[50px] sm:w-[50px]" alt="" src="/icons/not-found.svg" width={50} height={50} />
+          <h1 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
+            PAYMENT SUCCESSFUL
+          </h1>
+          <p className="text-lightsteelblue-200 mt-1 text-sm font-semibold sm:text-base">
+            No items found for this checkout.
+          </p>
+        </div>
+        <SupportRow />
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
       <div className="flex flex-col items-center gap-6 text-center sm:gap-num-30">
@@ -247,20 +368,9 @@ export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
         <InvoiceBadge />
       </div>
 
-      <div className="grid w-full min-w-0 max-w-[1920px] grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 2xl:grid-cols-3">
-        {SUCCESS_CARDS.map((card) => (
-          <SuccessCard
-            key={`${card.title}-${card.thumb}`}
-            title={card.title}
-            credits={card.credits}
-            price={card.price}
-            thumb={card.thumb}
-            contents={card.contents}
-            code={card.code}
-            sealed={card.sealed}
-            initialRating={card.rating}
-            onUnseal={card.sealed ? onUnseal : undefined}
-          />
+      <div className="flex w-full min-w-0 max-w-[1920px] flex-wrap justify-center gap-6 sm:gap-8">
+        {items.map((item) => (
+          <SuccessCard key={itemKey(item)} item={item} onUnseal={onUnseal} />
         ))}
       </div>
 

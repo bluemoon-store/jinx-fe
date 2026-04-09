@@ -12,7 +12,7 @@ type BuyerProtectionState = {
  * Used by both the right panel (selection UI) and left panel (totals).
  */
 export const useBuyerProtectionStore = create<BuyerProtectionState>()((set) => ({
-  coverage: 'enhanced',
+  coverage: 'basic',
   setCoverage: (coverage) => set({ coverage }),
 }))
 

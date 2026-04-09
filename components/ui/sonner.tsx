@@ -88,7 +88,7 @@ export function Toaster(props: Props) {
         ),
       }}
       toastOptions={mergedToastOptions}
-      className={cn('z-60', className)}
+      className={cn('z-100', className)}
       theme={theme === 'system' || !theme ? 'system' : (theme as ToasterProps['theme'])}
       {...rest}
     />

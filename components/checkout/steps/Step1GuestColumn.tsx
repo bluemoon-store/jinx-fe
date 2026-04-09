@@ -95,7 +95,7 @@ export function Step1GuestColumn({ onContinue }: Props) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor={termsId} className="flex cursor-pointer items-start gap-3 text-left">
+          <label htmlFor={termsId} className="flex cursor-pointer items-center gap-3 text-left">
             <input
               id={termsId}
               type="checkbox"
@@ -104,7 +104,7 @@ export function Step1GuestColumn({ onContinue }: Props) {
             />
             <span
               aria-hidden
-              className="rounded-num-8 peer-checked:border-fuchsia peer-checked:bg-fuchsia mt-0.5 box-border flex h-6 w-6 shrink-0 items-center justify-center border border-solid border-[#18263E] bg-gray-100"
+              className="rounded-num-8 peer-checked:border-fuchsia peer-checked:bg-fuchsia box-border flex h-6 w-6 shrink-0 items-center justify-center border border-solid border-[#18263E] bg-gray-100"
             >
               <CentralIcon
                 name="IconCheckmark2"

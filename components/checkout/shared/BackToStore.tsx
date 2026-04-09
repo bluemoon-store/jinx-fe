@@ -10,7 +10,7 @@ export function BackToStore({ onBack, label }: Props) {
     <button
       type="button"
       onClick={onBack}
-      className="text-ghostwhite inline-flex min-h-11 w-fit shrink-0 items-center gap-2 self-start rounded-xl bg-white/5 px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/10"
+      className="text-ghostwhite inline-flex min-h-11 w-fit shrink-0 items-center gap-2 self-start rounded-xl bg-transparent px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/10"
     >
       <CentralIcon
         name="IconArrowLeft"

@@ -413,11 +413,11 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                           <b>Step 3: Redeem on the Platform</b>
                           <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                             <li className="mb-0">
-                              After purchase, your code will appear in your account. Enter the code at
-                              checkout on the e-commerce platform.
+                              After purchase, your code will appear in your account.
                             </li>
-                          </ul>
-                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                            <li className="mb-0">
+                              Enter the code at checkout on the e-commerce platform.
+                            </li>
                             <li className="mb-0">
                               <span className="font-medium">If you need help</span>, contact support
                               from the page footer.

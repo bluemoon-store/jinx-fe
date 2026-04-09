@@ -45,16 +45,12 @@ function LineItemReadonly({ item }: { item: CartItem }) {
       <div className="flex min-w-0 flex-1 items-center gap-num-15">
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-col gap-0.5">
-          <div className="text-ghostwhite text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
-            {item.name}
-          </div>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-            <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
-              {item.variantLabel}
+          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 sm:gap-x-2.5">
+            <span className="text-ghostwhite max-w-full break-words text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
+              {item.name}
             </span>
-            <Image src={checkoutImg.line} alt="" width={10} height={2} />
-            <div className="flex items-center gap-[7.5px]">
-              <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10">
+            <div className="flex shrink-0 items-center gap-[7.5px]">
+              <div className="relative h-num-18 w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
                 <CountryFlag
                   countryCode="CA"
                   alt="Canada flag"
@@ -75,6 +71,12 @@ function LineItemReadonly({ item }: { item: CartItem }) {
               </span>
             </div>
           </div>
+          <span
+            className="min-w-0 truncate text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]"
+            title={item.variantLabel}
+          >
+            {item.variantLabel}
+          </span>
         </div>
       </div>
       <div className="flex w-full items-center justify-between gap-4 sm:w-[200px] sm:justify-between">

@@ -2,7 +2,7 @@
 
 import type { Route } from 'next'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
 
 import { CartColumn } from '@/components/checkout/cart/CartColumn'
@@ -20,7 +20,7 @@ import { Step5Success } from '@/components/checkout/steps/Step5Success'
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <BackToStore onBack={onBack} />
+      <BackToStore onBack={onBack} label="Back to home" />
       <div className="self-end sm:self-auto">
         <CheckoutLogo variant="default" />
       </div>
@@ -45,6 +45,15 @@ export function CheckoutPageClient() {
     })
   }, [])
 
+  /** Confetti only on first “Unseal” on the success screen — not on load. Reset when leaving step 5. */
+  const unsealConfettiFiredRef = useRef(false)
+
+  const handleUnsealWithConfetti = useCallback(() => {
+    if (unsealConfettiFiredRef.current) return
+    unsealConfettiFiredRef.current = true
+    fireConfetti()
+  }, [fireConfetti])
+
   const setStep = useCallback(
     (n: number) => {
       const next = Math.min(6, Math.max(1, n))
@@ -62,9 +71,8 @@ export function CheckoutPageClient() {
   }, [router, setStep, step])
 
   useEffect(() => {
-    if (step !== 5) return
-    fireConfetti()
-  }, [fireConfetti, step])
+    if (step !== 5) unsealConfettiFiredRef.current = false
+  }, [step])
 
   if (step === 5) {
     return (
@@ -76,8 +84,8 @@ export function CheckoutPageClient() {
         }}
       >
         <div className="mx-auto w-full max-w-[1700px] min-w-0 flex-1">
-          <SuccessTopBar onBack={handleBack} />
-          <Step5Success onUnseal={fireConfetti} />
+          <SuccessTopBar onBack={() => router.push('/')} />
+          <Step5Success onUnseal={handleUnsealWithConfetti} />
         </div>
       </div>
     )
@@ -89,7 +97,7 @@ export function CheckoutPageClient() {
         <div className="mx-auto flex w-full max-w-[952px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 lg:mx-0 lg:w-fit lg:max-w-[952px] lg:min-w-[809px] lg:self-end lg:px-8 xl:px-12">
           <BackToStore onBack={handleBack} label={step <= 1 ? 'Back to store' : 'Back'} />
           <div className="mt-6 flex w-full min-w-0 flex-1 flex-col sm:mt-8 lg:mt-10">
-            {step === 1 || step === 2 || step === 3 ? <CartColumn /> : null}
+            {step === 1 || step === 2 || step === 3 ? <CartColumn checkoutStep={step} /> : null}
             {step === 4 ? <CheckoutOverviewCard centerSecurityNote /> : null}
             {step === 6 ? <CheckoutOverviewCard /> : null}
           </div>
