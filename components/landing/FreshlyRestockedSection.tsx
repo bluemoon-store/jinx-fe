@@ -149,7 +149,7 @@ export default function FreshlyRestockedSection() {
               <button
                 type="button"
                 onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.src })}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 mt-auto flex min-h-[44px] w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 py-2 text-white sm:gap-[5px] sm:py-1.5"
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 py-num-8 text-white sm:gap-[5px]"
               >
                 <CentralIcon
                   name="IconZap"
@@ -160,7 +160,7 @@ export default function FreshlyRestockedSection() {
                   size={16}
                   className="text-white"
                 />
-                <span className="tracking-num--0_01 leading-num-26 font-semibold">Quick Buy</span>
+                <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
               </button>
             </Reveal>
           ))}

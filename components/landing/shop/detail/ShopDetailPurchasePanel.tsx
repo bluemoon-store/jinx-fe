@@ -43,7 +43,7 @@ type PurchaseControlsProps = {
 }
 
 const DEFAULT_ADD_TO_CART_CLASS =
-  'py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
+  'box-border py-num-8 px-num-16 flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
 
 export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps> = ({
   productName,
@@ -289,7 +289,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         </div>
       </div>
 
-      <div className="text-num-16 flex min-h-[44px] flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
+      <div className="text-num-16 flex min-h-10 flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
         <button
           type="button"
           className={addToCartButtonClassName}
@@ -317,11 +317,11 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
             size={16}
             className="text-white"
           />
-          <div className="tracking-num--0_01 leading-num-28 font-semibold">Add to Cart</div>
+          <div className="tracking-num--0_01 leading-num-24 font-semibold">Add to Cart</div>
         </button>
         <button
           type="button"
-          className="bg-fuchsia py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+          className="bg-fuchsia box-border py-num-8 px-num-16 flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
           onClick={() => {
             addItem(
               {
@@ -346,7 +346,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
             size={16}
             className="text-white"
           />
-          <div className="tracking-num--0_01 leading-num-28 font-semibold">Checkout</div>
+          <div className="tracking-num--0_01 leading-num-24 font-semibold">Checkout</div>
         </button>
       </div>
     </div>
@@ -575,25 +575,31 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
                 <div className="flex flex-col items-start gap-5 text-white">
                   <div className="leading-num-24 opacity-[0.8]">
                     <b>Step 1: Add to Cart</b>
-                    <p className="m-0">
-                      Choose your variant and quantity, then click{' '}
-                      <span className="font-medium">Add to Cart</span>.
-                    </p>
+                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                      <li className="mb-0">
+                        Choose your variant and quantity, then click{' '}
+                        <span className="font-medium">Add to Cart</span>.
+                      </li>
+                    </ul>
                   </div>
 
                   <div className="leading-num-24 opacity-[0.8]">
                     <b>Step 2: Complete Checkout</b>
-                    <p className="m-0">
-                      Finish payment using the available options, and confirm your order.
-                    </p>
+                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                      <li className="mb-0">
+                        Finish payment using the available options, and confirm your order.
+                      </li>
+                    </ul>
                   </div>
 
                   <div className="leading-num-24 opacity-[0.8]">
                     <b>Step 3: Redeem on the Platform</b>
-                    <p className="m-0">
-                      After purchase, your code will appear in your account. Enter the code at
-                      checkout on the e-commerce platform.
-                    </p>
+                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                      <li className="mb-0">
+                        After purchase, your code will appear in your account. Enter the code at
+                        checkout on the e-commerce platform.
+                      </li>
+                    </ul>
                     <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                       <li className="mb-0">
                         <span className="font-medium">If you need help</span>, contact support from
@@ -638,10 +644,12 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
                 <div className="flex flex-col items-start gap-5 text-white">
                   <div className="leading-num-24 opacity-[0.8]">
                     <b>Warranty Coverage</b>
-                    <p className="m-0">
-                      If your code is invalid or cannot be applied, we will help you resolve it as
-                      quickly as possible.
-                    </p>
+                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                      <li className="mb-0">
+                        If your code is invalid or cannot be applied, we will help you resolve it as
+                        quickly as possible.
+                      </li>
+                    </ul>
                   </div>
 
                   <div className="leading-num-24 opacity-[0.8]">

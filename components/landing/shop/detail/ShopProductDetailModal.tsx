@@ -12,7 +12,7 @@ type Props = {
 }
 
 const ADD_TO_CART_MODAL_CLASS =
-  'py-num-12 px-num-16 flex min-h-[44px] flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-[#0D1B35] shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
+  'box-border py-num-8 px-num-16 flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-[#0D1B35] shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
 
 const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSrc, onClose }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)

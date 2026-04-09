@@ -78,7 +78,7 @@ const HowToPurchaseSection: FunctionComponent = () => {
                         {step.title}
                       </div>
                     </div>
-                    <div className="font-commissioner text-lightsteelblue-200 self-stretch text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] lg:text-base">
+                    <div className="font-commissioner text-lightsteelblue-200 self-stretch text-center text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] lg:text-base">
                       {step.description}
                     </div>
                   </div>

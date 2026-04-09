@@ -56,7 +56,7 @@ const Navbar: FunctionComponent = () => {
     { label: 'Shop', href: '/shop', icon: 'IconBasket1' },
     { label: 'Drops', href: '#', icon: 'IconGift1' },
     { label: 'FAQs', href: '/faqs', icon: 'IconCircleQuestionmark' },
-    { label: 'Support', href: '#', icon: 'IconRescueRing' },
+    { label: 'Support', href: '/support', icon: 'IconRescueRing' },
   ]
 
   const isActiveLink = (href: string) => {

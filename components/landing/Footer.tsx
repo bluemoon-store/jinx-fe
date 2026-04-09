@@ -1,3 +1,4 @@
+import type { Route } from 'next'
 import Link from 'next/link'
 import { FunctionComponent } from 'react'
 
@@ -54,10 +55,13 @@ const Footer: FunctionComponent = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-num-8 border-darkslateblue py-num-4 text-num-16 font-commissioner box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid bg-[#0D1B35] px-6 text-white sm:ml-auto sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center">
+        <Link
+          href={'/support' as Route}
+          className="rounded-num-8 border-darkslateblue py-num-4 text-num-16 font-commissioner box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid bg-[#0D1B35] px-6 text-white transition-colors hover:bg-[#152a4a] sm:ml-auto sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center"
+        >
           <img className="h-4 w-4" alt="" src="/icons/IconRescueRing.svg" />
           <b className="tracking-num--0_01 leading-num-28">Support</b>
-        </div>
+        </Link>
       </div>
 
       {/* Divider */}

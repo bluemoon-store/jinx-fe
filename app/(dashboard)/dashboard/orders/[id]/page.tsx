@@ -6,10 +6,11 @@ import { CountryFlag } from '@/components/ui/CountryFlag'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { useOrderReviewStore } from '@/lib/order-review-store'
+import { toast } from '@/lib/toast'
 import type { Route } from 'next'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FunctionComponent, useMemo, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 const modalShadowClass =
   'shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]'
@@ -33,6 +34,16 @@ function redeemCodeForOrder(id: string): string {
   return `AB-123-456-${id.padStart(3, '0')}`
 }
 
+/** Matches shop listing URLs (`ShopProductsSection`, etc.). */
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
 const DashboardOrderDetailPage: FunctionComponent = () => {
   const params = useParams()
   const rawId = typeof params.id === 'string' ? params.id : ''
@@ -48,8 +59,17 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const [reviewSent, setReviewSent] = useState(false)
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isOrderWarrantyOpen, setIsOrderWarrantyOpen] = useState(false)
+  const [redeemCodeCopied, setRedeemCodeCopied] = useState(false)
+  const redeemCopiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (redeemCopiedTimeoutRef.current) clearTimeout(redeemCopiedTimeoutRef.current)
+    }
+  }, [])
 
   const previewRating = hoveredStar ?? rating
+  const showReviewBox = rating >= 1
   const heroSrc = order ? iconSrcForBrand(order.brand) : '/icons/airbnb.svg'
 
   if (!order) {
@@ -81,6 +101,37 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
     )
   }
 
+  const handleCopyRedeemCode = async () => {
+    const code = redeemCodeForOrder(order.id)
+    try {
+      if (!navigator?.clipboard?.writeText) {
+        toast.error('Could not copy. Please try again.')
+        return
+      }
+      await navigator.clipboard.writeText(code)
+      toast.success('Copied to clipboard', { description: code })
+      setRedeemCodeCopied(true)
+      if (redeemCopiedTimeoutRef.current) clearTimeout(redeemCopiedTimeoutRef.current)
+      redeemCopiedTimeoutRef.current = setTimeout(() => setRedeemCodeCopied(false), 3000)
+    } catch {
+      toast.error('Could not copy. Please try again.')
+    }
+  }
+
+  const handleCopyOrderId = async () => {
+    const idText = orderDisplayId(order.id)
+    try {
+      if (!navigator?.clipboard?.writeText) {
+        toast.error('Could not copy. Please try again.')
+        return
+      }
+      await navigator.clipboard.writeText(idText)
+      toast.success('Copied to clipboard', { description: idText })
+    } catch {
+      toast.error('Could not copy. Please try again.')
+    }
+  }
+
   const paymentLabel =
     order.status === 'paid' ? 'Paid' : order.status === 'pending' ? 'Pending' : 'Expired'
   const paymentIcon =
@@ -109,9 +160,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
         <article className="text-num-16 font-commissioner box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid border-gray-600 bg-gray-100 p-5 text-left text-white sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
           {/* Product preview & primary actions */}
           <section className="flex w-full min-w-0 flex-col gap-5 lg:max-w-[min(100%,447px)] lg:shrink-0">
-            <div className="rounded-num-12 flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden shadow-[0px_0px_12px_rgba(0,0,0,0.45)]">
+            <div className="rounded-num-12 flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden bg-[#051329]">
               <img
-                className="h-full w-full object-cover"
+                className="max-h-full max-w-full object-contain object-center"
                 alt=""
                 src={heroSrc}
                 width={447}
@@ -120,8 +171,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             </div>
 
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-4">
-              <button
-                type="button"
+              <Link
+                href={`/shop/${slugify(order.brand)}` as Route}
                 className="rounded-num-8 p-num-12 box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid border-gray-600 bg-[#19263F] transition-colors hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
@@ -137,7 +188,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 <span className="tracking-num--0_01 leading-num-28 font-semibold">
                   Purchase Again
                 </span>
-              </button>
+              </Link>
               <button
                 type="button"
                 disabled={!isPaidOrder}
@@ -256,24 +307,54 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             </header>
 
             <div className="rounded-num-8 border-fuchsia font-nata-sans gap-num-15 flex flex-wrap items-center justify-center self-stretch border border-dashed p-6 text-[22px] [background:linear-gradient(180deg,rgba(235,45,255,0),rgba(235,45,255,0.25))] sm:p-9 sm:text-[24px]">
-              <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">
-                {redeemCodeForOrder(order.id)}
-              </span>
-              <button
-                type="button"
-                className="shrink-0 touch-manipulation rounded-md p-1 [-webkit-tap-highlight-color:transparent]"
-                aria-label="Copy redeem code"
-              >
-                <CentralIcon
-                  name="IconSquareBehindSquare1"
-                  join="round"
-                  fill="filled"
-                  stroke="2"
-                  radius="1"
-                  size={26}
-                  ariaHidden={true}
-                />
-              </button>
+              {redeemCodeCopied ? (
+                <button
+                  type="button"
+                  onClick={handleCopyRedeemCode}
+                  className="tracking-num-0_02 flex w-full min-w-0 cursor-pointer touch-manipulation items-center justify-center gap-num-15 rounded-md text-center leading-8 font-extrabold uppercase [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/40"
+                  aria-label="Copy redeem code"
+                >
+                  <span
+                    role="status"
+                    aria-live="polite"
+                    className="flex items-center justify-center gap-num-15"
+                  >
+                    <CentralIcon
+                      name="IconCheckCircle2"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={26}
+                      ariaHidden={true}
+                      className="shrink-0 text-[#0CC967]"
+                    />
+                    Copied
+                  </span>
+                </button>
+              ) : (
+                <>
+                  <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">
+                    {redeemCodeForOrder(order.id)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyRedeemCode}
+                    className="shrink-0 touch-manipulation rounded-md p-1 [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/40"
+                    aria-label="Copy redeem code"
+                  >
+                    <CentralIcon
+                      name="IconSquareBehindSquare1"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={26}
+                      ariaHidden={true}
+                    />
+                  </button>
+                </>
+              )}
             </div>
 
             <div className="text-num-16 text-ghostwhite flex flex-col gap-4 self-stretch">
@@ -311,25 +392,31 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       <div className="flex flex-col items-start gap-5 text-white">
                         <div className="leading-num-24 opacity-[0.8]">
                           <b>Step 1: Add to Cart</b>
-                          <p className="m-0">
-                            Choose your variant and quantity, then click{' '}
-                            <span className="font-medium">Add to Cart</span>.
-                          </p>
+                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                            <li className="mb-0">
+                              Choose your variant and quantity, then click{' '}
+                              <span className="font-medium">Add to Cart</span>.
+                            </li>
+                          </ul>
                         </div>
 
                         <div className="leading-num-24 opacity-[0.8]">
                           <b>Step 2: Complete Checkout</b>
-                          <p className="m-0">
-                            Finish payment using the available options, and confirm your order.
-                          </p>
+                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                            <li className="mb-0">
+                              Finish payment using the available options, and confirm your order.
+                            </li>
+                          </ul>
                         </div>
 
                         <div className="leading-num-24 opacity-[0.8]">
                           <b>Step 3: Redeem on the Platform</b>
-                          <p className="m-0">
-                            After purchase, your code will appear in your account. Enter the code at
-                            checkout on the e-commerce platform.
-                          </p>
+                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                            <li className="mb-0">
+                              After purchase, your code will appear in your account. Enter the code at
+                              checkout on the e-commerce platform.
+                            </li>
+                          </ul>
                           <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                             <li className="mb-0">
                               <span className="font-medium">If you need help</span>, contact support
@@ -375,10 +462,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       <div className="flex flex-col items-start gap-5 text-white">
                         <div className="leading-num-24 opacity-[0.8]">
                           <b>Warranty Coverage</b>
-                          <p className="m-0">
-                            If your code is invalid or cannot be applied, we will help you resolve
-                            it as quickly as possible.
-                          </p>
+                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                            <li className="mb-0">
+                              If your code is invalid or cannot be applied, we will help you resolve
+                              it as quickly as possible.
+                            </li>
+                          </ul>
                         </div>
 
                         <div className="leading-num-24 opacity-[0.8]">
@@ -430,24 +519,24 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 <div className="flex flex-col gap-3 sm:flex-row sm:gap-3">
                   <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Order ID</span>
-                    <span className="text-num-16 tracking-num--0_01 flex min-w-0 items-center gap-2 font-semibold text-white">
-                      <span className="truncate">{orderDisplayId(order.id)}</span>
-                      <button
-                        type="button"
-                        className="shrink-0 touch-manipulation [-webkit-tap-highlight-color:transparent]"
-                        aria-label="Copy order ID"
-                      >
-                        <CentralIcon
-                          name="IconSquareBehindSquare1"
-                          join="round"
-                          fill="filled"
-                          stroke="2"
-                          radius="1"
-                          size={16}
-                          ariaHidden={true}
-                        />
-                      </button>
-                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopyOrderId}
+                      className="text-num-16 tracking-num--0_01 flex min-w-0 max-w-full flex-1 items-center justify-end gap-2 rounded-md font-semibold text-white touch-manipulation [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia/40 sm:max-w-[min(100%,280px)]"
+                      aria-label={`Copy order ID ${orderDisplayId(order.id)}`}
+                    >
+                      <span className="min-w-0 truncate text-right">{orderDisplayId(order.id)}</span>
+                      <CentralIcon
+                        name="IconSquareBehindSquare1"
+                        join="round"
+                        fill="filled"
+                        stroke="2"
+                        radius="1"
+                        size={16}
+                        ariaHidden={true}
+                        className="shrink-0"
+                      />
+                    </button>
                   </div>
                   <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Payment Status</span>
@@ -557,36 +646,40 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <span className="leading-num-20 font-semibold">Your Review</span>
-                    <span className="leading-num-20 font-semibold opacity-50">Optional</span>
+                {showReviewBox ? (
+                  <div className="animate-fade-in motion-reduce:animate-none flex w-full flex-col gap-4 self-stretch">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <span className="leading-num-20 font-semibold">Your Review</span>
+                        <span className="leading-num-20 font-semibold opacity-50">Optional</span>
+                      </div>
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder="Tell us about what you liked or disliked"
+                        rows={4}
+                        className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none outline-none transition-[border-color,box-shadow] placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={rating < 1 || reviewSent}
+                      onClick={() => {
+                        if (rating < 1) return
+                        setReviewSent(true)
+                      }}
+                      className="bg-fuchsia text-num-16 tracking-num--0_01 flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {reviewSent ? 'Review submitted' : 'Submit Review'}
+                    </button>
+
+                    <p className="font-commissioner text-ghostwhite text-center text-xs leading-4 font-semibold italic opacity-50">
+                      Your feedback helps us improve our products, services, and overall customer
+                      experience.
+                    </p>
                   </div>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Tell us about what you liked or disliked"
-                    rows={4}
-                    className="text-num-16 font-nata-sans rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  disabled={rating < 1 || reviewSent}
-                  onClick={() => {
-                    if (rating < 1) return
-                    setReviewSent(true)
-                  }}
-                  className="bg-fuchsia text-num-16 tracking-num--0_01 flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {reviewSent ? 'Review submitted' : 'Submit Review'}
-                </button>
-
-                <p className="font-commissioner text-ghostwhite text-center text-xs leading-4 font-semibold italic opacity-50">
-                  Your feedback helps us improve our products, services, and overall customer
-                  experience.
-                </p>
+                ) : null}
               </div>
             </section>
           </div>
