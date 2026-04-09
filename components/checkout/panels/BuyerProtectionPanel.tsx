@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import CentralIcon from '@central-icons-react/all'
+import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
@@ -27,6 +28,18 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
   const coverage = useBuyerProtectionStore((s) => s.coverage)
   const setCoverage = useBuyerProtectionStore((s) => s.setCoverage)
   const isSelected = (planId: 'enhanced' | 'basic') => coverage === planId
+  const hasMountedRef = useRef(false)
+  const [highlightPlan, setHighlightPlan] = useState<'enhanced' | 'basic' | null>(null)
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true
+      return
+    }
+    setHighlightPlan(coverage)
+    const timer = window.setTimeout(() => setHighlightPlan(null), 2000)
+    return () => window.clearTimeout(timer)
+  }, [coverage])
 
   return (
     <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8">
@@ -97,7 +110,13 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
                   </span>
                 </div>
               </div>
-              <span className="text-xl font-bold tracking-[0.4px] text-white">+5.00 USD</span>
+              <span
+                className={`text-xl font-bold tracking-[0.4px] text-white transition-colors duration-300 ${
+                  highlightPlan === 'enhanced' ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]' : ''
+                }`}
+              >
+                +5.00 USD
+              </span>
             </div>
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex max-w-[509px] flex-col gap-1">
@@ -145,7 +164,13 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
                   Basic Coverage
                 </span>
               </div>
-              <span className="text-xl font-bold tracking-[0.4px] text-white">Free</span>
+              <span
+                className={`text-xl font-bold tracking-[0.4px] text-white transition-colors duration-300 ${
+                  highlightPlan === 'basic' ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]' : ''
+                }`}
+              >
+                Free
+              </span>
             </div>
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex max-w-[509px] flex-col gap-1">

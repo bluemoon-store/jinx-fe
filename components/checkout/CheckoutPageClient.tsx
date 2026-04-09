@@ -2,7 +2,7 @@
 
 import type { Route } from 'next'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 
 import { CartColumn } from '@/components/checkout/cart/CartColumn'
@@ -16,6 +16,7 @@ import { CheckoutLogo } from '@/components/checkout/shared/CheckoutLogo'
 import { LegalFooter } from '@/components/checkout/shared/LegalFooter'
 import { Step1GuestColumn } from '@/components/checkout/steps/Step1GuestColumn'
 import { Step5Success } from '@/components/checkout/steps/Step5Success'
+import { useAppStore } from '@/lib/store'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
   return (
@@ -31,6 +32,8 @@ function SuccessTopBar({ onBack }: { onBack: () => void }) {
 export function CheckoutPageClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const isAuthenticated = useAppStore((s) => s.isAuthenticated)
+  const [persistReady, setPersistReady] = useState(false)
   const raw = searchParams.get('step')
   const step = Math.min(6, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
 
@@ -63,16 +66,35 @@ export function CheckoutPageClient() {
   )
 
   const handleBack = useCallback(() => {
+    // Logged-in users skip guest step 1, so from step 2 back should leave checkout.
+    if (isAuthenticated && step === 2) {
+      router.push('/shop')
+      return
+    }
     if (step <= 1) {
       router.push('/shop')
       return
     }
     setStep(step - 1)
-  }, [router, setStep, step])
+  }, [isAuthenticated, router, setStep, step])
 
   useEffect(() => {
     if (step !== 5) unsealConfettiFiredRef.current = false
   }, [step])
+
+  useEffect(() => {
+    if (useAppStore.persist.hasHydrated()) {
+      setPersistReady(true)
+      return
+    }
+    const unsub = useAppStore.persist.onFinishHydration(() => setPersistReady(true))
+    return unsub
+  }, [])
+
+  useEffect(() => {
+    if (!persistReady) return
+    if (isAuthenticated && step === 1) setStep(2)
+  }, [isAuthenticated, persistReady, setStep, step])
 
   if (step === 5) {
     return (
@@ -113,7 +135,7 @@ export function CheckoutPageClient() {
           <div className="flex min-w-0 flex-1 flex-col pt-2 sm:pt-4 lg:pt-6">
             {step === 1 ? <Step1GuestColumn onContinue={() => setStep(2)} /> : null}
             {step === 2 ? (
-              <BuyerProtectionPanel onBack={() => setStep(1)} onContinue={() => setStep(3)} />
+              <BuyerProtectionPanel onBack={handleBack} onContinue={() => setStep(3)} />
             ) : null}
             {step === 3 ? (
               <PaymentMethodPanel onBack={() => setStep(2)} onContinue={() => setStep(4)} />

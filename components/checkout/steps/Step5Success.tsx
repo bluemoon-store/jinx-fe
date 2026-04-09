@@ -13,6 +13,7 @@ import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { toast } from '@/lib/toast'
+import styles from './Step5Success.module.css'
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantLabel}-${item.stateCode}`
@@ -120,7 +121,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
           )}
           <div className="min-w-0">
             <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 sm:gap-x-2.5">
-              <span className="text-ghostwhite max-w-full break-words text-base font-bold sm:text-[17.5px]">
+              <span className="text-ghostwhite max-w-full wrap-break-word text-base font-bold sm:text-[17.5px]">
                 {item.name}
               </span>
               <div className="flex shrink-0 items-center gap-2">
@@ -161,47 +162,46 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
         height={1}
         className="h-px w-full opacity-60"
       />
-      {!revealed ? (
+      <div className={styles.unsealWrapper}>
+        <div className="flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:gap-3 sm:px-9 sm:py-6">
+          <span className="font-nata-sans text-center text-base font-extrabold tracking-[0.48px] break-all text-slate-50 sm:text-2xl">
+            {revealed ? code : 'XXXXXXXXXXXXXXX'}
+          </span>
+          {revealed ? (
+            <button
+              type="button"
+              onClick={() => copyToClipboard(code)}
+              aria-label="Copy code"
+              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
+            >
+              <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
+            </button>
+          ) : null}
+        </div>
         <button
           type="button"
           onClick={() => {
+            if (revealed) return
             onUnseal?.()
             setRevealed(true)
           }}
-          className="relative flex cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-dashed border-fuchsia-100 bg-linear-to-b from-white/25 to-transparent px-4 py-5 text-left sm:flex-row sm:gap-3 sm:px-9 sm:py-6"
-          style={{
-            backgroundImage: `url(${checkoutImg.unsealBg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: '50% 50%',
-          }}
+          className={`${styles.peelButton} ${revealed ? styles.peeled : ''}`}
+          aria-label="Click to unseal"
+          aria-hidden={revealed}
+          tabIndex={revealed ? -1 : 0}
         >
-          <div className="from-fuchsia/40 absolute inset-0 bg-linear-to-b to-transparent" />
-          <Image
-            src={checkoutImg.eyeOpen}
-            alt=""
-            width={26}
-            height={26}
-            className="relative z-10"
-          />
-          <span className="font-nata-sans relative z-10 text-center text-lg font-extrabold tracking-[0.48px] text-slate-50 sm:text-2xl">
-            CLICK TO UNSEAL
+          <span className={styles.peelText}>
+            <Image
+              src={checkoutImg.eyeOpen}
+              alt=""
+              width={26}
+              height={26}
+              className={styles.peelIcon}
+            />
+            <span>Click to unseal</span>
           </span>
         </button>
-      ) : (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:gap-3 sm:px-9 sm:py-6">
-          <span className="font-nata-sans text-center text-base font-extrabold tracking-[0.48px] break-all text-slate-50 sm:text-2xl">
-            {code}
-          </span>
-          <button
-            type="button"
-            onClick={() => copyToClipboard(code)}
-            aria-label="Copy code"
-            className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none [-webkit-tap-highlight-color:transparent]"
-          >
-            <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
-          </button>
-        </div>
-      )}
+      </div>
       <div className="flex flex-col gap-3">
         <div className="rounded-num-12 box-border flex w-full flex-col items-start overflow-hidden border border-solid border-gray-600 bg-gray-200 p-4">
           <button

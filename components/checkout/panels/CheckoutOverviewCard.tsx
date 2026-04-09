@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
@@ -100,6 +101,18 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
   const discount = 0
   const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
   const totalDue = subtotal - discount + buyerProtectionUsd
+  const mountedRef = useRef(false)
+  const [coverageFlash, setCoverageFlash] = useState(false)
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true
+      return
+    }
+    setCoverageFlash(true)
+    const timer = window.setTimeout(() => setCoverageFlash(false), 2000)
+    return () => window.clearTimeout(timer)
+  }, [coverage])
 
   if (!items.length) {
     return (
@@ -191,7 +204,11 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
               {formatUsd(-discount)}
             </span>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div
+            className={`flex flex-wrap items-center justify-between gap-2 transition-colors duration-300 ${
+              coverageFlash ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]' : ''
+            }`}
+          >
             <div className="flex min-w-0 items-center gap-2">
               <Image
                 src={checkoutImg.basketLine}
@@ -219,7 +236,11 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
             <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">
               Total amount due
             </span>
-            <span className="text-lg font-bold tracking-[-0.2px] text-white sm:text-xl">
+            <span
+              className={`text-lg font-bold tracking-[-0.2px] text-white transition-colors duration-300 sm:text-xl ${
+                coverageFlash ? 'text-fuchsia [text-shadow:0px_0px_18px_rgba(235,45,255,0.95)]' : ''
+              }`}
+            >
               {formatUsd(totalDue)}
             </span>
           </div>
