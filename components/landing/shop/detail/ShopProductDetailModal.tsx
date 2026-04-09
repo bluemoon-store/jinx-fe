@@ -138,7 +138,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSr
                       <p className="m-0">
                         <b>50 Points&nbsp;can get you:</b>
                       </p>
-                      <ul className="m-0 pl-[21px] text-[length:inherit]">
+                      <ul className="m-0 list-disc pl-[21px] text-[length:inherit]">
                         <li className="mb-0">
                           <span className="font-medium">No Name Cake</span>
                         </li>
@@ -158,7 +158,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSr
                       <p className="m-0">
                         <b>100 Points&nbsp;can get you:&nbsp;</b>
                       </p>
-                      <ul className="m-0 pl-[21px] text-[length:inherit]">
+                      <ul className="m-0 list-disc pl-[21px] text-[length:inherit]">
                         <li className="mb-0">
                           <span className="font-medium">Cheesy Garlic Bread</span>
                         </li>
@@ -175,7 +175,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productName, imageSr
                       <p className="m-0">
                         <b>150 Points can get you:</b>
                       </p>
-                      <ul className="m-0 pl-[21px] text-[length:inherit]">
+                      <ul className="m-0 list-disc pl-[21px] text-[length:inherit]">
                         <li className="mb-0">
                           <span className="font-medium">Pizza</span>
                         </li>

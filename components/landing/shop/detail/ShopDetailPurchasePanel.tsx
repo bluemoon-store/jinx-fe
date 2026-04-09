@@ -107,7 +107,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
           {isVariantOpen && (
             <div
-              className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-1 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-2 overflow-hidden ${siteSelectDropdownPanel}`}
             >
               <div className={siteSelectDropdownList}>
                 {VARIANT_OPTIONS.map((option) => {
@@ -190,7 +190,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
             {isStateOpen && (
               <div
-                className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-1 overflow-hidden ${siteSelectDropdownPanel}`}
+                className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-2 overflow-hidden ${siteSelectDropdownPanel}`}
               >
                 <div className={siteSelectDropdownList}>
                   {STATE_OPTIONS.map((option) => {

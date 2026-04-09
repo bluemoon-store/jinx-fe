@@ -5,15 +5,13 @@ import { Fragment, type FunctionComponent } from 'react'
 import CentralIcon from '@central-icons-react/all'
 import Link from 'next/link'
 
+import { CountryFlag } from '@/components/ui/CountryFlag'
 import type { CartItem } from '@/lib/cart-store'
 import { formatUsd } from '@/lib/cart-format'
 import { useCartStore } from '@/lib/cart-store'
 import { siteSelectDropdownPanel } from '@/components/ui/siteSelectDropdown'
 
 import { CartEmptyDropdownPanel } from './CartEmptyDropdownPanel'
-
-/** Temporarily use Canada flag asset for all regions. */
-const CANADA_FLAG_SRC = '/icons/flag.svg'
 
 const CartDivider: FunctionComponent = () => (
   <div className="h-px w-full shrink-0 bg-white/10" role="separator" />
@@ -46,12 +44,12 @@ const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
         <div className="border-whitesmoke-200/10 box-border h-px w-[9px] shrink-0 border-t border-solid" />
         <div className="flex items-center gap-1.5">
           <div className="grid h-3 w-4 shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
-            <img
+            <CountryFlag
+              countryCode="CA"
+              shape="rectangle"
+              alt="Canada flag"
               className="col-span-full row-span-full h-full w-full object-cover"
-              alt=""
-              src={CANADA_FLAG_SRC}
-              width={24}
-              height={18}
+              size={16}
             />
           </div>
           <div className="leading-num-20 font-medium">{item.stateCode}</div>

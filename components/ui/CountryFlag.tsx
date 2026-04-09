@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { useMemo, useState } from 'react'
 
 type CountryFlagShape = 'rectangle' | 'square' | 'circle'
 
@@ -12,14 +13,8 @@ type CountryFlagProps = {
 
 const DEFAULT_FALLBACK_FLAG_SRC = '/icons/flag.svg'
 
-// Extend this map as new Untitled UI assets are added under /public/icons/flags.
-const COUNTRY_FLAG_SRC_BY_CODE: Record<string, string> = {
-  CA: '/icons/flag.svg',
-}
-
-function resolveFlagSrc(countryCode: string): string {
-  const normalizedCode = countryCode.trim().toUpperCase()
-  return COUNTRY_FLAG_SRC_BY_CODE[normalizedCode] ?? DEFAULT_FALLBACK_FLAG_SRC
+function normalizeCountryCode(countryCode: string): string {
+  return countryCode.trim().toLowerCase()
 }
 
 export function CountryFlag({
@@ -29,16 +24,29 @@ export function CountryFlag({
   className,
   alt,
 }: CountryFlagProps) {
-  const shapeClass =
-    shape === 'circle' ? 'rounded-full' : shape === 'square' ? 'rounded-[4px]' : 'rounded-sm'
+  const [hasLoadError, setHasLoadError] = useState(false)
+
+  const normalizedCode = useMemo(() => normalizeCountryCode(countryCode), [countryCode])
+  const remoteFlagSrc = useMemo(
+    () => `https://flagcdn.com/w80/${normalizedCode}.png`,
+    [normalizedCode]
+  )
+  const shapeClass = shape === 'circle' ? 'rounded-full' : shape === 'square' ? 'rounded-[4px]' : ''
+  const dimensions =
+    shape === 'rectangle'
+      ? { width: size, height: Math.round((size * 18) / 28) }
+      : { width: size, height: size }
 
   return (
     <img
-      src={resolveFlagSrc(countryCode)}
+      src={hasLoadError ? DEFAULT_FALLBACK_FLAG_SRC : remoteFlagSrc}
       alt={alt ?? `${countryCode.toUpperCase()} flag`}
-      width={size}
-      height={size}
+      width={dimensions.width}
+      height={dimensions.height}
       className={clsx('shrink-0 object-cover', shapeClass, className)}
+      style={{ width: dimensions.width, height: dimensions.height }}
+      loading="lazy"
+      onError={() => setHasLoadError(true)}
     />
   )
 }

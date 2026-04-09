@@ -232,7 +232,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             <ul
               role="listbox"
               aria-label="Status"
-              className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
               <div className={siteSelectDropdownList}>
                 {STATUS_OPTIONS.map((opt) => {
@@ -304,7 +304,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             <ul
               role="listbox"
               aria-label="Payment Method"
-              className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
               <div className={siteSelectDropdownList}>
                 {PAYMENT_METHOD_OPTIONS.map((opt) => (
@@ -363,7 +363,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             <ul
               role="listbox"
               aria-label="Sort by"
-              className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
               <div className={siteSelectDropdownList}>
                 {SORT_OPTIONS.map((opt) => (
@@ -419,7 +419,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             <ul
               role="listbox"
               aria-label="View layout"
-              className={`absolute top-full right-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={`absolute top-full right-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
               <div className={siteSelectDropdownList}>
                 {VIEW_OPTIONS.map((opt) => (
