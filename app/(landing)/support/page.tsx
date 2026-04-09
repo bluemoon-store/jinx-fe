@@ -36,10 +36,10 @@ export default function SupportPage() {
               <p className="text-lightsteelblue-200 text-base">
                 Email{' '}
                 <a
-                  href="mailto:support@bluemoon.example"
+                  href="mailto:support@jinx.to"
                   className="text-ghostwhite font-semibold underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white"
                 >
-                  support@bluemoon.example
+                  support@jinx.to
                 </a>{' '}
                 and include your order ID when applicable so we can help faster.
               </p>

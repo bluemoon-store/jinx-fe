@@ -133,7 +133,7 @@ export default function Legal() {
               </h3>
               <p className="leading-6 font-medium">
                 Questions about these Terms? Contact us at{' '}
-                <span className="text-ghostwhite">support@bluemoon.example</span>.
+                <span className="text-ghostwhite">support@jinx.to</span>.
               </p>
             </section>
           </div>
@@ -293,7 +293,7 @@ export default function Legal() {
                 How to request a refund
               </h3>
               <p className="leading-6 font-medium">
-                Contact <span className="text-ghostwhite">support@bluemoon.example</span> with your
+                Contact <span className="text-ghostwhite">support@jinx.to</span> with your
                 account email, invoice (if available), and a short description of the issue. If
                 approved, refunds are typically processed back to the original payment method within
                 5–10 business days.
