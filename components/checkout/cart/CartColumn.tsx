@@ -5,11 +5,16 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
+import { IconReceiptTax } from '@/components/icons/central-icons'
 import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
+import { resolvePromoCode, usePromoStore } from '@/lib/promo-store'
 import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
+import CentralIcon from '@central-icons-react/all'
+
+import styles from './CartColumn.module.css'
 
 const BUYER_PROTECTION_ENHANCED_USD = 5
 
@@ -50,12 +55,12 @@ function CartLine({
   const qtyLabel = String(item.quantity).padStart(2, '0')
 
   return (
-    <div className="flex w-full min-w-0 max-w-full flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+    <div className="flex w-full max-w-full min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
       <div className="flex min-w-0 flex-1 items-start gap-[15px] sm:items-center">
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 sm:gap-x-2.5">
-            <span className="text-ghostwhite max-w-full break-words text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
+          <div className="flex max-w-full min-w-0 flex-wrap items-center gap-x-2 sm:gap-x-2.5">
+            <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] break-words sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
             </span>
             <div className="flex shrink-0 items-center gap-[7.5px]">
@@ -88,7 +93,7 @@ function CartLine({
           </span>
         </div>
       </div>
-      <div className="flex w-full min-w-0 max-w-full shrink-0 flex-wrap content-center items-center justify-between gap-x-3 gap-y-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end sm:gap-x-4">
+      <div className="flex w-full max-w-full min-w-0 shrink-0 flex-wrap content-center items-center justify-between gap-x-3 gap-y-2 sm:ml-auto sm:w-auto sm:flex-nowrap sm:justify-end sm:gap-x-4">
         <div className="border-whitesmoke-300 flex min-h-9 shrink-0 items-center gap-1 rounded-lg border bg-gray-100 px-0.5 py-0.5 sm:gap-2">
           <button
             type="button"
@@ -130,14 +135,21 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
   const items = useCartStore((s) => s.items)
   const adjustItemQuantity = useCartStore((s) => s.adjustItemQuantity)
   const coverage = useBuyerProtectionStore((s) => s.coverage)
+  const appliedPromo = usePromoStore((s) => s.appliedPromo)
+  const setAppliedPromo = usePromoStore((s) => s.setAppliedPromo)
+  const clearAppliedPromo = usePromoStore((s) => s.clearAppliedPromo)
 
   const totalUnits = items.reduce((sum, i) => sum + i.quantity, 0)
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
+  const promoDiscountUsd = Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
   const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
   const includeBuyerProtectionInSummary = checkoutStep > 1
-  const totalDue = subtotal + (includeBuyerProtectionInSummary ? buyerProtectionUsd : 0)
+  const totalDue =
+    subtotal - promoDiscountUsd + (includeBuyerProtectionInSummary ? buyerProtectionUsd : 0)
   const mountedRef = useRef(false)
   const [coverageFlash, setCoverageFlash] = useState(false)
+  const [promoInput, setPromoInput] = useState('')
+  const [promoError, setPromoError] = useState('')
 
   useEffect(() => {
     if (!mountedRef.current) {
@@ -148,6 +160,17 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
     const timer = window.setTimeout(() => setCoverageFlash(false), 2000)
     return () => window.clearTimeout(timer)
   }, [coverage])
+
+  const handleApplyPromo = () => {
+    const nextPromo = resolvePromoCode(promoInput, subtotal)
+    if (!nextPromo) {
+      setPromoError('Invalid promo code')
+      return
+    }
+    setAppliedPromo(nextPromo)
+    setPromoInput('')
+    setPromoError('')
+  }
 
   if (!items.length) {
     return (
@@ -217,20 +240,67 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
           className="h-px w-full opacity-80"
         />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-          <div className="border-whitesmoke-300 flex min-h-11 flex-1 items-center gap-2 rounded-lg border bg-gray-200 px-3 py-2 sm:h-[46px]">
-            <Image src={checkoutImg.receiptTax} alt="" width={18} height={18} />
-            <span className="text-sm font-semibold tracking-[-0.16px] text-[#c2c2e2] opacity-25 sm:text-base">
-              Apply a promo code
-            </span>
+        {appliedPromo ? (
+          <div className="border-fuchsia/80 flex min-h-11 items-center justify-between gap-5 rounded-lg border bg-gray-200 px-3 py-2 shadow-[0px_0px_0px_3px_rgba(235,45,255,0.2)] sm:h-[56px]">
+            <div className="flex min-w-0 items-center gap-2">
+              <CentralIcon
+                name="IconReceiptTax"
+                join="round"
+                fill="filled"
+                stroke="1"
+                radius="1"
+                size={18}
+                color="#eb2dff"
+              />
+              <div className="min-w-0 text-sm font-semibold tracking-[-0.16px] sm:text-base">
+                <span className="mr-1.5 text-[#eb2dff]">{appliedPromo.code}</span>
+                <span className="text-white opacity-75">({appliedPromo.description})</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="flex shrink-0 items-center gap-2 text-sm font-medium tracking-[-0.16px] text-[#ff2a2a] hover:brightness-110 sm:text-base"
+              onClick={clearAppliedPromo}
+            >
+              <span>Remove</span>
+              <Image src={checkoutImg.cross} alt="" width={18} height={18} />
+            </button>
           </div>
-          <button
-            type="button"
-            className="border-darkslateblue min-h-11 shrink-0 rounded-lg border bg-gray-100 px-6 py-2 text-sm font-bold tracking-[-0.16px] text-white hover:bg-gray-700 sm:h-[46px] sm:px-9 sm:text-base"
-          >
-            Apply
-          </button>
-        </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+              <label
+                className={`${styles.promoField} border-whitesmoke-300 flex min-h-11 flex-1 items-center gap-2 rounded-lg border bg-gray-200 px-3 py-2 sm:h-[46px]`}
+              >
+                <Image src={checkoutImg.receiptTax} alt="" width={18} height={18} />
+                <input
+                  type="text"
+                  value={promoInput}
+                  onChange={(e) => {
+                    setPromoInput(e.target.value)
+                    if (promoError) setPromoError('')
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleApplyPromo()
+                  }}
+                  placeholder="Apply a promo code"
+                  autoComplete="off"
+                  className="h-full w-full border-0 bg-transparent text-sm font-semibold tracking-[-0.16px] text-[#c2c2e2] shadow-none placeholder:text-[#c2c2e2]/45 focus:border-0 focus:shadow-none sm:text-base"
+                />
+              </label>
+              <button
+                type="button"
+                className="border-darkslateblue min-h-11 shrink-0 rounded-lg border bg-gray-100 px-6 py-2 text-sm font-bold tracking-[-0.16px] text-white hover:bg-gray-700 sm:h-[46px] sm:px-9 sm:text-base"
+                onClick={handleApplyPromo}
+              >
+                Apply
+              </button>
+            </div>
+            {promoError ? (
+              <p className="text-xs font-semibold text-[#ff4b6a] sm:text-sm">{promoError}</p>
+            ) : null}
+          </div>
+        )}
 
         <Image
           src={checkoutImg.divider}
@@ -247,9 +317,27 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
               {formatUsd(subtotal)}
             </span>
           </div>
-          <div className="flex justify-between gap-2 opacity-75">
-            <span className="text-sm font-semibold text-white sm:text-base">Discount applied</span>
-            <span className="text-sm font-semibold text-white sm:text-base">{formatUsd(0)}</span>
+          <div className="flex flex-wrap items-center justify-between gap-2 opacity-75">
+            <div className="flex max-w-full min-w-0 flex-wrap items-center gap-2">
+              <Image
+                src={checkoutImg.receiptTaxAlt}
+                alt=""
+                width={18}
+                height={18}
+                className="shrink-0"
+              />
+              <span className="text-sm font-semibold text-white sm:text-base">
+                Discount applied
+              </span>
+              {appliedPromo ? (
+                <span className="text-fuchsia text-sm font-bold sm:text-base">
+                  {appliedPromo.code}
+                </span>
+              ) : null}
+            </div>
+            <span className="text-sm font-semibold text-white sm:text-base">
+              {formatUsd(-promoDiscountUsd)}
+            </span>
           </div>
           {includeBuyerProtectionInSummary ? (
             <div
@@ -270,7 +358,7 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
                 </span>
               </div>
               <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
-                {formatUsd(buyerProtectionUsd)}
+                {buyerProtectionUsd > 0 ? `+${formatUsd(buyerProtectionUsd)}` : formatUsd(0)}
               </span>
             </div>
           ) : null}

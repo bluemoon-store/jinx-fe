@@ -1,0 +1,15 @@
+/* @tailwindcss/forms adds a blue ring + blue border on text input :focus (base layer).
+   Reset it for the promo field only. */
+.promoField input[type='text']:focus,
+.promoField input[type='text']:focus-visible {
+  outline: none !important;
+  border-color: transparent !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  box-shadow: none !important;
+}
+
+.promoField:focus-within {
+  outline: none;
+  box-shadow: none;
+}

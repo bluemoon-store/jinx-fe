@@ -10,6 +10,7 @@ import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
 import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
+import { usePromoStore } from '@/lib/promo-store'
 
 const BUYER_PROTECTION_ENHANCED_USD = 5
 
@@ -96,9 +97,10 @@ function LineItemReadonly({ item }: { item: CartItem }) {
 export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNote?: boolean }) {
   const items = useCartStore((s) => s.items)
   const coverage = useBuyerProtectionStore((s) => s.coverage)
+  const appliedPromo = usePromoStore((s) => s.appliedPromo)
 
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
-  const discount = 0
+  const discount = Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
   const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
   const totalDue = subtotal - discount + buyerProtectionUsd
   const mountedRef = useRef(false)
@@ -199,6 +201,9 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
               <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
                 Discount applied
               </span>
+              {appliedPromo ? (
+                <span className="text-fuchsia text-sm font-bold sm:text-base">{appliedPromo.code}</span>
+              ) : null}
             </div>
             <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
               {formatUsd(-discount)}
@@ -222,7 +227,7 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
               </span>
             </div>
             <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
-              {formatUsd(buyerProtectionUsd)}
+              {buyerProtectionUsd > 0 ? `+${formatUsd(buyerProtectionUsd)}` : formatUsd(0)}
             </span>
           </div>
           <Image
