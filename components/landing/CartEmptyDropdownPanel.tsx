@@ -3,6 +3,7 @@
 import type { Route } from 'next'
 import Link from 'next/link'
 import type { FunctionComponent } from 'react'
+import { siteSelectDropdownPanel } from '@/components/ui/siteSelectDropdown'
 
 type Props = {
   /** Close dropdown when navigating (e.g. to /shop). */
@@ -12,7 +13,7 @@ type Props = {
 /** Empty-cart flyout content with illustration from `/icons/cart-empty.svg`. */
 export const CartEmptyDropdownPanel: FunctionComponent<Props> = ({ onNavigate }) => (
   <div
-    className="rounded-num-8 w-max max-w-[min(100vw-2rem,400px)] min-w-0 shrink-0 border border-solid border-white/10 bg-[#071935] p-[15px] shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+    className={`w-max max-w-[min(100vw-2rem,400px)] min-w-0 shrink-0 p-num-15 ${siteSelectDropdownPanel}`}
     role="dialog"
     aria-label="Shopping cart"
   >
@@ -27,7 +28,7 @@ export const CartEmptyDropdownPanel: FunctionComponent<Props> = ({ onNavigate })
         />
       </div>
       <h3 className="text-ghostwhite text-md mb-2 font-bold tracking-tight">Your Cart is Empty</h3>
-      <p className="text-lightsteelblue-200 mb-[15px] max-w-[260px] text-sm leading-relaxed">
+      <p className="text-lightsteelblue-200 mb-num-15 max-w-[260px] text-sm leading-relaxed">
         There&apos;s nothing in your cart. Let&apos;s get shopping!
       </p>
       <Link

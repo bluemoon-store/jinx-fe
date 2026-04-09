@@ -5,6 +5,13 @@ import { createPortal } from 'react-dom'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { DashboardWalletTxnPopup } from '@/components/dashboard/DashboardWalletTxnPopup'
+import {
+  siteSelectDropdownList,
+  siteSelectDropdownOptionInteractive,
+  siteSelectDropdownOptionRow,
+  siteSelectDropdownPanel,
+} from '@/components/ui/siteSelectDropdown'
+import { cn } from '@/lib/utils'
 
 type WalletTxStatus = 'paid' | 'pending' | 'expired'
 
@@ -115,6 +122,13 @@ const COIN_OPTIONS: CoinOption[] = [
   { value: 'ltc', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
   { value: 'bch', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
 ]
+
+const walletCoinTriggerClass =
+  'rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left'
+
+const walletFilterTriggerClass = cn(
+  'rounded-num-8 px-num-12 flex min-h-11 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2'
+)
 
 /** Wallet — balance card, add funds, history; matches dashboard shell + Orders/Reviews layout. */
 export const DashboardWalletSection: FunctionComponent = () => {
@@ -285,7 +299,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     aria-expanded={coinMenuOpen}
                     aria-label="Select payment coin"
                     onClick={() => toggleMenu('coin')}
-                    className="rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left"
+                    className={walletCoinTriggerClass}
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       <img className="h-7 w-7 shrink-0" alt="" src={selectedCoin.iconSrc} />
@@ -308,17 +322,20 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     <ul
                       role="listbox"
                       aria-label="Payment coin options"
-                      className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 w-full overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                      className={`absolute top-full left-0 z-20 mt-1 w-full overflow-hidden ${siteSelectDropdownPanel}`}
                     >
-                      {COIN_OPTIONS.map((coin) => (
-                        <li key={coin.value} role="presentation">
+                      <div className={siteSelectDropdownList}>
+                        {COIN_OPTIONS.map((coin) => (
                           <button
                             type="button"
                             role="option"
                             aria-selected={selectedCoin.value === coin.value}
-                            className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                              selectedCoin.value === coin.value ? 'bg-[#16243B]' : ''
-                            }`}
+                            className={cn(
+                              siteSelectDropdownOptionRow,
+                              siteSelectDropdownOptionInteractive,
+                              'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                              selectedCoin.value === coin.value && 'bg-white/5'
+                            )}
                             onClick={() => {
                               setSelectedCoin(coin)
                               setCoinMenuOpen(false)
@@ -327,8 +344,8 @@ export const DashboardWalletSection: FunctionComponent = () => {
                             <img className="h-6 w-6 shrink-0" alt="" src={coin.iconSrc} />
                             <span>{coin.label}</span>
                           </button>
-                        </li>
-                      ))}
+                        ))}
+                      </div>
                     </ul>
                   ) : null}
                 </div>
@@ -441,7 +458,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               aria-expanded={statusMenuOpen}
               aria-label="Filter by status"
               onClick={() => toggleMenu('status')}
-              className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+              className={cn(walletFilterTriggerClass, 'w-fit max-w-full')}
             >
               <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
                 Status
@@ -464,17 +481,20 @@ export const DashboardWalletSection: FunctionComponent = () => {
               <ul
                 role="listbox"
                 aria-label="Status"
-                className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-[210px] overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                className={`absolute top-full left-0 z-20 mt-1 min-w-[210px] overflow-hidden ${siteSelectDropdownPanel}`}
               >
-                {STATUS_OPTIONS.map((opt) => (
-                  <li key={opt.value} role="presentation">
+                <div className={siteSelectDropdownList}>
+                  {STATUS_OPTIONS.map((opt) => (
                     <button
                       type="button"
                       role="option"
                       aria-selected={statusFilter === opt.value}
-                      className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                        statusFilter === opt.value ? 'bg-[#16243B]' : ''
-                      }`}
+                      className={cn(
+                        siteSelectDropdownOptionRow,
+                        siteSelectDropdownOptionInteractive,
+                        'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm',
+                        statusFilter === opt.value && 'bg-white/5'
+                      )}
                       onClick={() => {
                         setStatusFilter(opt.value)
                         setStatusMenuOpen(false)
@@ -482,8 +502,8 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     >
                       {opt.label}
                     </button>
-                  </li>
-                ))}
+                  ))}
+                </div>
               </ul>
             ) : null}
           </div>
@@ -494,7 +514,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
               aria-expanded={sortMenuOpen}
               aria-label="Sort transactions"
               onClick={() => toggleMenu('sort')}
-              className="rounded-num-8 px-num-12 flex min-h-11 w-fit max-w-full items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+              className={cn(walletFilterTriggerClass, 'w-fit max-w-full')}
             >
               <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
                 Sort by
@@ -517,17 +537,20 @@ export const DashboardWalletSection: FunctionComponent = () => {
               <ul
                 role="listbox"
                 aria-label="Sort by"
-                className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
               >
-                {SORT_OPTIONS.map((opt) => (
-                  <li key={opt.value} role="presentation">
+                <div className={siteSelectDropdownList}>
+                  {SORT_OPTIONS.map((opt) => (
                     <button
                       type="button"
                       role="option"
                       aria-selected={sortOption === opt.value}
-                      className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full whitespace-nowrap px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                        sortOption === opt.value ? 'bg-[#16243B]' : ''
-                      }`}
+                      className={cn(
+                        siteSelectDropdownOptionRow,
+                        siteSelectDropdownOptionInteractive,
+                        'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
+                        sortOption === opt.value && 'bg-white/5'
+                      )}
                       onClick={() => {
                         setSortOption(opt.value)
                         setSortMenuOpen(false)
@@ -535,8 +558,8 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     >
                       {opt.label}
                     </button>
-                  </li>
-                ))}
+                  ))}
+                </div>
               </ul>
             ) : null}
           </div>

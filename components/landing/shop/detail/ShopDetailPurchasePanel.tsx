@@ -7,6 +7,12 @@ import { FunctionComponent, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
 import { CountryFlag } from '@/components/ui/CountryFlag'
+import {
+  siteSelectDropdownList,
+  siteSelectDropdownOptionInteractive,
+  siteSelectDropdownOptionRow,
+  siteSelectDropdownPanel,
+} from '@/components/ui/siteSelectDropdown'
 import { useCartStore } from '@/lib/cart-store'
 
 type Props = {
@@ -19,11 +25,6 @@ const VARIANT_OPTIONS = [
   { id: 'p100', label: '$100 Points | Fully Unlocked', unitPrice: 100 },
   { id: 'p150', label: '$150 Points | Fully Unlocked', unitPrice: 150 },
 ] as const
-
-const VARIANT_DROPDOWN_BORDER_CLASS = 'border-[1px] border-solid border-[rgba(238,238,238,0.1)]'
-const VARIANT_DROPDOWN_PANEL_CLASS = `rounded-lg bg-gray-200 text-base text-white shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)] box-border ${VARIANT_DROPDOWN_BORDER_CLASS}`
-const VARIANT_DROPDOWN_ROW_CLASS =
-  'flex w-full items-center px-4 py-2 text-left font-semibold tracking-[-0.01em] leading-7'
 
 const STATE_OPTIONS = [
   { id: 'ab', label: 'AB', countryCode: 'CA' },
@@ -79,7 +80,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       <div className="font-commissioner flex flex-col items-start gap-2 self-stretch">
         <div className="leading-num-20 font-semibold">Select Variant</div>
         <div
-          className={`relative w-full overflow-visible rounded-lg bg-gray-200 text-white ${VARIANT_DROPDOWN_BORDER_CLASS} box-border`}
+          className="relative w-full overflow-visible rounded-lg bg-gray-200 text-white border-[1px] border-solid border-[rgba(238,238,238,0.1)] box-border"
         >
           <button
             type="button"
@@ -89,7 +90,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               setIsVariantOpen((v) => !v)
               setIsStateOpen(false)
             }}
-            className={`${VARIANT_DROPDOWN_ROW_CLASS} w-full items-center justify-between gap-5`}
+            className={`${siteSelectDropdownOptionRow} w-full items-center justify-between gap-5`}
           >
             <div className="min-w-0 flex-1 truncate">{selectedVariant.label}</div>
             <CentralIcon
@@ -106,9 +107,9 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
           {isVariantOpen && (
             <div
-              className={`absolute top-full right-0 left-0 ${dropdownZClass} -mt-px overflow-hidden ${VARIANT_DROPDOWN_PANEL_CLASS}`}
+              className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-1 overflow-hidden ${siteSelectDropdownPanel}`}
             >
-              <div className="flex flex-col divide-y divide-white/10">
+              <div className={siteSelectDropdownList}>
                 {VARIANT_OPTIONS.map((option) => {
                   const isSelected = option.id === selectedVariantId
                   return (
@@ -121,9 +122,10 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                         setIsVariantOpen(false)
                       }}
                       className={[
-                        VARIANT_DROPDOWN_ROW_CLASS,
-                        'justify-between gap-5 transition-colors',
-                        isSelected ? 'bg-white/5' : 'hover:bg-white/5',
+                        siteSelectDropdownOptionRow,
+                        siteSelectDropdownOptionInteractive,
+                        'justify-between gap-5',
+                        isSelected ? 'bg-white/5' : '',
                       ].join(' ')}
                     >
                       <span className="min-w-0 flex-1 truncate">{option.label}</span>
@@ -151,7 +153,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       <div className="flex flex-col items-stretch gap-4 self-stretch sm:flex-row sm:gap-5">
         <div className="flex flex-1 flex-col items-start gap-2">
           <div className="leading-num-20 font-semibold">Select State</div>
-          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border-[1px] border-solid bg-[#051329] text-white">
+          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border border-solid bg-[#051329] text-white">
             <button
               type="button"
               aria-label={`Select state for ${productName}`}
@@ -188,10 +190,10 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
             {isStateOpen && (
               <div
-                className={`rounded-num-8 border-whitesmoke-300/20 absolute top-full right-0 left-0 ${dropdownZClass} -mt-[1px] overflow-hidden border border-solid bg-gray-400`}
+                className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-1 overflow-hidden ${siteSelectDropdownPanel}`}
               >
-                <div className="flex flex-col">
-                  {STATE_OPTIONS.map((option, idx) => {
+                <div className={siteSelectDropdownList}>
+                  {STATE_OPTIONS.map((option) => {
                     const isSelected = option.id === selectedStateId
                     return (
                       <button
@@ -203,9 +205,10 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                           setIsStateOpen(false)
                         }}
                         className={[
-                          'px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 text-left',
-                          isSelected ? 'bg-white/5' : 'hover:bg-gray-300/20',
-                          idx !== 0 ? 'border-whitesmoke-300/20 border-t' : '',
+                          'px-num-12 py-num-10 text-num-16 flex w-full items-center text-left',
+                          siteSelectDropdownOptionInteractive,
+                          'justify-between gap-5',
+                          isSelected ? 'bg-white/5' : '',
                         ].join(' ')}
                       >
                         <div className="flex min-w-0 flex-1 items-center gap-2">

@@ -3,6 +3,12 @@
 import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import CartDropdownPanel from '@/components/landing/CartDropdownPanel'
+import {
+  siteSelectDropdownList,
+  siteSelectDropdownOptionInteractive,
+  siteSelectDropdownOptionRow,
+  siteSelectDropdownPanel,
+} from '@/components/ui/siteSelectDropdown'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { useCartStore } from '@/lib/cart-store'
 import { useAppStore } from '@/lib/store'
@@ -325,72 +331,70 @@ const Navbar: FunctionComponent = () => {
                     </button>
                     {desktopUserMenuOpen && (
                       <div
-                        className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[232px] flex-col border border-solid border-white/10 bg-[#071935] py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+                        className={`absolute top-full right-0 z-50 mt-2 min-w-[232px] overflow-hidden ${siteSelectDropdownPanel}`}
                         role="menu"
                       >
-                        {userDropdownLinks.map((item) => (
-                          <Link
-                            key={item.key}
-                            href={item.href as Route}
+                        <div className={siteSelectDropdownList}>
+                          {userDropdownLinks.map((item) => (
+                            <Link
+                              key={item.key}
+                              href={item.href as Route}
+                              role="menuitem"
+                              onClick={closeDesktopUserMenu}
+                              onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                              onMouseLeave={() => setUserMenuHoverKey(null)}
+                              className={`${siteSelectDropdownOptionRow} ${siteSelectDropdownOptionInteractive} group text-sm ${
+                                item.trailing ? 'justify-between gap-3' : 'gap-2.5'
+                              }`}
+                            >
+                              <span className="flex min-w-0 items-center gap-2.5">
+                                <CentralIcon
+                                  name={item.icon as any}
+                                  join="round"
+                                  fill="filled"
+                                  stroke="2"
+                                  radius="1"
+                                  size={20}
+                                  color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
+                                  ariaHidden={true}
+                                />
+                                <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                                  {item.label}
+                                </span>
+                              </span>
+                              {item.trailing ? (
+                                <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                                  {item.trailing}
+                                </span>
+                              ) : null}
+                            </Link>
+                          ))}
+                          <button
+                            type="button"
                             role="menuitem"
-                            onClick={closeDesktopUserMenu}
-                            onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                            onClick={() => {
+                              setLogOutModalOpen(true)
+                              closeDesktopUserMenu()
+                            }}
+                            onMouseEnter={() => setUserMenuHoverKey('logout')}
                             onMouseLeave={() => setUserMenuHoverKey(null)}
-                            className={`group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#14253F] ${
-                              item.trailing ? 'justify-between gap-3' : ''
-                            }`}
+                            className={`${siteSelectDropdownOptionRow} ${siteSelectDropdownOptionInteractive} group gap-2.5 text-left text-sm`}
                           >
-                            <span className="flex min-w-0 items-center gap-2.5">
-                              <CentralIcon
-                                name={item.icon as any}
-                                join="round"
-                                fill="filled"
-                                stroke="2"
-                                radius="1"
-                                size={20}
-                                color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
-                                ariaHidden={true}
-                              />
-                              <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
-                                {item.label}
-                              </span>
+                            <CentralIcon
+                              name="IconArrowBoxLeft"
+                              join="round"
+                              fill="filled"
+                              stroke="2"
+                              radius="1"
+                              size={20}
+                              color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
+                              ariaHidden={true}
+                            />
+                            <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                              Log Out
                             </span>
-                            {item.trailing ? (
-                              <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
-                                {item.trailing}
-                              </span>
-                            ) : null}
-                          </Link>
-                        ))}
-                        <div
-                          className="border-whitesmoke-300 mx-3 my-1.5 border-t border-solid"
-                          role="separator"
-                        />
-                        <button
-                          type="button"
-                          role="menuitem"
-                          onClick={() => {
-                            setLogOutModalOpen(true)
-                            closeDesktopUserMenu()
-                          }}
-                          onMouseEnter={() => setUserMenuHoverKey('logout')}
-                          onMouseLeave={() => setUserMenuHoverKey(null)}
-                          className="group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#14253F]"
-                        >
-                          <CentralIcon
-                            name="IconArrowBoxLeft"
-                            join="round"
-                            fill="filled"
-                            stroke="2"
-                            radius="1"
-                            size={20}
-                            color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
-                            ariaHidden={true}
-                          />
-                          <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
-                            Log Out
-                          </span>
-                        </button>
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -542,72 +546,70 @@ const Navbar: FunctionComponent = () => {
               </button>
               {mobileUserMenuOpen && (
                 <div
-                  className="rounded-num-8 absolute top-full right-0 z-50 mt-2 flex min-w-[232px] flex-col border border-solid border-white/10 bg-[#071935] py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+                  className={`absolute top-full right-0 z-50 mt-2 min-w-[232px] overflow-hidden ${siteSelectDropdownPanel}`}
                   role="menu"
                 >
-                  {userDropdownLinks.map((item) => (
-                    <Link
-                      key={item.key}
-                      href={item.href as Route}
+                  <div className={siteSelectDropdownList}>
+                    {userDropdownLinks.map((item) => (
+                      <Link
+                        key={item.key}
+                        href={item.href as Route}
+                        role="menuitem"
+                        className={`${siteSelectDropdownOptionRow} ${siteSelectDropdownOptionInteractive} group text-sm ${
+                          item.trailing ? 'justify-between gap-3' : 'gap-2.5'
+                        }`}
+                        onClick={() => setMobileUserMenuOpen(false)}
+                        onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                        onMouseLeave={() => setUserMenuHoverKey(null)}
+                      >
+                        <span className="flex min-w-0 items-center gap-2.5">
+                          <CentralIcon
+                            name={item.icon as any}
+                            join="round"
+                            fill="filled"
+                            stroke="2"
+                            radius="1"
+                            size={20}
+                            color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
+                            ariaHidden={true}
+                          />
+                          <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                            {item.label}
+                          </span>
+                        </span>
+                        {item.trailing ? (
+                          <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                            {item.trailing}
+                          </span>
+                        ) : null}
+                      </Link>
+                    ))}
+                    <button
+                      type="button"
                       role="menuitem"
-                      className={`group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#14253F] ${
-                        item.trailing ? 'justify-between gap-3' : ''
-                      }`}
-                      onClick={() => setMobileUserMenuOpen(false)}
-                      onMouseEnter={() => setUserMenuHoverKey(item.key)}
+                      className={`${siteSelectDropdownOptionRow} ${siteSelectDropdownOptionInteractive} group gap-2.5 text-left text-sm`}
+                      onClick={() => {
+                        setLogOutModalOpen(true)
+                        setMobileUserMenuOpen(false)
+                      }}
+                      onMouseEnter={() => setUserMenuHoverKey('logout')}
                       onMouseLeave={() => setUserMenuHoverKey(null)}
                     >
-                      <span className="flex min-w-0 items-center gap-2.5">
-                        <CentralIcon
-                          name={item.icon as any}
-                          join="round"
-                          fill="filled"
-                          stroke="2"
-                          radius="1"
-                          size={20}
-                          color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
-                          ariaHidden={true}
-                        />
-                        <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
-                          {item.label}
-                        </span>
+                      <CentralIcon
+                        name="IconArrowBoxLeft"
+                        join="round"
+                        fill="filled"
+                        stroke="2"
+                        radius="1"
+                        size={20}
+                        color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
+                        ariaHidden={true}
+                      />
+                      <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                        Log Out
                       </span>
-                      {item.trailing ? (
-                        <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
-                          {item.trailing}
-                        </span>
-                      ) : null}
-                    </Link>
-                  ))}
-                  <div
-                    className="border-whitesmoke-300 mx-3 my-1.5 border-t border-solid"
-                    role="separator"
-                  />
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="group rounded-num-8 mx-1 flex min-h-11 items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#14253F]"
-                    onClick={() => {
-                      setLogOutModalOpen(true)
-                      setMobileUserMenuOpen(false)
-                    }}
-                    onMouseEnter={() => setUserMenuHoverKey('logout')}
-                    onMouseLeave={() => setUserMenuHoverKey(null)}
-                  >
-                    <CentralIcon
-                      name="IconArrowBoxLeft"
-                      join="round"
-                      fill="filled"
-                      stroke="2"
-                      radius="1"
-                      size={20}
-                      color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
-                      ariaHidden={true}
-                    />
-                    <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
-                      Log Out
-                    </span>
-                  </button>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

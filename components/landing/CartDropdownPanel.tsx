@@ -8,6 +8,7 @@ import Link from 'next/link'
 import type { CartItem } from '@/lib/cart-store'
 import { formatUsd } from '@/lib/cart-format'
 import { useCartStore } from '@/lib/cart-store'
+import { siteSelectDropdownPanel } from '@/components/ui/siteSelectDropdown'
 
 import { CartEmptyDropdownPanel } from './CartEmptyDropdownPanel'
 
@@ -113,7 +114,7 @@ export const CartDropdownPanel: FunctionComponent = () => {
 
   return (
     <div
-      className="p-num-15 w-max max-w-[min(100vw-2rem,480px)] min-w-0 shrink-0 rounded-lg border border-solid border-white/10 bg-gray-200 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+      className={`p-num-15 w-max max-w-[min(100vw-2rem,480px)] min-w-0 shrink-0 ${siteSelectDropdownPanel}`}
       role="dialog"
       aria-label="Shopping cart"
     >

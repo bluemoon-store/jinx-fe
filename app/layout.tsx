@@ -30,26 +30,52 @@ const fontHeydex = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Jinx.to',
-    template: '%s | Jinx.to',
+    default: 'Jinx - The One-Stop Store for All Digital Purchases',
+    template: '%s | Jinx',
   },
-  description: 'Jinx.to - Modern web application',
+  description:
+    'Buy gift cards, top-ups, and digital products instantly from trusted brands, all in one secure checkout experience.',
   keywords: ['nextjs', 'react', 'typescript'],
   authors: [{ name: 'Jinx.to Team' }],
   creator: 'Jinx.to',
+  icons: {
+    icon: [
+      { url: '/favicons/favicon.ico' },
+      { url: '/favicons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/favicons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    other: [
+      {
+        rel: 'android-chrome',
+        url: '/favicons/android-chrome-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        rel: 'android-chrome',
+        url: '/favicons/android-chrome-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+  },
+  manifest: '/favicons/manifest.json',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: process.env.NEXT_PUBLIC_APP_URL,
-    title: 'Jinx.to',
-    description: 'Jinx.to - Modern web application',
-    siteName: 'Jinx.to',
+    title: 'Jinx - The One-Stop Store for All Digital Purchases',
+    description:
+      'Buy gift cards, top-ups, and digital products instantly from trusted brands, all in one secure checkout experience.',
+    siteName: 'Jinx',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jinx.to',
-    description: 'Jinx.to - Modern web application',
+    title: 'Jinx - The One-Stop Store for All Digital Purchases',
+    description:
+      'Buy gift cards, top-ups, and digital products instantly from trusted brands, all in one secure checkout experience.',
   },
   robots: {
     index: true,

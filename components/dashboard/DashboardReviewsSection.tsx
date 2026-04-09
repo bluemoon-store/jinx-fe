@@ -18,6 +18,13 @@ import {
 
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { DashboardReviewsPopup } from '@/components/dashboard/DashboardReviewsPopup'
+import {
+  siteSelectDropdownList,
+  siteSelectDropdownOptionInteractive,
+  siteSelectDropdownOptionRow,
+  siteSelectDropdownPanel,
+} from '@/components/ui/siteSelectDropdown'
+import { cn } from '@/lib/utils'
 
 const PAGE_SIZE = 8
 
@@ -60,6 +67,10 @@ const addReviewBtnClass =
 
 const ratedBadgeClass =
   'font-commissioner relative box-border inline-flex w-fit max-w-full items-center gap-3 rounded-xl border border-solid border-[rgba(238,238,238,0.1)] bg-gray-200 py-1.5 px-3 text-left text-num-15_35 leading-num-21_93 text-ghostwhite'
+
+const dashboardSelectTriggerClass = cn(
+  'rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2'
+)
 
 const ReviewRow: FunctionComponent<{
   row: ReviewPurchaseRow
@@ -292,7 +303,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             aria-expanded={statusMenuOpen}
             aria-label="Filter by status"
             onClick={() => toggleMenu('status')}
-            className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+            className={dashboardSelectTriggerClass}
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               Status
@@ -315,44 +326,45 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             <ul
               role="listbox"
               aria-label="Status"
-              className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+              className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
-              {STATUS_OPTIONS.map((opt) => (
-                <li key={opt.value} role="presentation">
-                  {(() => {
-                    const statusCfg =
-                      opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
-                    return (
-                      <button
-                        type="button"
-                        role="option"
-                        aria-selected={statusFilter === opt.value}
-                        className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                          statusFilter === opt.value ? 'bg-[#16243B]' : ''
-                        }`}
-                        onClick={() => {
-                          setStatusFilter(opt.value)
-                          setStatusMenuOpen(false)
-                        }}
-                      >
-                        {statusCfg ? (
-                          <CentralIcon
-                            name={statusCfg.icon as any}
-                            join="round"
-                            fill="filled"
-                            stroke="1"
-                            radius="1"
-                            size={14}
-                            ariaHidden={true}
-                            className={`shrink-0 ${statusCfg.color}`}
-                          />
-                        ) : null}
-                        <span>{opt.label}</span>
-                      </button>
-                    )
-                  })()}
-                </li>
-              ))}
+              <div className={siteSelectDropdownList}>
+                {STATUS_OPTIONS.map((opt) => {
+                  const statusCfg = opt.value === 'all' ? null : dashboardOrderStatusConfig[opt.value]
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      role="option"
+                      aria-selected={statusFilter === opt.value}
+                      className={cn(
+                        siteSelectDropdownOptionRow,
+                        siteSelectDropdownOptionInteractive,
+                        'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                        statusFilter === opt.value && 'bg-white/5'
+                      )}
+                      onClick={() => {
+                        setStatusFilter(opt.value)
+                        setStatusMenuOpen(false)
+                      }}
+                    >
+                      {statusCfg ? (
+                        <CentralIcon
+                          name={statusCfg.icon as any}
+                          join="round"
+                          fill="filled"
+                          stroke="1"
+                          radius="1"
+                          size={14}
+                          ariaHidden={true}
+                          className={`shrink-0 ${statusCfg.color}`}
+                        />
+                      ) : null}
+                      <span>{opt.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
             </ul>
           ) : null}
         </div>
@@ -363,7 +375,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             aria-expanded={paymentMethodMenuOpen}
             aria-label="Filter by payment method"
             onClick={() => toggleMenu('payment')}
-            className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+            className={dashboardSelectTriggerClass}
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               Payment Method
@@ -386,17 +398,20 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             <ul
               role="listbox"
               aria-label="Payment Method"
-              className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+              className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
-              {PAYMENT_METHOD_OPTIONS.map((opt) => (
-                <li key={opt.value} role="presentation">
+              <div className={siteSelectDropdownList}>
+                {PAYMENT_METHOD_OPTIONS.map((opt) => (
                   <button
                     type="button"
                     role="option"
                     aria-selected={paymentMethodFilter === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-white/10 ${
-                      paymentMethodFilter === opt.value ? 'bg-[#16243B]' : ''
-                    }`}
+                    className={cn(
+                      siteSelectDropdownOptionRow,
+                      siteSelectDropdownOptionInteractive,
+                      'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                      paymentMethodFilter === opt.value && 'bg-white/5'
+                    )}
                     onClick={() => {
                       setPaymentMethodFilter(opt.value)
                       setPaymentMethodMenuOpen(false)
@@ -405,8 +420,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                     {opt.iconSrc ? <img className="h-5 w-5 shrink-0" alt="" src={opt.iconSrc} /> : null}
                     <span>{opt.label}</span>
                   </button>
-                </li>
-              ))}
+                ))}
+              </div>
             </ul>
           ) : null}
         </div>
@@ -417,7 +432,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             aria-expanded={sortMenuOpen}
             aria-label="Sort reviews"
             onClick={() => toggleMenu('sort')}
-            className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2"
+            className={dashboardSelectTriggerClass}
           >
             <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               Sort by
@@ -440,17 +455,20 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             <ul
               role="listbox"
               aria-label="Sort by"
-              className="border-darkslateblue rounded-num-8 absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden border border-solid bg-gray-100 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+              className={`absolute top-full left-0 z-20 mt-1 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
             >
-              {SORT_OPTIONS.map((opt) => (
-                <li key={opt.value} role="presentation">
+              <div className={siteSelectDropdownList}>
+                {SORT_OPTIONS.map((opt) => (
                   <button
                     type="button"
                     role="option"
                     aria-selected={sortOption === opt.value}
-                    className={`tracking-num--0_01 text-ghostwhite sm:text-num-14 lg:text-num-16 w-full px-4 py-2.5 text-left text-sm font-semibold whitespace-nowrap transition-colors hover:bg-white/10 ${
-                      sortOption === opt.value ? 'bg-[#16243B]' : ''
-                    }`}
+                    className={cn(
+                      siteSelectDropdownOptionRow,
+                      siteSelectDropdownOptionInteractive,
+                      'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
+                      sortOption === opt.value && 'bg-white/5'
+                    )}
                     onClick={() => {
                       setSortOption(opt.value)
                       setSortMenuOpen(false)
@@ -458,8 +476,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                   >
                     {opt.label}
                   </button>
-                </li>
-              ))}
+                ))}
+              </div>
             </ul>
           ) : null}
         </div>
