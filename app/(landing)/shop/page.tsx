@@ -1,6 +1,7 @@
 'use client'
 
-import { FunctionComponent, Suspense, useState } from 'react'
+import { FunctionComponent, Suspense, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 import { HotSellingProducts } from '@/components/landing/shop/HotSellingProducts'
 import { ShopCategorySidebar } from '@/components/landing/shop/ShopCategorySidebar'
@@ -11,8 +12,36 @@ import Footer from '@/components/landing/Footer'
 import { ShopProductsSection } from '@/components/landing/shop/ShopProductsSection'
 import { Reveal } from '@/components/ui/reveal'
 
+const SHOP_CATEGORIES = new Set([
+  'All Giftcards',
+  'Cashout',
+  'Hotels',
+  'Food',
+  'Flights',
+  'Groceries',
+  'Shopping',
+  'Clothing',
+  'Gas/Oil',
+  'Tickets',
+  'Lifestyle',
+  'Jewelry',
+  'Rentals',
+  'Streaming',
+])
+
 const CatalogPageFilled: FunctionComponent = () => {
+  const searchParams = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('All Giftcards')
+
+  useEffect(() => {
+    const nextCategory = searchParams.get('category')?.trim()
+    if (!nextCategory || !SHOP_CATEGORIES.has(nextCategory)) {
+      setSelectedCategory('All Giftcards')
+      return
+    }
+
+    setSelectedCategory(nextCategory)
+  }, [searchParams])
 
   return (
     <div className="text-ghostwhite font-nata-sans sm:text-num-14 flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-12 text-left text-sm sm:pt-[75px]">

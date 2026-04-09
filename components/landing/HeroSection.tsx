@@ -74,6 +74,13 @@ const HeroSection: FunctionComponent = () => {
     router.push(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop')
   }, [heroSearchQuery, router])
 
+  const goToShopWithCategory = useCallback(
+    (category: string) => {
+      router.push(`/shop?category=${encodeURIComponent(category)}`)
+    },
+    [router]
+  )
+
   return (
     <section className="w-full bg-[#051329]">
       {/* Match SellingSection / NewlyLaunchedSection: centered column max width */}
@@ -247,6 +254,7 @@ const HeroSection: FunctionComponent = () => {
 
               <button
                 type="button"
+                onClick={() => goToShopWithCategory(label)}
                 className="relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-[14px] leading-5 text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2"
               >
                 <CentralIcon
