@@ -1,5 +1,11 @@
 import type { User } from './api'
 
+export interface BackendResponse<T> {
+  statusCode: number
+  message: string
+  data: T
+}
+
 export interface AuthTokens {
   accessToken: string
   refreshToken: string

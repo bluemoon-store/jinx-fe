@@ -3,6 +3,7 @@
 import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import CartDropdownPanel from '@/components/landing/CartDropdownPanel'
+import { useAuth } from '@/hooks/use-auth'
 import {
   siteSelectDropdownList,
   siteSelectDropdownOptionInteractive,
@@ -11,7 +12,6 @@ import {
 } from '@/components/ui/siteSelectDropdown'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { useCartStore } from '@/lib/cart-store'
-import { useAppStore } from '@/lib/store'
 import CentralIcon from '@central-icons-react/all'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Route } from 'next'
@@ -34,7 +34,7 @@ const Navbar: FunctionComponent = () => {
   const mobileHamburgerRef = useRef<HTMLButtonElement>(null)
   const pathname = usePathname()
   const { openAuthModal, isAuthenticated } = useAuthModal()
-  const logout = useAppStore((s) => s.logout)
+  const { logout } = useAuth()
   const cartItems = useCartStore((s) => s.items)
   const prevCartItemCountRef = useRef(0)
   const hasMountedRef = useRef(false)

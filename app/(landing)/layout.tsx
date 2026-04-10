@@ -4,13 +4,14 @@ import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 import { useAuthModal } from '@/components/auth/auth-modal-context'
-import { useAppStore } from '@/lib/store'
+import { useCurrentUser } from '@/hooks/use-auth'
 
 function AuthQueryHandler() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { openAuthModal } = useAuthModal()
-  const isAuthenticated = useAppStore((s) => s.isAuthenticated)
+  const { data: user } = useCurrentUser()
+  const isAuthenticated = !!user
 
   useEffect(() => {
     if (searchParams.get('auth') === 'signin' && !isAuthenticated) {

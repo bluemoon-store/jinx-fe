@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthModal } from '@/components/auth/auth-modal-context'
+import { useAuth } from '@/hooks/use-auth'
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent } from 'react'
 
@@ -10,7 +11,8 @@ import { toast } from '@/lib/toast'
 /** Security settings — layout refactored from Figma (flex, no absolute/relative positioning). */
 export const DashboardSecuritySection: FunctionComponent = () => {
   const { openAuthModal } = useAuthModal()
-  const twoFactorEnabled = useAppStore((s) => s.user?.twoFactorEnabled ?? false)
+  const { user } = useAuth()
+  const twoFactorEnabled = user?.twoFactorEnabled ?? false
 
   return (
     <section className="font-commissioner gap-num-30 flex w-full flex-col items-start text-left text-[18px] text-white">

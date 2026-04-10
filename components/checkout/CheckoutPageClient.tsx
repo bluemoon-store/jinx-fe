@@ -16,7 +16,7 @@ import { CheckoutLogo } from '@/components/checkout/shared/CheckoutLogo'
 import { LegalFooter } from '@/components/checkout/shared/LegalFooter'
 import { Step1GuestColumn } from '@/components/checkout/steps/Step1GuestColumn'
 import { Step5Success } from '@/components/checkout/steps/Step5Success'
-import { useAppStore } from '@/lib/store'
+import { useCurrentUser } from '@/hooks/use-auth'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
   return (
@@ -32,7 +32,8 @@ function SuccessTopBar({ onBack }: { onBack: () => void }) {
 export function CheckoutPageClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const isAuthenticated = useAppStore((s) => s.isAuthenticated)
+  const { data: user } = useCurrentUser()
+  const isAuthenticated = !!user
   const [persistReady, setPersistReady] = useState(false)
   const raw = searchParams.get('step')
   const step = Math.min(6, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
@@ -83,12 +84,7 @@ export function CheckoutPageClient() {
   }, [step])
 
   useEffect(() => {
-    if (useAppStore.persist.hasHydrated()) {
-      setPersistReady(true)
-      return
-    }
-    const unsub = useAppStore.persist.onFinishHydration(() => setPersistReady(true))
-    return unsub
+    setPersistReady(true)
   }, [])
 
   useEffect(() => {

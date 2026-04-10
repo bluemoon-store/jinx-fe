@@ -1,20 +1,104 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 
-import { forgotPasswordAction, resetPasswordAction, verifyOtpAction } from '@/actions/auth'
+import {
+  forgotPasswordAction,
+  getCurrentUserAction,
+  loginAction,
+  logoutAction,
+  registerAction,
+  resetPasswordAction,
+  verifyOtpAction,
+} from '@/actions/auth'
 import { ROUTES } from '@/lib/constants'
+import { clearTokens, getAccessToken, setTokens } from '@/lib/token'
 import { useAppStore } from '@/lib/store'
+import { toast } from '@/lib/toast'
+import { parseApiError } from '@/lib/api-error'
 import type { LoginInput, RegisterInput } from '@/lib/validations'
 
-export function useAuth() {
+export const QUERY_KEYS = {
+  currentUser: ['currentUser'] as const,
+}
+
+export function useCurrentUser() {
+  return useQuery({
+    queryKey: QUERY_KEYS.currentUser,
+    queryFn: getCurrentUserAction,
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+    enabled: !!getAccessToken(),
+  })
+}
+
+export function useLoginMutation() {
+  const queryClient = useQueryClient()
   const router = useRouter()
-  const { user, isAuthenticated, isLoading, login, register, logout } = useAppStore()
+  const setAuthUser = useAppStore((s) => s.setAuthUser)
+  return useMutation({
+    mutationFn: (data: LoginInput) => loginAction(data),
+    onSuccess: (result) => {
+      setTokens({ accessToken: result.accessToken, refreshToken: result.refreshToken })
+      queryClient.setQueryData(QUERY_KEYS.currentUser, result.user)
+      setAuthUser(result.user)
+      router.push(ROUTES.DASHBOARD_ORDERS)
+    },
+    onError: (error) => {
+      toast.error(parseApiError(error))
+    },
+  })
+}
+
+export function useRegisterMutation() {
+  const queryClient = useQueryClient()
+  const setAuthUser = useAppStore((s) => s.setAuthUser)
+  return useMutation({
+    mutationFn: (data: RegisterInput) => registerAction(data),
+    onSuccess: (result) => {
+      setTokens({ accessToken: result.accessToken, refreshToken: result.refreshToken })
+      queryClient.setQueryData(QUERY_KEYS.currentUser, result.user)
+      setAuthUser(result.user)
+    },
+    onError: (error) => {
+      toast.error(parseApiError(error))
+    },
+  })
+}
+
+export function useLogoutMutation() {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+  const clearAuthUser = useAppStore((s) => s.clearAuthUser)
+  return useMutation({
+    mutationFn: logoutAction,
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.currentUser })
+      clearAuthUser()
+      router.push(ROUTES.HOME)
+    },
+    onSettled: () => {
+      clearTokens()
+    },
+    onError: (error) => {
+      toast.error(parseApiError(error))
+    },
+  })
+}
+
+export function useAuth() {
+  const queryClient = useQueryClient()
+  const currentUserQuery = useCurrentUser()
+  const { user: localUser } = useAppStore()
+  const loginMutation = useLoginMutation()
+  const registerMutation = useRegisterMutation()
+  const logoutMutation = useLogoutMutation()
+  const user = currentUserQuery.data ?? localUser
 
   async function handleLogin(data: LoginInput): Promise<boolean> {
     try {
-      await login(data)
-      router.push(ROUTES.DASHBOARD_ORDERS)
+      await loginMutation.mutateAsync(data)
       return true
     } catch {
       return false
@@ -23,7 +107,7 @@ export function useAuth() {
 
   async function handleRegister(data: RegisterInput): Promise<boolean> {
     try {
-      await register(data)
+      await registerMutation.mutateAsync(data)
       return true
     } catch {
       return false
@@ -31,8 +115,7 @@ export function useAuth() {
   }
 
   async function handleLogout(): Promise<void> {
-    await logout()
-    router.push(ROUTES.HOME)
+    await logoutMutation.mutateAsync()
   }
 
   async function handleForgotPassword(email: string): Promise<boolean> {
@@ -68,13 +151,15 @@ export function useAuth() {
 
   return {
     user,
-    isAuthenticated,
-    isLoading,
+    isAuthenticated: !!user,
+    isLoading:
+      currentUserQuery.isFetching || loginMutation.isPending || registerMutation.isPending,
     login: handleLogin,
     register: handleRegister,
     logout: handleLogout,
     forgotPassword: handleForgotPassword,
     verifyOtp: handleVerifyOtp,
     resetPassword: handleResetPassword,
+    refreshCurrentUser: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.currentUser }),
   }
 }

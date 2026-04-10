@@ -1,49 +1,34 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
+import { useCurrentUser } from '@/hooks/use-auth'
 import { BrandLoader } from '@/components/ui/BrandLoader'
 import { ROUTES } from '@/lib/constants'
-import { useAppStore } from '@/lib/store'
+import { getAccessToken } from '@/lib/token'
 
-/**
- * Waits for Zustand persist to rehydrate before trusting auth flags. Without this,
- * the first paint can be "logged out" while storage still loads, then flip to
- * "logged in" — remounting the dashboard tree and tripping React (e.g. hooks
- * count mismatch in the app router client shell).
- */
 export function DashboardAuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  const { isAuthenticated, isLoading, initializeAuth } = useAppStore()
-  const [persistReady, setPersistReady] = useState(false)
+  const { data: user, isLoading } = useCurrentUser()
 
   useEffect(() => {
-    if (useAppStore.persist.hasHydrated()) {
-      setPersistReady(true)
+    if (isLoading) return
+    const hasToken = !!getAccessToken()
+    if (hasToken && !user) {
+      router.replace(`${ROUTES.HOME}?auth=signin`)
       return
     }
-    const unsub = useAppStore.persist.onFinishHydration(() => setPersistReady(true))
-    return unsub
-  }, [])
-
-  useEffect(() => {
-    if (!persistReady) return
-    void initializeAuth()
-  }, [persistReady, initializeAuth])
-
-  useEffect(() => {
-    if (!persistReady || isLoading) return
-    if (!isAuthenticated) {
+    if (!hasToken) {
       router.replace(`${ROUTES.HOME}?auth=signin`)
     }
-  }, [persistReady, isAuthenticated, isLoading, router])
+  }, [isLoading, router, user])
 
-  if (!persistReady || isLoading) {
+  if (isLoading) {
     return <BrandLoader fullScreen />
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null
   }
 

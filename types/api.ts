@@ -6,10 +6,14 @@ export interface ApiResponse<T = unknown> {
 
 export interface User {
   id: string
-  name: string
   email: string
+  userName: string
+  firstName?: string
+  lastName?: string
+  name: string
   avatar?: string
-  role: 'admin' | 'user' | 'moderator'
+  role: 'ADMIN' | 'USER' | 'MODERATOR' | 'MANAGER' | 'DEVELOPER'
+  isVerified?: boolean
   /** When true, account has TOTP 2FA enabled (optional until backend sends it). */
   twoFactorEnabled?: boolean
   createdAt: string

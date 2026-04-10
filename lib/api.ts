@@ -11,7 +11,7 @@ declare module 'axios' {
 }
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? '/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? '/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -74,10 +74,12 @@ api.interceptors.response.use(
     try {
       // Use a fresh axios instance to avoid triggering this interceptor again
       const refreshClient = axios.create({
-        baseURL: process.env.NEXT_PUBLIC_API_URL ?? '/api',
+        baseURL: process.env.NEXT_PUBLIC_API_URL ?? '/v1',
         headers: { 'Content-Type': 'application/json' },
       })
-      const res = await refreshClient.post('/auth/refresh', { refreshToken })
+      const res = await refreshClient.get('/auth/refresh-token', {
+        headers: { Authorization: `Bearer ${refreshToken}` },
+      })
       const { accessToken, refreshToken: newRefreshToken } = res.data.data
       setTokens({ accessToken, refreshToken: newRefreshToken })
       drainQueue(accessToken)
