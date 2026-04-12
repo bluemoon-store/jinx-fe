@@ -184,7 +184,10 @@ const TwoFactorEnableModal: FunctionComponent<TwoFactorEnableModalProps> = ({
             </p>
             <section className="text-num-14 text-lightsteelblue font-commissioner flex w-full min-w-0 flex-col items-start gap-3 self-stretch sm:gap-[13px]">
               <div className="flex flex-col items-start gap-2 self-stretch">
-                <label htmlFor={passwordFieldId} className="leading-num-20 font-semibold text-[#9EA0C6]">
+                <label
+                  htmlFor={passwordFieldId}
+                  className="leading-num-20 font-semibold text-[#9EA0C6]"
+                >
                   Password
                 </label>
                 <div className={passwordRowClass}>

@@ -52,7 +52,7 @@ export const DashboardSecuritySection: FunctionComponent = () => {
           >
             {resetLinkLoading ? (
               <span
-                className="border-whitesmoke-300 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-t-fuchsia"
+                className="border-whitesmoke-300 border-t-fuchsia h-5 w-5 shrink-0 animate-spin rounded-full border-2"
                 aria-hidden
               />
             ) : (

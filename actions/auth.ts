@@ -44,7 +44,10 @@ export async function loginAction(data: LoginInput): Promise<LoginApiResponse> {
   return { accessToken, refreshToken, user: mapUser(user) }
 }
 
-export async function verify2FALoginAction(twoFactorToken: string, code: string): Promise<AuthResponse> {
+export async function verify2FALoginAction(
+  twoFactorToken: string,
+  code: string
+): Promise<AuthResponse> {
   const res = await api.post<
     BackendResponse<{ accessToken: string; refreshToken: string; user: BackendUser }>
   >('/auth/2fa/verify-login', { twoFactorToken, code })

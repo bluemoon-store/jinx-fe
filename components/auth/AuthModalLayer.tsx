@@ -144,7 +144,10 @@ const AuthModalLayer: FunctionComponent = () => {
     [resetPassword, forgotEmail, forgotOtp, closeAuthModal, logout]
   )
 
-  const handleTwoFactorSetup = useCallback(async (password: string) => setup2FA(password), [setup2FA])
+  const handleTwoFactorSetup = useCallback(
+    async (password: string) => setup2FA(password),
+    [setup2FA]
+  )
 
   const handleTwoFactorVerifySuccess = useCallback(
     async (code: string) => {

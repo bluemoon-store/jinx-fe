@@ -190,7 +190,7 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                     size={20}
                     ariaHidden={true}
                   />
-                  <span className="tracking-num--0_01 whitespace-nowrap sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold">
+                  <span className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold whitespace-nowrap">
                     {isSendingVerification ? 'Sending…' : 'Resend Verification'}
                   </span>
                 </button>

@@ -23,7 +23,8 @@ export function LoginForm() {
     const result = await handleLogin(data)
     if (result && 'requiresTwoFactor' in result) {
       toast.info('Two-factor authentication is required', {
-        description: 'Use Sign in from the site menu to enter your authenticator code after your password.',
+        description:
+          'Use Sign in from the site menu to enter your authenticator code after your password.',
       })
     }
   }

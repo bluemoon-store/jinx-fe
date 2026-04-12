@@ -159,8 +159,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated: !!user,
-    isLoading:
-      currentUserQuery.isFetching || loginMutation.isPending || registerMutation.isPending,
+    isLoading: currentUserQuery.isFetching || loginMutation.isPending || registerMutation.isPending,
     handleLogin,
     register: handleRegister,
     logout: handleLogout,

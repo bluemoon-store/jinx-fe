@@ -25,7 +25,9 @@ export const VerifyEmailPageClient: FunctionComponent = () => {
   useEffect(() => {
     if (!token?.trim()) {
       setState('error')
-      setDetail('This link is missing a verification token. Request a new email from your account settings.')
+      setDetail(
+        'This link is missing a verification token. Request a new email from your account settings.'
+      )
       return
     }
 

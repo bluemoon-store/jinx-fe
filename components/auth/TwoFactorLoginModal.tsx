@@ -130,7 +130,9 @@ const TwoFactorLoginModal: FunctionComponent<TwoFactorLoginModalProps> = ({
 
           <section className="text-num-14 text-lightsteelblue font-commissioner flex w-full min-w-0 flex-col items-start gap-3 self-stretch sm:gap-[13px]">
             <div className="flex flex-col items-start gap-2 self-stretch">
-              <div className="sm:text-num-14 text-sm leading-5 font-semibold">Authenticator code</div>
+              <div className="sm:text-num-14 text-sm leading-5 font-semibold">
+                Authenticator code
+              </div>
               <div className="grid w-full min-w-0 grid-cols-6 gap-1.5 self-stretch sm:gap-2">
                 {otp.map((digit, index) => (
                   <div

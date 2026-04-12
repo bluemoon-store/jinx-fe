@@ -293,10 +293,10 @@ export default function Legal() {
                 How to request a refund
               </h3>
               <p className="leading-6 font-medium">
-                Contact <span className="text-ghostwhite">support@jinx.to</span> with your
-                account email, invoice (if available), and a short description of the issue. If
-                approved, refunds are typically processed back to the original payment method within
-                5–10 business days.
+                Contact <span className="text-ghostwhite">support@jinx.to</span> with your account
+                email, invoice (if available), and a short description of the issue. If approved,
+                refunds are typically processed back to the original payment method within 5–10
+                business days.
               </p>
             </section>
           </div>
