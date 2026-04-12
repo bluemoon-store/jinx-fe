@@ -1,12 +1,14 @@
 import { FunctionComponent } from 'react'
-import type { ShopProductDetail } from './types'
+import type { ProductDetail } from '@/types/product'
 import CentralIcon from '@central-icons-react/all'
 
 type Props = {
-  product: ShopProductDetail
+  product: ProductDetail
 }
 
 export const ShopDetailHero: FunctionComponent<Props> = ({ product }) => {
+  const heroSrc = product.heroImageUrl ?? product.primaryImageUrl ?? ''
+
   return (
     <section className="text-whitesmoke-200 flex flex-col items-start justify-center">
       <div className="flex flex-col items-start self-stretch">
@@ -14,7 +16,7 @@ export const ShopDetailHero: FunctionComponent<Props> = ({ product }) => {
           <div className="h-full w-full overflow-hidden rounded-[14.61px] shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)]">
             <img
               alt=""
-              src={product.heroImageSrc}
+              src={heroSrc}
               className="max-h-full max-w-full scale-110 object-contain"
             />
           </div>

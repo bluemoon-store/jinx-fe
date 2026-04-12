@@ -3,7 +3,7 @@
 
 import type { Route } from 'next'
 import { useRouter } from 'next/navigation'
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
 import { CountryFlag } from '@/components/ui/CountryFlag'
@@ -13,28 +13,55 @@ import {
   siteSelectDropdownOptionRow,
   siteSelectDropdownPanel,
 } from '@/components/ui/siteSelectDropdown'
+import { parseUsdDecimalString } from '@/lib/cart-format'
 import { useCartStore } from '@/lib/cart-store'
+import { cn } from '@/lib/utils'
+import type { ProductDetail, ProductRegion, ProductVariant } from '@/types/product'
 
-type Props = {
-  productName: string
-  productImageSrc?: string
+function RichHtml({
+  html,
+  className,
+  emptyText,
+}: {
+  html: string | null
+  className?: string
+  emptyText?: string
+}) {
+  const trimmed = html?.trim() ?? ''
+  if (!trimmed) {
+    return emptyText ? (
+      <p className="text-lightsteelblue-100 m-0 text-sm leading-6 opacity-80">{emptyText}</p>
+    ) : null
+  }
+  return (
+    <div
+      className={cn(
+        'prose prose-invert max-w-none text-base leading-6 [&_a]:text-fuchsia-200',
+        className
+      )}
+      dangerouslySetInnerHTML={{ __html: trimmed }}
+    />
+  )
 }
 
-const VARIANT_OPTIONS = [
-  { id: 'p50', label: '$50 Points | Fully Unlocked', unitPrice: 50 },
-  { id: 'p100', label: '$100 Points | Fully Unlocked', unitPrice: 100 },
-  { id: 'p150', label: '$150 Points | Fully Unlocked', unitPrice: 150 },
-] as const
+function sortActiveVariants(variants: ProductVariant[]) {
+  return [...variants]
+    .filter((v) => v.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label))
+}
 
-const STATE_OPTIONS = [
-  { id: 'ab', label: 'AB', countryCode: 'CA' },
-  { id: 'bc', label: 'BC', countryCode: 'CA' },
-  { id: 'cd', label: 'CD', countryCode: 'CA' },
-] as const
+function sortActiveRegions(regions: ProductRegion[]) {
+  return [...regions]
+    .filter((r) => r.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label))
+}
 
 type PurchaseControlsProps = {
+  productId: string
   productName: string
   productImageSrc?: string
+  variants: ProductVariant[]
+  regions: ProductRegion[]
   /** Override Add to Cart button classes (e.g. Quick Buy modal uses #0D1B35). */
   addToCartButtonClassName?: string
   /** z-index for open dropdown menus (raise in modals so lists paint above the card). */
@@ -47,33 +74,63 @@ const DEFAULT_ADD_TO_CART_CLASS =
   'box-border py-num-8 px-num-16 flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] bg-gray-400 shadow-[0px_2px_0px_rgba(13,_27,_53,_0.5)]'
 
 export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps> = ({
+  productId,
   productName,
   productImageSrc,
+  variants,
+  regions,
   addToCartButtonClassName = DEFAULT_ADD_TO_CART_CLASS,
   dropdownZClass = 'z-20',
   onAddToCart,
 }) => {
+  const variantList = useMemo(() => sortActiveVariants(variants), [variants])
+  const regionList = useMemo(() => sortActiveRegions(regions), [regions])
+
   const [isVariantOpen, setIsVariantOpen] = useState(false)
   const [isStateOpen, setIsStateOpen] = useState(false)
-  const [selectedVariantId, setSelectedVariantId] = useState<
-    (typeof VARIANT_OPTIONS)[number]['id']
-  >(VARIANT_OPTIONS[0].id)
-  const [selectedStateId, setSelectedStateId] = useState<(typeof STATE_OPTIONS)[number]['id']>(
-    STATE_OPTIONS[0].id
-  )
+  const [selectedVariantId, setSelectedVariantId] = useState('')
+  const [selectedRegionId, setSelectedRegionId] = useState('')
   const [quantity, setQuantity] = useState(1)
+
+  useEffect(() => {
+    if (variantList[0]) setSelectedVariantId(variantList[0].id)
+  }, [variantList])
+
+  useEffect(() => {
+    if (regionList[0]) setSelectedRegionId(regionList[0].id)
+  }, [regionList])
 
   const router = useRouter()
   const addItem = useCartStore((s) => s.addItem)
 
-  const selectedVariant =
-    VARIANT_OPTIONS.find((v) => v.id === selectedVariantId) ?? VARIANT_OPTIONS[0]
-  const selectedState = STATE_OPTIONS.find((s) => s.id === selectedStateId) ?? STATE_OPTIONS[0]
+  const selectedVariant = variantList.find((v) => v.id === selectedVariantId) ?? variantList[0]
+  const selectedRegion = regionList.find((r) => r.id === selectedRegionId) ?? regionList[0]
 
   const quantityText = String(quantity).padStart(2, '0')
 
   const onDecrementQuantity = () => setQuantity((q) => Math.max(1, q - 1))
   const onIncrementQuantity = () => setQuantity((q) => Math.min(99, q + 1))
+
+  const canPurchase = Boolean(selectedVariant && selectedRegion)
+  const unitPrice = selectedVariant ? parseUsdDecimalString(selectedVariant.price) : 0
+
+  const handleAddToCart = () => {
+    if (!canPurchase || !selectedVariant || !selectedRegion) return
+    addItem(
+      {
+        id: productId,
+        name: productName,
+        variantId: selectedVariant.id,
+        variantLabel: selectedVariant.label,
+        regionLabel: selectedRegion.label,
+        regionCountry: selectedRegion.countryCode,
+        unitPrice,
+        thumbUrl: productImageSrc,
+      },
+      quantity
+    )
+    onAddToCart?.()
+  }
 
   return (
     <div className="text-lightsteelblue-200 flex w-full flex-col items-start gap-4">
@@ -84,13 +141,17 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
             type="button"
             aria-label={`Select variant for ${productName}`}
             aria-expanded={isVariantOpen}
+            disabled={!variantList.length}
             onClick={() => {
+              if (!variantList.length) return
               setIsVariantOpen((v) => !v)
               setIsStateOpen(false)
             }}
-            className={`${siteSelectDropdownOptionRow} w-full items-center justify-between gap-5`}
+            className={`${siteSelectDropdownOptionRow} w-full items-center justify-between gap-5 disabled:opacity-50`}
           >
-            <div className="min-w-0 flex-1 truncate">{selectedVariant.label}</div>
+            <div className="min-w-0 flex-1 truncate">
+              {selectedVariant?.label ?? 'No variants available'}
+            </div>
             <CentralIcon
               name="IconChevronDownMedium"
               join="round"
@@ -103,12 +164,12 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
             />
           </button>
 
-          {isVariantOpen && (
+          {isVariantOpen && variantList.length > 0 && (
             <div
               className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-2 overflow-hidden ${siteSelectDropdownPanel}`}
             >
               <div className={siteSelectDropdownList}>
-                {VARIANT_OPTIONS.map((option) => {
+                {variantList.map((option) => {
                   const isSelected = option.id === selectedVariantId
                   return (
                     <button
@@ -156,23 +217,33 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               type="button"
               aria-label={`Select state for ${productName}`}
               aria-expanded={isStateOpen}
+              disabled={!regionList.length}
               onClick={() => {
+                if (!regionList.length) return
                 setIsStateOpen((v) => !v)
                 setIsVariantOpen(false)
               }}
-              className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch"
+              className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch disabled:opacity-50"
             >
               <div className="flex min-w-0 items-center gap-2">
-                <CountryFlag
-                  countryCode={selectedState.countryCode}
-                  alt={`${selectedState.label} flag`}
-                  className="max-h-num-18 h-full w-full max-w-[28px]"
-                  size={28}
-                  shape="rectangle"
-                />
-                <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                  {selectedState.label}
-                </div>
+                {selectedRegion ? (
+                  <>
+                    <CountryFlag
+                      countryCode={selectedRegion.countryCode}
+                      alt={`${selectedRegion.label} flag`}
+                      className="max-h-num-18 h-full w-full max-w-[28px]"
+                      size={28}
+                      shape="rectangle"
+                    />
+                    <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                      {selectedRegion.label}
+                    </div>
+                  </>
+                ) : (
+                  <div className="tracking-num--0_01 leading-num-28 font-semibold">
+                    No regions available
+                  </div>
+                )}
               </div>
               <CentralIcon
                 name="IconChevronDownMedium"
@@ -186,20 +257,20 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               />
             </button>
 
-            {isStateOpen && (
+            {isStateOpen && regionList.length > 0 && (
               <div
                 className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-2 overflow-hidden ${siteSelectDropdownPanel}`}
               >
                 <div className={siteSelectDropdownList}>
-                  {STATE_OPTIONS.map((option) => {
-                    const isSelected = option.id === selectedStateId
+                  {regionList.map((option) => {
+                    const isSelected = option.id === selectedRegionId
                     return (
                       <button
                         key={option.id}
                         type="button"
                         aria-label={`Choose ${option.label}`}
                         onClick={() => {
-                          setSelectedStateId(option.id)
+                          setSelectedRegionId(option.id)
                           setIsStateOpen(false)
                         }}
                         className={[
@@ -293,21 +364,9 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       <div className="text-num-16 flex min-h-10 flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
         <button
           type="button"
-          className={addToCartButtonClassName}
-          onClick={() => {
-            addItem(
-              {
-                id: productName,
-                name: productName,
-                variantLabel: selectedVariant.label,
-                stateCode: selectedState.label,
-                unitPrice: selectedVariant.unitPrice,
-                thumbUrl: productImageSrc,
-              },
-              quantity
-            )
-            onAddToCart?.()
-          }}
+          disabled={!canPurchase}
+          className={cn(addToCartButtonClassName, !canPurchase && 'cursor-not-allowed opacity-50')}
+          onClick={handleAddToCart}
         >
           <CentralIcon
             name="IconBasket1"
@@ -322,19 +381,14 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         </button>
         <button
           type="button"
-          className="bg-fuchsia py-num-8 px-num-16 box-border flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]"
+          disabled={!canPurchase}
+          className={cn(
+            'bg-fuchsia py-num-8 px-num-16 box-border flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]',
+            !canPurchase && 'cursor-not-allowed opacity-50'
+          )}
           onClick={() => {
-            addItem(
-              {
-                id: productName,
-                name: productName,
-                variantLabel: selectedVariant.label,
-                stateCode: selectedState.label,
-                unitPrice: selectedVariant.unitPrice,
-                thumbUrl: productImageSrc,
-              },
-              quantity
-            )
+            if (!canPurchase) return
+            handleAddToCart()
             router.push('/checkout' as Route)
           }}
         >
@@ -354,18 +408,27 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   )
 }
 
-export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
-  productName,
-  productImageSrc,
-}) => {
+type PanelProps = {
+  product: ProductDetail
+}
+
+export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isProductWarrantyOpen, setIsProductWarrantyOpen] = useState(false)
 
+  const heroSrc = product.heroImageUrl ?? product.primaryImageUrl ?? undefined
+
   return (
     <>
       <div className="rounded-num-12 text-lightsteelblue-200 box-border flex w-full flex-col items-start gap-4 bg-gray-100 p-4 sm:gap-5 sm:p-5">
-        <ShopDetailPurchaseControls productName={productName} productImageSrc={productImageSrc} />
+        <ShopDetailPurchaseControls
+          productId={product.id}
+          productName={product.name}
+          productImageSrc={heroSrc}
+          variants={product.variants}
+          regions={product.regions}
+        />
       </div>
 
       <div className="border-darkslateblue h-px w-full border-t border-solid" />
@@ -484,62 +547,13 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
             <div className="w-full overflow-hidden">
               <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
               <div className="pt-num-6 pb-num-6 flex w-full flex-col items-start gap-5 text-white">
-                <div className="leading-num-24 opacity-[0.8]">
-                  <p className="m-0">
-                    <b>50 Points&nbsp;can get you:</b>
+                {product.description.trim().startsWith('<') ? (
+                  <RichHtml html={product.description} emptyText="No description yet." />
+                ) : (
+                  <p className="text-num-16 leading-num-24 text-lightsteelblue-100 m-0 font-medium opacity-90">
+                    {product.description || 'No description yet.'}
                   </p>
-                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                    <li className="mb-0">
-                      <span className="font-medium">No Name Cake</span>
-                    </li>
-                    <li className="mb-0">
-                      <span className="font-medium">Non-alcoholic drink</span>
-                    </li>
-                    <li className="mb-0">
-                      <span className="font-medium">Alternative Crust Upgrade</span>
-                    </li>
-                    <li>
-                      <span className="font-medium">or $1 donation to non-profit partners</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="leading-num-24 opacity-[0.8]">
-                  <p className="m-0">
-                    <b>100 Points&nbsp;can get you:&nbsp;</b>
-                  </p>
-                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                    <li className="mb-0">
-                      <span className="font-medium">Cheesy Garlic Bread</span>
-                    </li>
-                    <li className="mb-0">
-                      <span className="font-medium">Free Delivery</span>
-                    </li>
-                    <li>
-                      <span className="font-medium">or $2 donation to non-profit partners</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="leading-num-24 opacity-[0.8]">
-                  <p className="m-0">
-                    <b>150 Points can get you:</b>
-                  </p>
-                  <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                    <li className="mb-0">
-                      <span className="font-medium">Pizza</span>
-                    </li>
-                    <li className="mb-0">
-                      <span className="font-medium">Salad</span>
-                    </li>
-                    <li className="mb-0">
-                      <span className="font-medium">Any Single Menu Item</span>
-                    </li>
-                    <li>
-                      <span className="font-medium">or $3 donation to non-profit partners</span>
-                    </li>
-                  </ul>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -571,44 +585,11 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
           >
             <div className="w-full overflow-hidden">
               <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
-              {/* Content area (add text later). Padding shows when expanded */}
               <div className="pt-num-6 pb-num-6 w-full">
-                <div className="flex flex-col items-start gap-5 text-white">
-                  <div className="leading-num-24 opacity-[0.8]">
-                    <b>Step 1: Add to Cart</b>
-                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                      <li className="mb-0">
-                        Choose your variant and quantity, then click{' '}
-                        <span className="font-medium">Add to Cart</span>.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="leading-num-24 opacity-[0.8]">
-                    <b>Step 2: Complete Checkout</b>
-                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                      <li className="mb-0">
-                        Finish payment using the available options, and confirm your order.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="leading-num-24 opacity-[0.8]">
-                    <b>Step 3: Redeem on the Platform</b>
-                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                      <li className="mb-0">
-                        After purchase, your code will appear in your account.
-                      </li>
-                      <li className="mb-0">
-                        Enter the code at checkout on the e-commerce platform.
-                      </li>
-                      <li className="mb-0">
-                        <span className="font-medium">If you need help</span>, contact support from
-                        the page footer.
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+                <RichHtml
+                  html={product.redeemProcess}
+                  emptyText="Redemption instructions will appear here once available."
+                />
               </div>
             </div>
           </div>
@@ -640,35 +621,11 @@ export const ShopDetailPurchasePanel: FunctionComponent<Props> = ({
           >
             <div className="w-full overflow-hidden">
               <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
-              {/* Content area (add text later). Padding shows when expanded */}
               <div className="pt-num-6 pb-num-6 w-full">
-                <div className="flex flex-col items-start gap-5 text-white">
-                  <div className="leading-num-24 opacity-[0.8]">
-                    <b>Warranty Coverage</b>
-                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                      <li className="mb-0">
-                        If your code is invalid or cannot be applied, we will help you resolve it as
-                        quickly as possible.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="leading-num-24 opacity-[0.8]">
-                    <b>How to Request Help</b>
-                    <p className="m-0">Contact support within 48 hours with your order details.</p>
-                    <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                      <li className="mb-0">
-                        <span className="font-medium">Include your order id</span> and screenshot
-                        (if available).
-                      </li>
-                      <li>
-                        <span className="font-medium">
-                          We will investigate and provide a replacement or resolution.
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+                <RichHtml
+                  html={product.warrantyText}
+                  emptyText="Warranty details will appear here once available."
+                />
               </div>
             </div>
           </div>

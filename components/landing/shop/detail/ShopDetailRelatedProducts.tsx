@@ -5,16 +5,17 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
-import type { ShopRelatedProduct } from './types'
+import type { ProductCard } from '@/types/product'
 
 type Props = {
-  related: ShopRelatedProduct[]
+  related: ProductCard[]
 }
 
 type RelatedItem = {
   id: string
+  slug: string
   name: string
-  src?: string
+  src: string | null
   fromPrice: string
 }
 
@@ -24,8 +25,9 @@ const ITEMS_PER_PAGE = 10
 export const ShopDetailRelatedProducts = ({ related }: Props) => {
   const allItems: RelatedItem[] = related.map((p) => ({
     id: p.id,
+    slug: p.slug,
     name: p.name,
-    src: p.imageSrc,
+    src: p.primaryImageUrl,
     fromPrice: p.fromPrice,
   }))
 
@@ -82,11 +84,11 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
               delay={idx * 70}
               className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
             >
-              <Link href={`/shop/${item.id}`} className="w-full">
+              <Link href={`/shop/${item.slug}`} className="w-full">
                 <img
                   className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
                   alt=""
-                  src={item.src}
+                  src={item.src ?? '/icons/airbnb.svg'}
                 />
 
                 <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">

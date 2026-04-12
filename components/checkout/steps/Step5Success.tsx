@@ -16,7 +16,7 @@ import { toast } from '@/lib/toast'
 import styles from './Step5Success.module.css'
 
 function itemKey(item: CartItem) {
-  return `${item.id}-${item.variantLabel}-${item.stateCode}`
+  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
 }
 
 function hashString(value: string) {
@@ -29,7 +29,7 @@ function hashString(value: string) {
 }
 
 function demoRedeemCodeForItem(item: CartItem) {
-  const base = `${item.id}|${item.variantLabel}|${item.stateCode}|${item.unitPrice}`
+  const base = `${item.id}|${item.variantLabel}|${item.regionLabel}|${item.unitPrice}`
   const h = hashString(base).toString(36).toUpperCase().padStart(10, '0')
   const a = h.slice(0, 2)
   const b = h.slice(2, 6)
@@ -127,8 +127,8 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
               <div className="flex shrink-0 items-center gap-2">
                 <div className="h-num-18 relative w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
                   <CountryFlag
-                    countryCode="CA"
-                    alt="Canada flag"
+                    countryCode={item.regionCountry ?? 'CA'}
+                    alt="Region flag"
                     className="h-full w-full"
                     size={24}
                     shape="rectangle"
@@ -142,7 +142,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
                   />
                 </div>
                 <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
-                  {item.stateCode}
+                  {item.regionLabel}
                 </span>
               </div>
             </div>
@@ -238,7 +238,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
                   <p className="m-0 font-semibold text-white">{item.name}</p>
                   <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">Variant: {item.variantLabel}</li>
-                    <li className="mb-0">Region: {item.stateCode}</li>
+                    <li className="mb-0">Region: {item.regionLabel}</li>
                     <li className="mb-0">Total paid: {formatUsd(lineTotal)}</li>
                     <li>
                       {revealed
@@ -290,7 +290,7 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
                     </li>
                     <li>
                       Contact support within 48 hours and include your product ({item.variantLabel})
-                      and region ({item.stateCode}).
+                      and region ({item.regionLabel}).
                     </li>
                   </ul>
                 </div>

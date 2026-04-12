@@ -6,103 +6,13 @@ import Link from 'next/link'
 import { createPortal } from 'react-dom'
 import ShopProductDetailModal from '@/components/landing/shop/detail/ShopProductDetailModal'
 import { Reveal } from '@/components/ui/reveal'
-
-const slugify = (value: string) => {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
+import { useHotProductsQuery } from '@/hooks/use-products'
 
 const SellingSection: FunctionComponent = () => {
-  type SellingLogo = {
-    src: string
-  }
+  const { data, isLoading } = useHotProductsQuery(10)
+  const items = data?.items ?? []
 
-  type SellingItem = {
-    name: string
-    price: string
-    logo: SellingLogo
-  }
-
-  const items: SellingItem[] = [
-    {
-      name: 'Dominos',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Chipotle',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Best Buy',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Netflix',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'PlayStation',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Dominos',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Chipotle',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Best Buy',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'Netflix',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-    {
-      name: 'PlayStation',
-      price: '$2.50',
-      logo: {
-        src: '/icons/dominos.svg',
-      },
-    },
-  ]
-  const [quickBuyProduct, setQuickBuyProduct] = useState<{
-    name: string
-    imageSrc: string
-  } | null>(null)
+  const [quickBuySlug, setQuickBuySlug] = useState<string | null>(null)
   const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -140,10 +50,13 @@ const SellingSection: FunctionComponent = () => {
 
       {/* Cards grid */}
       <div className="mx-auto mt-8 w-full max-w-[1476.9px] px-4 sm:mt-10 sm:px-6 lg:px-8">
+        {isLoading ? (
+          <div className="text-lightsteelblue-100 py-12 text-center text-sm">Loading hot products…</div>
+        ) : (
         <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-5">
           {items.map((item, idx) => (
             <Reveal
-              key={`${item.name}-${idx}`}
+              key={item.id}
               variant="scale-in"
               delay={idx * 70}
               className="max-w-num-281 w-full text-lg sm:text-[20px]"
@@ -163,7 +76,7 @@ const SellingSection: FunctionComponent = () => {
                     <img
                       className="h-full w-full object-contain"
                       alt={`${item.name} logo`}
-                      src={item.logo.src}
+                      src={item.primaryImageUrl ?? '/icons/dominos.svg'}
                     />
                   </div>
 
@@ -196,7 +109,7 @@ const SellingSection: FunctionComponent = () => {
                       }}
                     >
                       {/* Name + price */}
-                      <Link href={`/shop/${slugify(item.name)}`} className="block">
+                      <Link href={`/shop/${item.slug}`} className="block">
                         <div className="flex w-36 flex-col items-center gap-0.5">
                           <div className="flex items-center justify-center gap-[5px] self-stretch">
                             <div className="tracking-num-0.02 font-extrabold uppercase">
@@ -214,7 +127,7 @@ const SellingSection: FunctionComponent = () => {
                             </div>
                             <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
                               <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                                {item.price}
+                                {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
                               </b>
                             </div>
                           </div>
@@ -222,9 +135,7 @@ const SellingSection: FunctionComponent = () => {
                       </Link>
                       <button
                         type="button"
-                        onClick={() =>
-                          setQuickBuyProduct({ name: item.name, imageSrc: item.logo.src })
-                        }
+                        onClick={() => setQuickBuySlug(item.slug)}
                         className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#48293D] px-4 text-white sm:gap-[5px]"
                       >
                         <CentralIcon
@@ -247,7 +158,8 @@ const SellingSection: FunctionComponent = () => {
             </Reveal>
           ))}
         </div>
-        {quickBuyProduct &&
+        )}
+        {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
             <div className="fixed inset-0 z-90 flex items-center justify-center p-4 sm:p-6 lg:px-8">
@@ -255,7 +167,7 @@ const SellingSection: FunctionComponent = () => {
                 type="button"
                 className="absolute inset-0 bg-black/60"
                 aria-label="Close quick buy dialog"
-                onClick={() => setQuickBuyProduct(null)}
+                onClick={() => setQuickBuySlug(null)}
               />
               <div
                 className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
@@ -263,16 +175,15 @@ const SellingSection: FunctionComponent = () => {
                 aria-modal="true"
               >
                 <ShopProductDetailModal
-                  productName={quickBuyProduct.name}
-                  imageSrc={quickBuyProduct.imageSrc}
-                  onClose={() => setQuickBuyProduct(null)}
+                  productSlug={quickBuySlug}
+                  onClose={() => setQuickBuySlug(null)}
                 />
               </div>
             </div>,
             quickBuyPortalEl
           )}
 
-        <Reveal variant="fade-up" delay={items.length * 70}>
+        <Reveal variant="fade-up" delay={(items.length || 1) * 70}>
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href="/shop"

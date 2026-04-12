@@ -1,19 +1,4 @@
-export type ShopProductTag = 'Hot' | 'NFA' | 'New'
+/** @deprecated Import from `@/types/product` instead */
+export type { ProductCard, ProductDetail, ProductTag } from '@/types/product'
 
-export type ShopRelatedProduct = {
-  id: string
-  name: string
-  fromPrice: string
-  imageSrc?: string
-}
-
-export type ShopProductDetail = {
-  slug: string
-  breadcrumbs: string[]
-  name: string
-  shortNotice: string
-  summary: string
-  tags: ShopProductTag[]
-  heroImageSrc?: string
-  related: ShopRelatedProduct[]
-}
+export type ShopRelatedProduct = import('@/types/product').ProductCard

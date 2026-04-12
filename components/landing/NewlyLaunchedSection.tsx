@@ -6,30 +6,13 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import ShopProductDetailModal from '@/components/landing/shop/detail/ShopProductDetailModal'
 import { Reveal } from '@/components/ui/reveal'
-
-const slugify = (value: string) => {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
-
-const allItems = [
-  // Page 1
-  { name: 'STARBUCKS', src: '/icons/starbucks.svg' },
-  { name: 'TIM HORTONS', src: '/icons/starbucks.svg' },
-  { name: 'NORD VPN', src: '/icons/starbucks.svg' },
-  { name: 'INSTACART', src: '/icons/starbucks.svg' },
-  { name: 'FANDUEL', src: '/icons/starbucks.svg' },
-]
+import { useNewProductsQuery } from '@/hooks/use-products'
 
 export default function NewlyLaunchedSection() {
-  const [quickBuyProduct, setQuickBuyProduct] = useState<{
-    name: string
-    imageSrc: string
-  } | null>(null)
+  const { data, isLoading } = useNewProductsQuery(5)
+  const allItems = data?.items ?? []
+
+  const [quickBuySlug, setQuickBuySlug] = useState<string | null>(null)
   const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -61,19 +44,22 @@ export default function NewlyLaunchedSection() {
 
       {/* Products grid */}
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:px-6 lg:mt-10 lg:px-8">
+        {isLoading ? (
+          <div className="text-lightsteelblue-100 py-12 text-center text-sm">Loading new products…</div>
+        ) : (
         <div className="grid grid-cols-1 justify-items-center gap-3 sm:grid-cols-3 lg:gap-[17px] xl:grid-cols-5">
           {allItems.map((item, idx) => (
             <Reveal
-              key={`${item.name}-${idx}`}
+              key={item.id}
               variant="fade-up"
               delay={idx * 70}
               className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent] lg:gap-3"
             >
-              <Link href={`/shop/${slugify(item.name)}`} className="block w-full">
+              <Link href={`/shop/${item.slug}`} className="block w-full">
                 <img
                   className="rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
                   alt=""
-                  src={item.src}
+                  src={item.primaryImageUrl ?? '/icons/starbucks.svg'}
                 />
                 <div className="flex w-full flex-col items-center gap-0.5">
                   <div className="flex items-center justify-center self-stretch">
@@ -86,14 +72,16 @@ export default function NewlyLaunchedSection() {
                       from{' '}
                     </div>
                     <div className="rounded-num-6 flex items-center justify-center px-1.5 py-0.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                      <b className="[text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">$2.50</b>
+                      <b className="[text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                        {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
+                      </b>
                     </div>
                   </div>
                 </div>
               </Link>
               <button
                 type="button"
-                onClick={() => setQuickBuyProduct({ name: item.name, imageSrc: item.src })}
+                onClick={() => setQuickBuySlug(item.slug)}
                 className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#1B3E3D] px-4 text-white sm:gap-[5px]"
               >
                 <CentralIcon
@@ -110,7 +98,8 @@ export default function NewlyLaunchedSection() {
             </Reveal>
           ))}
         </div>
-        {quickBuyProduct &&
+        )}
+        {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
             <div className="fixed inset-0 z-90 flex items-center justify-center p-4 sm:p-6 lg:px-8">
@@ -118,7 +107,7 @@ export default function NewlyLaunchedSection() {
                 type="button"
                 className="absolute inset-0 bg-black/60"
                 aria-label="Close quick buy dialog"
-                onClick={() => setQuickBuyProduct(null)}
+                onClick={() => setQuickBuySlug(null)}
               />
               <div
                 className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
@@ -126,16 +115,15 @@ export default function NewlyLaunchedSection() {
                 aria-modal="true"
               >
                 <ShopProductDetailModal
-                  productName={quickBuyProduct.name}
-                  imageSrc={quickBuyProduct.imageSrc}
-                  onClose={() => setQuickBuyProduct(null)}
+                  productSlug={quickBuySlug}
+                  onClose={() => setQuickBuySlug(null)}
                 />
               </div>
             </div>,
             quickBuyPortalEl
           )}
 
-        <Reveal variant="fade-up" delay={allItems.length * 70}>
+        <Reveal variant="fade-up" delay={(allItems.length || 1) * 70}>
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href="/shop"
