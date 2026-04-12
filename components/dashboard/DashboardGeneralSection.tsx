@@ -2,8 +2,10 @@
 
 import CentralIcon from '@central-icons-react/all'
 import { useTheme } from 'next-themes'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState } from 'react'
 
+import { useAuth } from '@/hooks/use-auth'
+import { parseApiError } from '@/lib/api-error'
 import { toast } from '@/lib/toast'
 
 const secondaryActionBtnClass =
@@ -17,8 +19,12 @@ const themeOptionUnselectedClass =
 /** General settings: profile, email, theme — layout refactored from Figma (flex/grid, no absolute). */
 export const DashboardGeneralSection: FunctionComponent = () => {
   const { theme, setTheme } = useTheme()
+  const { user, sendVerificationEmail } = useAuth()
+  const [isSendingVerification, setIsSendingVerification] = useState(false)
   const selectedTheme: 'dark' | 'light' | 'system' =
     theme === 'dark' || theme === 'light' || theme === 'system' ? theme : 'system'
+  const isVerified = user?.isVerified === true
+  const emailDisplay = user?.email ?? ''
 
   function themeLabel(t: 'dark' | 'light' | 'system') {
     return t === 'dark' ? 'Dark' : t === 'light' ? 'Light' : 'System'
@@ -118,34 +124,61 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                     ariaHidden={true}
                   />
                   <div className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 min-w-0 text-sm leading-6 font-semibold break-all sm:break-normal">
-                    hi@echodzns.com
+                    {emailDisplay || '—'}
                   </div>
                 </div>
                 <div className="h-3.5 w-px shrink-0 bg-[#152950]" />
-                <div className="text-red flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(255,_42,_42,_0.05),_rgba(255,_42,_42,_0.14))]">
-                  <CentralIcon
-                    name="IconCrossSmall"
-                    join="round"
-                    fill="filled"
-                    stroke="2"
-                    radius="1"
-                    size={20}
-                    ariaHidden={true}
-                    color="#ff2a2a"
-                  />
-                  <div className="leading-6 font-semibold text-red-500 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                    Not Verified
+                {isVerified ? (
+                  <div className="text-limegreen flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]">
+                    <CentralIcon
+                      name="IconSubscriptionTick1"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={20}
+                      ariaHidden={true}
+                      color="#25d366"
+                    />
+                    <div className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                      Verified
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="text-red flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(255,_42,_42,_0.05),_rgba(255,_42,_42,_0.14))]">
+                    <CentralIcon
+                      name="IconCrossSmall"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={20}
+                      ariaHidden={true}
+                      color="#ff2a2a"
+                    />
+                    <div className="leading-6 font-semibold text-red-500 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                      Not Verified
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="text-lightsteelblue-100 flex w-full items-stretch sm:w-auto sm:items-center">
                 <button
                   type="button"
-                  className={`${secondaryActionBtnClass} text-center sm:text-left`}
-                  onClick={() => {
-                    toast.info('Verification email sent', {
-                      description: 'Check your inbox (demo).',
-                    })
+                  className={`${secondaryActionBtnClass} shrink-0 text-center sm:text-left`}
+                  disabled={isVerified || isSendingVerification || !emailDisplay}
+                  onClick={async () => {
+                    setIsSendingVerification(true)
+                    try {
+                      await sendVerificationEmail()
+                      toast.success('Verification email sent', {
+                        description: 'Check your inbox for the verification link.',
+                      })
+                    } catch (e) {
+                      toast.error(parseApiError(e))
+                    } finally {
+                      setIsSendingVerification(false)
+                    }
                   }}
                 >
                   <CentralIcon
@@ -157,8 +190,8 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                     size={20}
                     ariaHidden={true}
                   />
-                  <span className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold">
-                    Resend Verification
+                  <span className="tracking-num--0_01 whitespace-nowrap sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold">
+                    {isSendingVerification ? 'Sending…' : 'Resend Verification'}
                   </span>
                 </button>
               </div>
@@ -260,46 +293,6 @@ export const DashboardGeneralSection: FunctionComponent = () => {
           </div>
         </div>
       </div>
-
-      {/* Figma variant: verified email row — hidden until backend; card is w-fit when shown */}
-      <footer className="mt-auto hidden w-full min-w-0 justify-end">
-        <div className="rounded-num-8 border-darkslateblue sm:text-num-16 box-border flex w-fit max-w-full min-w-0 flex-col items-start justify-center overflow-hidden border border-solid bg-gray-100 p-4 text-sm sm:p-5">
-          <div className="flex w-fit max-w-full items-center justify-center">
-            <div className="rounded-num-8 flex w-fit max-w-full min-w-0 flex-wrap items-center justify-center gap-2 overflow-hidden sm:gap-3">
-              <div className="flex min-w-0 items-center gap-2">
-                <CentralIcon
-                  name="IconEmail2"
-                  join="round"
-                  fill="filled"
-                  stroke="2"
-                  radius="1"
-                  size={20}
-                  ariaHidden={true}
-                />
-                <div className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 min-w-0 text-sm leading-6 font-semibold break-all sm:break-normal">
-                  hi@echodzns.com
-                </div>
-              </div>
-              <div className="h-3.5 w-px bg-[#152950]" />
-              <div className="text-limegreen flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]">
-                <CentralIcon
-                  name="IconSubscriptionTick1"
-                  join="round"
-                  fill="filled"
-                  stroke="2"
-                  radius="1"
-                  size={20}
-                  ariaHidden={true}
-                  color="#25d366"
-                />
-                <div className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                  Verified
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
     </section>
   )
 }

@@ -10,6 +10,7 @@ export type AuthModalView =
   | 'forgot'
   | 'forgot-otp'
   | 'reset'
+  | '2fa-login'
   | '2fa-enable'
   | '2fa-disable'
   | 'delete-account'

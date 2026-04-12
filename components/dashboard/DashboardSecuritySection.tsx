@@ -1,18 +1,37 @@
 'use client'
 
+import { forgotPasswordLinkAction } from '@/actions/auth'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import { useAuth } from '@/hooks/use-auth'
-import CentralIcon from '@central-icons-react/all'
-import { FunctionComponent } from 'react'
-
-import { useAppStore } from '@/lib/store'
+import { parseApiError } from '@/lib/api-error'
 import { toast } from '@/lib/toast'
+import CentralIcon from '@central-icons-react/all'
+import { FunctionComponent, useState } from 'react'
 
 /** Security settings — layout refactored from Figma (flex, no absolute/relative positioning). */
 export const DashboardSecuritySection: FunctionComponent = () => {
   const { openAuthModal } = useAuthModal()
   const { user } = useAuth()
-  const twoFactorEnabled = user?.twoFactorEnabled ?? false
+  /** Rely on profile/login `mapUser` boolean; treat only strict `true` as enabled. */
+  const twoFactorEnabled = user?.twoFactorEnabled === true
+  const [resetLinkLoading, setResetLinkLoading] = useState(false)
+
+  const handleRequestResetLink = async () => {
+    const email = user?.email
+    if (!email) {
+      toast.error('No email is associated with this account.')
+      return
+    }
+    setResetLinkLoading(true)
+    try {
+      await forgotPasswordLinkAction({ email })
+      toast.success('Reset link sent to your email')
+    } catch (e) {
+      toast.error(parseApiError(e))
+    } finally {
+      setResetLinkLoading(false)
+    }
+  }
 
   return (
     <section className="font-commissioner gap-num-30 flex w-full flex-col items-start text-left text-[18px] text-white">
@@ -27,23 +46,26 @@ export const DashboardSecuritySection: FunctionComponent = () => {
         <div className="text-num-16 flex w-full min-w-0 shrink-0 items-stretch sm:w-auto sm:items-center">
           <button
             type="button"
-            onClick={() => {
-              // openAuthModal('forgot')
-              toast.info('Password reset link requested', {
-                description: 'Please check your registered email inbox.',
-              })
-            }}
-            className="border-whitesmoke-300 font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid bg-gray-200 px-3 py-2 text-inherit sm:min-h-0 sm:w-auto sm:justify-start"
+            onClick={handleRequestResetLink}
+            disabled={resetLinkLoading}
+            className="border-whitesmoke-300 font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid bg-gray-200 px-3 py-2 text-inherit disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-0 sm:w-auto sm:justify-start"
           >
-            <CentralIcon
-              name="IconPassword"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={20}
-              ariaHidden={true}
-            />
+            {resetLinkLoading ? (
+              <span
+                className="border-whitesmoke-300 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-t-fuchsia"
+                aria-hidden
+              />
+            ) : (
+              <CentralIcon
+                name="IconPassword"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={20}
+                ariaHidden={true}
+              />
+            )}
             <span className="leading-num-28 tracking-num--0_01 text-center font-semibold sm:text-left">
               Request Password Reset Link
             </span>

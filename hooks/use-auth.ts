@@ -4,12 +4,18 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 
 import {
+  changePasswordAction,
+  deleteAccountAction,
+  disable2FAAction,
   forgotPasswordAction,
   getCurrentUserAction,
   loginAction,
   logoutAction,
   registerAction,
   resetPasswordAction,
+  sendVerificationEmailAction,
+  setup2FAAction,
+  verify2FAAction,
   verifyOtpAction,
 } from '@/actions/auth'
 import { ROUTES } from '@/lib/constants'
@@ -18,6 +24,7 @@ import { useAppStore } from '@/lib/store'
 import { toast } from '@/lib/toast'
 import { parseApiError } from '@/lib/api-error'
 import type { LoginInput, RegisterInput } from '@/lib/validations'
+import type { LoginApiResponse } from '@/types/auth'
 
 export const QUERY_KEYS = {
   currentUser: ['currentUser'] as const,
@@ -40,6 +47,7 @@ export function useLoginMutation() {
   return useMutation({
     mutationFn: (data: LoginInput) => loginAction(data),
     onSuccess: (result) => {
+      if ('requiresTwoFactor' in result) return
       setTokens({ accessToken: result.accessToken, refreshToken: result.refreshToken })
       queryClient.setQueryData(QUERY_KEYS.currentUser, result.user)
       setAuthUser(result.user)
@@ -96,12 +104,11 @@ export function useAuth() {
   const logoutMutation = useLogoutMutation()
   const user = currentUserQuery.data ?? localUser
 
-  async function handleLogin(data: LoginInput): Promise<boolean> {
+  async function handleLogin(data: LoginInput): Promise<LoginApiResponse | null> {
     try {
-      await loginMutation.mutateAsync(data)
-      return true
+      return await loginMutation.mutateAsync(data)
     } catch {
-      return false
+      return null
     }
   }
 
@@ -154,12 +161,18 @@ export function useAuth() {
     isAuthenticated: !!user,
     isLoading:
       currentUserQuery.isFetching || loginMutation.isPending || registerMutation.isPending,
-    login: handleLogin,
+    handleLogin,
     register: handleRegister,
     logout: handleLogout,
     forgotPassword: handleForgotPassword,
     verifyOtp: handleVerifyOtp,
     resetPassword: handleResetPassword,
     refreshCurrentUser: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.currentUser }),
+    setup2FA: setup2FAAction,
+    verify2FA: verify2FAAction,
+    disable2FA: disable2FAAction,
+    deleteAccount: deleteAccountAction,
+    changePassword: changePasswordAction,
+    sendVerificationEmail: sendVerificationEmailAction,
   }
 }

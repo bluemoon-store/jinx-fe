@@ -10,6 +10,8 @@ import { resetPasswordSchema, type ResetPasswordInput } from '@/lib/validations'
 export type ResetPasswordModalProps = {
   onClose?: () => void
   onResetSuccess?: (newPassword: string) => Promise<void>
+  /** `page`: full-page reset link — centered title, no close button. `modal`: title left, optional close. */
+  layout?: 'modal' | 'page'
 }
 
 const passwordRowClass =
@@ -27,7 +29,12 @@ const inputClass =
 const ERROR_RULE = 'text-[#C0242A]'
 const OK_RULE = 'text-limegreen'
 
-const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, onResetSuccess }) => {
+const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({
+  onClose,
+  onResetSuccess,
+  layout = 'modal',
+}) => {
+  const isPageLayout = layout === 'page'
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -50,29 +57,45 @@ const ResetPassword: FunctionComponent<ResetPasswordModalProps> = ({ onClose, on
       <main className="text-whitesmoke-100 flex w-full min-w-0 flex-col items-start gap-3 sm:gap-[15px]">
         <div className="flex flex-col items-start gap-4 self-stretch">
           <header className="font-nata-sans flex flex-col items-start gap-3 self-stretch text-base sm:text-lg lg:text-[20px]">
-            <div className="flex items-center justify-between gap-2 self-stretch sm:gap-5">
-              <div className="flex min-w-0 flex-1 items-center">
-                <div className="leading-num-28 text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px]">
+            <div
+              className={
+                isPageLayout
+                  ? 'flex items-center justify-center self-stretch sm:gap-5'
+                  : 'flex items-center justify-between gap-2 self-stretch sm:gap-5'
+              }
+            >
+              <div
+                className={
+                  isPageLayout
+                    ? 'flex min-w-0 items-center justify-center'
+                    : 'flex min-w-0 flex-1 items-center'
+                }
+              >
+                <div
+                  className={`leading-num-28 text-lg font-extrabold tracking-[0.02em] uppercase sm:text-xl lg:text-[20px] ${isPageLayout ? 'text-center' : ''}`}
+                >
                   RESET PASSWORD
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
-                aria-label="Close"
-              >
-                <CentralIcon
-                  name="IconCrossSmall"
-                  join="round"
-                  fill="filled"
-                  stroke="1"
-                  radius="1"
-                  size={20}
-                  ariaHidden={true}
-                  className="text-white/50"
-                />
-              </button>
+              {!isPageLayout && onClose ? (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="rounded-num-8 box-border flex h-[30px] w-[30px] shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
+                  aria-label="Close"
+                >
+                  <CentralIcon
+                    name="IconCrossSmall"
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={20}
+                    ariaHidden={true}
+                    className="text-white/50"
+                  />
+                </button>
+              ) : null}
             </div>
             <div className="h-px w-full self-stretch bg-gray-100" />
           </header>

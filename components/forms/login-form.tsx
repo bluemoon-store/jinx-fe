@@ -6,10 +6,11 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
+import { toast } from '@/lib/toast'
 import { loginSchema, type LoginInput } from '@/lib/validations'
 
 export function LoginForm() {
-  const { login } = useAuth()
+  const { handleLogin } = useAuth()
   const {
     register,
     handleSubmit,
@@ -19,7 +20,12 @@ export function LoginForm() {
   })
 
   const onSubmit = async (data: LoginInput) => {
-    await login(data)
+    const result = await handleLogin(data)
+    if (result && 'requiresTwoFactor' in result) {
+      toast.info('Two-factor authentication is required', {
+        description: 'Use Sign in from the site menu to enter your authenticator code after your password.',
+      })
+    }
   }
 
   return (

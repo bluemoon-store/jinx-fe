@@ -15,6 +15,13 @@ export interface AuthResponse extends AuthTokens {
   user: User
 }
 
+export interface TwoFactorChallengeResponse {
+  requiresTwoFactor: true
+  twoFactorToken: string
+}
+
+export type LoginApiResponse = AuthResponse | TwoFactorChallengeResponse
+
 export interface RefreshResponse extends AuthTokens {}
 
 export interface ForgotPasswordPayload {
@@ -30,4 +37,38 @@ export interface ResetPasswordPayload {
   email: string
   otp: string
   newPassword: string
+}
+
+/** Token from email link — POST /auth/reset-password-link */
+export interface ResetPasswordLinkPayload {
+  token: string
+  newPassword: string
+}
+
+export interface Setup2FAPayload {
+  password: string
+}
+
+export interface Setup2FAResponse {
+  secret: string
+  qrCode: string
+  otpAuthUrl: string
+}
+
+export interface Verify2FAPayload {
+  code: string
+}
+
+export interface Disable2FAPayload {
+  password: string
+  code: string
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string
+  newPassword: string
+}
+
+export interface DeleteAccountPayload {
+  password: string
 }

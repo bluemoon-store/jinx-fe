@@ -91,7 +91,9 @@ export const ForgotPasswordA: FunctionComponent<ForgotPasswordAProps> = ({
 
           <form
             className="text-num-14 text-lightsteelblue font-commissioner flex flex-col items-start gap-3 self-stretch sm:gap-[13px]"
-            onSubmit={handleSubmit((data) => onSendOtp?.(data.email))}
+            onSubmit={handleSubmit(async (data) => {
+              await onSendOtp?.(data.email)
+            })}
           >
             <div className="flex flex-col items-start gap-2 self-stretch">
               <label htmlFor="forgot-email" className="leading-num-20 font-semibold">
@@ -168,7 +170,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
   onCreateAccount,
 }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
-  const [resendSeconds, setResendSeconds] = useState(120)
+  const [resendSeconds, setResendSeconds] = useState(600)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([])
 
@@ -336,7 +338,7 @@ export const ForgotPasswordB: FunctionComponent<ForgotPasswordBProps> = ({
                 <button
                   type="button"
                   className="sm:text-num-14 min-h-11 text-sm leading-5 font-semibold text-white underline sm:min-h-0"
-                  onClick={() => setResendSeconds(120)}
+                  onClick={() => setResendSeconds(600)}
                 >
                   Resend
                 </button>

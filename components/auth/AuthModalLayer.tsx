@@ -1,8 +1,11 @@
 'use client'
 
 import { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 
+import { verify2FALoginAction } from '@/actions/auth'
 import { ForgotPasswordA, ForgotPasswordB } from '@/components/auth/ForgotPasswordModal'
 import ResetPasswordModal from '@/components/auth/ResetPasswordModal'
 import SignInModal from '@/components/auth/SignInModal'
@@ -10,26 +13,38 @@ import SignUpModal from '@/components/auth/SignUpModal'
 import DeleteAccountModal from '@/components/auth/DeleteAccountModal'
 import TwoFactorDisableModal from '@/components/auth/TwoFactorDisableModal'
 import TwoFactorEnableModal from '@/components/auth/TwoFactorEnableModal'
-import { useAuth } from '@/hooks/use-auth'
+import TwoFactorLoginModal from '@/components/auth/TwoFactorLoginModal'
+import { QUERY_KEYS, useAuth } from '@/hooks/use-auth'
+import { ROUTES } from '@/lib/constants'
+import { parseApiError } from '@/lib/api-error'
 import { useAppStore } from '@/lib/store'
+import { setTokens } from '@/lib/token'
+import { toast } from '@/lib/toast'
 import type { LoginInput, RegisterInput } from '@/lib/validations'
 
 import { useAuthModal } from './auth-modal-context'
 
-/** Set to false when forgot-password / OTP / reset-password APIs are ready. */
-const MOCK_FORGOT_PASSWORD_FLOW = true
-
-/** Set to false when 2FA enroll / disable APIs are wired. */
-const MOCK_TWO_FACTOR_FLOW = true
-
-/** Set to false when account deletion API is wired (use password in request). */
-const MOCK_DELETE_ACCOUNT_FLOW = true
-
 const AuthModalLayer: FunctionComponent = () => {
   const { view, closeAuthModal, openAuthModal } = useAuthModal()
-  const { login, register, forgotPassword, verifyOtp, resetPassword, logout } = useAuth()
+  const queryClient = useQueryClient()
+  const router = useRouter()
+  const {
+    handleLogin,
+    register,
+    forgotPassword,
+    verifyOtp,
+    resetPassword,
+    logout,
+    setup2FA,
+    verify2FA,
+    disable2FA,
+    deleteAccount,
+  } = useAuth()
   const updateUser = useAppStore((s) => s.updateUser)
+  const setAuthUser = useAppStore((s) => s.setAuthUser)
   const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotOtp, setForgotOtp] = useState('')
+  const [twoFactorToken, setTwoFactorToken] = useState('')
 
   useEffect(() => {
     if (!view) return
@@ -49,13 +64,41 @@ const AuthModalLayer: FunctionComponent = () => {
     }
   }, [view])
 
-  const handleLogin = useCallback(
+  const handlePasswordLogin = useCallback(
     async (data: LoginInput) => {
-      const ok = await login(data)
-      if (ok) closeAuthModal()
+      const result = await handleLogin(data)
+      if (!result) return
+      if ('requiresTwoFactor' in result) {
+        setTwoFactorToken(result.twoFactorToken)
+        openAuthModal('2fa-login')
+        return
+      }
+      closeAuthModal()
     },
-    [login, closeAuthModal]
+    [handleLogin, closeAuthModal, openAuthModal]
   )
+
+  const handleTwoFactorLogin = useCallback(
+    async (code: string) => {
+      try {
+        const result = await verify2FALoginAction(twoFactorToken, code)
+        setTokens({ accessToken: result.accessToken, refreshToken: result.refreshToken })
+        queryClient.setQueryData(QUERY_KEYS.currentUser, result.user)
+        setAuthUser(result.user)
+        setTwoFactorToken('')
+        closeAuthModal()
+        router.push(ROUTES.DASHBOARD_ORDERS)
+      } catch (e) {
+        toast.error(parseApiError(e))
+      }
+    },
+    [twoFactorToken, queryClient, setAuthUser, closeAuthModal, router]
+  )
+
+  const handleTwoFactorLoginBack = useCallback(() => {
+    setTwoFactorToken('')
+    openAuthModal('signin')
+  }, [openAuthModal])
 
   const handleRegister = useCallback(
     async (data: RegisterInput) => {
@@ -67,11 +110,6 @@ const AuthModalLayer: FunctionComponent = () => {
 
   const handleSendOtp = useCallback(
     async (email: string) => {
-      if (MOCK_FORGOT_PASSWORD_FLOW) {
-        setForgotEmail(email)
-        openAuthModal('forgot-otp')
-        return
-      }
       const ok = await forgotPassword(email)
       if (ok) {
         setForgotEmail(email)
@@ -83,10 +121,7 @@ const AuthModalLayer: FunctionComponent = () => {
 
   const handleVerifyOtp = useCallback(
     async (otp: string) => {
-      if (MOCK_FORGOT_PASSWORD_FLOW) {
-        openAuthModal('reset')
-        return
-      }
+      setForgotOtp(otp)
       const ok = await verifyOtp(forgotEmail, otp)
       if (ok) openAuthModal('reset')
     },
@@ -95,50 +130,55 @@ const AuthModalLayer: FunctionComponent = () => {
 
   const handleResetPassword = useCallback(
     async (newPassword: string) => {
-      if (MOCK_FORGOT_PASSWORD_FLOW) {
-        setForgotEmail('')
-        closeAuthModal()
-        await logout()
-        return
-      }
-      const ok = await resetPassword(forgotEmail, '', newPassword)
+      const ok = await resetPassword(forgotEmail, forgotOtp, newPassword)
       if (ok) {
         setForgotEmail('')
+        setForgotOtp('')
         closeAuthModal()
+        toast.success('Password updated', {
+          description: 'You can sign in with your new password.',
+        })
         await logout()
       }
     },
-    [resetPassword, forgotEmail, closeAuthModal, logout]
+    [resetPassword, forgotEmail, forgotOtp, closeAuthModal, logout]
   )
 
-  const handleTwoFactorEnableVerify = useCallback(async () => {
-    if (MOCK_TWO_FACTOR_FLOW) {
+  const handleTwoFactorSetup = useCallback(async (password: string) => setup2FA(password), [setup2FA])
+
+  const handleTwoFactorVerifySuccess = useCallback(
+    async (code: string) => {
+      await verify2FA(code)
       updateUser({ twoFactorEnabled: true })
       closeAuthModal()
-      return
-    }
-  }, [updateUser, closeAuthModal])
+    },
+    [verify2FA, updateUser, closeAuthModal]
+  )
 
   const handleTwoFactorDisable = useCallback(
-    async (_password: string, _code: string) => {
-      if (MOCK_TWO_FACTOR_FLOW) {
+    async (password: string, code: string) => {
+      try {
+        await disable2FA(password, code)
         updateUser({ twoFactorEnabled: false })
         closeAuthModal()
-        return
+      } catch (e) {
+        toast.error(parseApiError(e))
       }
     },
-    [updateUser, closeAuthModal]
+    [disable2FA, updateUser, closeAuthModal]
   )
 
   const handleDeleteAccount = useCallback(
-    async (_password: string) => {
-      if (MOCK_DELETE_ACCOUNT_FLOW) {
+    async (password: string) => {
+      try {
+        await deleteAccount(password)
         closeAuthModal()
         await logout()
-        return
+      } catch (e) {
+        toast.error(parseApiError(e))
       }
     },
-    [closeAuthModal, logout]
+    [deleteAccount, closeAuthModal, logout]
   )
 
   return (
@@ -166,9 +206,16 @@ const AuthModalLayer: FunctionComponent = () => {
             {view === 'signin' && (
               <SignInModal
                 onClose={closeAuthModal}
-                onContinueToDashboard={handleLogin}
+                onContinueToDashboard={handlePasswordLogin}
                 onForgotPassword={() => openAuthModal('forgot')}
                 onSignUp={() => openAuthModal('signup')}
+              />
+            )}
+            {view === '2fa-login' && (
+              <TwoFactorLoginModal
+                onClose={closeAuthModal}
+                onBack={handleTwoFactorLoginBack}
+                onVerify={handleTwoFactorLogin}
               />
             )}
             {view === 'signup' && (
@@ -200,7 +247,8 @@ const AuthModalLayer: FunctionComponent = () => {
             {view === '2fa-enable' && (
               <TwoFactorEnableModal
                 onClose={closeAuthModal}
-                onVerifySuccess={handleTwoFactorEnableVerify}
+                onSetup={handleTwoFactorSetup}
+                onVerifySuccess={handleTwoFactorVerifySuccess}
               />
             )}
             {view === '2fa-disable' && (

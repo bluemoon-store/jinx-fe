@@ -21,6 +21,7 @@ export const ROUTES = {
   DASHBOARD_ORDERS: '/dashboard/orders',
   LOGIN: '/login',
   REGISTER: '/register',
+  RESET_PASSWORD: '/auth/reset-password',
   SETTINGS: '/dashboard/general',
 } as const
 

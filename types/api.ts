@@ -14,7 +14,6 @@ export interface User {
   avatar?: string
   role: 'ADMIN' | 'USER' | 'MODERATOR' | 'MANAGER' | 'DEVELOPER'
   isVerified?: boolean
-  /** When true, account has TOTP 2FA enabled (optional until backend sends it). */
   twoFactorEnabled?: boolean
   createdAt: string
   updatedAt: string
