@@ -49,12 +49,3 @@ export type RegisterInput = z.infer<typeof registerSchema>
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
-
-export const guestCheckoutSchema = z.object({
-  email: emailSchema,
-  termsAccepted: z
-    .boolean()
-    .refine((v) => v === true, { message: 'You must accept the terms to continue' }),
-})
-
-export type GuestCheckoutInput = z.infer<typeof guestCheckoutSchema>

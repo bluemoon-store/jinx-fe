@@ -1,10 +1,14 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
-import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { OrderPaymentMethod } from '@/lib/order-review-store'
-import { useOrderReviewStore } from '@/lib/order-review-store'
+import {
+  listOrders,
+  mapApiOrderToDashboardCard,
+  type DashboardOrderCardModel,
+} from '@/lib/order-api'
 import {
   siteSelectDropdownList,
   siteSelectDropdownOptionInteractive,
@@ -71,11 +75,16 @@ type Props = {
 }
 
 export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCountChange }) => {
-  const orders = useOrderReviewStore((s) => s.orders)
+  const [ordersList, setOrdersList] = useState<DashboardOrderCardModel[]>([])
+  const [listPage, setListPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const [listLoading, setListLoading] = useState(true)
+  const [listError, setListError] = useState(false)
+
   const [orderSearch, setOrderSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [paymentMethodFilter, setPaymentMethodFilter] = useState<PaymentMethodFilter>('all')
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [viewMode, setViewMode] = useState<OrdersViewMode>('grid')
   const [viewMenuOpen, setViewMenuOpen] = useState(false)
   const viewMenuRef = useRef<HTMLDivElement>(null)
@@ -87,6 +96,56 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const selectedViewOption = VIEW_OPTIONS.find((o) => o.value === viewMode) ?? VIEW_OPTIONS[0]
+  const expiredMode = statusFilter === 'expired'
+
+  const fetchOrders = useCallback(async () => {
+    setListLoading(true)
+    setListError(false)
+    try {
+      if (expiredMode) {
+        const res = await listOrders({ page: 1, limit: 80 })
+        const rows = res.items
+          .filter((o) => o.status === 'CANCELLED' || o.status === 'REFUNDED')
+          .map(mapApiOrderToDashboardCard)
+        setOrdersList(rows)
+        setTotalPages(1)
+        setTotalItems(rows.length)
+        setListPage(1)
+        return
+      }
+
+      const apiStatus =
+        statusFilter === 'paid' ? ('COMPLETED' as const) : statusFilter === 'pending' ? ('PENDING' as const) : undefined
+
+      const res = await listOrders({
+        page: listPage,
+        limit: PAGE_SIZE,
+        status: apiStatus,
+      })
+      const rows = res.items.map(mapApiOrderToDashboardCard)
+      setOrdersList((prev) => {
+        if (listPage === 1) return rows
+        const seen = new Set(prev.map((x) => x.id))
+        const next = [...prev]
+        for (const r of rows) {
+          if (!seen.has(r.id)) next.push(r)
+        }
+        return next
+      })
+      setTotalPages(res.metadata.totalPages)
+      setTotalItems(res.metadata.totalItems)
+    } catch {
+      setListError(true)
+      if (listPage === 1) setOrdersList([])
+    } finally {
+      setListLoading(false)
+    }
+  }, [expiredMode, listPage, statusFilter])
+
+  useEffect(() => {
+    void fetchOrders()
+  }, [fetchOrders])
+
   const toggleMenu = (menu: 'status' | 'payment' | 'sort' | 'view') => {
     setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
     setPaymentMethodMenuOpen((prev) => (menu === 'payment' ? !prev : false))
@@ -97,7 +156,9 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const filtered = useMemo(() => {
     const q = orderSearch.trim().toLowerCase()
     const statusFiltered =
-      statusFilter === 'all' ? orders : orders.filter((o) => o.status === statusFilter)
+      statusFilter === 'all' || expiredMode
+        ? ordersList
+        : ordersList.filter((o) => o.status === statusFilter)
     const methodFiltered =
       paymentMethodFilter === 'all'
         ? statusFiltered
@@ -105,17 +166,16 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
     if (!q) return methodFiltered
     return methodFiltered.filter(
       (o) =>
-        o.brand.toLowerCase().includes(q) || o.id.includes(q) || o.price.toLowerCase().includes(q)
+        o.brand.toLowerCase().includes(q) ||
+        o.id.toLowerCase().includes(q) ||
+        o.orderNumber.toLowerCase().includes(q) ||
+        o.price.toLowerCase().includes(q)
     )
-  }, [orderSearch, orders, paymentMethodFilter, statusFilter])
+  }, [expiredMode, orderSearch, ordersList, paymentMethodFilter, statusFilter])
 
   useEffect(() => {
     onFilteredCountChange?.(filtered.length)
   }, [filtered.length, onFilteredCountChange])
-
-  useEffect(() => {
-    setVisibleCount(Math.min(PAGE_SIZE, filtered.length))
-  }, [orderSearch, paymentMethodFilter, statusFilter, sortOption, filtered.length])
 
   useEffect(() => {
     if (!viewMenuOpen && !statusMenuOpen && !paymentMethodMenuOpen && !sortMenuOpen) return
@@ -175,9 +235,20 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
     return next
   }, [filtered, sortOption])
 
-  const shown = Math.min(visibleCount, sorted.length)
-  const canLoadMore = shown < sorted.length
-  const visibleOrders = sorted.slice(0, shown)
+  const visibleOrders = sorted
+  const totalForFooter =
+    orderSearch.trim() || paymentMethodFilter !== 'all'
+      ? filtered.length
+      : expiredMode
+        ? filtered.length
+        : totalItems
+  const canLoadMore =
+    !expiredMode &&
+    !listLoading &&
+    !orderSearch.trim() &&
+    paymentMethodFilter === 'all' &&
+    listPage < totalPages
+  const shown = visibleOrders.length
 
   const filterBar = (
     <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
@@ -252,6 +323,8 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                       )}
                       onClick={() => {
                         setStatusFilter(opt.value)
+                        setListPage(1)
+                        setOrdersList([])
                         setStatusMenuOpen(false)
                       }}
                     >
@@ -460,15 +533,19 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
     </div>
   )
 
-  if (filtered.length === 0) {
+  if (filtered.length === 0 && !listLoading) {
     return (
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         {filterBar}
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
           <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
-          <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">No orders match</b>
+          <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
+            {listError ? 'Could not load orders' : 'No orders match'}
+          </b>
           <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
-            Try another search or clear filters to see your orders.
+            {listError
+              ? 'Please refresh the page or try again later.'
+              : 'Try another search or clear filters to see your orders.'}
           </p>
         </div>
       </div>
@@ -477,6 +554,9 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
 
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
+      {listLoading && ordersList.length === 0 ? (
+        <p className="text-lightsteelblue-100 text-sm font-medium">Loading orders…</p>
+      ) : null}
       {filterBar}
       {viewMode === 'grid' ? (
         <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
@@ -509,9 +589,9 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
       <nav aria-label="Order list load more">
         <DashboardLoadMoreFooter
           shown={shown}
-          total={filtered.length}
+          total={totalForFooter}
           canLoadMore={canLoadMore}
-          onLoadMore={() => setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))}
+          onLoadMore={() => setListPage((p) => p + 1)}
         />
       </nav>
     </div>

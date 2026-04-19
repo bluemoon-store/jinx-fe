@@ -2,7 +2,7 @@
 
 import type { Route } from 'next'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 
 import { CartColumn } from '@/components/checkout/cart/CartColumn'
@@ -14,9 +14,23 @@ import { PaymentMethodPanel } from '@/components/checkout/panels/PaymentMethodPa
 import { BackToStore } from '@/components/checkout/shared/BackToStore'
 import { CheckoutLogo } from '@/components/checkout/shared/CheckoutLogo'
 import { LegalFooter } from '@/components/checkout/shared/LegalFooter'
-import { Step1GuestColumn } from '@/components/checkout/steps/Step1GuestColumn'
 import { Step5Success } from '@/components/checkout/steps/Step5Success'
-import { useCurrentUser } from '@/hooks/use-auth'
+import { addCartItem, clearCart } from '@/lib/cart-api'
+import { formatUsd } from '@/lib/cart-format'
+import type { CartItem } from '@/lib/cart-store'
+import { useCartStore } from '@/lib/cart-store'
+import { getAccessToken } from '@/lib/token'
+import {
+  createCryptoPayment,
+  createOrder,
+  cryptoHumanTitle,
+  formatCryptoAmountLine,
+  getCryptoPayment,
+  type ApiCryptoCurrency,
+} from '@/lib/order-api'
+import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
+import { usePromoStore } from '@/lib/promo-store'
+import { toast } from '@/lib/toast'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
   return (
@@ -29,14 +43,124 @@ function SuccessTopBar({ onBack }: { onBack: () => void }) {
   )
 }
 
+type PaymentSnapshot = {
+  address: string
+  cryptoLine: string
+  usdLine: string
+  title: string
+  qr?: string | null
+  timeRemaining: number
+}
+
+const MAX_CHECKOUT_STEP = 5
+
+async function pushLocalCartItemsToBackend(localItems: CartItem[]) {
+  await clearCart()
+  const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
+  for (const item of localItems) {
+    const res = await addCartItem({
+      productId: item.id,
+      quantity: item.quantity,
+      variantId: item.variantId,
+      regionLabel: item.regionLabel,
+      regionCountry: item.regionCountry,
+    })
+    const backendItem = res.items.find(
+      (i) =>
+        i.productId === item.id &&
+        (i.variantId ?? '') === (item.variantId ?? '') &&
+        (i.regionLabel ?? '') === item.regionLabel
+    )
+    if (backendItem) {
+      setBackendCartItemId(
+        {
+          id: item.id,
+          variantId: item.variantId,
+          variantLabel: item.variantLabel,
+          regionLabel: item.regionLabel,
+          regionCountry: item.regionCountry,
+        },
+        backendItem.id
+      )
+    }
+  }
+}
+
 export function CheckoutPageClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { data: user } = useCurrentUser()
-  const isAuthenticated = !!user
-  const [persistReady, setPersistReady] = useState(false)
   const raw = searchParams.get('step')
-  const step = Math.min(6, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
+  const step = Math.min(MAX_CHECKOUT_STEP, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
+  const orderIdParam = searchParams.get('orderId')
+
+  const [cartBackendGate, setCartBackendGate] = useState<'loading' | 'ready' | 'error'>(() =>
+    step > 2 ? 'ready' : 'loading'
+  )
+  const cartBackendSyncedRef = useRef(false)
+
+  useLayoutEffect(() => {
+    if (step > 2) {
+      setCartBackendGate('ready')
+      return
+    }
+
+    let cancelled = false
+
+    ;(async () => {
+      const token = getAccessToken()
+      const localItems = useCartStore.getState().items
+      if (!token || !localItems.length) {
+        if (!cancelled) setCartBackendGate('ready')
+        return
+      }
+      if (cartBackendSyncedRef.current) {
+        if (!cancelled) setCartBackendGate('ready')
+        return
+      }
+
+      if (!cancelled) setCartBackendGate('loading')
+      try {
+        await pushLocalCartItemsToBackend(localItems)
+        if (cancelled) return
+        cartBackendSyncedRef.current = true
+        setCartBackendGate('ready')
+      } catch (err) {
+        console.error('checkout cart sync', err)
+        if (!cancelled) {
+          toast.error('Could not sync your cart with the server. Please try again.')
+          setCartBackendGate('error')
+        }
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [step])
+
+  const retryCartBackendSync = useCallback(() => {
+    void (async () => {
+      const token = getAccessToken()
+      const localItems = useCartStore.getState().items
+      if (!token || !localItems.length) {
+        setCartBackendGate('ready')
+        return
+      }
+      setCartBackendGate('loading')
+      try {
+        await pushLocalCartItemsToBackend(localItems)
+        cartBackendSyncedRef.current = true
+        setCartBackendGate('ready')
+      } catch (err) {
+        console.error('checkout cart sync retry', err)
+        toast.error('Could not sync your cart with the server. Please try again.')
+        setCartBackendGate('error')
+      }
+    })()
+  }, [])
+
+  const [paymentBusy, setPaymentBusy] = useState(false)
+  const [paymentSnapshot, setPaymentSnapshot] = useState<PaymentSnapshot | null>(null)
 
   const fireConfetti = useCallback(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return
@@ -49,7 +173,6 @@ export function CheckoutPageClient() {
     })
   }, [])
 
-  /** Confetti only on first “Unseal” on the success screen — not on load. Reset when leaving step 5. */
   const unsealConfettiFiredRef = useRef(false)
 
   const handleUnsealWithConfetti = useCallback(() => {
@@ -59,40 +182,110 @@ export function CheckoutPageClient() {
   }, [fireConfetti])
 
   const setStep = useCallback(
-    (n: number) => {
-      const next = Math.min(6, Math.max(1, n))
-      router.push(`/checkout?step=${next}` as Route)
+    (n: number, opts?: { clearOrder?: boolean }) => {
+      const next = Math.min(MAX_CHECKOUT_STEP, Math.max(1, n))
+      const sp = new URLSearchParams(searchParams.toString())
+      sp.set('step', String(next))
+      const oid = searchParams.get('orderId')
+      if (next >= 3 && oid && !opts?.clearOrder) {
+        sp.set('orderId', oid)
+      }
+      if (next < 3 || opts?.clearOrder) {
+        sp.delete('orderId')
+      }
+      router.push(`/checkout?${sp.toString()}` as Route)
     },
-    [router]
+    [router, searchParams]
   )
 
   const handleBack = useCallback(() => {
-    // Logged-in users skip guest step 1, so from step 2 back should leave checkout.
-    if (isAuthenticated && step === 2) {
-      router.push('/shop')
-      return
-    }
     if (step <= 1) {
       router.push('/shop')
       return
     }
+    if (step === 3) {
+      setPaymentSnapshot(null)
+      setStep(2, { clearOrder: true })
+      return
+    }
     setStep(step - 1)
-  }, [isAuthenticated, router, setStep, step])
+  }, [router, setStep, step])
 
   useEffect(() => {
-    if (step !== 5) unsealConfettiFiredRef.current = false
+    if (step !== 4) unsealConfettiFiredRef.current = false
   }, [step])
 
   useEffect(() => {
-    setPersistReady(true)
-  }, [])
+    if (step !== 3 || !orderIdParam || paymentSnapshot) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const pay = await getCryptoPayment(orderIdParam)
+        if (cancelled) return
+        const c = pay.cryptocurrency as ApiCryptoCurrency
+        setPaymentSnapshot({
+          address: pay.paymentAddress,
+          cryptoLine: formatCryptoAmountLine(pay.amount, c),
+          usdLine: `${formatUsd(Number.parseFloat(pay.amountUsd))} USD`,
+          title: cryptoHumanTitle(c),
+          qr: pay.qrCode,
+          timeRemaining: pay.timeRemaining,
+        })
+      } catch {
+        if (!cancelled) toast.error('Could not load payment details')
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [orderIdParam, paymentSnapshot, step])
 
-  useEffect(() => {
-    if (!persistReady) return
-    if (isAuthenticated && step === 1) setStep(2)
-  }, [isAuthenticated, persistReady, setStep, step])
+  const handlePaymentMethodConfirm = useCallback(
+    async (cryptocurrency: ApiCryptoCurrency) => {
+      setPaymentBusy(true)
+      try {
+        const items = useCartStore.getState().items
+        if (!items.length) {
+          toast.error('Your cart is empty')
+          return
+        }
+        const buyerProtection = useBuyerProtectionStore.getState().coverage === 'enhanced'
+        const appliedPromo = usePromoStore.getState().appliedPromo
 
-  if (step === 5) {
+        const order = await createOrder({
+          currency: 'USD',
+          promoCode: appliedPromo?.code,
+          buyerProtection,
+        })
+        const newOrderId = order.id
+
+        const pay = await createCryptoPayment(newOrderId, {
+          cryptocurrency,
+        })
+
+        setPaymentSnapshot({
+          address: pay.paymentAddress,
+          cryptoLine: formatCryptoAmountLine(pay.amount, cryptocurrency),
+          usdLine: `${formatUsd(Number.parseFloat(pay.amountUsd))} USD`,
+          title: cryptoHumanTitle(cryptocurrency),
+          qr: pay.qrCode,
+          timeRemaining: pay.timeRemaining,
+        })
+
+        const sp = new URLSearchParams(searchParams.toString())
+        sp.set('step', '3')
+        sp.set('orderId', newOrderId)
+        router.push(`/checkout?${sp.toString()}` as Route)
+      } catch {
+        toast.error('Checkout failed. Please try again.')
+      } finally {
+        setPaymentBusy(false)
+      }
+    },
+    [router, searchParams]
+  )
+
+  if (step === 4) {
     return (
       <div
         className="flex min-h-screen flex-col overflow-x-hidden bg-gray-500 px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
@@ -103,7 +296,53 @@ export function CheckoutPageClient() {
       >
         <div className="mx-auto w-full max-w-[1700px] min-w-0 flex-1">
           <SuccessTopBar onBack={() => router.push('/')} />
-          <Step5Success onUnseal={handleUnsealWithConfetti} />
+          <Step5Success onUnseal={handleUnsealWithConfetti} orderId={orderIdParam} />
+        </div>
+      </div>
+    )
+  }
+
+  if (cartBackendGate !== 'ready' && step <= 2) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#041329] px-6 py-16">
+        <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
+          {cartBackendGate === 'loading' ? (
+            <>
+              <div
+                className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-fuchsia"
+                aria-hidden
+              />
+              <div className="flex flex-col gap-2">
+                <p className="text-lg font-semibold tracking-[-0.2px] text-white">Syncing cart…</p>
+                <p className="text-sm leading-relaxed font-medium text-[#c2c2e2]">
+                  Preparing your checkout session with the server.
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-lg font-semibold tracking-[-0.2px] text-white">Cart sync failed</p>
+              <p className="text-sm leading-relaxed font-medium text-[#c2c2e2]">
+                We could not copy your cart to the server. You can try again or return to the store.
+              </p>
+              <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
+                <button
+                  type="button"
+                  onClick={retryCartBackendSync}
+                  className="bg-fuchsia rounded-lg px-6 py-3 text-sm font-semibold text-white hover:brightness-110"
+                >
+                  Try again
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push('/shop' as Route)}
+                  className="rounded-lg border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+                >
+                  Back to store
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     )
@@ -115,9 +354,9 @@ export function CheckoutPageClient() {
         <div className="mx-auto flex w-full max-w-[952px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 lg:mx-0 lg:w-fit lg:max-w-[952px] lg:min-w-[809px] lg:self-end lg:px-8 xl:px-12">
           <BackToStore onBack={handleBack} label={step <= 1 ? 'Back to store' : 'Back'} />
           <div className="mt-6 flex w-full min-w-0 flex-1 flex-col sm:mt-8 lg:mt-10">
-            {step === 1 || step === 2 || step === 3 ? <CartColumn checkoutStep={step} /> : null}
-            {step === 4 ? <CheckoutOverviewCard centerSecurityNote /> : null}
-            {step === 6 ? <CheckoutOverviewCard /> : null}
+            {step === 1 || step === 2 ? <CartColumn checkoutStep={step} /> : null}
+            {step === 3 ? <CheckoutOverviewCard centerSecurityNote /> : null}
+            {step === 5 ? <CheckoutOverviewCard /> : null}
           </div>
           <LegalFooter />
         </div>
@@ -129,15 +368,34 @@ export function CheckoutPageClient() {
             <CheckoutLogo variant="alt" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col pt-2 sm:pt-4 lg:pt-6">
-            {step === 1 ? <Step1GuestColumn onContinue={() => setStep(2)} /> : null}
+            {step === 1 ? (
+              <BuyerProtectionPanel onBack={handleBack} onContinue={() => setStep(2)} />
+            ) : null}
             {step === 2 ? (
-              <BuyerProtectionPanel onBack={handleBack} onContinue={() => setStep(3)} />
+              <PaymentMethodPanel
+                onBack={() => setStep(1)}
+                onContinue={handlePaymentMethodConfirm}
+                busy={paymentBusy}
+              />
             ) : null}
             {step === 3 ? (
-              <PaymentMethodPanel onBack={() => setStep(2)} onContinue={() => setStep(4)} />
+              <CompletePaymentPending
+                orderId={orderIdParam}
+                paymentAddress={paymentSnapshot?.address ?? null}
+                cryptoAmountLabel={paymentSnapshot?.cryptoLine ?? null}
+                amountUsdLabel={paymentSnapshot?.usdLine ?? null}
+                cryptoTitle={paymentSnapshot?.title ?? 'Cryptocurrency'}
+                qrCode={paymentSnapshot?.qr}
+                initialTimeRemainingSec={paymentSnapshot?.timeRemaining ?? 20 * 60}
+                onNavigateStep={(s) => setStep(s)}
+                onExpired={() => {
+                  setPaymentSnapshot(null)
+                  toast.error('Payment window expired. Please choose a payment method again.')
+                  setStep(2, { clearOrder: true })
+                }}
+              />
             ) : null}
-            {step === 4 ? <CompletePaymentPending onPaid={() => setStep(5)} /> : null}
-            {step === 6 ? <CompletePaymentConfirmed /> : null}
+            {step === 5 ? <CompletePaymentConfirmed /> : null}
           </div>
         </div>
       </main>

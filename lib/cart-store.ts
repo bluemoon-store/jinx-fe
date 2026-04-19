@@ -15,15 +15,20 @@ export type CartItem = {
   quantity: number
   /** Optional product image for cart / checkout line art. */
   thumbUrl?: string
+  /** Backend cart_items row id after POST /v1/cart/items (or checkout sync). */
+  backendCartItemId?: string
 }
+
+export type CartItemKey = Pick<
+  CartItem,
+  'id' | 'variantId' | 'variantLabel' | 'regionLabel' | 'regionCountry'
+>
 
 type CartState = {
   items: CartItem[]
   addItem: (item: Omit<CartItem, 'quantity'>, quantity: number) => void
-  adjustItemQuantity: (
-    key: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel' | 'regionCountry'>,
-    delta: number
-  ) => void
+  adjustItemQuantity: (key: CartItemKey, delta: number) => void
+  setBackendCartItemId: (key: CartItemKey, backendCartItemId: string) => void
   clear: () => void
 }
 
@@ -42,7 +47,7 @@ function lineKeyParts(item: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' |
   }
 }
 
-function sameLine(
+export function sameCartLine(
   a: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>,
   b: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>
 ) {
@@ -62,7 +67,7 @@ export const useCartStore = create<CartState>()(
       items: [],
       addItem: (item, quantity) =>
         set((state) => {
-          const existingIndex = state.items.findIndex((i) => sameLine(i, item))
+          const existingIndex = state.items.findIndex((i) => sameCartLine(i, item))
 
           if (existingIndex >= 0) {
             const next = [...state.items]
@@ -85,7 +90,7 @@ export const useCartStore = create<CartState>()(
         }),
       adjustItemQuantity: (key, delta) =>
         set((state) => {
-          const idx = state.items.findIndex((i) => sameLine(i, key))
+          const idx = state.items.findIndex((i) => sameCartLine(i, key))
           if (idx < 0) return state
           const next = [...state.items]
           const q = Math.max(0, Math.min(99, next[idx].quantity + delta))
@@ -94,6 +99,14 @@ export const useCartStore = create<CartState>()(
           } else {
             next[idx] = { ...next[idx], quantity: q }
           }
+          return { items: next }
+        }),
+      setBackendCartItemId: (key, backendCartItemId) =>
+        set((state) => {
+          const idx = state.items.findIndex((i) => sameCartLine(i, key))
+          if (idx < 0) return state
+          const next = [...state.items]
+          next[idx] = { ...next[idx], backendCartItemId }
           return { items: next }
         }),
       clear: () => set({ items: [] }),

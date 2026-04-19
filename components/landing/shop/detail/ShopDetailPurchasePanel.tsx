@@ -13,8 +13,10 @@ import {
   siteSelectDropdownOptionRow,
   siteSelectDropdownPanel,
 } from '@/components/ui/siteSelectDropdown'
+import { addCartItem, updateCartItem } from '@/lib/cart-api'
 import { parseUsdDecimalString } from '@/lib/cart-format'
-import { useCartStore } from '@/lib/cart-store'
+import { sameCartLine, useCartStore } from '@/lib/cart-store'
+import { getAccessToken } from '@/lib/token'
 import { cn } from '@/lib/utils'
 import type { ProductDetail, ProductRegion, ProductVariant } from '@/types/product'
 
@@ -102,6 +104,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
   const router = useRouter()
   const addItem = useCartStore((s) => s.addItem)
+  const setBackendCartItemId = useCartStore((s) => s.setBackendCartItemId)
 
   const selectedVariant = variantList.find((v) => v.id === selectedVariantId) ?? variantList[0]
   const selectedRegion = regionList.find((r) => r.id === selectedRegionId) ?? regionList[0]
@@ -130,6 +133,56 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       quantity
     )
     onAddToCart?.()
+
+    if (!getAccessToken()) return
+
+    void (async () => {
+      try {
+        const line = useCartStore.getState().items.find((i) =>
+          sameCartLine(i, {
+            id: productId,
+            variantId: selectedVariant.id,
+            variantLabel: selectedVariant.label,
+            regionLabel: selectedRegion.label,
+          })
+        )
+        if (!line) return
+
+        if (line.backendCartItemId) {
+          await updateCartItem(line.backendCartItemId, { quantity: line.quantity })
+          return
+        }
+
+        const res = await addCartItem({
+          productId,
+          quantity: line.quantity,
+          variantId: selectedVariant.id,
+          regionLabel: selectedRegion.label,
+          regionCountry: selectedRegion.countryCode,
+        })
+
+        const backendItem = res.items.find(
+          (i) =>
+            i.productId === productId &&
+            (i.variantId ?? '') === selectedVariant.id &&
+            (i.regionLabel ?? '') === selectedRegion.label
+        )
+        if (backendItem) {
+          setBackendCartItemId(
+            {
+              id: productId,
+              variantId: selectedVariant.id,
+              variantLabel: selectedVariant.label,
+              regionLabel: selectedRegion.label,
+              regionCountry: selectedRegion.countryCode,
+            },
+            backendItem.id
+          )
+        }
+      } catch (err) {
+        console.error('add-to-cart backend sync', err)
+      }
+    })()
   }
 
   return (

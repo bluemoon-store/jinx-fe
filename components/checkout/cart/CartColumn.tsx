@@ -6,9 +6,11 @@ import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
+import { removeCartItem, updateCartItem } from '@/lib/cart-api'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
+import { getAccessToken } from '@/lib/token'
 import { resolvePromoCode, usePromoStore } from '@/lib/promo-store'
 import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
 import CentralIcon from '@central-icons-react/all'
@@ -19,6 +21,22 @@ const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
+}
+
+function syncBackendLineQuantity(item: CartItem, nextQuantity: number) {
+  const backendId = item.backendCartItemId
+  if (!backendId || !getAccessToken()) return
+  void (async () => {
+    try {
+      if (nextQuantity <= 0) {
+        await removeCartItem(backendId)
+      } else {
+        await updateCartItem(backendId, { quantity: nextQuantity })
+      }
+    } catch (err) {
+      console.error('cart line backend sync', err)
+    }
+  })()
 }
 
 function LineThumb({ item }: { item: CartItem }) {
@@ -142,7 +160,7 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
   const promoDiscountUsd = Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
   const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
-  const includeBuyerProtectionInSummary = checkoutStep > 1
+  const includeBuyerProtectionInSummary = checkoutStep >= 1
   const totalDue =
     subtotal - promoDiscountUsd + (includeBuyerProtectionInSummary ? buyerProtectionUsd : 0)
   const mountedRef = useRef(false)
@@ -208,7 +226,8 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
           <CartLine
             key={itemKey(item)}
             item={item}
-            onDelta={(delta) =>
+            onDelta={(delta) => {
+              const nextQty = Math.max(0, Math.min(99, item.quantity + delta))
               adjustItemQuantity(
                 {
                   id: item.id,
@@ -219,8 +238,10 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
                 },
                 delta
               )
-            }
-            onRemove={() =>
+              syncBackendLineQuantity(item, nextQty)
+            }}
+            onRemove={() => {
+              syncBackendLineQuantity(item, 0)
               adjustItemQuantity(
                 {
                   id: item.id,
@@ -231,7 +252,7 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
                 },
                 -item.quantity
               )
-            }
+            }}
           />
         ))}
 

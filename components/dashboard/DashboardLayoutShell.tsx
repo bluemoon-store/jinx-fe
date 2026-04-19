@@ -4,7 +4,7 @@ import Footer from '@/components/landing/Footer'
 import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
-import { useOrderReviewStore } from '@/lib/order-review-store'
+import { getOrder, mapApiOrderToDashboardCard } from '@/lib/order-api'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
 import Link from 'next/link'
@@ -144,7 +144,7 @@ function formatBrandForBreadcrumb(brand: string): string {
 
 export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => {
   const pathname = usePathname()
-  const orders = useOrderReviewStore((s) => s.orders)
+  const [orderCrumbBrand, setOrderCrumbBrand] = useState<string | null>(null)
 
   const isOrderDetail =
     pathname.startsWith(`${DASHBOARD_PATHS.orders}/`) && pathname !== DASHBOARD_PATHS.orders
@@ -155,13 +155,28 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
     return rest.split('/')[0] ?? ''
   }, [isOrderDetail, pathname])
 
-  const orderForBreadcrumb = useMemo(
-    () => (orderIdFromPath ? orders.find((o) => o.id === orderIdFromPath) : undefined),
-    [orderIdFromPath, orders]
-  )
+  useEffect(() => {
+    if (!orderIdFromPath) {
+      setOrderCrumbBrand(null)
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      try {
+        const o = await getOrder(orderIdFromPath)
+        if (cancelled) return
+        setOrderCrumbBrand(mapApiOrderToDashboardCard(o).brand)
+      } catch {
+        if (!cancelled) setOrderCrumbBrand(null)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [orderIdFromPath])
 
-  const breadcrumbCurrentLabel = orderForBreadcrumb
-    ? formatBrandForBreadcrumb(orderForBreadcrumb.brand)
+  const breadcrumbCurrentLabel = orderCrumbBrand
+    ? formatBrandForBreadcrumb(orderCrumbBrand)
     : 'Order details'
 
   const pageHeader = !isOrderDetail

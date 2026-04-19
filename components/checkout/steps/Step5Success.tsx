@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import CentralIcon from '@central-icons-react/all'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
@@ -11,31 +11,13 @@ import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/lib/cart-store'
 import { useCartStore } from '@/lib/cart-store'
+import { getOrder, getOrderDelivery } from '@/lib/order-api'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { toast } from '@/lib/toast'
 import styles from './Step5Success.module.css'
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
-}
-
-function hashString(value: string) {
-  // Deterministic, small non-crypto hash for demo codes (no backend yet).
-  let h = 0
-  for (let i = 0; i < value.length; i += 1) {
-    h = (h * 31 + value.charCodeAt(i)) | 0
-  }
-  return Math.abs(h)
-}
-
-function demoRedeemCodeForItem(item: CartItem) {
-  const base = `${item.id}|${item.variantLabel}|${item.regionLabel}|${item.unitPrice}`
-  const h = hashString(base).toString(36).toUpperCase().padStart(10, '0')
-  const a = h.slice(0, 2)
-  const b = h.slice(2, 6)
-  const c = h.slice(6, 11)
-  const d = h.slice(11, 15)
-  return `${a} - ${b} - ${c} - ${d}`.replace(/\s+-\s+$/g, '')
 }
 
 async function copyToClipboard(value: string, description?: string) {
@@ -94,12 +76,26 @@ function RatingStarsInteractive({ initialRating }: { initialRating: number }) {
   )
 }
 
-function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void }) {
+function SuccessCard({
+  item,
+  onUnseal,
+  deliveredCode,
+  codeLoading,
+  codeError,
+}: {
+  item: CartItem
+  onUnseal?: () => void
+  deliveredCode?: string | null
+  codeLoading: boolean
+  codeError: boolean
+}) {
   const [revealed, setRevealed] = useState(false)
   const [isProcessOpen, setIsProcessOpen] = useState(false)
   const [isWarrantyOpen, setIsWarrantyOpen] = useState(false)
   const lineTotal = item.unitPrice * item.quantity
-  const code = demoRedeemCodeForItem(item)
+  const fallbackMask = 'XXXXXXXXXXXXXXX'
+  const effectiveCode =
+    deliveredCode && deliveredCode.trim() ? deliveredCode.trim() : codeError ? fallbackMask : null
 
   return (
     <div className="border-whitesmoke-300 md:p-num-30 flex w-full max-w-[560px] flex-col gap-4 rounded-xl border-[1.5px] bg-gray-100 p-4 text-left sm:gap-5 sm:p-6">
@@ -167,12 +163,18 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
       <div className={styles.unsealWrapper}>
         <div className="flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:gap-3 sm:px-9 sm:py-6">
           <span className="font-nata-sans text-center text-base font-extrabold tracking-[0.48px] break-all text-slate-50 sm:text-2xl">
-            {revealed ? code : 'XXXXXXXXXXXXXXX'}
+            {codeLoading ? (
+              <span className="inline-block h-7 w-48 max-w-full animate-pulse rounded bg-white/10 sm:h-8 sm:w-64" />
+            ) : revealed ? (
+              effectiveCode ?? fallbackMask
+            ) : (
+              fallbackMask
+            )}
           </span>
-          {revealed ? (
+          {revealed && effectiveCode && !codeLoading ? (
             <button
               type="button"
-              onClick={() => copyToClipboard(code)}
+              onClick={() => copyToClipboard(effectiveCode)}
               aria-label="Copy code"
               className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
             >
@@ -241,8 +243,8 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
                     <li className="mb-0">Region: {item.regionLabel}</li>
                     <li className="mb-0">Total paid: {formatUsd(lineTotal)}</li>
                     <li>
-                      {revealed
-                        ? `Use code ${code} at checkout on the product platform.`
+                      {revealed && effectiveCode
+                        ? `Use code ${effectiveCode} at checkout on the product platform.`
                         : 'Unseal this product to reveal your redeem code first.'}
                     </li>
                   </ul>
@@ -331,8 +333,60 @@ function SuccessCard({ item, onUnseal }: { item: CartItem; onUnseal?: () => void
   )
 }
 
-export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
+export function Step5Success({
+  onUnseal,
+  orderId,
+}: {
+  onUnseal?: () => void
+  orderId?: string | null
+}) {
   const items = useCartStore((s) => s.items)
+  const [deliveryByKey, setDeliveryByKey] = useState<Record<string, string>>({})
+  const [deliveryLoading, setDeliveryLoading] = useState(false)
+  const [deliveryError, setDeliveryError] = useState(false)
+
+  useEffect(() => {
+    if (!orderId) {
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      setDeliveryLoading(true)
+      setDeliveryError(false)
+      try {
+        const order = await getOrder(orderId)
+        if (cancelled) return
+        if (order.status !== 'COMPLETED') {
+          setDeliveryLoading(false)
+          return
+        }
+        const delivery = await getOrderDelivery(orderId)
+        if (cancelled) return
+        const orderItems = order.items ?? []
+        const next: Record<string, string> = {}
+        for (const line of items) {
+          const match = orderItems.find(
+            (oi) =>
+              oi.productId === line.id &&
+              (oi.variantId ?? '') === (line.variantId ?? '')
+          )
+          if (!match) continue
+          const row = delivery.items.find((d) => d.itemId === match.id)
+          if (row?.content) {
+            next[itemKey(line)] = row.content
+          }
+        }
+        setDeliveryByKey(next)
+      } catch {
+        if (!cancelled) setDeliveryError(true)
+      } finally {
+        if (!cancelled) setDeliveryLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [items, orderId])
 
   if (!items.length) {
     return (
@@ -380,7 +434,14 @@ export function Step5Success({ onUnseal }: { onUnseal?: () => void }) {
 
       <div className="flex w-full max-w-[1920px] min-w-0 flex-wrap justify-center gap-6 sm:gap-8">
         {items.map((item) => (
-          <SuccessCard key={itemKey(item)} item={item} onUnseal={onUnseal} />
+          <SuccessCard
+            key={itemKey(item)}
+            item={item}
+            onUnseal={onUnseal}
+            deliveredCode={deliveryByKey[itemKey(item)]}
+            codeLoading={deliveryLoading}
+            codeError={deliveryError}
+          />
         ))}
       </div>
 

@@ -5,10 +5,27 @@ import CentralIcon from '@central-icons-react/all'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
+import type { ApiCryptoCurrency } from '@/lib/order-api'
 
 const rows = [
-  { icon: checkoutImg.btc, title: 'Bitcoin', sub: 'BTC', amount: '0.00037 BTC', w: 40, h: 40 },
-  { icon: checkoutImg.eth, title: 'Ethereum', sub: 'ETH', amount: '0.012 ETH', w: 40, h: 40 },
+  {
+    icon: checkoutImg.btc,
+    title: 'Bitcoin',
+    sub: 'BTC',
+    amount: '0.00037 BTC',
+    w: 40,
+    h: 40,
+    crypto: 'BTC' as const,
+  },
+  {
+    icon: checkoutImg.eth,
+    title: 'Ethereum',
+    sub: 'ETH',
+    amount: '0.012 ETH',
+    w: 40,
+    h: 40,
+    crypto: 'ETH' as const,
+  },
   {
     icon: checkoutImg.tether,
     title: 'USDT (Tron)',
@@ -16,6 +33,7 @@ const rows = [
     amount: '25.00 USDT',
     w: 43,
     h: 42,
+    crypto: 'USDT_TRC20' as const,
   },
   {
     icon: checkoutImg.tetherEth,
@@ -24,14 +42,35 @@ const rows = [
     amount: '25.00 USDT',
     w: 43,
     h: 42,
+    crypto: 'USDT_ERC20' as const,
   },
-  { icon: checkoutImg.ltc, title: 'Litecoin', sub: 'LTC', amount: '0.48 LTC', w: 40, h: 40 },
-  { icon: checkoutImg.bch, title: 'Bitcoin Cash', sub: 'BCH', amount: '0.056 BCH', w: 40, h: 40 },
+  {
+    icon: checkoutImg.ltc,
+    title: 'Litecoin',
+    sub: 'LTC',
+    amount: '0.48 LTC',
+    w: 40,
+    h: 40,
+    crypto: 'LTC' as const,
+  },
+  {
+    icon: checkoutImg.bch,
+    title: 'Bitcoin Cash',
+    sub: 'BCH',
+    amount: '0.056 BCH',
+    w: 40,
+    h: 40,
+    crypto: 'BCH' as const,
+  },
 ] as const
 
-type Props = { onBack: () => void; onContinue: () => void }
+type Props = {
+  onBack: () => void
+  onContinue: (cryptocurrency: ApiCryptoCurrency) => void
+  busy?: boolean
+}
 
-export function PaymentMethodPanel({ onBack, onContinue }: Props) {
+export function PaymentMethodPanel({ onBack, onContinue, busy }: Props) {
   const { openAuthModal } = useAuthModal()
 
   return (
@@ -78,8 +117,9 @@ export function PaymentMethodPanel({ onBack, onContinue }: Props) {
             ) : null}
             <button
               type="button"
-              onClick={onContinue}
-              className="focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none sm:p-[22px]"
+              disabled={busy}
+              onClick={() => onContinue(row.crypto)}
+              className="focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:p-[22px]"
             >
               <Image src={row.icon} alt="" width={row.w} height={row.h} className="shrink-0" />
               <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">

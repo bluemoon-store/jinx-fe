@@ -3,14 +3,23 @@
 import CentralIcon from '@central-icons-react/all'
 import { Reveal } from '@/components/ui/reveal'
 import { CountryFlag } from '@/components/ui/CountryFlag'
+import { formatUsd } from '@/lib/cart-format'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
+import {
+  getOrder,
+  getOrderDelivery,
+  mapApiOrderToDashboardCard,
+  mapApiOrderStatus,
+  type ApiOrder,
+} from '@/lib/order-api'
+import type { OrderPaymentMethod } from '@/lib/order-review-store'
 import { useOrderReviewStore } from '@/lib/order-review-store'
 import { toast } from '@/lib/toast'
 import type { Route } from 'next'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
+import { FunctionComponent, useEffect, useRef, useState } from 'react'
 
 const modalShadowClass =
   'shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]'
@@ -26,14 +35,6 @@ function iconSrcForBrand(brand: string): string {
   return '/icons/airbnb.svg'
 }
 
-function orderDisplayId(id: string): string {
-  return `OJ-92930049${id.padStart(2, '0')}`
-}
-
-function redeemCodeForOrder(id: string): string {
-  return `AB-123-456-${id.padStart(3, '0')}`
-}
-
 /** Matches shop listing URLs (`ShopProductsSection`, etc.). */
 function slugify(value: string): string {
   return value
@@ -44,14 +45,59 @@ function slugify(value: string): string {
     .replace(/(^-|-$)/g, '')
 }
 
+const PAYMENT_CRYPTO_META: Record<OrderPaymentMethod, { src: string; label: string }> = {
+  bitcoin: { src: '/icons/Crypto Logos/Bitcoin.svg', label: 'Bitcoin' },
+  ethereum: {
+    src: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg',
+    label: 'Ethereum',
+  },
+  usdt_tron: { src: '/icons/Crypto Logos/Tether.svg', label: 'USDT (Tron)' },
+  usdt_ethereum: { src: '/icons/Crypto Logos/Tether.svg', label: 'USDT (Ethereum)' },
+  litecoin: { src: '/icons/Crypto Logos/Litecoin LTC.svg', label: 'Litecoin' },
+  bitcoin_cash: { src: '/icons/Crypto Logos/Bitcoin-1.svg', label: 'Bitcoin Cash' },
+}
+
 const DashboardOrderDetailPage: FunctionComponent = () => {
   const params = useParams()
   const rawId = typeof params.id === 'string' ? params.id : ''
-  const orders = useOrderReviewStore((s) => s.orders)
   const markedUsedByOrderId = useOrderReviewStore((s) => s.markedUsedByOrderId)
   const setOrderMarkedUsed = useOrderReviewStore((s) => s.setOrderMarkedUsed)
 
-  const order = useMemo(() => orders.find((o) => o.id === rawId), [orders, rawId])
+  const [apiOrder, setApiOrder] = useState<ApiOrder | null | undefined>(undefined)
+  const [deliveryCode, setDeliveryCode] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!rawId) {
+      setApiOrder(null)
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      setApiOrder(undefined)
+      setDeliveryCode(null)
+      try {
+        const o = await getOrder(rawId)
+        if (cancelled) return
+        setApiOrder(o)
+        if (o.status === 'COMPLETED') {
+          try {
+            const d = await getOrderDelivery(rawId)
+            const first = d.items[0]?.content
+            setDeliveryCode(first ?? null)
+          } catch {
+            setDeliveryCode(null)
+          }
+        }
+      } catch {
+        if (!cancelled) setApiOrder(null)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [rawId])
+
+  const card = apiOrder ? mapApiOrderToDashboardCard(apiOrder) : null
 
   const [rating, setRating] = useState(0)
   const [hoveredStar, setHoveredStar] = useState<number | null>(null)
@@ -70,9 +116,19 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
   const previewRating = hoveredStar ?? rating
   const showReviewBox = rating >= 1
-  const heroSrc = order ? iconSrcForBrand(order.brand) : '/icons/airbnb.svg'
+  const heroSrc = card ? iconSrcForBrand(card.brand) : '/icons/airbnb.svg'
 
-  if (!order) {
+  if (apiOrder === undefined) {
+    return (
+      <Reveal variant="fade-up" delay={140}>
+        <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-3 py-12 text-center">
+          <p className="text-lightsteelblue-100 text-sm font-medium">Loading order…</p>
+        </div>
+      </Reveal>
+    )
+  }
+
+  if (!card || !apiOrder) {
     return (
       <Reveal variant="fade-up" delay={140}>
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-3 py-12 text-center">
@@ -101,9 +157,15 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
     )
   }
 
+  const redeemDisplay = deliveryCode?.trim() || 'XXXXXXXXXXXXXXX'
+
   const handleCopyRedeemCode = async () => {
-    const code = redeemCodeForOrder(order.id)
+    const code = redeemDisplay === 'XXXXXXXXXXXXXXX' ? '' : redeemDisplay
     try {
+      if (!code) {
+        toast.error('No redeem code available yet.')
+        return
+      }
       if (!navigator?.clipboard?.writeText) {
         toast.error('Could not copy. Please try again.')
         return
@@ -119,7 +181,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   }
 
   const handleCopyOrderId = async () => {
-    const idText = orderDisplayId(order.id)
+    const idText = apiOrder.orderNumber
     try {
       if (!navigator?.clipboard?.writeText) {
         toast.error('Could not copy. Please try again.')
@@ -132,27 +194,32 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
     }
   }
 
+  const dashStatus = mapApiOrderStatus(apiOrder.status)
   const paymentLabel =
-    order.status === 'paid' ? 'Paid' : order.status === 'pending' ? 'Pending' : 'Expired'
+    dashStatus === 'paid' ? 'Paid' : dashStatus === 'pending' ? 'Pending' : 'Expired'
   const paymentIcon =
-    order.status === 'paid'
+    dashStatus === 'paid'
       ? 'IconCircleCheck'
-      : order.status === 'pending'
+      : dashStatus === 'pending'
         ? 'IconClockAlert'
         : 'IconCrossSmall'
 
   const paymentStatusIconClass =
-    order.status === 'paid'
+    dashStatus === 'paid'
       ? 'text-limegreen'
-      : order.status === 'pending'
+      : dashStatus === 'pending'
         ? 'text-gold'
         : 'text-darkorange'
 
-  const markedAsUsed = markedUsedByOrderId[order.id] === true
-  const isPaidOrder = order.status === 'paid'
+  const markedAsUsed = markedUsedByOrderId[card.id] === true
+  const isPaidOrder = dashStatus === 'paid'
 
   const statusBadgeLabel = markedAsUsed ? 'Used' : paymentLabel
   const statusBadgeIcon = markedAsUsed ? 'IconDoupleCheckmark2Small' : paymentIcon
+
+  const cryptoUi = PAYMENT_CRYPTO_META[card.paymentMethod]
+
+  const firstLine = apiOrder.items?.[0]
 
   return (
     <Reveal variant="fade-up" delay={140}>
@@ -172,7 +239,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-4">
               <Link
-                href={`/shop/${slugify(order.brand)}` as Route}
+                href={`/shop/${slugify(card.brand)}` as Route}
                 className="rounded-num-8 p-num-12 box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid border-gray-600 bg-[#19263F] transition-colors hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
@@ -195,7 +262,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 title={!isPaidOrder ? 'Available when payment is complete' : undefined}
                 onClick={() => {
                   if (!isPaidOrder) return
-                  setOrderMarkedUsed(order.id, !markedAsUsed)
+                  setOrderMarkedUsed(card.id, !markedAsUsed)
                 }}
                 className="rounded-num-8 p-num-12 box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid border-gray-600 bg-[#19263F] transition-colors hover:bg-[#1f2d4a] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#19263F]"
               >
@@ -262,7 +329,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             <header className="font-nata-sans flex flex-col gap-2 self-stretch">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="tracking-num-0_02 leading-8 font-extrabold uppercase">
-                  {order.brand}
+                  {card.brand}
                 </h1>
                 <div className="px-num-12 text-lightsteelblue-100 font-commissioner flex items-center gap-2 rounded-xl bg-[#19263F] py-1.5 text-[13px]">
                   <CentralIcon
@@ -286,7 +353,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
               <div className="text-num-16 font-commissioner gap-x-num-15 flex flex-wrap items-center gap-y-2 text-white">
                 <span className="tracking-num--0_01 leading-num-28 font-semibold opacity-75">
-                  {order.price}
+                  {formatUsd(Number.parseFloat(apiOrder.totalAmount))}
                 </span>
                 <span className="h-3.5 w-px shrink-0 bg-white/25" aria-hidden />
                 <span className="tracking-num--0_01 leading-num-28 font-semibold opacity-75">
@@ -297,10 +364,10 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <img
                     className="size-[19.5px] shrink-0 rounded-[4.24px]"
                     alt=""
-                    src="/icons/Crypto Logos/Ethereum ETH.svg"
+                    src={cryptoUi.src}
                   />
                   <span className="tracking-num--0_01 leading-num-28 font-semibold opacity-75">
-                    Ethereum
+                    {cryptoUi.label}
                   </span>
                 </span>
               </div>
@@ -335,7 +402,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               ) : (
                 <>
                   <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">
-                    {redeemCodeForOrder(order.id)}
+                    {redeemDisplay}
                   </span>
                   <button
                     type="button"
@@ -523,10 +590,10 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       type="button"
                       onClick={handleCopyOrderId}
                       className="text-num-16 tracking-num--0_01 focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold text-white [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none sm:max-w-[min(100%,280px)]"
-                      aria-label={`Copy order ID ${orderDisplayId(order.id)}`}
+                      aria-label={`Copy order ID ${apiOrder.orderNumber}`}
                     >
                       <span className="min-w-0 truncate text-right">
-                        {orderDisplayId(order.id)}
+                        {apiOrder.orderNumber}
                       </span>
                       <CentralIcon
                         name="IconSquareBehindSquare1"
@@ -561,7 +628,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 <div className="rounded-num-8 py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                   <span className="leading-num-20 font-semibold">Variant</span>
                   <span className="text-num-16 tracking-num--0_01 max-w-full text-right font-semibold text-white sm:max-w-[65%]">
-                    1 Year | 4K Ultra HD | Single Account Gift Card
+                    {firstLine?.variantLabel ?? '—'}
                   </span>
                 </div>
 
@@ -570,19 +637,19 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     <span className="leading-num-20 font-semibold">Country</span>
                     <span className="text-num-16 tracking-num--0_01 flex items-center gap-2 font-semibold text-white">
                       <CountryFlag
-                        countryCode="CA"
-                        alt="Canada flag"
+                        countryCode={firstLine?.regionCountry ?? 'US'}
+                        alt="Region flag"
                         className="h-num-19 w-[26px] border border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
                         size={26}
                         shape="rectangle"
                       />
-                      CA
+                      {firstLine?.regionCountry ?? '—'}
                     </span>
                   </div>
                   <div className="rounded-num-8 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Quantity</span>
                     <span className="text-num-16 tracking-num--0_01 font-semibold text-white">
-                      {String(order.itemCount).padStart(2, '0')}
+                      {String(card.itemCount).padStart(2, '0')}
                     </span>
                   </div>
                 </div>
