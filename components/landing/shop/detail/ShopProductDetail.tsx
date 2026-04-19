@@ -6,10 +6,10 @@ import { ShopDetailHero } from './ShopDetailHero'
 import { ShopDetailRelatedProducts } from './ShopDetailRelatedProducts'
 import { ShopDetailRightColumn } from './ShopDetailRightColumn'
 import FAQSection from '@/components/landing/FAQSection'
-import type { ShopProductDetail as ShopProductDetailType } from './types'
+import type { ProductDetail } from '@/types/product'
 
 type Props = {
-  product: ShopProductDetailType
+  product: ProductDetail
 }
 
 export const ShopProductDetail: FunctionComponent<Props> = ({ product }) => {

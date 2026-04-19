@@ -18,7 +18,7 @@ import styles from './CartColumn.module.css'
 const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
-  return `${item.id}-${item.variantLabel}-${item.stateCode}`
+  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
 }
 
 function LineThumb({ item }: { item: CartItem }) {
@@ -65,8 +65,8 @@ function CartLine({
             <div className="flex shrink-0 items-center gap-[7.5px]">
               <div className="relative h-[18px] w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
                 <CountryFlag
-                  countryCode="CA"
-                  alt="Canada flag"
+                  countryCode={item.regionCountry ?? 'CA'}
+                  alt="Region flag"
                   className="h-full w-full"
                   size={24}
                   shape="rectangle"
@@ -80,7 +80,7 @@ function CartLine({
                 />
               </div>
               <span className="text-sm leading-snug font-medium text-[#c2c2e2] sm:text-[17.5px] sm:leading-[25px]">
-                {item.stateCode}
+                {item.regionLabel}
               </span>
             </div>
           </div>
@@ -212,8 +212,10 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
               adjustItemQuantity(
                 {
                   id: item.id,
+                  variantId: item.variantId,
                   variantLabel: item.variantLabel,
-                  stateCode: item.stateCode,
+                  regionLabel: item.regionLabel,
+                  regionCountry: item.regionCountry,
                 },
                 delta
               )
@@ -222,8 +224,10 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
               adjustItemQuantity(
                 {
                   id: item.id,
+                  variantId: item.variantId,
                   variantLabel: item.variantLabel,
-                  stateCode: item.stateCode,
+                  regionLabel: item.regionLabel,
+                  regionCountry: item.regionCountry,
                 },
                 -item.quantity
               )

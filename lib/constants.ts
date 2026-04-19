@@ -12,8 +12,8 @@ export const COOKIE_KEYS = {
 
 export const STORAGE_KEY = 'bluemoon-auth-storage'
 
-/** Zustand persist key for `useCartStore` (cart line items only). */
-export const CART_STORAGE_KEY = 'bluemoon-cart-storage'
+/** Zustand persist key for `useCartStore` (cart line items only). Bump when cart item shape changes. */
+export const CART_STORAGE_KEY = 'bluemoon-cart-storage-v2'
 
 export const ROUTES = {
   HOME: '/',

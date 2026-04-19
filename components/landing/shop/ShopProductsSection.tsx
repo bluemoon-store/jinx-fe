@@ -7,109 +7,69 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useProductsQuery } from '@/hooks/use-products'
+import type { ProductCard } from '@/types/product'
 
 import { ShopProductCard } from './ShopProductCard'
 import ShopProductDetailModal from './detail/ShopProductDetailModal'
 
 type Props = {
-  selectedCategory: string
+  selectedCategorySlug: string
 }
 
-type ShopListItem = {
-  id: string
-  name: string
-  fromPrice: string
-  imageSrc: string
-  category: string
-}
-
-const ALL_CATEGORIES = [
-  'All Giftcards',
-  'Cashout',
-  'Hotels',
-  'Food',
-  'Flights',
-  'Groceries',
-  'Shopping',
-  'Clothing',
-  'Gas/Oil',
-  'Tickets',
-  'Lifestyle',
-  'Jewelry',
-  'Rentals',
-  'Streaming',
-]
-
-const BASE_PRODUCTS: Omit<ShopListItem, 'id'>[] = [
-  { name: 'DOMINOS', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Food' },
-  { name: 'CHIPOTLE', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Food' },
-  { name: 'NETFLIX', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Streaming' },
-  { name: 'PLAYSTATION', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Lifestyle' },
-  { name: 'BEST BUY', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Shopping' },
-  { name: 'AIRBNB', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Hotels' },
-  { name: 'AMAZON', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Shopping' },
-  { name: 'STARBUCKS', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Food' },
-  { name: 'WALMART', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Shopping' },
-  { name: 'TARGET', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Shopping' },
-  { name: 'H&M', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Clothing' },
-  { name: 'UBER', fromPrice: '$2.50', imageSrc: '/icons/airbnb.svg', category: 'Lifestyle' },
-]
-
-const TOTAL_PRODUCTS = 100
 const PAGE_SIZE = 12
-const INITIAL_VISIBLE = 12
+const INITIAL_PAGE = 1
 
-const slugify = (value: string) => {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
-
-export const ShopProductsSection = ({ selectedCategory }: Props) => {
+export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
   const searchParams = useSearchParams()
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
 
   useEffect(() => {
     setQuery(searchParams.get('q') ?? '')
   }, [searchParams])
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
-  const [quickBuyProduct, setQuickBuyProduct] = useState<ShopListItem | null>(null)
+
+  const debouncedSearch = useDebounce(query.trim(), 400)
+
+  const [page, setPage] = useState(INITIAL_PAGE)
+  const [merged, setMerged] = useState<ProductCard[]>([])
+
+  const [quickBuySlug, setQuickBuySlug] = useState<string | null>(null)
   const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
     setQuickBuyPortalEl(document.body)
   }, [])
 
-  const allProducts: ShopListItem[] = useMemo(() => {
-    return Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
-      const base = BASE_PRODUCTS[i % BASE_PRODUCTS.length]
-      return { ...base, id: `p-${i}` }
-    })
-  }, [])
+  useEffect(() => {
+    setPage(INITIAL_PAGE)
+    setMerged([])
+  }, [debouncedSearch, selectedCategorySlug])
 
-  const filteredProducts = useMemo(() => {
-    const safeCategory = ALL_CATEGORIES.includes(selectedCategory)
-      ? selectedCategory
-      : 'All Giftcards'
-    const q = query.trim().toLowerCase()
+  const listParams = useMemo(
+    () => ({
+      categorySlug: selectedCategorySlug || undefined,
+      page,
+      limit: PAGE_SIZE,
+      search: debouncedSearch || undefined,
+    }),
+    [selectedCategorySlug, page, debouncedSearch]
+  )
 
-    return allProducts.filter((p) => {
-      const categoryOk = safeCategory === 'All Giftcards' ? true : p.category === safeCategory
-      const searchOk = q ? p.name.toLowerCase().includes(q) : true
-      return categoryOk && searchOk
-    })
-  }, [allProducts, query, selectedCategory])
+  const { data, isLoading, isFetching } = useProductsQuery(listParams)
 
   useEffect(() => {
-    setVisibleCount(INITIAL_VISIBLE)
-  }, [query, selectedCategory])
+    if (!data?.items) return
+    if (page === INITIAL_PAGE) {
+      setMerged(data.items)
+    } else {
+      setMerged((prev) => [...prev, ...data.items])
+    }
+  }, [data, page])
 
-  const visibleProducts = filteredProducts.slice(0, visibleCount)
-  const total = filteredProducts.length
-  const loaded = visibleProducts.length
+  const total = data?.total ?? merged.length
+  const loaded = merged.length
+  const canLoadMore = loaded < total && (data?.items?.length ?? 0) >= PAGE_SIZE
 
   return (
     <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
@@ -123,7 +83,7 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
           <span className="leading-num-20 font-semibold">Available Products : </span>
           <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-center text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
             <b className="leading-num-20 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-              {total}
+              {isLoading && page === INITIAL_PAGE ? '—' : total}
             </b>
           </div>
         </div>
@@ -148,7 +108,11 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
         />
       </div>
 
-      {total === 0 ? (
+      {isLoading && page === INITIAL_PAGE ? (
+        <div className="text-lightsteelblue-100 font-commissioner py-12 text-center text-sm">
+          Loading products…
+        </div>
+      ) : total === 0 ? (
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-[5px] py-12 text-left text-lg">
           <img className="size-36 opacity-90 md:size-52" alt="" src="/icons/not-found.svg" />
           <div className="flex flex-col items-center">
@@ -164,14 +128,14 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
       ) : (
         <>
           <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-            {visibleProducts.map((p) => (
+            {merged.map((p) => (
               <ShopProductCard
-                key={p.id}
+                key={`${p.id}-${p.slug}`}
                 name={p.name}
-                fromPrice={p.fromPrice}
-                imageSrc={p.imageSrc}
-                detailHref={`/shop/${slugify(p.name)}`}
-                onQuickBuy={() => setQuickBuyProduct(p)}
+                fromPrice={p.fromPrice.startsWith('$') ? p.fromPrice : `$${p.fromPrice}`}
+                imageSrc={p.primaryImageUrl ?? '/icons/airbnb.svg'}
+                detailHref={`/shop/${p.slug}`}
+                onQuickBuy={() => setQuickBuySlug(p.slug)}
               />
             ))}
           </div>
@@ -181,12 +145,15 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
               <DashboardLoadMoreFooter
                 shown={loaded}
                 total={total}
-                canLoadMore={loaded < total}
-                onLoadMore={() => setVisibleCount((v) => Math.min(total, v + PAGE_SIZE))}
+                canLoadMore={canLoadMore && !isFetching}
+                onLoadMore={() => {
+                  if (!canLoadMore || isFetching) return
+                  setPage((v) => v + 1)
+                }}
               />
             </nav>
           </div>
-          {quickBuyProduct &&
+          {quickBuySlug &&
             quickBuyPortalEl &&
             createPortal(
               <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6 lg:px-8">
@@ -194,7 +161,7 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
                   type="button"
                   className="absolute inset-0 bg-black/60"
                   aria-label="Close quick buy dialog"
-                  onClick={() => setQuickBuyProduct(null)}
+                  onClick={() => setQuickBuySlug(null)}
                 />
                 <div
                   className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
@@ -202,9 +169,8 @@ export const ShopProductsSection = ({ selectedCategory }: Props) => {
                   aria-modal="true"
                 >
                   <ShopProductDetailModal
-                    productName={quickBuyProduct.name}
-                    imageSrc={quickBuyProduct.imageSrc}
-                    onClose={() => setQuickBuyProduct(null)}
+                    productSlug={quickBuySlug}
+                    onClose={() => setQuickBuySlug(null)}
                   />
                 </div>
               </div>,

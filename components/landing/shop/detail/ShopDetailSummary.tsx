@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react'
-import type { ShopProductDetail } from './types'
+import type { ProductDetail } from '@/types/product'
 import CentralIcon from '@central-icons-react/all'
 
 type Props = {
-  product: ShopProductDetail
+  product: ProductDetail
 }
 
 export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
@@ -36,21 +36,23 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
         <div className="tracking-num-0_02 leading-8 font-extrabold uppercase">{product.name}</div>
       </div>
 
-      <div className="rounded-num-8 border-whitesmoke-300 p-num-10 flex items-center justify-center gap-2.5 border-[1.8px] border-solid bg-gray-100 text-center">
-        <CentralIcon
-          name="IconCloudCheck"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={16}
-          className="text-whitesmoke-200"
-        />
-        <div className="leading-num-20 font-semibold">{product.shortNotice}</div>
-      </div>
+      {product.shortNotice ? (
+        <div className="rounded-num-8 border-whitesmoke-300 p-num-10 flex items-center justify-center gap-2.5 border-[1.8px] border-solid bg-gray-100 text-center">
+          <CentralIcon
+            name="IconCloudCheck"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={16}
+            className="text-whitesmoke-200"
+          />
+          <div className="leading-num-20 font-semibold">{product.shortNotice}</div>
+        </div>
+      ) : null}
 
       <div className="text-num-16 leading-num-24 font-roobert-trial text-lightsteelblue-100 self-stretch font-medium">
-        {product.summary}
+        {product.description}
       </div>
     </div>
   )

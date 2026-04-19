@@ -6,8 +6,10 @@ import { CART_STORAGE_KEY } from '@/lib/constants'
 export type CartItem = {
   id: string
   name: string
+  variantId?: string
   variantLabel: string
-  stateCode: string
+  regionLabel: string
+  regionCountry?: string
   /** Unit price in USD (dollars, not cents). */
   unitPrice: number
   quantity: number
@@ -19,7 +21,7 @@ type CartState = {
   items: CartItem[]
   addItem: (item: Omit<CartItem, 'quantity'>, quantity: number) => void
   adjustItemQuantity: (
-    key: Pick<CartItem, 'id' | 'variantLabel' | 'stateCode'>,
+    key: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel' | 'regionCountry'>,
     delta: number
   ) => void
   clear: () => void
@@ -31,18 +33,36 @@ const noopStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
   removeItem: () => {},
 }
 
+function lineKeyParts(item: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>) {
+  return {
+    id: item.id,
+    variantId: item.variantId ?? '',
+    variantLabel: item.variantLabel,
+    regionLabel: item.regionLabel,
+  }
+}
+
+function sameLine(
+  a: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>,
+  b: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>
+) {
+  const ka = lineKeyParts(a)
+  const kb = lineKeyParts(b)
+  return (
+    ka.id === kb.id &&
+    ka.variantId === kb.variantId &&
+    ka.variantLabel === kb.variantLabel &&
+    ka.regionLabel === kb.regionLabel
+  )
+}
+
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
       addItem: (item, quantity) =>
         set((state) => {
-          const existingIndex = state.items.findIndex(
-            (i) =>
-              i.id === item.id &&
-              i.variantLabel === item.variantLabel &&
-              i.stateCode === item.stateCode
-          )
+          const existingIndex = state.items.findIndex((i) => sameLine(i, item))
 
           if (existingIndex >= 0) {
             const next = [...state.items]
@@ -65,12 +85,7 @@ export const useCartStore = create<CartState>()(
         }),
       adjustItemQuantity: (key, delta) =>
         set((state) => {
-          const idx = state.items.findIndex(
-            (i) =>
-              i.id === key.id &&
-              i.variantLabel === key.variantLabel &&
-              i.stateCode === key.stateCode
-          )
+          const idx = state.items.findIndex((i) => sameLine(i, key))
           if (idx < 0) return state
           const next = [...state.items]
           const q = Math.max(0, Math.min(99, next[idx].quantity + delta))

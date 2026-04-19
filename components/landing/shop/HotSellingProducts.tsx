@@ -5,36 +5,15 @@ import Link from 'next/link'
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useState } from 'react'
 
+import { useHotProductsQuery } from '@/hooks/use-products'
+
 import { Reveal } from '@/components/ui/reveal'
-
-type HotSellingItem = {
-  name: string
-}
-
-const ITEMS: HotSellingItem[] = [
-  { name: 'Dominos' },
-  { name: 'BEST BUY' },
-  { name: 'CHIPOTLE' },
-  { name: 'NETFLIX' },
-  { name: 'PLAYSTATION' },
-  { name: 'NETFLIX' },
-  { name: 'CHIPOTLE' },
-  { name: 'PLAYSTATION' },
-  { name: 'BEST BUY' },
-  { name: 'Dominos' },
-]
-
-const slugify = (value: string) => {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
 
 export const HotSellingProducts: FunctionComponent = () => {
   const [isHidden, setIsHidden] = useState(false)
+  const { data, isLoading } = useHotProductsQuery(10)
+
+  const items = data?.items ?? []
 
   return (
     <>
@@ -87,76 +66,80 @@ export const HotSellingProducts: FunctionComponent = () => {
         }}
       >
         <div className="min-h-0 overflow-hidden">
-          <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
-            {ITEMS.map((item, idx) => (
-              <Reveal
-                key={`${item.name}-${idx}`}
-                variant="fade-up"
-                delay={idx * 70}
-                rootMargin="0px 0px -20px 0px"
-                className="w-full"
-              >
-                <Link
-                  href={`/shop/${slugify(item.name)}`}
-                  className="rounded-num-8 relative z-10 block w-full overflow-hidden p-px"
-                  style={{
-                    boxShadow:
-                      '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
-                  }}
+          {isLoading ? (
+            <div className="text-lightsteelblue-100 p-6 text-center text-sm">Loading hot products…</div>
+          ) : (
+            <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
+              {items.map((item, idx) => (
+                <Reveal
+                  key={item.id}
+                  variant="fade-up"
+                  delay={idx * 70}
+                  rootMargin="0px 0px -20px 0px"
+                  className="w-full"
                 >
-                  {/* Running light around the border */}
-                  <div
-                    className="pointer-events-none absolute z-0 aspect-square w-[220%]"
+                  <Link
+                    href={`/shop/${item.slug}`}
+                    className="rounded-num-8 relative z-10 block w-full overflow-hidden p-px"
                     style={{
-                      top: '50%',
-                      left: '50%',
-                      background:
-                        'conic-gradient(from 0deg, rgba(255,42,42,0.65) 0deg, rgba(255,107,107,0.7) 60deg, rgba(255,120,80,0.28) 120deg, rgba(255,120,80,0.18) 210deg, rgba(255,42,42,0.55) 260deg, rgba(255,107,107,0.6) 320deg)',
-                      animation: 'border-spin 3.2s linear infinite',
-                    }}
-                  />
-
-                  {/* Inner card */}
-                  <div
-                    className="rounded-num-8 relative z-10 flex w-full min-w-0 flex-col overflow-hidden p-3"
-                    style={{
-                      background:
-                        'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                      boxShadow:
+                        '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
                     }}
                   >
-                    <div className="flex w-full items-center gap-3 sm:gap-[17px]">
-                      <img
-                        className="h-12 w-12 shrink-0 scale-110 object-contain sm:h-[60px] sm:w-[60px]"
-                        alt=""
-                        src={'/icons/best-buy.svg'}
-                      />
+                    <div
+                      className="pointer-events-none absolute z-0 aspect-square w-[220%]"
+                      style={{
+                        top: '50%',
+                        left: '50%',
+                        background:
+                          'conic-gradient(from 0deg, rgba(255,42,42,0.65) 0deg, rgba(255,107,107,0.7) 60deg, rgba(255,120,80,0.28) 120deg, rgba(255,120,80,0.18) 210deg, rgba(255,42,42,0.55) 260deg, rgba(255,107,107,0.6) 320deg)',
+                        animation: 'border-spin 3.2s linear infinite',
+                      }}
+                    />
 
-                      <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">
-                        <div className="flex items-center gap-1 sm:gap-[5px]">
-                          <div className="tracking-num-0_02 truncate text-sm leading-[20px] font-extrabold uppercase sm:text-base sm:leading-[20px]">
-                            {item.name}
-                          </div>
-                          <div className="font-heydex flex items-center gap-1.5 text-[#FF2A2A] sm:gap-2">
-                            <div className="tracking-num-0.02 text-base font-extrabold sm:text-lg">
-                              Hot
+                    <div
+                      className="rounded-num-8 relative z-10 flex w-full min-w-0 flex-col overflow-hidden p-3"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                      }}
+                    >
+                      <div className="flex w-full items-center gap-3 sm:gap-[17px]">
+                        <img
+                          className="h-12 w-12 shrink-0 scale-110 object-contain sm:h-[60px] sm:w-[60px]"
+                          alt=""
+                          src={item.primaryImageUrl ?? '/icons/best-buy.svg'}
+                        />
+
+                        <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">
+                          <div className="flex items-center gap-1 sm:gap-[5px]">
+                            <div className="tracking-num-0_02 truncate text-sm leading-[20px] font-extrabold uppercase sm:text-base sm:leading-[20px]">
+                              {item.name}
                             </div>
+                            {item.isHot ? (
+                              <div className="font-heydex flex items-center gap-1.5 text-[#FF2A2A] sm:gap-2">
+                                <div className="tracking-num-0.02 text-base font-extrabold sm:text-lg">
+                                  Hot
+                                </div>
+                              </div>
+                            ) : null}
                           </div>
-                        </div>
-                        <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center gap-0.5 text-sm">
-                          <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-                          <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                            <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                              $2.50
-                            </b>
+                          <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center gap-0.5 text-sm">
+                            <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
+                            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
+                              <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                                {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
+                              </b>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

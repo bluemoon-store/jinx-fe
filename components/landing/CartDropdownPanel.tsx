@@ -45,14 +45,14 @@ const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
         <div className="flex items-center gap-1.5">
           <div className="grid h-3 w-4 shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
             <CountryFlag
-              countryCode="CA"
+              countryCode={item.regionCountry ?? 'CA'}
               shape="rectangle"
-              alt="Canada flag"
+              alt="Region flag"
               className="col-span-full row-span-full h-full w-full object-cover"
               size={16}
             />
           </div>
-          <div className="leading-num-20 font-medium">{item.stateCode}</div>
+          <div className="leading-num-20 font-medium">{item.regionLabel}</div>
         </div>
       </div>
     </div>
@@ -108,7 +108,8 @@ export const CartDropdownPanel: FunctionComponent = () => {
 
   const cartTotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
 
-  const lineKey = (item: CartItem) => `${item.id}-${item.variantLabel}-${item.stateCode}`
+  const lineKey = (item: CartItem) =>
+    `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
 
   return (
     <div
@@ -125,8 +126,10 @@ export const CartDropdownPanel: FunctionComponent = () => {
                 adjustItemQuantity(
                   {
                     id: item.id,
+                    variantId: item.variantId,
                     variantLabel: item.variantLabel,
-                    stateCode: item.stateCode,
+                    regionLabel: item.regionLabel,
+                    regionCountry: item.regionCountry,
                   },
                   delta
                 )
