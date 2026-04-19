@@ -20,7 +20,7 @@ export const ShopProductDetail: FunctionComponent<Props> = ({ product }) => {
           <Reveal
             variant="slide-left"
             delay={0}
-            className="w-full min-w-0 max-w-full lg:sticky lg:top-[75px] lg:z-10 lg:self-start"
+            className="w-full max-w-full min-w-0 lg:sticky lg:top-[75px] lg:z-10 lg:self-start"
           >
             <ShopDetailHero product={product} />
           </Reveal>

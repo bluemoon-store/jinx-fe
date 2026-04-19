@@ -14,7 +14,7 @@ import {
   type ReviewPurchaseRow,
   type OrderPaymentMethod,
   useOrderReviewStore,
-} from '@/lib/order-review-store'
+} from '@/stores/order-review-store'
 
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { DashboardReviewsPopup } from '@/components/dashboard/DashboardReviewsPopup'

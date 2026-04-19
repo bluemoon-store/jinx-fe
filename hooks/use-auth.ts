@@ -20,7 +20,7 @@ import {
 } from '@/actions/auth'
 import { ROUTES } from '@/lib/constants'
 import { clearTokens, getAccessToken, setTokens } from '@/lib/token'
-import { useAppStore } from '@/lib/store'
+import { useAppStore } from '@/stores/app-store'
 import { toast } from '@/lib/toast'
 import { parseApiError } from '@/lib/api-error'
 import type { LoginInput, RegisterInput } from '@/lib/validations'

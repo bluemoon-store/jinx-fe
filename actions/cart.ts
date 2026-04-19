@@ -35,17 +35,17 @@ export type UpdateCartItemDto = {
   quantity: number
 }
 
-export async function getCart(): Promise<ApiCart> {
+export async function getCartAction(): Promise<ApiCart> {
   const res = await api.get<BackendResponse<ApiCart>>('/cart')
   return unwrap(res)
 }
 
-export async function addCartItem(dto: AddCartItemDto): Promise<ApiCart> {
+export async function addCartItemAction(dto: AddCartItemDto): Promise<ApiCart> {
   const res = await api.post<BackendResponse<ApiCart>>('/cart/items', dto)
   return unwrap(res)
 }
 
-export async function updateCartItem(
+export async function updateCartItemAction(
   cartItemId: string,
   dto: UpdateCartItemDto
 ): Promise<ApiCart> {
@@ -53,12 +53,12 @@ export async function updateCartItem(
   return unwrap(res)
 }
 
-export async function removeCartItem(cartItemId: string): Promise<ApiCart> {
+export async function removeCartItemAction(cartItemId: string): Promise<ApiCart> {
   const res = await api.delete<BackendResponse<ApiCart>>(`/cart/items/${cartItemId}`)
   return unwrap(res)
 }
 
-export async function clearCart(): Promise<ApiCart> {
+export async function clearCartAction(): Promise<ApiCart> {
   const res = await api.delete<BackendResponse<ApiCart>>('/cart')
   return unwrap(res)
 }

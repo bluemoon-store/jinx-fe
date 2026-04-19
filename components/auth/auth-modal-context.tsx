@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import { useAppStore } from '@/lib/store'
+import { useAppStore } from '@/stores/app-store'
 
 export type AuthModalView =
   | 'signin'

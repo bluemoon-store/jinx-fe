@@ -2,17 +2,17 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
-import { removeCartItem, updateCartItem } from '@/lib/cart-api'
+import { useRemoveCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { formatUsd } from '@/lib/cart-format'
-import type { CartItem } from '@/lib/cart-store'
-import { useCartStore } from '@/lib/cart-store'
+import type { CartItem } from '@/stores/cart-store'
+import { useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
-import { resolvePromoCode, usePromoStore } from '@/lib/promo-store'
-import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
+import { resolvePromoCode, usePromoStore } from '@/stores/promo-store'
+import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
 import CentralIcon from '@central-icons-react/all'
 
 import styles from './CartColumn.module.css'
@@ -21,22 +21,6 @@ const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
-}
-
-function syncBackendLineQuantity(item: CartItem, nextQuantity: number) {
-  const backendId = item.backendCartItemId
-  if (!backendId || !getAccessToken()) return
-  void (async () => {
-    try {
-      if (nextQuantity <= 0) {
-        await removeCartItem(backendId)
-      } else {
-        await updateCartItem(backendId, { quantity: nextQuantity })
-      }
-    } catch (err) {
-      console.error('cart line backend sync', err)
-    }
-  })()
 }
 
 function LineThumb({ item }: { item: CartItem }) {
@@ -149,6 +133,31 @@ function CartLine({
 }
 
 export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
+  const updateCartItemMutation = useUpdateCartItemMutation()
+  const removeCartItemMutation = useRemoveCartItemMutation()
+
+  const syncBackendLineQuantity = useCallback(
+    (item: CartItem, nextQuantity: number) => {
+      const backendId = item.backendCartItemId
+      if (!backendId || !getAccessToken()) return
+      void (async () => {
+        try {
+          if (nextQuantity <= 0) {
+            await removeCartItemMutation.mutateAsync(backendId)
+          } else {
+            await updateCartItemMutation.mutateAsync({
+              cartItemId: backendId,
+              dto: { quantity: nextQuantity },
+            })
+          }
+        } catch (err) {
+          console.error('cart line backend sync', err)
+        }
+      })()
+    },
+    [removeCartItemMutation, updateCartItemMutation]
+  )
+
   const items = useCartStore((s) => s.items)
   const adjustItemQuantity = useCartStore((s) => s.adjustItemQuantity)
   const coverage = useBuyerProtectionStore((s) => s.coverage)

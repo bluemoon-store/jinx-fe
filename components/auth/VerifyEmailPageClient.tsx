@@ -10,7 +10,7 @@ import { BrandLoader } from '@/components/ui/BrandLoader'
 import { QUERY_KEYS } from '@/hooks/use-auth'
 import { parseApiError } from '@/lib/api-error'
 import { ROUTES } from '@/lib/constants'
-import { useAppStore } from '@/lib/store'
+import { useAppStore } from '@/stores/app-store'
 
 type VerifyState = 'loading' | 'success' | 'error'
 

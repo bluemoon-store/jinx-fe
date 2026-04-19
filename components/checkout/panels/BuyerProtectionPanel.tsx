@@ -3,7 +3,7 @@ import CentralIcon from '@central-icons-react/all'
 import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
-import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
+import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
 
 function Benefit({ text }: { text: string }) {
   return (

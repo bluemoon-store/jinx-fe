@@ -7,14 +7,13 @@ import { formatUsd } from '@/lib/cart-format'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import {
-  getOrder,
-  getOrderDelivery,
   mapApiOrderToDashboardCard,
   mapApiOrderStatus,
-  type ApiOrder,
-} from '@/lib/order-api'
-import type { OrderPaymentMethod } from '@/lib/order-review-store'
-import { useOrderReviewStore } from '@/lib/order-review-store'
+  useOrderDeliveryQuery,
+  useOrderQuery,
+} from '@/hooks/use-orders'
+import type { OrderPaymentMethod } from '@/stores/order-review-store'
+import { useOrderReviewStore } from '@/stores/order-review-store'
 import { toast } from '@/lib/toast'
 import type { Route } from 'next'
 import Link from 'next/link'
@@ -63,39 +62,14 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const markedUsedByOrderId = useOrderReviewStore((s) => s.markedUsedByOrderId)
   const setOrderMarkedUsed = useOrderReviewStore((s) => s.setOrderMarkedUsed)
 
-  const [apiOrder, setApiOrder] = useState<ApiOrder | null | undefined>(undefined)
-  const [deliveryCode, setDeliveryCode] = useState<string | null>(null)
+  const orderQuery = useOrderQuery(rawId || undefined)
+  const apiOrder = orderQuery.data
+  const deliveryQuery = useOrderDeliveryQuery(rawId || undefined, {
+    enabled: Boolean(rawId) && apiOrder?.status === 'COMPLETED',
+  })
 
-  useEffect(() => {
-    if (!rawId) {
-      setApiOrder(null)
-      return
-    }
-    let cancelled = false
-    ;(async () => {
-      setApiOrder(undefined)
-      setDeliveryCode(null)
-      try {
-        const o = await getOrder(rawId)
-        if (cancelled) return
-        setApiOrder(o)
-        if (o.status === 'COMPLETED') {
-          try {
-            const d = await getOrderDelivery(rawId)
-            const first = d.items[0]?.content
-            setDeliveryCode(first ?? null)
-          } catch {
-            setDeliveryCode(null)
-          }
-        }
-      } catch {
-        if (!cancelled) setApiOrder(null)
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [rawId])
+  const deliveryCode =
+    apiOrder?.status === 'COMPLETED' ? (deliveryQuery.data?.items[0]?.content ?? null) : null
 
   const card = apiOrder ? mapApiOrderToDashboardCard(apiOrder) : null
 
@@ -118,7 +92,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const showReviewBox = rating >= 1
   const heroSrc = card ? iconSrcForBrand(card.brand) : '/icons/airbnb.svg'
 
-  if (apiOrder === undefined) {
+  if (rawId && orderQuery.isPending) {
     return (
       <Reveal variant="fade-up" delay={140}>
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-3 py-12 text-center">
@@ -128,7 +102,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
     )
   }
 
-  if (!card || !apiOrder) {
+  if (!rawId || orderQuery.isError || !apiOrder || !card) {
     return (
       <Reveal variant="fade-up" delay={140}>
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-3 py-12 text-center">
@@ -592,9 +566,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       className="text-num-16 tracking-num--0_01 focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold text-white [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none sm:max-w-[min(100%,280px)]"
                       aria-label={`Copy order ID ${apiOrder.orderNumber}`}
                     >
-                      <span className="min-w-0 truncate text-right">
-                        {apiOrder.orderNumber}
-                      </span>
+                      <span className="min-w-0 truncate text-right">{apiOrder.orderNumber}</span>
                       <CentralIcon
                         name="IconSquareBehindSquare1"
                         join="round"

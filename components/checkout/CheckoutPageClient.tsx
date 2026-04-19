@@ -2,7 +2,7 @@
 
 import type { Route } from 'next'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 
 import { CartColumn } from '@/components/checkout/cart/CartColumn'
@@ -15,21 +15,21 @@ import { BackToStore } from '@/components/checkout/shared/BackToStore'
 import { CheckoutLogo } from '@/components/checkout/shared/CheckoutLogo'
 import { LegalFooter } from '@/components/checkout/shared/LegalFooter'
 import { Step5Success } from '@/components/checkout/steps/Step5Success'
-import { addCartItem, clearCart } from '@/lib/cart-api'
 import { formatUsd } from '@/lib/cart-format'
-import type { CartItem } from '@/lib/cart-store'
-import { useCartStore } from '@/lib/cart-store'
-import { getAccessToken } from '@/lib/token'
+import { useAddCartItemMutation, useClearCartMutation } from '@/hooks/use-carts'
 import {
-  createCryptoPayment,
-  createOrder,
   cryptoHumanTitle,
   formatCryptoAmountLine,
-  getCryptoPayment,
+  useCreateCryptoPaymentMutation,
+  useCreateOrderMutation,
   type ApiCryptoCurrency,
-} from '@/lib/order-api'
-import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
-import { usePromoStore } from '@/lib/promo-store'
+} from '@/hooks/use-orders'
+import { useCryptoPaymentQuery } from '@/hooks/use-payments'
+import type { CartItem } from '@/stores/cart-store'
+import { useCartStore } from '@/stores/cart-store'
+import { getAccessToken } from '@/lib/token'
+import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
+import { usePromoStore } from '@/stores/promo-store'
 import { toast } from '@/lib/toast'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
@@ -54,41 +54,48 @@ type PaymentSnapshot = {
 
 const MAX_CHECKOUT_STEP = 5
 
-async function pushLocalCartItemsToBackend(localItems: CartItem[]) {
-  await clearCart()
-  const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
-  for (const item of localItems) {
-    const res = await addCartItem({
-      productId: item.id,
-      quantity: item.quantity,
-      variantId: item.variantId,
-      regionLabel: item.regionLabel,
-      regionCountry: item.regionCountry,
-    })
-    const backendItem = res.items.find(
-      (i) =>
-        i.productId === item.id &&
-        (i.variantId ?? '') === (item.variantId ?? '') &&
-        (i.regionLabel ?? '') === item.regionLabel
-    )
-    if (backendItem) {
-      setBackendCartItemId(
-        {
-          id: item.id,
-          variantId: item.variantId,
-          variantLabel: item.variantLabel,
-          regionLabel: item.regionLabel,
-          regionCountry: item.regionCountry,
-        },
-        backendItem.id
-      )
-    }
-  }
-}
-
 export function CheckoutPageClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const clearCartMutation = useClearCartMutation()
+  const addCartItemMutation = useAddCartItemMutation()
+  const createOrderMutation = useCreateOrderMutation()
+  const createCryptoPaymentMutation = useCreateCryptoPaymentMutation()
+
+  const pushLocalCartItemsToBackend = useCallback(
+    async (localItems: CartItem[]) => {
+      await clearCartMutation.mutateAsync()
+      const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
+      for (const item of localItems) {
+        const res = await addCartItemMutation.mutateAsync({
+          productId: item.id,
+          quantity: item.quantity,
+          variantId: item.variantId,
+          regionLabel: item.regionLabel,
+          regionCountry: item.regionCountry,
+        })
+        const backendItem = res.items.find(
+          (i) =>
+            i.productId === item.id &&
+            (i.variantId ?? '') === (item.variantId ?? '') &&
+            (i.regionLabel ?? '') === item.regionLabel
+        )
+        if (backendItem) {
+          setBackendCartItemId(
+            {
+              id: item.id,
+              variantId: item.variantId,
+              variantLabel: item.variantLabel,
+              regionLabel: item.regionLabel,
+              regionCountry: item.regionCountry,
+            },
+            backendItem.id
+          )
+        }
+      }
+    },
+    [addCartItemMutation, clearCartMutation]
+  )
   const raw = searchParams.get('step')
   const step = Math.min(MAX_CHECKOUT_STEP, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
   const orderIdParam = searchParams.get('orderId')
@@ -136,7 +143,7 @@ export function CheckoutPageClient() {
     return () => {
       cancelled = true
     }
-  }, [step])
+  }, [step, pushLocalCartItemsToBackend])
 
   const retryCartBackendSync = useCallback(() => {
     void (async () => {
@@ -157,10 +164,14 @@ export function CheckoutPageClient() {
         setCartBackendGate('error')
       }
     })()
-  }, [])
+  }, [pushLocalCartItemsToBackend])
 
   const [paymentBusy, setPaymentBusy] = useState(false)
   const [paymentSnapshot, setPaymentSnapshot] = useState<PaymentSnapshot | null>(null)
+
+  const cryptoPaymentQuery = useCryptoPaymentQuery(
+    step === 3 && orderIdParam ? orderIdParam : undefined
+  )
 
   const fireConfetti = useCallback(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return
@@ -215,30 +226,26 @@ export function CheckoutPageClient() {
     if (step !== 4) unsealConfettiFiredRef.current = false
   }, [step])
 
-  useEffect(() => {
-    if (step !== 3 || !orderIdParam || paymentSnapshot) return
-    let cancelled = false
-    ;(async () => {
-      try {
-        const pay = await getCryptoPayment(orderIdParam)
-        if (cancelled) return
-        const c = pay.cryptocurrency as ApiCryptoCurrency
-        setPaymentSnapshot({
-          address: pay.paymentAddress,
-          cryptoLine: formatCryptoAmountLine(pay.amount, c),
-          usdLine: `${formatUsd(Number.parseFloat(pay.amountUsd))} USD`,
-          title: cryptoHumanTitle(c),
-          qr: pay.qrCode,
-          timeRemaining: pay.timeRemaining,
-        })
-      } catch {
-        if (!cancelled) toast.error('Could not load payment details')
-      }
-    })()
-    return () => {
-      cancelled = true
+  const paymentSnapshotFromQuery = useMemo((): PaymentSnapshot | null => {
+    const pay = cryptoPaymentQuery.data
+    if (!pay) return null
+    const c = pay.cryptocurrency as ApiCryptoCurrency
+    return {
+      address: pay.paymentAddress,
+      cryptoLine: formatCryptoAmountLine(pay.amount, c),
+      usdLine: `${formatUsd(Number.parseFloat(pay.amountUsd))} USD`,
+      title: cryptoHumanTitle(c),
+      qr: pay.qrCode,
+      timeRemaining: pay.timeRemaining,
     }
-  }, [orderIdParam, paymentSnapshot, step])
+  }, [cryptoPaymentQuery.data])
+
+  const effectivePaymentSnapshot = paymentSnapshot ?? paymentSnapshotFromQuery
+
+  useEffect(() => {
+    if (step !== 3 || !orderIdParam || paymentSnapshot || !cryptoPaymentQuery.isError) return
+    toast.error('Could not load payment details')
+  }, [cryptoPaymentQuery.isError, orderIdParam, paymentSnapshot, step])
 
   const handlePaymentMethodConfirm = useCallback(
     async (cryptocurrency: ApiCryptoCurrency) => {
@@ -252,15 +259,16 @@ export function CheckoutPageClient() {
         const buyerProtection = useBuyerProtectionStore.getState().coverage === 'enhanced'
         const appliedPromo = usePromoStore.getState().appliedPromo
 
-        const order = await createOrder({
+        const order = await createOrderMutation.mutateAsync({
           currency: 'USD',
           promoCode: appliedPromo?.code,
           buyerProtection,
         })
         const newOrderId = order.id
 
-        const pay = await createCryptoPayment(newOrderId, {
-          cryptocurrency,
+        const pay = await createCryptoPaymentMutation.mutateAsync({
+          orderId: newOrderId,
+          dto: { cryptocurrency },
         })
 
         setPaymentSnapshot({
@@ -282,7 +290,7 @@ export function CheckoutPageClient() {
         setPaymentBusy(false)
       }
     },
-    [router, searchParams]
+    [createCryptoPaymentMutation, createOrderMutation, router, searchParams]
   )
 
   if (step === 4) {
@@ -309,7 +317,7 @@ export function CheckoutPageClient() {
           {cartBackendGate === 'loading' ? (
             <>
               <div
-                className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-fuchsia"
+                className="border-t-fuchsia h-10 w-10 animate-spin rounded-full border-2 border-white/20"
                 aria-hidden
               />
               <div className="flex flex-col gap-2">
@@ -381,12 +389,12 @@ export function CheckoutPageClient() {
             {step === 3 ? (
               <CompletePaymentPending
                 orderId={orderIdParam}
-                paymentAddress={paymentSnapshot?.address ?? null}
-                cryptoAmountLabel={paymentSnapshot?.cryptoLine ?? null}
-                amountUsdLabel={paymentSnapshot?.usdLine ?? null}
-                cryptoTitle={paymentSnapshot?.title ?? 'Cryptocurrency'}
-                qrCode={paymentSnapshot?.qr}
-                initialTimeRemainingSec={paymentSnapshot?.timeRemaining ?? 20 * 60}
+                paymentAddress={effectivePaymentSnapshot?.address ?? null}
+                cryptoAmountLabel={effectivePaymentSnapshot?.cryptoLine ?? null}
+                amountUsdLabel={effectivePaymentSnapshot?.usdLine ?? null}
+                cryptoTitle={effectivePaymentSnapshot?.title ?? 'Cryptocurrency'}
+                qrCode={effectivePaymentSnapshot?.qr}
+                initialTimeRemainingSec={effectivePaymentSnapshot?.timeRemaining ?? 20 * 60}
                 onNavigateStep={(s) => setStep(s)}
                 onExpired={() => {
                   setPaymentSnapshot(null)

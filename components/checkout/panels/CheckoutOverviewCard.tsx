@@ -7,10 +7,10 @@ import { useEffect, useRef, useState } from 'react'
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
-import type { CartItem } from '@/lib/cart-store'
-import { useCartStore } from '@/lib/cart-store'
-import { useBuyerProtectionStore } from '@/lib/buyer-protection-store'
-import { usePromoStore } from '@/lib/promo-store'
+import type { CartItem } from '@/stores/cart-store'
+import { useCartStore } from '@/stores/cart-store'
+import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
+import { usePromoStore } from '@/stores/promo-store'
 
 const BUYER_PROTECTION_ENHANCED_USD = 5
 

@@ -2,16 +2,16 @@
 
 import Image from 'next/image'
 import CentralIcon from '@central-icons-react/all'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
 import { SupportRow } from '@/components/checkout/shared/SupportRow'
 import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
-import type { CartItem } from '@/lib/cart-store'
-import { useCartStore } from '@/lib/cart-store'
-import { getOrder, getOrderDelivery } from '@/lib/order-api'
+import type { CartItem } from '@/stores/cart-store'
+import { useCartStore } from '@/stores/cart-store'
+import { useOrderDeliveryQuery, useOrderQuery } from '@/hooks/use-orders'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { toast } from '@/lib/toast'
 import styles from './Step5Success.module.css'
@@ -166,7 +166,7 @@ function SuccessCard({
             {codeLoading ? (
               <span className="inline-block h-7 w-48 max-w-full animate-pulse rounded bg-white/10 sm:h-8 sm:w-64" />
             ) : revealed ? (
-              effectiveCode ?? fallbackMask
+              (effectiveCode ?? fallbackMask)
             ) : (
               fallbackMask
             )}
@@ -341,52 +341,36 @@ export function Step5Success({
   orderId?: string | null
 }) {
   const items = useCartStore((s) => s.items)
-  const [deliveryByKey, setDeliveryByKey] = useState<Record<string, string>>({})
-  const [deliveryLoading, setDeliveryLoading] = useState(false)
-  const [deliveryError, setDeliveryError] = useState(false)
+  const orderQuery = useOrderQuery(orderId ?? undefined)
+  const order = orderQuery.data
+  const deliveryQuery = useOrderDeliveryQuery(orderId ?? undefined, {
+    enabled: Boolean(orderId) && order?.status === 'COMPLETED',
+  })
 
-  useEffect(() => {
-    if (!orderId) {
-      return
-    }
-    let cancelled = false
-    ;(async () => {
-      setDeliveryLoading(true)
-      setDeliveryError(false)
-      try {
-        const order = await getOrder(orderId)
-        if (cancelled) return
-        if (order.status !== 'COMPLETED') {
-          setDeliveryLoading(false)
-          return
-        }
-        const delivery = await getOrderDelivery(orderId)
-        if (cancelled) return
-        const orderItems = order.items ?? []
-        const next: Record<string, string> = {}
-        for (const line of items) {
-          const match = orderItems.find(
-            (oi) =>
-              oi.productId === line.id &&
-              (oi.variantId ?? '') === (line.variantId ?? '')
-          )
-          if (!match) continue
-          const row = delivery.items.find((d) => d.itemId === match.id)
-          if (row?.content) {
-            next[itemKey(line)] = row.content
-          }
-        }
-        setDeliveryByKey(next)
-      } catch {
-        if (!cancelled) setDeliveryError(true)
-      } finally {
-        if (!cancelled) setDeliveryLoading(false)
+  const deliveryByKey = useMemo(() => {
+    if (!order || order.status !== 'COMPLETED' || !deliveryQuery.data) return {}
+    const orderItems = order.items ?? []
+    const delivery = deliveryQuery.data
+    const next: Record<string, string> = {}
+    for (const line of items) {
+      const match = orderItems.find(
+        (oi) => oi.productId === line.id && (oi.variantId ?? '') === (line.variantId ?? '')
+      )
+      if (!match) continue
+      const row = delivery.items.find((d) => d.itemId === match.id)
+      if (row?.content) {
+        next[itemKey(line)] = row.content
       }
-    })()
-    return () => {
-      cancelled = true
     }
-  }, [items, orderId])
+    return next
+  }, [deliveryQuery.data, items, order])
+
+  const deliveryLoading =
+    Boolean(orderId) &&
+    (orderQuery.isPending ||
+      (order?.status === 'COMPLETED' && deliveryQuery.isPending && !deliveryQuery.data))
+
+  const deliveryError = orderQuery.isError || deliveryQuery.isError
 
   if (!items.length) {
     return (

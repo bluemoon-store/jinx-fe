@@ -1,12 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
 import { SupportRow } from '@/components/checkout/shared/SupportRow'
-import { getPaymentStatus } from '@/lib/order-api'
+import { usePaymentStatusQuery } from '@/hooks/use-payments'
 import { toast } from '@/lib/toast'
 
 type Props = {
@@ -49,8 +49,12 @@ export function CompletePaymentPending({
   onExpired,
 }: Props) {
   const [remainingSeconds, setRemainingSeconds] = useState(initialTimeRemainingSec)
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const advancedRef = useRef(false)
+
+  const statusQuery = usePaymentStatusQuery(orderId ?? undefined, {
+    enabled: Boolean(orderId),
+    refetchInterval: 5000,
+  })
 
   useEffect(() => {
     setRemainingSeconds(initialTimeRemainingSec)
@@ -72,55 +76,42 @@ export function CompletePaymentPending({
     return () => clearInterval(id)
   }, [remainingSeconds])
 
-  const pollOnce = useCallback(async () => {
-    if (!orderId || advancedRef.current) return
-    try {
-      const status = await getPaymentStatus(orderId)
-      if (advancedRef.current) return
-      if (typeof status.timeRemaining === 'number' && status.timeRemaining >= 0) {
-        setRemainingSeconds(status.timeRemaining)
-      }
-      if (status.isExpired) {
-        advancedRef.current = true
-        onExpired?.()
-        return
-      }
-      switch (status.status) {
-        case 'EXPIRED':
-        case 'FAILED':
-          advancedRef.current = true
-          onExpired?.()
-          break
-        case 'PAID':
-        case 'CONFIRMING':
-          advancedRef.current = true
-          onNavigateStep(5)
-          break
-        case 'CONFIRMED':
-        case 'FORWARDING':
-        case 'FORWARDED':
-          advancedRef.current = true
-          onNavigateStep(4)
-          break
-        default:
-          break
-      }
-    } catch {
-      // Keep polling; transient network errors should not block payment
-    }
-  }, [onExpired, onNavigateStep, orderId])
+  useEffect(() => {
+    advancedRef.current = false
+  }, [orderId])
 
   useEffect(() => {
-    if (!orderId) return undefined
-    advancedRef.current = false
-    pollRef.current = setInterval(() => {
-      void pollOnce()
-    }, 5000)
-    void pollOnce()
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current)
+    const status = statusQuery.data
+    if (!status || advancedRef.current) return
+    if (typeof status.timeRemaining === 'number' && status.timeRemaining >= 0) {
+      setRemainingSeconds(status.timeRemaining)
     }
-  }, [orderId, pollOnce])
+    if (status.isExpired) {
+      advancedRef.current = true
+      onExpired?.()
+      return
+    }
+    switch (status.status) {
+      case 'EXPIRED':
+      case 'FAILED':
+        advancedRef.current = true
+        onExpired?.()
+        break
+      case 'PAID':
+      case 'CONFIRMING':
+        advancedRef.current = true
+        onNavigateStep(5)
+        break
+      case 'CONFIRMED':
+      case 'FORWARDING':
+      case 'FORWARDED':
+        advancedRef.current = true
+        onNavigateStep(4)
+        break
+      default:
+        break
+    }
+  }, [onExpired, onNavigateStep, statusQuery.data])
 
   const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0')
   const seconds = String(remainingSeconds % 60).padStart(2, '0')
@@ -200,7 +191,9 @@ export function CompletePaymentPending({
               <span className="text-sm font-semibold text-white sm:text-base">{amountLine}</span>
               {usdLine ? (
                 <>
-                  <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">≈</span>
+                  <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
+                    ≈
+                  </span>
                   <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
                     {usdLine}
                   </span>

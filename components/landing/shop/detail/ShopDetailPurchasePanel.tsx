@@ -13,9 +13,9 @@ import {
   siteSelectDropdownOptionRow,
   siteSelectDropdownPanel,
 } from '@/components/ui/siteSelectDropdown'
-import { addCartItem, updateCartItem } from '@/lib/cart-api'
+import { useAddCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { parseUsdDecimalString } from '@/lib/cart-format'
-import { sameCartLine, useCartStore } from '@/lib/cart-store'
+import { sameCartLine, useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
 import { cn } from '@/lib/utils'
 import type { ProductDetail, ProductRegion, ProductVariant } from '@/types/product'
@@ -103,6 +103,8 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   }, [regionList])
 
   const router = useRouter()
+  const addCartItemMutation = useAddCartItemMutation()
+  const updateCartItemMutation = useUpdateCartItemMutation()
   const addItem = useCartStore((s) => s.addItem)
   const setBackendCartItemId = useCartStore((s) => s.setBackendCartItemId)
 
@@ -149,11 +151,14 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         if (!line) return
 
         if (line.backendCartItemId) {
-          await updateCartItem(line.backendCartItemId, { quantity: line.quantity })
+          await updateCartItemMutation.mutateAsync({
+            cartItemId: line.backendCartItemId,
+            dto: { quantity: line.quantity },
+          })
           return
         }
 
-        const res = await addCartItem({
+        const res = await addCartItemMutation.mutateAsync({
           productId,
           quantity: line.quantity,
           variantId: selectedVariant.id,

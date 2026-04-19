@@ -6,9 +6,9 @@ import CentralIcon from '@central-icons-react/all'
 import Link from 'next/link'
 
 import { CountryFlag } from '@/components/ui/CountryFlag'
-import type { CartItem } from '@/lib/cart-store'
+import type { CartItem } from '@/stores/cart-store'
 import { formatUsd } from '@/lib/cart-format'
-import { useCartStore } from '@/lib/cart-store'
+import { useCartStore } from '@/stores/cart-store'
 import { siteSelectDropdownPanel } from '@/components/ui/siteSelectDropdown'
 
 import { CartEmptyDropdownPanel } from './CartEmptyDropdownPanel'

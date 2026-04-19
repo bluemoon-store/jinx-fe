@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 import type { User } from '@/types/api'
-import { STORAGE_KEY } from './constants'
+import { STORAGE_KEY } from '../lib/constants'
 
 interface AppState {
   user: User | null

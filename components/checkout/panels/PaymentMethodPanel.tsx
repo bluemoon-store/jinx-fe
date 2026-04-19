@@ -5,7 +5,7 @@ import CentralIcon from '@central-icons-react/all'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
-import type { ApiCryptoCurrency } from '@/lib/order-api'
+import type { ApiCryptoCurrency } from '@/hooks/use-orders'
 
 const rows = [
   {

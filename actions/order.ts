@@ -1,8 +1,8 @@
 import { api } from '@/lib/api'
-import type { BackendResponse } from '@/types/auth'
-import type { OrderPaymentMethod } from '@/lib/order-review-store'
-import type { DashboardOrderStatus } from '@/components/dashboard/DashboardOrderCard'
 import { formatUsd } from '@/lib/cart-format'
+import type { DashboardOrderStatus } from '@/components/dashboard/DashboardOrderCard'
+import type { OrderPaymentMethod } from '@/stores/order-review-store'
+import type { BackendResponse } from '@/types/auth'
 
 function unwrap<T>(res: { data: BackendResponse<T> }): T {
   return res.data.data
@@ -114,12 +114,12 @@ export type OrderDeliveryResponse = {
   items: OrderDeliveryItem[]
 }
 
-export async function createOrder(dto: OrderCreatePayload): Promise<ApiOrder> {
+export async function createOrderAction(dto: OrderCreatePayload): Promise<ApiOrder> {
   const res = await api.post<BackendResponse<ApiOrder>>('/orders', dto)
   return unwrap(res)
 }
 
-export async function createCryptoPayment(
+export async function createCryptoPaymentAction(
   orderId: string,
   dto: CreateCryptoPaymentPayload
 ): Promise<ApiCryptoPayment> {
@@ -132,38 +132,33 @@ export async function createCryptoPayment(
   return unwrap(res)
 }
 
-export async function getCryptoPayment(orderId: string): Promise<ApiCryptoPayment> {
+export async function getCryptoPaymentAction(orderId: string): Promise<ApiCryptoPayment> {
   const res = await api.get<BackendResponse<ApiCryptoPayment>>(`/orders/${orderId}/crypto-payment`)
   return unwrap(res)
 }
 
-export async function getPaymentStatus(orderId: string): Promise<{
+export type CryptoPaymentStatusPayload = {
   paymentId: string
   status: ApiPaymentStatus
   paymentAddress: string
   amount: string
   timeRemaining: number
   isExpired: boolean
-}> {
-  const res = await api.get<
-    BackendResponse<{
-      paymentId: string
-      status: ApiPaymentStatus
-      paymentAddress: string
-      amount: string
-      timeRemaining: number
-      isExpired: boolean
-    }>
-  >(`/orders/${orderId}/crypto-payment/status`)
+}
+
+export async function getPaymentStatusAction(orderId: string): Promise<CryptoPaymentStatusPayload> {
+  const res = await api.get<BackendResponse<CryptoPaymentStatusPayload>>(
+    `/orders/${orderId}/crypto-payment/status`
+  )
   return unwrap(res)
 }
 
-export async function getOrderDelivery(orderId: string): Promise<OrderDeliveryResponse> {
+export async function getOrderDeliveryAction(orderId: string): Promise<OrderDeliveryResponse> {
   const res = await api.get<BackendResponse<OrderDeliveryResponse>>(`/orders/${orderId}/delivery`)
   return unwrap(res)
 }
 
-export async function listOrders(params: OrderListParams): Promise<PaginatedOrders> {
+export async function listOrdersAction(params: OrderListParams): Promise<PaginatedOrders> {
   const res = await api.get<BackendResponse<PaginatedOrders>>('/orders', {
     params: {
       page: params.page ?? 1,
@@ -174,7 +169,7 @@ export async function listOrders(params: OrderListParams): Promise<PaginatedOrde
   return unwrap(res)
 }
 
-export async function getOrder(id: string): Promise<ApiOrder> {
+export async function getOrderAction(id: string): Promise<ApiOrder> {
   const res = await api.get<BackendResponse<ApiOrder>>(`/orders/${id}`)
   return unwrap(res)
 }
@@ -246,9 +241,7 @@ export function mapApiOrderToDashboardCard(order: ApiOrder): DashboardOrderCardM
   const itemCount = items.reduce((s, i) => s + i.quantity, 0)
   const first = items[0]
   const brand =
-    (first?.variantLabel && String(first.variantLabel).trim()) ||
-    first?.product?.name ||
-    'Order'
+    (first?.variantLabel && String(first.variantLabel).trim()) || first?.product?.name || 'Order'
   const total = Number.parseFloat(order.totalAmount)
   const price = Number.isFinite(total) ? formatUsd(total) : formatUsd(0)
   return {

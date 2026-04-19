@@ -1,14 +1,15 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
-import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { OrderPaymentMethod } from '@/lib/order-review-store'
+import type { OrderPaymentMethod } from '@/stores/order-review-store'
 import {
-  listOrders,
   mapApiOrderToDashboardCard,
+  useDashboardExpiredOrdersQuery,
+  useDashboardOrdersInfiniteQuery,
   type DashboardOrderCardModel,
-} from '@/lib/order-api'
+} from '@/hooks/use-orders'
 import {
   siteSelectDropdownList,
   siteSelectDropdownOptionInteractive,
@@ -22,8 +23,6 @@ import { DashboardOrderCard } from './DashboardOrderCard'
 import type { DashboardOrderStatus } from './DashboardOrderCard'
 import { dashboardOrderStatusConfig } from './DashboardOrderCard'
 import { DashboardOrderRow } from './DashboardOrderRow'
-
-const PAGE_SIZE = 12
 
 type OrdersViewMode = 'grid' | 'list'
 
@@ -75,13 +74,6 @@ type Props = {
 }
 
 export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCountChange }) => {
-  const [ordersList, setOrdersList] = useState<DashboardOrderCardModel[]>([])
-  const [listPage, setListPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalItems, setTotalItems] = useState(0)
-  const [listLoading, setListLoading] = useState(true)
-  const [listError, setListError] = useState(false)
-
   const [orderSearch, setOrderSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [paymentMethodFilter, setPaymentMethodFilter] = useState<PaymentMethodFilter>('all')
@@ -98,53 +90,25 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const selectedViewOption = VIEW_OPTIONS.find((o) => o.value === viewMode) ?? VIEW_OPTIONS[0]
   const expiredMode = statusFilter === 'expired'
 
-  const fetchOrders = useCallback(async () => {
-    setListLoading(true)
-    setListError(false)
-    try {
-      if (expiredMode) {
-        const res = await listOrders({ page: 1, limit: 80 })
-        const rows = res.items
-          .filter((o) => o.status === 'CANCELLED' || o.status === 'REFUNDED')
-          .map(mapApiOrderToDashboardCard)
-        setOrdersList(rows)
-        setTotalPages(1)
-        setTotalItems(rows.length)
-        setListPage(1)
-        return
-      }
+  const expiredQuery = useDashboardExpiredOrdersQuery(expiredMode)
+  const pagedQuery = useDashboardOrdersInfiniteQuery(statusFilter, !expiredMode)
 
-      const apiStatus =
-        statusFilter === 'paid' ? ('COMPLETED' as const) : statusFilter === 'pending' ? ('PENDING' as const) : undefined
+  const ordersList = useMemo(() => {
+    if (expiredMode) return expiredQuery.data?.orders ?? []
+    const pages = pagedQuery.data?.pages ?? []
+    return pages.flatMap((p) => p.items.map(mapApiOrderToDashboardCard))
+  }, [expiredMode, expiredQuery.data, pagedQuery.data])
 
-      const res = await listOrders({
-        page: listPage,
-        limit: PAGE_SIZE,
-        status: apiStatus,
-      })
-      const rows = res.items.map(mapApiOrderToDashboardCard)
-      setOrdersList((prev) => {
-        if (listPage === 1) return rows
-        const seen = new Set(prev.map((x) => x.id))
-        const next = [...prev]
-        for (const r of rows) {
-          if (!seen.has(r.id)) next.push(r)
-        }
-        return next
-      })
-      setTotalPages(res.metadata.totalPages)
-      setTotalItems(res.metadata.totalItems)
-    } catch {
-      setListError(true)
-      if (listPage === 1) setOrdersList([])
-    } finally {
-      setListLoading(false)
-    }
-  }, [expiredMode, listPage, statusFilter])
+  const totalPages = expiredMode ? 1 : (pagedQuery.data?.pages[0]?.metadata.totalPages ?? 1)
+  const totalItems = expiredMode
+    ? (expiredQuery.data?.totalItems ?? 0)
+    : (pagedQuery.data?.pages[0]?.metadata.totalItems ?? 0)
 
-  useEffect(() => {
-    void fetchOrders()
-  }, [fetchOrders])
+  const listLoading = expiredMode
+    ? expiredQuery.isPending
+    : pagedQuery.isPending && !pagedQuery.data
+
+  const listError = expiredMode ? expiredQuery.isError : pagedQuery.isError
 
   const toggleMenu = (menu: 'status' | 'payment' | 'sort' | 'view') => {
     setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
@@ -244,10 +208,10 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
         : totalItems
   const canLoadMore =
     !expiredMode &&
-    !listLoading &&
+    !pagedQuery.isFetchingNextPage &&
+    pagedQuery.hasNextPage &&
     !orderSearch.trim() &&
-    paymentMethodFilter === 'all' &&
-    listPage < totalPages
+    paymentMethodFilter === 'all'
   const shown = visibleOrders.length
 
   const filterBar = (
@@ -323,8 +287,6 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                       )}
                       onClick={() => {
                         setStatusFilter(opt.value)
-                        setListPage(1)
-                        setOrdersList([])
                         setStatusMenuOpen(false)
                       }}
                     >
@@ -591,7 +553,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
           shown={shown}
           total={totalForFooter}
           canLoadMore={canLoadMore}
-          onLoadMore={() => setListPage((p) => p + 1)}
+          onLoadMore={() => void pagedQuery.fetchNextPage()}
         />
       </nav>
     </div>

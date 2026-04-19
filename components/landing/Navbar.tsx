@@ -11,7 +11,7 @@ import {
   siteSelectDropdownPanel,
 } from '@/components/ui/siteSelectDropdown'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
-import { useCartStore } from '@/lib/cart-store'
+import { useCartStore } from '@/stores/cart-store'
 import CentralIcon from '@central-icons-react/all'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Route } from 'next'

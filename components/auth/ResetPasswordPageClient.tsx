@@ -9,7 +9,7 @@ import ResetPasswordForm from '@/components/auth/ResetPasswordModal'
 import { QUERY_KEYS } from '@/hooks/use-auth'
 import { parseApiError } from '@/lib/api-error'
 import { ROUTES } from '@/lib/constants'
-import { useAppStore } from '@/lib/store'
+import { useAppStore } from '@/stores/app-store'
 import { toast } from '@/lib/toast'
 import { useQueryClient } from '@tanstack/react-query'
 

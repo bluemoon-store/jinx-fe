@@ -90,13 +90,13 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
               key={`${item.id}-${idx}`}
               variant="fade-up"
               delay={idx * 70}
-              className="border-darkslateblue rounded-num-8 box-border flex h-full w-full flex-col items-stretch gap-2 border border-solid bg-gray-200 p-num-12"
+              className="border-darkslateblue rounded-num-8 p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2 border border-solid bg-gray-200"
             >
               <Link
                 href={`/shop/${item.slug}`}
                 className="flex w-full min-w-0 flex-1 flex-col items-center gap-2"
               >
-                <div className="aspect-video w-full overflow-hidden rounded-num-8 shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                <div className="rounded-num-8 aspect-video w-full overflow-hidden shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]">
                   <img
                     className="h-full w-full object-cover"
                     alt=""
@@ -146,7 +146,7 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
         {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
-            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+            <div className="fixed inset-0 z-90 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
                 <button
                   type="button"

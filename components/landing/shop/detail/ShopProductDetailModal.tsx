@@ -113,7 +113,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
           </div>
         ) : (
           <div className="text-whitesmoke-200 grid w-full grid-cols-1 items-start gap-5 self-stretch text-[12px] lg:grid-cols-2 lg:gap-6">
-            <div className="flex min-w-0 w-full flex-col items-stretch">
+            <div className="flex w-full min-w-0 flex-col items-stretch">
               <div className="flex w-full min-w-0 flex-col items-start justify-center">
                 <div className="flex w-full min-w-0 flex-col items-start">
                   <div className="border-whitesmoke-300 rounded-num-8 flex w-full min-w-0 flex-col items-center justify-center gap-4 overflow-hidden border-[1.8px] border-solid bg-gray-100 p-4 sm:gap-5 sm:p-6 md:p-8 lg:p-[25px]">
@@ -132,7 +132,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
                 </div>
               </div>
             </div>
-            <div className="text-num-16 flex min-w-0 w-full flex-col items-start gap-5 text-left text-white lg:min-h-0">
+            <div className="text-num-16 flex w-full min-w-0 flex-col items-start gap-5 text-left text-white lg:min-h-0">
               <div className="rounded-num-8 border-darkslateblue box-border flex w-full flex-col items-start overflow-hidden border-[1px] border-solid bg-gray-100/10 p-[15px]">
                 <button
                   type="button"
@@ -163,7 +163,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
                 >
                   <div className="w-full overflow-hidden">
                     <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
-                    <div className="max-h-[min(40vh,320px)] overflow-y-auto overflow-x-hidden overscroll-contain pt-num-6 pb-num-6 flex w-full flex-col items-start gap-5 text-white">
+                    <div className="pt-num-6 pb-num-6 flex max-h-[min(40vh,320px)] w-full flex-col items-start gap-5 overflow-x-hidden overflow-y-auto overscroll-contain text-white">
                       {product.description.trim().startsWith('<') ? (
                         <div
                           className="prose prose-invert max-w-none text-sm leading-6"

@@ -104,7 +104,7 @@ export default function NewlyLaunchedSection() {
         {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
-            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+            <div className="fixed inset-0 z-90 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
                 <button
                   type="button"
