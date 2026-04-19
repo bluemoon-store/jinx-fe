@@ -11,11 +11,11 @@ const noopStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
   removeItem: () => {},
 }
 
-const PROMO_CODE_MAP = {
-  NEW05: {
-    description: 'Launch Offer $5 Off',
-    discountUsd: 5,
-  },
+const PROMO_CODE_MAP: Record<string, { description: string; discountUsd: number }> = {
+  // NEW05: {
+  //   description: 'Launch Offer $5 Off',
+  //   discountUsd: 5,
+  // },
 } as const
 
 export type AppliedPromo = {

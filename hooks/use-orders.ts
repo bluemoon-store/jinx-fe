@@ -10,6 +10,7 @@ import {
   getOrderDeliveryAction,
   listOrdersAction,
   mapApiOrderToDashboardCard,
+  payOrderWithWalletAction,
 } from '@/actions/order'
 import type {
   ApiOrder,
@@ -17,6 +18,7 @@ import type {
   OrderCreatePayload,
   OrderListParams,
 } from '@/actions/order'
+import { CART_QUERY_KEYS } from '@/hooks/use-carts'
 import { PAYMENTS_QUERY_KEYS } from '@/hooks/use-payments'
 
 export type {
@@ -97,6 +99,18 @@ export function useCreateCryptoPaymentMutation() {
     onSuccess: (_data, { orderId }) => {
       void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.detail(orderId) })
       void queryClient.invalidateQueries({ queryKey: PAYMENTS_QUERY_KEYS.crypto(orderId) })
+    },
+  })
+}
+
+export function usePayOrderWithWalletMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (orderId: string) => payOrderWithWalletAction(orderId),
+    onSuccess: (_data, orderId) => {
+      void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.detail(orderId) })
+      void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.lists() })
+      void queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.root() })
     },
   })
 }

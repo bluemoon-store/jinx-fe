@@ -22,6 +22,7 @@ import {
   formatCryptoAmountLine,
   useCreateCryptoPaymentMutation,
   useCreateOrderMutation,
+  usePayOrderWithWalletMutation,
   type ApiCryptoCurrency,
 } from '@/hooks/use-orders'
 import { useCryptoPaymentQuery } from '@/hooks/use-payments'
@@ -29,7 +30,6 @@ import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
 import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
-import { usePromoStore } from '@/stores/promo-store'
 import { toast } from '@/lib/toast'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
@@ -61,13 +61,20 @@ export function CheckoutPageClient() {
   const addCartItemMutation = useAddCartItemMutation()
   const createOrderMutation = useCreateOrderMutation()
   const createCryptoPaymentMutation = useCreateCryptoPaymentMutation()
+  const payOrderWithWalletMutation = usePayOrderWithWalletMutation()
+
+  // Depend on mutateAsync only: the full mutation result object changes whenever
+  // mutation status updates (pending/success), which would otherwise recreate this
+  // callback every request and retrigger the cart sync layout effect in a loop.
+  const clearCart = clearCartMutation.mutateAsync
+  const addCartItem = addCartItemMutation.mutateAsync
 
   const pushLocalCartItemsToBackend = useCallback(
     async (localItems: CartItem[]) => {
-      await clearCartMutation.mutateAsync()
+      await clearCart()
       const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
       for (const item of localItems) {
-        const res = await addCartItemMutation.mutateAsync({
+        const res = await addCartItem({
           productId: item.id,
           quantity: item.quantity,
           variantId: item.variantId,
@@ -94,7 +101,7 @@ export function CheckoutPageClient() {
         }
       }
     },
-    [addCartItemMutation, clearCartMutation]
+    [addCartItem, clearCart]
   )
   const raw = searchParams.get('step')
   const step = Math.min(MAX_CHECKOUT_STEP, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
@@ -257,11 +264,9 @@ export function CheckoutPageClient() {
           return
         }
         const buyerProtection = useBuyerProtectionStore.getState().coverage === 'enhanced'
-        const appliedPromo = usePromoStore.getState().appliedPromo
 
         const order = await createOrderMutation.mutateAsync({
           currency: 'USD',
-          promoCode: appliedPromo?.code,
           buyerProtection,
         })
         const newOrderId = order.id
@@ -292,6 +297,42 @@ export function CheckoutPageClient() {
     },
     [createCryptoPaymentMutation, createOrderMutation, router, searchParams]
   )
+
+  const handleWalletPayment = useCallback(async () => {
+    setPaymentBusy(true)
+    try {
+      const items = useCartStore.getState().items
+      if (!items.length) {
+        toast.error('Your cart is empty')
+        return
+      }
+      const buyerProtection = useBuyerProtectionStore.getState().coverage === 'enhanced'
+
+      const order = await createOrderMutation.mutateAsync({
+        currency: 'USD',
+        buyerProtection,
+      })
+
+      const paid = await payOrderWithWalletMutation.mutateAsync(order.id)
+      if (paid.status !== 'COMPLETED') {
+        toast.error('Wallet payment could not be completed.')
+        return
+      }
+
+      await clearCartMutation.mutateAsync()
+      useCartStore.getState().clear()
+
+      const sp = new URLSearchParams(searchParams.toString())
+      sp.set('step', '4')
+      sp.set('orderId', order.id)
+      router.push(`/checkout?${sp.toString()}` as Route)
+      fireConfetti()
+    } catch {
+      toast.error('Checkout failed. Please try again.')
+    } finally {
+      setPaymentBusy(false)
+    }
+  }, [clearCartMutation, createOrderMutation, fireConfetti, payOrderWithWalletMutation, router, searchParams])
 
   if (step === 4) {
     return (
@@ -383,6 +424,7 @@ export function CheckoutPageClient() {
               <PaymentMethodPanel
                 onBack={() => setStep(1)}
                 onContinue={handlePaymentMethodConfirm}
+                onWalletContinue={handleWalletPayment}
                 busy={paymentBusy}
               />
             ) : null}

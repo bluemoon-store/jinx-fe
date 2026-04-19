@@ -92,7 +92,6 @@ export type PaginatedOrders = {
 
 export type OrderCreatePayload = {
   currency?: string
-  promoCode?: string
   buyerProtection?: boolean
 }
 
@@ -129,6 +128,11 @@ export async function createCryptoPaymentAction(
       cryptocurrency: dto.cryptocurrency,
     }
   )
+  return unwrap(res)
+}
+
+export async function payOrderWithWalletAction(orderId: string): Promise<ApiOrder> {
+  const res = await api.post<BackendResponse<ApiOrder>>(`/orders/${orderId}/wallet-payment`, {})
   return unwrap(res)
 }
 
