@@ -3,11 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import type { GetProductsParams } from '@/actions/product'
-import {
-  getCategoriesAction,
-  getProductBySlugAction,
-  getProductsAction,
-} from '@/actions/product'
+import { getCategoriesAction, getProductBySlugAction, getProductsAction } from '@/actions/product'
 
 export const PRODUCT_QUERY_KEYS = {
   products: (params: GetProductsParams | undefined) => ['products', params] as const,

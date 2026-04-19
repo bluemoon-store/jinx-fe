@@ -67,7 +67,9 @@ export const HotSellingProducts: FunctionComponent = () => {
       >
         <div className="min-h-0 overflow-hidden">
           {isLoading ? (
-            <div className="text-lightsteelblue-100 p-6 text-center text-sm">Loading hot products…</div>
+            <div className="text-lightsteelblue-100 p-6 text-center text-sm">
+              Loading hot products…
+            </div>
           ) : (
             <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
               {items.map((item, idx) => (
@@ -128,7 +130,9 @@ export const HotSellingProducts: FunctionComponent = () => {
                             <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
                             <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
                               <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-                                {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
+                                {item.fromPrice.startsWith('$')
+                                  ? item.fromPrice
+                                  : `$${item.fromPrice}`}
                               </b>
                             </div>
                           </div>

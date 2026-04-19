@@ -68,61 +68,63 @@ export default function FreshlyRestockedSection() {
       {/* Products grid */}
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:mt-8 sm:px-6 lg:mt-10 lg:px-8">
         {isLoading ? (
-          <div className="text-lightsteelblue-100 py-12 text-center">Loading restocked products…</div>
+          <div className="text-lightsteelblue-100 py-12 text-center">
+            Loading restocked products…
+          </div>
         ) : (
-        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
-          {items.map((item, idx) => (
-            <Reveal
-              key={item.id}
-              variant="fade-up"
-              delay={idx * 70}
-              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-[#0D1B35] p-4 sm:gap-3 sm:p-5 lg:p-6"
-            >
-              <Link href={`/shop/${item.slug}`} className="flex w-full flex-1 flex-col">
-                <div className="rounded-num-8 relative aspect-4/3 w-full overflow-hidden bg-[#0A162D]">
-                  <img
-                    className="block h-full w-full object-cover"
-                    alt=""
-                    src={item.primaryImageUrl ?? '/icons/airbnb.svg'}
-                  />
-                </div>
-                <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
-                  <div className="flex items-center justify-center self-stretch">
-                    <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
-                      {item.name}
-                    </div>
-                  </div>
-                  <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
-                    <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                      from{' '}
-                    </div>
-                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
-                      <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                        {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
-                      </b>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-              <button
-                type="button"
-                onClick={() => setQuickBuySlug(item.slug)}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px]"
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
+            {items.map((item, idx) => (
+              <Reveal
+                key={item.id}
+                variant="fade-up"
+                delay={idx * 70}
+                className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-[#0D1B35] p-4 sm:gap-3 sm:p-5 lg:p-6"
               >
-                <CentralIcon
-                  name="IconZap"
-                  join="round"
-                  fill="filled"
-                  stroke="1"
-                  radius="1"
-                  size={16}
-                  className="text-white"
-                />
-                <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
-              </button>
-            </Reveal>
-          ))}
-        </div>
+                <Link href={`/shop/${item.slug}`} className="flex w-full flex-1 flex-col">
+                  <div className="rounded-num-8 relative aspect-4/3 w-full overflow-hidden bg-[#0A162D]">
+                    <img
+                      className="block h-full w-full object-cover"
+                      alt=""
+                      src={item.primaryImageUrl ?? '/icons/airbnb.svg'}
+                    />
+                  </div>
+                  <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
+                    <div className="flex items-center justify-center self-stretch">
+                      <div className="tracking-num-0.02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
+                        {item.name}
+                      </div>
+                    </div>
+                    <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
+                      <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                        from{' '}
+                      </div>
+                      <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
+                        <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                          {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
+                        </b>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setQuickBuySlug(item.slug)}
+                  className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px]"
+                >
+                  <CentralIcon
+                    name="IconZap"
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={16}
+                    className="text-white"
+                  />
+                  <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
+                </button>
+              </Reveal>
+            ))}
+          </div>
         )}
         {quickBuySlug &&
           quickBuyPortalEl &&

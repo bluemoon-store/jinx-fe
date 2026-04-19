@@ -80,7 +80,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
           <div className="flex items-center justify-between gap-5 self-stretch">
             <div className="flex items-center">
               <div className="leading-num-28 font-extrabold tracking-[0.02em] uppercase">
-                {isLoading ? 'Loading…' : product?.name ?? 'Product'}
+                {isLoading ? 'Loading…' : (product?.name ?? 'Product')}
               </div>
             </div>
             <button
@@ -124,7 +124,10 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
                         className="max-h-full max-w-full scale-110 object-contain"
                       />
                     ) : (
-                      <div className="bg-gray-300/30 aspect-video w-full min-h-[120px]" aria-hidden />
+                      <div
+                        className="aspect-video min-h-[120px] w-full bg-gray-300/30"
+                        aria-hidden
+                      />
                     )}
                   </div>
                   <ProductTagBadges tags={product.tags} />

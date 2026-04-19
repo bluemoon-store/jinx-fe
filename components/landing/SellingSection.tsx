@@ -51,113 +51,117 @@ const SellingSection: FunctionComponent = () => {
       {/* Cards grid */}
       <div className="mx-auto mt-8 w-full max-w-[1476.9px] px-4 sm:mt-10 sm:px-6 lg:px-8">
         {isLoading ? (
-          <div className="text-lightsteelblue-100 py-12 text-center text-sm">Loading hot products…</div>
+          <div className="text-lightsteelblue-100 py-12 text-center text-sm">
+            Loading hot products…
+          </div>
         ) : (
-        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-5">
-          {items.map((item, idx) => (
-            <Reveal
-              key={item.id}
-              variant="scale-in"
-              delay={idx * 70}
-              className="max-w-num-281 w-full text-lg sm:text-[20px]"
-            >
-              <div className="block w-full">
-                {/* Outer: reserves space for the logo that pokes above the card */}
-                <div className="relative flex flex-col items-center pt-[50px] sm:pt-14">
-                  {/* Vector 6 — flames background, behind the card, shifted down */}
-                  <img
-                    className="pointer-events-none absolute inset-x-0 top-6 bottom-0 z-0 mx-auto h-[calc(50%-24px)] w-[85%] object-cover"
-                    alt=""
-                    src="/icons/Vector 6.svg"
-                  />
-
-                  {/* Logo — positioned relative, pulled up to overlap the card top */}
-                  <div className="relative z-20 -mb-[48px] flex h-[96px] w-[96px] items-center justify-center sm:-mb-[54px] sm:h-[110px] sm:w-[110px]">
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-5">
+            {items.map((item, idx) => (
+              <Reveal
+                key={item.id}
+                variant="scale-in"
+                delay={idx * 70}
+                className="max-w-num-281 w-full text-lg sm:text-[20px]"
+              >
+                <div className="block w-full">
+                  {/* Outer: reserves space for the logo that pokes above the card */}
+                  <div className="relative flex flex-col items-center pt-[50px] sm:pt-14">
+                    {/* Vector 6 — flames background, behind the card, shifted down */}
                     <img
-                      className="h-full w-full object-contain"
-                      alt={`${item.name} logo`}
-                      src={item.primaryImageUrl ?? '/icons/dominos.svg'}
-                    />
-                  </div>
-
-                  {/* Outer wrapper: clips the spinning border light, 1px padding reveals it as the border */}
-                  <div
-                    className="rounded-num-8 relative z-10 w-full overflow-hidden p-px"
-                    style={{
-                      boxShadow:
-                        '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
-                    }}
-                  >
-                    {/* Spinning conic-gradient — the "running light" around the border */}
-                    <div
-                      className="pointer-events-none absolute z-0 aspect-square w-[220%]"
-                      style={{
-                        top: '50%',
-                        left: '50%',
-                        background:
-                          'conic-gradient(from 0deg, rgba(255,42,42,0.65) 0deg, rgba(255,107,107,0.7) 60deg, rgba(255,120,80,0.28) 120deg, rgba(255,120,80,0.18) 210deg, rgba(255,42,42,0.55) 260deg, rgba(255,107,107,0.6) 320deg)',
-                        animation: 'border-spin 3.2s linear infinite',
-                      }}
+                      className="pointer-events-none absolute inset-x-0 top-6 bottom-0 z-0 mx-auto h-[calc(50%-24px)] w-[85%] object-cover"
+                      alt=""
+                      src="/icons/Vector 6.svg"
                     />
 
-                    {/* Inner card: actual background sits above the spinner */}
+                    {/* Logo — positioned relative, pulled up to overlap the card top */}
+                    <div className="relative z-20 -mb-[48px] flex h-[96px] w-[96px] items-center justify-center sm:-mb-[54px] sm:h-[110px] sm:w-[110px]">
+                      <img
+                        className="h-full w-full object-contain"
+                        alt={`${item.name} logo`}
+                        src={item.primaryImageUrl ?? '/icons/dominos.svg'}
+                      />
+                    </div>
+
+                    {/* Outer wrapper: clips the spinning border light, 1px padding reveals it as the border */}
                     <div
-                      className="rounded-num-8 relative z-10 flex flex-col items-center justify-end gap-3 px-4 pt-[56px] pb-4 sm:pt-[62px]"
+                      className="rounded-num-8 relative z-10 w-full overflow-hidden p-px"
                       style={{
-                        background:
-                          'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                        boxShadow:
+                          '0 0 4px 1px rgba(255,42,42,0.45), 0 0 14px 3px rgba(255,42,42,0.25), 0 0 28px 6px rgba(255,42,42,0.08)',
                       }}
                     >
-                      {/* Name + price */}
-                      <Link href={`/shop/${item.slug}`} className="block">
-                        <div className="flex w-36 flex-col items-center gap-0.5">
-                          <div className="flex items-center justify-center gap-[5px] self-stretch">
-                            <div className="tracking-num-0.02 font-extrabold uppercase">
-                              {item.name}
-                            </div>
-                            <img
-                              className="h-num-20.2 w-num-31 shrink-0"
-                              alt=""
-                              src="/icons/Hot.svg"
-                            />
-                          </div>
-                          <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
-                            <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                              from{' '}
-                            </div>
-                            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
-                              <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                                {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
-                              </b>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => setQuickBuySlug(item.slug)}
-                        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#48293D] px-4 text-white sm:gap-[5px]"
+                      {/* Spinning conic-gradient — the "running light" around the border */}
+                      <div
+                        className="pointer-events-none absolute z-0 aspect-square w-[220%]"
+                        style={{
+                          top: '50%',
+                          left: '50%',
+                          background:
+                            'conic-gradient(from 0deg, rgba(255,42,42,0.65) 0deg, rgba(255,107,107,0.7) 60deg, rgba(255,120,80,0.28) 120deg, rgba(255,120,80,0.18) 210deg, rgba(255,42,42,0.55) 260deg, rgba(255,107,107,0.6) 320deg)',
+                          animation: 'border-spin 3.2s linear infinite',
+                        }}
+                      />
+
+                      {/* Inner card: actual background sits above the spinner */}
+                      <div
+                        className="rounded-num-8 relative z-10 flex flex-col items-center justify-end gap-3 px-4 pt-[56px] pb-4 sm:pt-[62px]"
+                        style={{
+                          background:
+                            'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                        }}
                       >
-                        <CentralIcon
-                          name="IconZap"
-                          join="round"
-                          fill="filled"
-                          stroke="1"
-                          radius="1"
-                          size={16}
-                          className="text-white"
-                        />
-                        <span className="tracking-num--0_01 leading-num-24 font-semibold">
-                          Quick Buy
-                        </span>
-                      </button>
+                        {/* Name + price */}
+                        <Link href={`/shop/${item.slug}`} className="block">
+                          <div className="flex w-36 flex-col items-center gap-0.5">
+                            <div className="flex items-center justify-center gap-[5px] self-stretch">
+                              <div className="tracking-num-0.02 font-extrabold uppercase">
+                                {item.name}
+                              </div>
+                              <img
+                                className="h-num-20.2 w-num-31 shrink-0"
+                                alt=""
+                                src="/icons/Hot.svg"
+                              />
+                            </div>
+                            <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
+                              <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                                from{' '}
+                              </div>
+                              <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+                                <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                                  {item.fromPrice.startsWith('$')
+                                    ? item.fromPrice
+                                    : `$${item.fromPrice}`}
+                                </b>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => setQuickBuySlug(item.slug)}
+                          className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full items-center justify-center gap-1.5 bg-[#48293D] px-4 text-white sm:gap-[5px]"
+                        >
+                          <CentralIcon
+                            name="IconZap"
+                            join="round"
+                            fill="filled"
+                            stroke="1"
+                            radius="1"
+                            size={16}
+                            className="text-white"
+                          />
+                          <span className="tracking-num--0_01 leading-num-24 font-semibold">
+                            Quick Buy
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+              </Reveal>
+            ))}
+          </div>
         )}
         {quickBuySlug &&
           quickBuyPortalEl &&

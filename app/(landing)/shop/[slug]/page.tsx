@@ -31,9 +31,7 @@ const ProductViewPage: FunctionComponent = () => {
         ) : isError || !product ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center">
             <p className="text-lg font-semibold text-white">Product not found</p>
-            <p className="text-lightsteelblue-100 max-w-md text-sm">
-              {parseApiError(error)}
-            </p>
+            <p className="text-lightsteelblue-100 max-w-md text-sm">{parseApiError(error)}</p>
           </div>
         ) : (
           <ShopProductDetail product={product} />

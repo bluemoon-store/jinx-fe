@@ -49,7 +49,10 @@ const CatalogPageFilled: FunctionComponent = () => {
         <div className="mx-auto flex w-full max-w-[1476.9px] flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:gap-8 lg:px-8">
           <section className="grid min-w-0 items-start gap-3 text-left sm:grid-cols-[224px_1fr] sm:gap-6 lg:gap-8">
             <Reveal variant="slide-left" className="min-w-0">
-              <ShopCategorySidebar selectedSlug={selectedCategorySlug} onSelect={onCategorySelect} />
+              <ShopCategorySidebar
+                selectedSlug={selectedCategorySlug}
+                onSelect={onCategorySelect}
+              />
             </Reveal>
 
             <Reveal variant="slide-right" delay={120} className="min-w-0">

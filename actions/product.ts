@@ -65,11 +65,7 @@ function mapRegion(raw: UnknownRecord): ProductRegion {
   }
 }
 
-function deriveTags(
-  isHot: boolean,
-  isNew: boolean,
-  isNFA: boolean
-): ProductTag[] {
+function deriveTags(isHot: boolean, isNew: boolean, isNFA: boolean): ProductTag[] {
   const tags: ProductTag[] = []
   if (isHot) tags.push('Hot')
   if (isNFA) tags.push('NFA')
@@ -123,9 +119,7 @@ function mapProductDetail(raw: UnknownRecord): ProductDetail {
     ? breadcrumbsRaw.filter((b): b is string => typeof b === 'string')
     : ['All Products', card.category.name].filter(Boolean)
 
-  const heroImageUrl =
-    pickStr(raw.heroImageUrl ?? raw.hero_image_url) ??
-    card.primaryImageUrl
+  const heroImageUrl = pickStr(raw.heroImageUrl ?? raw.hero_image_url) ?? card.primaryImageUrl
 
   return {
     ...card,
@@ -161,11 +155,8 @@ function parseProductsPayload(payload: unknown): ProductsPageResult {
   if (payload && typeof payload === 'object') {
     const o = payload as UnknownRecord
     const list = o.items ?? o.data ?? o.products
-    const items = Array.isArray(list)
-      ? list.map((p) => mapProductCard(p as UnknownRecord))
-      : []
-    const total =
-      pickNum(o.total ?? o.totalCount ?? o.total_count) ?? items.length
+    const items = Array.isArray(list) ? list.map((p) => mapProductCard(p as UnknownRecord)) : []
+    const total = pickNum(o.total ?? o.totalCount ?? o.total_count) ?? items.length
     const page = pickNum(o.page ?? o.currentPage ?? o.current_page) ?? 1
     const limit =
       pickNum(o.limit ?? o.perPage ?? o.per_page) ?? (items.length > 0 ? items.length : 12)
@@ -175,9 +166,7 @@ function parseProductsPayload(payload: unknown): ProductsPageResult {
   return { items: [], total: 0, page: 1, limit: 12 }
 }
 
-export async function getProductsAction(
-  params?: GetProductsParams
-): Promise<ProductsPageResult> {
+export async function getProductsAction(params?: GetProductsParams): Promise<ProductsPageResult> {
   const search = params?.search?.trim()
   const q: UnknownRecord = {}
 
@@ -212,7 +201,7 @@ export async function getProductBySlugAction(slug: string): Promise<ProductDetai
 export async function getCategoriesAction(): Promise<ProductCategory[]> {
   const res = await api.get<BackendResponse<unknown>>('/products/categories')
   const data = unwrapData(res)
-  const list = Array.isArray(data) ? data : (data as UnknownRecord)?.items ?? []
+  const list = Array.isArray(data) ? data : ((data as UnknownRecord)?.items ?? [])
   if (!Array.isArray(list)) return []
 
   return list.map((c) => {
