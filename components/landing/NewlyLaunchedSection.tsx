@@ -104,22 +104,24 @@ export default function NewlyLaunchedSection() {
         {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
-            <div className="fixed inset-0 z-90 flex items-center justify-center p-4 sm:p-6 lg:px-8">
-              <button
-                type="button"
-                className="absolute inset-0 bg-black/60"
-                aria-label="Close quick buy dialog"
-                onClick={() => setQuickBuySlug(null)}
-              />
-              <div
-                className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
-                role="dialog"
-                aria-modal="true"
-              >
-                <ShopProductDetailModal
-                  productSlug={quickBuySlug}
-                  onClose={() => setQuickBuySlug(null)}
+            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+              <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
+                <button
+                  type="button"
+                  className="fixed inset-0 bg-black/60"
+                  aria-label="Close quick buy dialog"
+                  onClick={() => setQuickBuySlug(null)}
                 />
+                <div
+                  className="relative z-10 my-auto flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
+                  role="dialog"
+                  aria-modal="true"
+                >
+                  <ShopProductDetailModal
+                    productSlug={quickBuySlug}
+                    onClose={() => setQuickBuySlug(null)}
+                  />
+                </div>
               </div>
             </div>,
             quickBuyPortalEl

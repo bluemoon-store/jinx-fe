@@ -104,7 +104,7 @@ const SellingSection: FunctionComponent = () => {
 
                       {/* Inner card: actual background sits above the spinner */}
                       <div
-                        className="rounded-num-8 relative z-10 flex flex-col items-center justify-end gap-3 px-4 pt-[56px] pb-4 sm:pt-[62px]"
+                        className="rounded-num-8 relative z-10 flex flex-col items-center justify-end gap-3 px-3 pt-[56px] pb-3 sm:pt-[62px]"
                         style={{
                           background:
                             'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
@@ -113,15 +113,17 @@ const SellingSection: FunctionComponent = () => {
                         {/* Name + price */}
                         <Link href={`/shop/${item.slug}`} className="block w-full min-w-0">
                           <div className="flex w-full max-w-full min-w-0 flex-col items-center gap-0.5">
-                            <div className="flex w-full min-w-0 items-center justify-center gap-[5px] self-stretch">
-                              <div className="tracking-num-0.02 min-w-0 flex-1 truncate text-center font-extrabold uppercase">
-                                {item.name}
+                            <div className="flex w-full min-w-0 justify-center">
+                              <div className="flex min-w-0 max-w-full items-center gap-[5px]">
+                                <div className="tracking-num-0.02 min-w-0 truncate text-center font-extrabold uppercase">
+                                  {item.name}
+                                </div>
+                                <img
+                                  className="h-num-20.2 w-num-31 shrink-0"
+                                  alt=""
+                                  src="/icons/Hot.svg"
+                                />
                               </div>
-                              <img
-                                className="h-num-20.2 w-num-31 shrink-0"
-                                alt=""
-                                src="/icons/Hot.svg"
-                              />
                             </div>
                             <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
                               <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
@@ -166,22 +168,24 @@ const SellingSection: FunctionComponent = () => {
         {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
-            <div className="fixed inset-0 z-90 flex items-center justify-center p-4 sm:p-6 lg:px-8">
-              <button
-                type="button"
-                className="absolute inset-0 bg-black/60"
-                aria-label="Close quick buy dialog"
-                onClick={() => setQuickBuySlug(null)}
-              />
-              <div
-                className="relative z-10 flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
-                role="dialog"
-                aria-modal="true"
-              >
-                <ShopProductDetailModal
-                  productSlug={quickBuySlug}
-                  onClose={() => setQuickBuySlug(null)}
+            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+              <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
+                <button
+                  type="button"
+                  className="fixed inset-0 bg-black/60"
+                  aria-label="Close quick buy dialog"
+                  onClick={() => setQuickBuySlug(null)}
                 />
+                <div
+                  className="relative z-10 my-auto flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
+                  role="dialog"
+                  aria-modal="true"
+                >
+                  <ShopProductDetailModal
+                    productSlug={quickBuySlug}
+                    onClose={() => setQuickBuySlug(null)}
+                  />
+                </div>
               </div>
             </div>,
             quickBuyPortalEl

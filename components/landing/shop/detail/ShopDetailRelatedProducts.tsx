@@ -2,8 +2,10 @@
 
 import { CentralIcon } from '@central-icons-react/all'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
+import ShopProductDetailModal from '@/components/landing/shop/detail/ShopProductDetailModal'
 import { Reveal } from '@/components/ui/reveal'
 import type { ProductCard } from '@/types/product'
 
@@ -33,6 +35,12 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
 
   const totalPages = Math.max(1, Math.ceil(allItems.length / ITEMS_PER_PAGE))
   const [page, setPage] = useState(0)
+  const [quickBuySlug, setQuickBuySlug] = useState<string | null>(null)
+  const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    setQuickBuyPortalEl(document.body)
+  }, [])
 
   const items = allItems.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE)
 
@@ -82,14 +90,19 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
               key={`${item.id}-${idx}`}
               variant="fade-up"
               delay={idx * 70}
-              className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex w-full flex-col items-center justify-center gap-2.5 border border-solid bg-gray-200 p-4 sm:gap-3 sm:p-5 lg:p-6"
+              className="border-darkslateblue rounded-num-8 box-border flex h-full w-full flex-col items-stretch gap-2 border border-solid bg-gray-200 p-num-12"
             >
-              <Link href={`/shop/${item.slug}`} className="w-full">
-                <img
-                  className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]"
-                  alt=""
-                  src={item.src ?? '/icons/airbnb.svg'}
-                />
+              <Link
+                href={`/shop/${item.slug}`}
+                className="flex w-full min-w-0 flex-1 flex-col items-center gap-2"
+              >
+                <div className="aspect-video w-full overflow-hidden rounded-num-8 shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                  <img
+                    className="h-full w-full object-cover"
+                    alt=""
+                    src={item.src ?? '/icons/airbnb.svg'}
+                  />
+                </div>
 
                 <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
                   <div className="flex items-center justify-center self-stretch">
@@ -104,15 +117,57 @@ export const ShopDetailRelatedProducts = ({ related }: Props) => {
                     </div>
                     <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
                       <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                        {item.fromPrice}
+                        {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
                       </b>
                     </div>
                   </div>
                 </div>
               </Link>
+              <button
+                type="button"
+                onClick={() => setQuickBuySlug(item.slug)}
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full shrink-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px]"
+              >
+                <CentralIcon
+                  name="IconZap"
+                  join="round"
+                  fill="filled"
+                  stroke="1"
+                  radius="1"
+                  size={16}
+                  className="text-white"
+                />
+                <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
+              </button>
             </Reveal>
           ))}
         </div>
+
+        {quickBuySlug &&
+          quickBuyPortalEl &&
+          createPortal(
+            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+              <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
+                <button
+                  type="button"
+                  className="fixed inset-0 bg-black/60"
+                  aria-label="Close quick buy dialog"
+                  onClick={() => setQuickBuySlug(null)}
+                />
+                <div
+                  className="relative z-10 my-auto flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
+                  role="dialog"
+                  aria-modal="true"
+                >
+                  <ShopProductDetailModal
+                    productSlug={quickBuySlug}
+                    onClose={() => setQuickBuySlug(null)}
+                  />
+                </div>
+              </div>
+            </div>,
+            quickBuyPortalEl
+          )}
 
         {/* Pagination */}
         <div className="mt-6 flex w-full items-center justify-center gap-3 sm:mt-8 lg:mt-10">

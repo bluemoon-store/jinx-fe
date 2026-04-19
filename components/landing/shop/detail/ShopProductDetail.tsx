@@ -16,11 +16,11 @@ export const ShopProductDetail: FunctionComponent<Props> = ({ product }) => {
   return (
     <section className="text-num-14 text-ghostwhite font-commissioner w-full bg-gray-400">
       <main className="mx-auto flex w-full max-w-[1476.9px] flex-col gap-6 px-4 py-4 sm:gap-8 sm:px-6 sm:py-6 lg:gap-6 lg:px-8 lg:py-8">
-        <section className="mb-6 grid items-start gap-6 sm:mb-8 sm:gap-8 lg:mb-10 lg:grid-cols-[minmax(280px,600px)_1fr] lg:gap-10">
+        <section className="mb-6 grid grid-cols-1 items-start gap-6 sm:mb-8 sm:gap-8 lg:mb-10 lg:grid-cols-2 lg:gap-10">
           <Reveal
             variant="slide-left"
             delay={0}
-            className="min-w-0 lg:sticky lg:top-[75px] lg:z-10 lg:self-start"
+            className="w-full min-w-0 max-w-full lg:sticky lg:top-[75px] lg:z-10 lg:self-start"
           >
             <ShopDetailHero product={product} />
           </Reveal>

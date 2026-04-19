@@ -4,70 +4,26 @@ import CentralIcon from '@central-icons-react/all'
 import { CentralIconName } from '@central-icons-react/all/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 
-const tabs = [
-  {
-    label: 'All Giftcards',
-    icon: 'IconSquareGridMagnifyingGlass',
-  },
-  {
-    label: 'Cashout',
-    icon: 'IconDollar',
-  },
-  {
-    label: 'Hotels',
-    icon: 'IconFoodBell',
-  },
-  {
-    label: 'Food',
-    icon: 'IconCookies',
-  },
-  {
-    label: 'Flights',
-    icon: 'IconAirplane',
-  },
-  {
-    label: 'Groceries',
-    icon: 'IconApples',
-  },
-  {
-    label: 'Shopping',
-    icon: 'IconShoppingBag2',
-  },
-  {
-    label: 'Clothing',
-    icon: 'IconFashion',
-  },
-  {
-    label: 'Gas/Oil',
-    icon: 'IconGas',
-  },
-  {
-    label: 'Tickets',
-    icon: 'IconTicket',
-  },
-  {
-    label: 'Lifestyle',
-    icon: 'IconPeopleIdCard',
-  },
-  {
-    label: 'Jewelry',
-    icon: 'IconDiamondShine',
-  },
-  {
-    label: 'Rentals',
-    icon: 'IconCarFrontView',
-  },
-  {
-    label: 'Streaming',
-    icon: 'IconClapboardWide',
-  },
-]
+import { useCategoriesQuery } from '@/hooks/use-products'
 
 const HeroSection: FunctionComponent = () => {
   const router = useRouter()
   const [heroSearchQuery, setHeroSearchQuery] = useState('')
+  const { data: categories = [] } = useCategoriesQuery()
+
+  const categoryTabs = useMemo(
+    () => [
+      {
+        name: 'All Giftcards',
+        slug: '',
+        icon: 'IconSquareGridMagnifyingGlass',
+      },
+      ...categories.map((c) => ({ name: c.name, slug: c.slug, icon: c.icon })),
+    ],
+    [categories]
+  )
 
   const goToShopWithSearch = useCallback(() => {
     const q = heroSearchQuery.trim()
@@ -75,8 +31,12 @@ const HeroSection: FunctionComponent = () => {
   }, [heroSearchQuery, router])
 
   const goToShopWithCategory = useCallback(
-    (category: string) => {
-      router.push(`/shop?category=${encodeURIComponent(category)}`)
+    (slug: string) => {
+      if (!slug) {
+        router.push('/shop')
+        return
+      }
+      router.push(`/shop?category=${encodeURIComponent(slug)}`)
     },
     [router]
   )
@@ -248,13 +208,13 @@ const HeroSection: FunctionComponent = () => {
       {/* Bottom tabs from old HeroSection, placed under header banner */}
       <div className="mx-auto w-full max-w-[1776.9px] px-4 pt-6 pb-8 sm:px-6 lg:px-8">
         <div className="font-commissioner flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
-          {tabs.map(({ label, icon }) => (
-            <div key={label} className="group relative w-auto">
+          {categoryTabs.map(({ name, slug, icon }) => (
+            <div key={slug || 'all'} className="group relative w-auto">
               <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#003bbf] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
               <button
                 type="button"
-                onClick={() => goToShopWithCategory(label)}
+                onClick={() => goToShopWithCategory(slug)}
                 className="relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-gray-600 px-4 py-3 text-[14px] leading-5 text-white/70 transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2"
               >
                 <CentralIcon
@@ -267,7 +227,7 @@ const HeroSection: FunctionComponent = () => {
                   color="#FFFFFF"
                   ariaHidden={true}
                 />
-                <span className="leading-5 font-bold tracking-[0]">{label}</span>
+                <span className="leading-5 font-bold tracking-[0]">{name}</span>
               </button>
             </div>
           ))}

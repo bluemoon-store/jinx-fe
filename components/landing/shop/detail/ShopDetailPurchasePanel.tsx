@@ -64,7 +64,7 @@ type PurchaseControlsProps = {
   regions: ProductRegion[]
   /** Override Add to Cart button classes (e.g. Quick Buy modal uses #0D1B35). */
   addToCartButtonClassName?: string
-  /** z-index for open dropdown menus (raise in modals so lists paint above the card). */
+  /** z-index for open dropdown menus (high enough to stack above modals / siblings). */
   dropdownZClass?: string
   /** Called after add to cart succeeds (e.g. close quick-buy modal). */
   onAddToCart?: () => void
@@ -80,7 +80,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   variants,
   regions,
   addToCartButtonClassName = DEFAULT_ADD_TO_CART_CLASS,
-  dropdownZClass = 'z-20',
+  dropdownZClass = 'z-[999]',
   onAddToCart,
 }) => {
   const variantList = useMemo(() => sortActiveVariants(variants), [variants])
