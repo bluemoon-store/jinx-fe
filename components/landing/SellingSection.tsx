@@ -74,9 +74,9 @@ const SellingSection: FunctionComponent = () => {
                     />
 
                     {/* Logo — positioned relative, pulled up to overlap the card top */}
-                    <div className="relative z-20 -mb-[48px] flex h-[96px] w-[96px] items-center justify-center sm:-mb-[54px] sm:h-[110px] sm:w-[110px]">
+                    <div className="rounded-num-8 relative z-20 -mb-[44px] flex h-[88px] w-[88px] items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)] sm:-mb-[45px] sm:h-[90px] sm:w-[90px]">
                       <img
-                        className="h-full w-full object-contain"
+                        className="h-full w-full object-cover"
                         alt={`${item.name} logo`}
                         src={item.primaryImageUrl ?? '/icons/dominos.svg'}
                       />
@@ -111,10 +111,10 @@ const SellingSection: FunctionComponent = () => {
                         }}
                       >
                         {/* Name + price */}
-                        <Link href={`/shop/${item.slug}`} className="block">
-                          <div className="flex w-36 flex-col items-center gap-0.5">
-                            <div className="flex items-center justify-center gap-[5px] self-stretch">
-                              <div className="tracking-num-0.02 font-extrabold uppercase">
+                        <Link href={`/shop/${item.slug}`} className="block w-full min-w-0">
+                          <div className="flex w-full max-w-full min-w-0 flex-col items-center gap-0.5">
+                            <div className="flex w-full min-w-0 items-center justify-center gap-[5px] self-stretch">
+                              <div className="tracking-num-0.02 min-w-0 flex-1 truncate text-center font-extrabold uppercase">
                                 {item.name}
                               </div>
                               <img

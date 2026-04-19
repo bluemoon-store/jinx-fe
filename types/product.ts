@@ -30,7 +30,7 @@ export interface ProductCard {
   slug: string
   fromPrice: string
   primaryImageUrl: string | null
-  category: { name: string; slug: string }
+  category: { name: string; slug: string; icon: string | null }
   isHot: boolean
   isNew: boolean
   isNFA: boolean

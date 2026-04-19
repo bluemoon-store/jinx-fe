@@ -43,11 +43,16 @@ function pickBool(v: unknown): boolean | undefined {
   return typeof v === 'boolean' ? v : undefined
 }
 
+function normalizePrice(v: string): string {
+  const n = parseFloat(v)
+  return Number.isNaN(n) ? v : n.toFixed(2)
+}
+
 function mapVariant(raw: UnknownRecord): ProductVariant {
   return {
     id: pickStr(raw.id) ?? '',
     label: pickStr(raw.label) ?? '',
-    price: pickStr(raw.price) ?? String(raw.price ?? ''),
+    price: normalizePrice(pickStr(raw.price) ?? String(raw.price ?? '')),
     currency: pickStr(raw.currency) ?? 'USD',
     stockQuantity: pickNum(raw.stockQuantity ?? raw.stock_quantity) ?? 0,
     isActive: pickBool(raw.isActive ?? raw.is_active) ?? true,
@@ -84,11 +89,12 @@ function mapProductCard(raw: UnknownRecord): ProductCard {
     id: pickStr(raw.id) ?? '',
     name: pickStr(raw.name) ?? '',
     slug: pickStr(raw.slug) ?? '',
-    fromPrice: pickStr(raw.fromPrice ?? raw.from_price) ?? '0',
+    fromPrice: normalizePrice(pickStr(raw.fromPrice ?? raw.from_price) ?? '0'),
     primaryImageUrl: pickStr(raw.primaryImageUrl ?? raw.primary_image_url) ?? null,
     category: {
       name: pickStr(categoryRaw.name) ?? '',
       slug: pickStr(categoryRaw.slug) ?? '',
+      icon: pickStr(categoryRaw.icon) ?? null,
     },
     isHot,
     isNew,

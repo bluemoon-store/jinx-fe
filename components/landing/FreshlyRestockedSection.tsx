@@ -80,8 +80,8 @@ export default function FreshlyRestockedSection() {
                 delay={idx * 70}
                 className="border-darkslateblue rounded-num-8 xl:p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-[#0D1B35] p-4 sm:gap-3 sm:p-5 lg:p-6"
               >
-                <Link href={`/shop/${item.slug}`} className="flex w-full flex-1 flex-col">
-                  <div className="rounded-num-8 relative aspect-4/3 w-full overflow-hidden bg-[#0A162D]">
+                <Link href={`/shop/${item.slug}`} className="flex w-full flex-1 flex-col gap-2">
+                  <div className="rounded-num-8 relative aspect-video w-full overflow-hidden bg-[#0A162D]">
                     <img
                       className="block h-full w-full object-cover"
                       alt=""

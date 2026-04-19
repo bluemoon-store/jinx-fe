@@ -55,11 +55,11 @@ export default function NewlyLaunchedSection() {
                 key={item.id}
                 variant="fade-up"
                 delay={idx * 70}
-                className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2.5 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent] lg:gap-3"
+                className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent]"
               >
-                <Link href={`/shop/${item.slug}`} className="block w-full">
+                <Link href={`/shop/${item.slug}`} className="flex w-full flex-col gap-2">
                   <img
-                    className="rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+                    className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
                     alt=""
                     src={item.primaryImageUrl ?? '/icons/starbucks.svg'}
                   />
