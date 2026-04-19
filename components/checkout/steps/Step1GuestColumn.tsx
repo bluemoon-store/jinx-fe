@@ -7,7 +7,7 @@ import { useId } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useAuthModal } from '@/components/auth/auth-modal-context'
-import { guestCheckoutSchema } from '@/lib/validations'
+import z from 'zod'
 
 type GuestCheckoutFormValues = {
   email: string
@@ -31,7 +31,7 @@ export function Step1GuestColumn({ onContinue }: Props) {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<GuestCheckoutFormValues>({
-    resolver: zodResolver(guestCheckoutSchema),
+    resolver: zodResolver(z.any()),
     defaultValues: { email: '', termsAccepted: false },
   })
 

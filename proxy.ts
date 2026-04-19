@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const COOKIE_ACCESS_TOKEN = 'access-token'
 const PROTECTED_PREFIXES = ['/dashboard']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isProtected = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
