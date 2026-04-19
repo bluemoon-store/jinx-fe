@@ -78,7 +78,7 @@ export default function FreshlyRestockedSection() {
                 key={item.id}
                 variant="fade-up"
                 delay={idx * 70}
-                className="border-darkslateblue rounded-num-8 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-[#0D1B35] p-num-12 sm:gap-3"
+                className="border-darkslateblue rounded-num-8 p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-[#0D1B35] sm:gap-3"
               >
                 <Link href={`/shop/${item.slug}`} className="flex w-full flex-1 flex-col gap-2">
                   <div className="rounded-num-8 relative aspect-video w-full overflow-hidden bg-[#0A162D]">
@@ -129,7 +129,7 @@ export default function FreshlyRestockedSection() {
         {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
-            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+            <div className="fixed inset-0 z-90 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
                 <button
                   type="button"

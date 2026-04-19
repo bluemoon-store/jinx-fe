@@ -114,7 +114,7 @@ const SellingSection: FunctionComponent = () => {
                         <Link href={`/shop/${item.slug}`} className="block w-full min-w-0">
                           <div className="flex w-full max-w-full min-w-0 flex-col items-center gap-0.5">
                             <div className="flex w-full min-w-0 justify-center">
-                              <div className="flex min-w-0 max-w-full items-center gap-[5px]">
+                              <div className="flex max-w-full min-w-0 items-center gap-[5px]">
                                 <div className="tracking-num-0.02 min-w-0 truncate text-center font-extrabold uppercase">
                                   {item.name}
                                 </div>
@@ -168,7 +168,7 @@ const SellingSection: FunctionComponent = () => {
         {quickBuySlug &&
           quickBuyPortalEl &&
           createPortal(
-            <div className="fixed inset-0 z-90 overflow-y-auto overflow-x-hidden overscroll-contain">
+            <div className="fixed inset-0 z-90 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="flex min-h-full justify-center px-4 py-10 sm:px-6 lg:px-8">
                 <button
                   type="button"

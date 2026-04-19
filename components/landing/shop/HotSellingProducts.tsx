@@ -108,13 +108,13 @@ export const HotSellingProducts: FunctionComponent = () => {
                     >
                       <div className="flex w-full items-center gap-3 sm:gap-[17px]">
                         <img
-                          className="h-12 w-12 shrink-0 rounded-num-8 object-cover shadow-[0_4px_14px_rgba(0,0,0,0.4)] sm:h-[60px] sm:w-[60px]"
+                          className="rounded-num-8 h-12 w-12 shrink-0 object-cover shadow-[0_4px_14px_rgba(0,0,0,0.4)] sm:h-[60px] sm:w-[60px]"
                           alt=""
                           src={item.primaryImageUrl ?? '/icons/best-buy.svg'}
                         />
 
                         <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">
-                          <div className="flex min-w-0 w-full max-w-full items-center gap-1 sm:gap-[5px]">
+                          <div className="flex w-full max-w-full min-w-0 items-center gap-1 sm:gap-[5px]">
                             <div className="tracking-num-0_02 min-w-0 flex-1 truncate text-sm leading-[20px] font-extrabold uppercase sm:text-base sm:leading-[20px]">
                               {item.name}
                             </div>
