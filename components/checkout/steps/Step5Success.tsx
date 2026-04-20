@@ -20,6 +20,8 @@ function itemKey(item: CartItem) {
   return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
 }
 
+type SuccessDisplayItem = CartItem & { orderItemId?: string }
+
 async function copyToClipboard(value: string, description?: string) {
   try {
     if (!navigator?.clipboard?.writeText) {
@@ -346,7 +348,7 @@ export function Step5Success({
   const deliveryQuery = useOrderDeliveryQuery(orderId ?? undefined, {
     enabled: Boolean(orderId) && order?.status === 'COMPLETED',
   })
-  const displayItems = useMemo(() => {
+  const displayItems = useMemo<SuccessDisplayItem[]>(() => {
     if (!orderId) return items
     const orderItems = order?.items ?? []
     return orderItems.map((oi) => {
@@ -374,6 +376,7 @@ export function Step5Success({
     const delivery = deliveryQuery.data
     const next: Record<string, string> = {}
     for (const line of displayItems) {
+      if (!line.orderItemId) continue
       const row = delivery.items.find((d) => d.itemId === line.orderItemId)
       if (row?.content) {
         next[itemKey(line)] = row.content
