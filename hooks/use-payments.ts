@@ -3,11 +3,12 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 
-import { getCryptoPaymentAction, getPaymentStatusAction } from '@/actions/order'
+import { getCryptoPaymentAction, getExchangeRatesAction, getPaymentStatusAction } from '@/actions/order'
 
 export const PAYMENTS_QUERY_KEYS = {
   crypto: (orderId: string) => ['payments', 'crypto', orderId] as const,
   status: (orderId: string) => ['payments', 'status', orderId] as const,
+  rates: ['payments', 'exchange-rates'] as const,
 }
 
 type PaymentStatus = Awaited<ReturnType<typeof getPaymentStatusAction>>
@@ -40,5 +41,13 @@ export function usePaymentStatusQuery(
     queryFn: () => getPaymentStatusAction(orderId!),
     enabled: Boolean(orderId) && (enabledOption ?? true),
     ...rest,
+  })
+}
+
+export function useExchangeRatesQuery() {
+  return useQuery({
+    queryKey: PAYMENTS_QUERY_KEYS.rates,
+    queryFn: getExchangeRatesAction,
+    staleTime: 60_000,
   })
 }

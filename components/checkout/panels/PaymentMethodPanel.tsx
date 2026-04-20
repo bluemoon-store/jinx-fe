@@ -1,18 +1,19 @@
 'use client'
 
 import Image from 'next/image'
+import { useMemo } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import type { ApiCryptoCurrency } from '@/hooks/use-orders'
+import { useExchangeRatesQuery } from '@/hooks/use-payments'
 
 const rows = [
   {
     icon: checkoutImg.btc,
     title: 'Bitcoin',
     sub: 'BTC',
-    amount: '0.00037 BTC',
     w: 40,
     h: 40,
     crypto: 'BTC' as const,
@@ -21,7 +22,6 @@ const rows = [
     icon: checkoutImg.eth,
     title: 'Ethereum',
     sub: 'ETH',
-    amount: '0.012 ETH',
     w: 40,
     h: 40,
     crypto: 'ETH' as const,
@@ -30,7 +30,6 @@ const rows = [
     icon: checkoutImg.tether,
     title: 'USDT (Tron)',
     sub: 'USDT - TRX',
-    amount: '25.00 USDT',
     w: 43,
     h: 42,
     crypto: 'USDT_TRC20' as const,
@@ -39,7 +38,6 @@ const rows = [
     icon: checkoutImg.tetherEth,
     title: 'USDT (Ethereum)',
     sub: 'USDT - ERC 20',
-    amount: '25.00 USDT',
     w: 43,
     h: 42,
     crypto: 'USDT_ERC20' as const,
@@ -48,7 +46,6 @@ const rows = [
     icon: checkoutImg.ltc,
     title: 'Litecoin',
     sub: 'LTC',
-    amount: '0.48 LTC',
     w: 40,
     h: 40,
     crypto: 'LTC' as const,
@@ -57,22 +54,68 @@ const rows = [
     icon: checkoutImg.bch,
     title: 'Bitcoin Cash',
     sub: 'BCH',
-    amount: '0.056 BCH',
     w: 40,
     h: 40,
     crypto: 'BCH' as const,
   },
 ] as const
 
+const STABLE: ReadonlySet<ApiCryptoCurrency> = new Set(['USDT_ERC20', 'USDT_TRC20', 'USDC_ERC20'])
+
+const VOLATILE_SUFFIX: Partial<Record<ApiCryptoCurrency, string>> = {
+  BTC: 'BTC',
+  ETH: 'ETH',
+  LTC: 'LTC',
+  BCH: 'BCH',
+}
+
+function amountForRow(
+  crypto: ApiCryptoCurrency,
+  totalUsd: number,
+  rates: { rates: Array<{ cryptocurrency: ApiCryptoCurrency; rate: number }> } | undefined,
+  ratesLoading: boolean
+): string {
+  if (STABLE.has(crypto)) {
+    if (crypto === 'USDC_ERC20') return `${totalUsd.toFixed(2)} USDC`
+    return `${totalUsd.toFixed(2)} USDT`
+  }
+  if (ratesLoading) return '—'
+  const rate = rates?.rates.find((r) => r.cryptocurrency === crypto)?.rate
+  if (rate == null || !Number.isFinite(rate) || rate <= 0) return '—'
+  const suffix = VOLATILE_SUFFIX[crypto]
+  if (!suffix) return '—'
+  return `${(totalUsd / rate).toFixed(6)} ${suffix}`
+}
+
 type Props = {
+  totalUsd: number
   onBack: () => void
   onContinue: (cryptocurrency: ApiCryptoCurrency) => void
   onWalletContinue?: () => void
   busy?: boolean
 }
 
-export function PaymentMethodPanel({ onBack, onContinue, onWalletContinue, busy }: Props) {
+export function PaymentMethodPanel({
+  totalUsd,
+  onBack,
+  onContinue,
+  onWalletContinue,
+  busy,
+}: Props) {
   const { openAuthModal, isAuthenticated } = useAuthModal()
+  const ratesQuery = useExchangeRatesQuery()
+  const ratesLoading = ratesQuery.isPending || (ratesQuery.isFetching && !ratesQuery.data)
+
+  const amountByCrypto = useMemo(() => {
+    const map = new Map<ApiCryptoCurrency, string>()
+    for (const row of rows) {
+      map.set(
+        row.crypto,
+        amountForRow(row.crypto, totalUsd, ratesQuery.data, ratesLoading)
+      )
+    }
+    return map
+  }, [ratesLoading, ratesQuery.data, totalUsd])
 
   return (
     <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-8">
@@ -132,7 +175,7 @@ export function PaymentMethodPanel({ onBack, onContinue, onWalletContinue, busy 
                 </div>
               </div>
               <span className="shrink-0 text-base font-bold tracking-[0.4px] text-white sm:text-xl">
-                {row.amount}
+                {amountByCrypto.get(row.crypto) ?? '—'}
               </span>
             </button>
           </div>

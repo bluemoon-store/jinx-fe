@@ -41,7 +41,10 @@ export type ApiOrderItem = {
   regionLabel?: string | null
   regionCountry?: string | null
   deliveredContent?: string | null
-  product?: { name?: string }
+  product?: {
+    name?: string
+    images?: Array<{ url: string | null; isPrimary: boolean }>
+  }
 }
 
 export type ApiCryptoPayment = {
@@ -55,6 +58,8 @@ export type ApiCryptoPayment = {
   status: ApiPaymentStatus
   expiresAt: string
   timeRemaining: number
+  confirmations?: number
+  requiredConfirmations?: number
   paymentUri?: string
 }
 
@@ -175,6 +180,24 @@ export async function listOrdersAction(params: OrderListParams): Promise<Paginat
 
 export async function getOrderAction(id: string): Promise<ApiOrder> {
   const res = await api.get<BackendResponse<ApiOrder>>(`/orders/${id}`)
+  return unwrap(res)
+}
+
+export type ApiExchangeRate = {
+  cryptocurrency: ApiCryptoCurrency
+  fiatCurrency: string
+  rate: number
+  updatedAt: string
+}
+
+export type ApiAllExchangeRates = {
+  rates: ApiExchangeRate[]
+  fiatCurrency: string
+  timestamp: string
+}
+
+export async function getExchangeRatesAction(): Promise<ApiAllExchangeRates> {
+  const res = await api.get<BackendResponse<ApiAllExchangeRates>>('/crypto/exchange-rates')
   return unwrap(res)
 }
 

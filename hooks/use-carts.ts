@@ -7,9 +7,10 @@ import {
   clearCartAction,
   getCartAction,
   removeCartItemAction,
+  syncCartAction,
   updateCartItemAction,
 } from '@/actions/cart'
-import type { AddCartItemDto, UpdateCartItemDto } from '@/actions/cart'
+import type { AddCartItemDto, SyncCartItemDto, UpdateCartItemDto } from '@/actions/cart'
 
 export type { AddCartItemDto, ApiCart, ApiCartItem, UpdateCartItemDto } from '@/actions/cart'
 import { getAccessToken } from '@/lib/token'
@@ -61,6 +62,16 @@ export function useClearCartMutation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => clearCartAction(),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.root() })
+    },
+  })
+}
+
+export function useSyncCartMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (items: SyncCartItemDto[]) => syncCartAction(items),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.root() })
     },

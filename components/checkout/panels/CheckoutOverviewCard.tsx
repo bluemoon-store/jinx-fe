@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
@@ -11,8 +11,30 @@ import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
 import { usePromoStore } from '@/stores/promo-store'
+import type { ApiCryptoCurrency } from '@/hooks/use-orders'
+import { useOrderQuery } from '@/hooks/use-orders'
 
 const BUYER_PROTECTION_ENHANCED_USD = 5
+
+const CRYPTO_LABEL: Record<ApiCryptoCurrency, string> = {
+  BTC: 'Bitcoin (BTC)',
+  ETH: 'Ethereum (ETH)',
+  LTC: 'Litecoin (LTC)',
+  BCH: 'Bitcoin Cash (BCH)',
+  USDT_TRC20: 'USDT (TRC-20)',
+  USDT_ERC20: 'USDT (ERC-20)',
+  USDC_ERC20: 'USDC (ERC-20)',
+}
+
+const CRYPTO_ICON_SMALL: Record<ApiCryptoCurrency, string> = {
+  BTC: checkoutImg.btcSmall,
+  ETH: checkoutImg.eth,
+  LTC: checkoutImg.ltc,
+  BCH: checkoutImg.bch,
+  USDT_TRC20: checkoutImg.tether,
+  USDT_ERC20: checkoutImg.tetherEth,
+  USDC_ERC20: checkoutImg.tetherEth,
+}
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
@@ -48,7 +70,7 @@ function LineItemReadonly({ item }: { item: CartItem }) {
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-col gap-0.5">
           <div className="flex max-w-full min-w-0 flex-wrap items-center gap-x-2 sm:gap-x-2.5">
-            <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] break-words sm:text-[17.5px] sm:leading-[25px]">
+            <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] wrap-break-word sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
             </span>
             <div className="flex shrink-0 items-center gap-[7.5px]">
@@ -94,15 +116,70 @@ function LineItemReadonly({ item }: { item: CartItem }) {
 }
 
 /** Left column: “Checkout overview” with payment breakdown (steps 4 & 6). */
-export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNote?: boolean }) {
+export function CheckoutOverviewCard({
+  centerSecurityNote,
+  cryptocurrency,
+  orderId,
+}: {
+  centerSecurityNote?: boolean
+  cryptocurrency?: ApiCryptoCurrency
+  orderId?: string
+}) {
   const items = useCartStore((s) => s.items)
   const coverage = useBuyerProtectionStore((s) => s.coverage)
   const appliedPromo = usePromoStore((s) => s.appliedPromo)
+  const orderQuery = useOrderQuery(orderId)
+  const order = orderQuery.data
 
-  const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
-  const discount = Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
-  const buyerProtectionUsd = coverage === 'enhanced' ? BUYER_PROTECTION_ENHANCED_USD : 0
-  const totalDue = subtotal - discount + buyerProtectionUsd
+  const displayItems = useMemo(() => {
+    if (!orderId) return items
+    const orderItems = order?.items ?? []
+    return orderItems.map((oi) => {
+      const thumbUrl =
+        oi.product?.images?.find((image) => image.isPrimary)?.url ??
+        oi.product?.images?.find((image) => Boolean(image.url))?.url ??
+        undefined
+      return {
+        id: oi.productId,
+        name: oi.product?.name ?? 'Product',
+        variantId: oi.variantId ?? undefined,
+        variantLabel: oi.variantLabel ?? 'Standard',
+        regionLabel: oi.regionLabel ?? 'Global',
+        regionCountry: oi.regionCountry ?? undefined,
+        unitPrice: Number.parseFloat(oi.priceAtPurchase) || 0,
+        quantity: oi.quantity,
+        thumbUrl: thumbUrl ?? undefined,
+      }
+    })
+  }, [items, order?.items, orderId])
+
+  const subtotal = orderId
+    ? (order?.items ?? []).reduce(
+        (sum, i) => sum + (Number.parseFloat(i.priceAtPurchase) || 0) * i.quantity,
+        0
+      )
+    : displayItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
+  const discount = orderId
+    ? Number.parseFloat(order?.discountAmount ?? '0') || 0
+    : Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
+  const buyerProtectionUsd = orderId
+    ? order?.buyerProtection
+      ? Number.parseFloat(order?.buyerProtectionAmount ?? '0') || 0
+      : 0
+    : coverage === 'enhanced'
+      ? BUYER_PROTECTION_ENHANCED_USD
+      : 0
+  const totalDue = orderId ? Number.parseFloat(order?.totalAmount ?? '0') || 0 : subtotal - discount + buyerProtectionUsd
+  const effectiveCrypto = (order?.cryptoPayment?.cryptocurrency ?? cryptocurrency ?? 'BTC') as ApiCryptoCurrency
+  const paymentLabel = CRYPTO_LABEL[effectiveCrypto] ?? 'Cryptocurrency'
+  const promoCodeLabel = orderId ? order?.promoCode : appliedPromo?.code
+  const protectionLabel = orderId
+    ? order?.buyerProtection
+      ? 'Enhanced Buyer Protection'
+      : 'Basic Coverage'
+    : coverage === 'enhanced'
+      ? 'Enhanced Buyer Protection'
+      : 'Basic Coverage'
   const mountedRef = useRef(false)
   const [coverageFlash, setCoverageFlash] = useState(false)
 
@@ -116,7 +193,22 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
     return () => window.clearTimeout(timer)
   }, [coverage])
 
-  if (!items.length) {
+  if (orderId && orderQuery.isPending) {
+    return (
+      <div className="flex w-full max-w-[729px] flex-col gap-4 sm:gap-6">
+        <h2 className="font-nata-sans text-ghostwhite text-center text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
+          CHECKOUT OVERVIEW
+        </h2>
+        <div className="flex flex-col gap-4 rounded-[20px] border border-dashed border-white/25 bg-gray-200 p-4 sm:p-6">
+          <div className="h-16 w-full animate-pulse rounded bg-white/10" />
+          <div className="h-16 w-full animate-pulse rounded bg-white/10" />
+          <div className="h-32 w-full animate-pulse rounded bg-white/10" />
+        </div>
+      </div>
+    )
+  }
+
+  if (!displayItems.length) {
     return (
       <div className="flex w-full max-w-[729px] flex-col gap-4 sm:gap-6">
         <h2 className="font-nata-sans text-ghostwhite text-center text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
@@ -145,7 +237,7 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
 
       <div className="flex flex-col gap-6 rounded-[20px] border border-dashed border-white/25 bg-gray-200 p-4 sm:gap-8 sm:rounded-[25px] sm:p-6 lg:p-8">
         <div className="flex flex-col gap-6 sm:gap-8">
-          {items.map((item) => (
+          {displayItems.map((item) => (
             <LineItemReadonly key={itemKey(item)} item={item} />
           ))}
         </div>
@@ -165,14 +257,14 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
             </span>
             <div className="flex min-w-0 items-center gap-2.5">
               <Image
-                src={checkoutImg.btcSmall}
+                src={CRYPTO_ICON_SMALL[effectiveCrypto] ?? checkoutImg.btcSmall}
                 alt=""
                 width={20}
                 height={20}
                 className="shrink-0"
               />
               <span className="truncate text-sm font-semibold text-white sm:text-base">
-                Bitcoin (BTC)
+                {paymentLabel}
               </span>
             </div>
           </div>
@@ -201,14 +293,14 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
               <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
                 Discount applied
               </span>
-              {appliedPromo ? (
+              {promoCodeLabel ? (
                 <span className="text-fuchsia text-sm font-bold sm:text-base">
-                  {appliedPromo.code}
+                  {promoCodeLabel}
                 </span>
               ) : null}
             </div>
             <span className="shrink-0 text-sm font-semibold text-white sm:text-base">
-              {formatUsd(-discount)}
+              {formatUsd(-Math.abs(discount))}
             </span>
           </div>
           <div
@@ -225,7 +317,7 @@ export function CheckoutOverviewCard({ centerSecurityNote }: { centerSecurityNot
                 className="shrink-0"
               />
               <span className="text-sm font-semibold text-white opacity-75 sm:text-base">
-                {coverage === 'enhanced' ? 'Enhanced Buyer Protection' : 'Basic Coverage'}
+                {protectionLabel}
               </span>
             </div>
             <span className="shrink-0 text-sm font-semibold text-white sm:text-base">

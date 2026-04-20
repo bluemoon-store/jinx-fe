@@ -346,24 +346,41 @@ export function Step5Success({
   const deliveryQuery = useOrderDeliveryQuery(orderId ?? undefined, {
     enabled: Boolean(orderId) && order?.status === 'COMPLETED',
   })
+  const displayItems = useMemo(() => {
+    if (!orderId) return items
+    const orderItems = order?.items ?? []
+    return orderItems.map((oi) => {
+      const thumbUrl =
+        oi.product?.images?.find((image) => image.isPrimary)?.url ??
+        oi.product?.images?.find((image) => Boolean(image.url))?.url ??
+        undefined
+      return {
+        id: oi.productId,
+        name: oi.product?.name ?? 'Product',
+        variantId: oi.variantId ?? undefined,
+        variantLabel: oi.variantLabel ?? 'Standard',
+        regionLabel: oi.regionLabel ?? 'Global',
+        regionCountry: oi.regionCountry ?? undefined,
+        unitPrice: Number.parseFloat(oi.priceAtPurchase) || 0,
+        quantity: oi.quantity,
+        thumbUrl: thumbUrl ?? undefined,
+        orderItemId: oi.id,
+      }
+    })
+  }, [items, order?.items, orderId])
 
   const deliveryByKey = useMemo(() => {
-    if (!order || order.status !== 'COMPLETED' || !deliveryQuery.data) return {}
-    const orderItems = order.items ?? []
+    if (!order || order.status !== 'COMPLETED' || !deliveryQuery.data || !orderId) return {}
     const delivery = deliveryQuery.data
     const next: Record<string, string> = {}
-    for (const line of items) {
-      const match = orderItems.find(
-        (oi) => oi.productId === line.id && (oi.variantId ?? '') === (line.variantId ?? '')
-      )
-      if (!match) continue
-      const row = delivery.items.find((d) => d.itemId === match.id)
+    for (const line of displayItems) {
+      const row = delivery.items.find((d) => d.itemId === line.orderItemId)
       if (row?.content) {
         next[itemKey(line)] = row.content
       }
     }
     return next
-  }, [deliveryQuery.data, items, order])
+  }, [deliveryQuery.data, displayItems, order, orderId])
 
   const deliveryLoading =
     Boolean(orderId) &&
@@ -372,7 +389,20 @@ export function Step5Success({
 
   const deliveryError = orderQuery.isError || deliveryQuery.isError
 
-  if (!items.length) {
+  if (orderId && orderQuery.isPending) {
+    return (
+      <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
+        <div className="h-7 w-56 animate-pulse rounded bg-white/10 sm:h-8 sm:w-72" />
+        <div className="flex w-full max-w-[560px] flex-col gap-4 rounded-xl border border-white/10 bg-gray-100 p-6">
+          <div className="h-14 w-full animate-pulse rounded bg-white/10" />
+          <div className="h-24 w-full animate-pulse rounded bg-white/10" />
+          <div className="h-14 w-full animate-pulse rounded bg-white/10" />
+        </div>
+      </div>
+    )
+  }
+
+  if (!displayItems.length) {
     return (
       <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
         <div className="flex flex-col items-center gap-3 py-12">
@@ -417,7 +447,7 @@ export function Step5Success({
       </div>
 
       <div className="flex w-full max-w-[1920px] min-w-0 flex-wrap justify-center gap-6 sm:gap-8">
-        {items.map((item) => (
+        {displayItems.map((item) => (
           <SuccessCard
             key={itemKey(item)}
             item={item}

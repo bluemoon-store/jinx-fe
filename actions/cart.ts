@@ -31,6 +31,14 @@ export type AddCartItemDto = {
   regionCountry?: string
 }
 
+export type SyncCartItemDto = {
+  productId: string
+  quantity: number
+  variantId?: string
+  regionLabel?: string
+  regionCountry?: string
+}
+
 export type UpdateCartItemDto = {
   quantity: number
 }
@@ -60,5 +68,10 @@ export async function removeCartItemAction(cartItemId: string): Promise<ApiCart>
 
 export async function clearCartAction(): Promise<ApiCart> {
   const res = await api.delete<BackendResponse<ApiCart>>('/cart')
+  return unwrap(res)
+}
+
+export async function syncCartAction(items: SyncCartItemDto[]): Promise<ApiCart> {
+  const res = await api.put<BackendResponse<ApiCart>>('/cart/sync', { items })
   return unwrap(res)
 }

@@ -6,8 +6,19 @@ import { useEffect, useRef, useState } from 'react'
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
 import { SupportRow } from '@/components/checkout/shared/SupportRow'
+import type { ApiCryptoCurrency } from '@/hooks/use-orders'
 import { usePaymentStatusQuery } from '@/hooks/use-payments'
 import { toast } from '@/lib/toast'
+
+const CRYPTO_ICON: Record<ApiCryptoCurrency, string> = {
+  BTC: checkoutImg.btc,
+  ETH: checkoutImg.eth,
+  LTC: checkoutImg.ltc,
+  BCH: checkoutImg.bch,
+  USDT_TRC20: checkoutImg.tether,
+  USDT_ERC20: checkoutImg.tetherEth,
+  USDC_ERC20: checkoutImg.tetherEth,
+}
 
 type Props = {
   orderId: string | null
@@ -17,6 +28,7 @@ type Props = {
   /** e.g. "≈ 25.03 USD" */
   amountUsdLabel: string | null
   cryptoTitle: string
+  cryptocurrency: ApiCryptoCurrency
   qrCode?: string | null
   initialTimeRemainingSec?: number
   onNavigateStep: (step: 4 | 5) => void
@@ -37,12 +49,20 @@ async function copyToClipboard(value: string, description?: string) {
   }
 }
 
+/** Crypto line is like "0.00037 BTC" — copy only the numeric part for wallets/paste. */
+function cryptoAmountCopyValue(amountLine: string): string {
+  const t = amountLine.replace(/≈/g, '').trim()
+  if (!t || t === '—') return t
+  return t.split(/\s+/)[0] ?? t
+}
+
 export function CompletePaymentPending({
   orderId,
   paymentAddress,
   cryptoAmountLabel,
   amountUsdLabel,
   cryptoTitle,
+  cryptocurrency,
   qrCode,
   initialTimeRemainingSec = 20 * 60,
   onNavigateStep,
@@ -116,7 +136,7 @@ export function CompletePaymentPending({
   const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0')
   const seconds = String(remainingSeconds % 60).padStart(2, '0')
   const totalWindow = Math.max(initialTimeRemainingSec, 1)
-  const progress = 1 - remainingSeconds / totalWindow
+  const progress = Math.min(1, Math.max(0, 1 - remainingSeconds / totalWindow))
 
   const addr = paymentAddress ?? '—'
   const amountLine = cryptoAmountLabel ?? '—'
@@ -133,7 +153,13 @@ export function CompletePaymentPending({
 
       <div className="flex flex-col gap-6 rounded-xl border border-[#eeeeee1a] bg-gray-500 p-4 sm:gap-8 sm:p-6 lg:p-8">
         <div className="flex items-start gap-3 sm:items-center">
-          <Image src={checkoutImg.btc} alt="" width={40} height={40} className="shrink-0" />
+          <Image
+            src={CRYPTO_ICON[cryptocurrency] ?? checkoutImg.btc}
+            alt=""
+            width={40}
+            height={40}
+            className="shrink-0"
+          />
           <div className="min-w-0 flex-1">
             <div className="text-base font-bold tracking-[0.36px] text-white sm:text-lg">
               Pay with {cryptoTitle}
@@ -202,7 +228,7 @@ export function CompletePaymentPending({
             </div>
             <button
               type="button"
-              onClick={() => copyToClipboard(amountLine.replace(/≈/g, '').trim())}
+              onClick={() => copyToClipboard(cryptoAmountCopyValue(amountLine))}
               aria-label="Copy amount to pay"
               className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
             >
@@ -219,25 +245,18 @@ export function CompletePaymentPending({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-num-18 w-num-18 relative">
-              <Image
-                src={checkoutImg.ellipseA}
-                alt=""
-                width={16}
-                height={16}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              />
-              <Image
-                src={checkoutImg.ellipseB}
-                alt=""
-                width={16}
-                height={16}
-                className="absolute top-1/2 left-1/2"
-                style={{
-                  transform: `translate(-50%, -50%) rotate(${progress * 360}deg)`,
-                  transformOrigin: 'center',
-                }}
-              />
+            <div
+              className="relative h-num-18 w-num-18 rounded-full"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+              aria-label="Payment time progress"
+              style={{
+                background: `conic-gradient(#ff00ea ${progress * 360}deg, rgba(255, 255, 255, 0.2) 0deg)`,
+              }}
+            >
+              <div className="absolute inset-[3px] rounded-full bg-[#0a162f]" />
             </div>
             <span className="text-base font-semibold text-white [text-shadow:0px_0px_8.63px_#00000099]">
               {minutes}:{seconds}

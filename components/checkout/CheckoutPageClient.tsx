@@ -16,7 +16,7 @@ import { CheckoutLogo } from '@/components/checkout/shared/CheckoutLogo'
 import { LegalFooter } from '@/components/checkout/shared/LegalFooter'
 import { Step5Success } from '@/components/checkout/steps/Step5Success'
 import { formatUsd } from '@/lib/cart-format'
-import { useAddCartItemMutation, useClearCartMutation } from '@/hooks/use-carts'
+import { useClearCartMutation, useSyncCartMutation } from '@/hooks/use-carts'
 import {
   cryptoHumanTitle,
   formatCryptoAmountLine,
@@ -30,6 +30,7 @@ import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
 import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
+import { usePromoStore } from '@/stores/promo-store'
 import { toast } from '@/lib/toast'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
@@ -48,6 +49,7 @@ type PaymentSnapshot = {
   cryptoLine: string
   usdLine: string
   title: string
+  cryptocurrency: ApiCryptoCurrency
   qr?: string | null
   timeRemaining: number
 }
@@ -58,29 +60,31 @@ export function CheckoutPageClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const clearCartMutation = useClearCartMutation()
-  const addCartItemMutation = useAddCartItemMutation()
+  const syncCartMutation = useSyncCartMutation()
   const createOrderMutation = useCreateOrderMutation()
   const createCryptoPaymentMutation = useCreateCryptoPaymentMutation()
   const payOrderWithWalletMutation = usePayOrderWithWalletMutation()
 
-  // Depend on mutateAsync only: the full mutation result object changes whenever
-  // mutation status updates (pending/success), which would otherwise recreate this
-  // callback every request and retrigger the cart sync layout effect in a loop.
-  const clearCart = clearCartMutation.mutateAsync
-  const addCartItem = addCartItemMutation.mutateAsync
+  // mutateAsync identity changes when the mutation settles (TanStack Query), which
+  // would change useCallback deps and re-run useLayoutEffect — duplicate PUT /cart/sync.
+  const syncCartMutateAsyncRef = useRef(syncCartMutation.mutateAsync)
+  syncCartMutateAsyncRef.current = syncCartMutation.mutateAsync
 
-  const pushLocalCartItemsToBackend = useCallback(
-    async (localItems: CartItem[]) => {
-      await clearCart()
-      const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
-      for (const item of localItems) {
-        const res = await addCartItem({
+  /** Coalesces concurrent syncs (StrictMode double-mount, overlapping effects). */
+  const cartSyncInFlightRef = useRef<Promise<void> | null>(null)
+
+  const pushLocalCartItemsToBackend = useCallback(async (localItems: CartItem[]) => {
+      const res = await syncCartMutateAsyncRef.current(
+        localItems.map((item) => ({
           productId: item.id,
           quantity: item.quantity,
           variantId: item.variantId,
           regionLabel: item.regionLabel,
           regionCountry: item.regionCountry,
-        })
+        }))
+      )
+      const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
+      for (const item of localItems) {
         const backendItem = res.items.find(
           (i) =>
             i.productId === item.id &&
@@ -100,8 +104,21 @@ export function CheckoutPageClient() {
           )
         }
       }
+  }, [])
+
+  const awaitCheckoutCartSync = useCallback(
+    async (localItems: CartItem[]) => {
+      if (cartSyncInFlightRef.current) {
+        await cartSyncInFlightRef.current
+        return
+      }
+      const p = pushLocalCartItemsToBackend(localItems).finally(() => {
+        cartSyncInFlightRef.current = null
+      })
+      cartSyncInFlightRef.current = p
+      await p
     },
-    [addCartItem, clearCart]
+    [pushLocalCartItemsToBackend]
   )
   const raw = searchParams.get('step')
   const step = Math.min(MAX_CHECKOUT_STEP, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
@@ -134,9 +151,9 @@ export function CheckoutPageClient() {
 
       if (!cancelled) setCartBackendGate('loading')
       try {
-        await pushLocalCartItemsToBackend(localItems)
-        if (cancelled) return
+        await awaitCheckoutCartSync(localItems)
         cartBackendSyncedRef.current = true
+        if (cancelled) return
         setCartBackendGate('ready')
       } catch (err) {
         console.error('checkout cart sync', err)
@@ -150,7 +167,7 @@ export function CheckoutPageClient() {
     return () => {
       cancelled = true
     }
-  }, [step, pushLocalCartItemsToBackend])
+  }, [step, awaitCheckoutCartSync])
 
   const retryCartBackendSync = useCallback(() => {
     void (async () => {
@@ -162,7 +179,7 @@ export function CheckoutPageClient() {
       }
       setCartBackendGate('loading')
       try {
-        await pushLocalCartItemsToBackend(localItems)
+        await awaitCheckoutCartSync(localItems)
         cartBackendSyncedRef.current = true
         setCartBackendGate('ready')
       } catch (err) {
@@ -171,14 +188,24 @@ export function CheckoutPageClient() {
         setCartBackendGate('error')
       }
     })()
-  }, [pushLocalCartItemsToBackend])
+  }, [awaitCheckoutCartSync])
 
   const [paymentBusy, setPaymentBusy] = useState(false)
   const [paymentSnapshot, setPaymentSnapshot] = useState<PaymentSnapshot | null>(null)
+  const clearLocalCart = useCallback(() => {
+    useCartStore.getState().clear()
+  }, [])
 
   const cryptoPaymentQuery = useCryptoPaymentQuery(
-    step === 3 && orderIdParam ? orderIdParam : undefined
+    (step === 3 || step === 5) && orderIdParam ? orderIdParam : undefined
   )
+
+  const cartItems = useCartStore((s) => s.items)
+  const coverage = useBuyerProtectionStore((s) => s.coverage)
+  const appliedPromo = usePromoStore((s) => s.appliedPromo)
+  const subtotal = cartItems.reduce((s, i) => s + i.unitPrice * i.quantity, 0)
+  const discount = Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
+  const totalUsd = subtotal - discount + (coverage === 'enhanced' ? 5 : 0)
 
   const fireConfetti = useCallback(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return
@@ -242,6 +269,7 @@ export function CheckoutPageClient() {
       cryptoLine: formatCryptoAmountLine(pay.amount, c),
       usdLine: `${formatUsd(Number.parseFloat(pay.amountUsd))} USD`,
       title: cryptoHumanTitle(c),
+      cryptocurrency: pay.cryptocurrency,
       qr: pay.qrCode,
       timeRemaining: pay.timeRemaining,
     }
@@ -281,6 +309,7 @@ export function CheckoutPageClient() {
           cryptoLine: formatCryptoAmountLine(pay.amount, cryptocurrency),
           usdLine: `${formatUsd(Number.parseFloat(pay.amountUsd))} USD`,
           title: cryptoHumanTitle(cryptocurrency),
+          cryptocurrency,
           qr: pay.qrCode,
           timeRemaining: pay.timeRemaining,
         })
@@ -320,7 +349,7 @@ export function CheckoutPageClient() {
       }
 
       await clearCartMutation.mutateAsync()
-      useCartStore.getState().clear()
+      clearLocalCart()
 
       const sp = new URLSearchParams(searchParams.toString())
       sp.set('step', '4')
@@ -332,7 +361,15 @@ export function CheckoutPageClient() {
     } finally {
       setPaymentBusy(false)
     }
-  }, [clearCartMutation, createOrderMutation, fireConfetti, payOrderWithWalletMutation, router, searchParams])
+  }, [
+    clearCartMutation,
+    clearLocalCart,
+    createOrderMutation,
+    fireConfetti,
+    payOrderWithWalletMutation,
+    router,
+    searchParams,
+  ])
 
   if (step === 4) {
     return (
@@ -400,12 +437,25 @@ export function CheckoutPageClient() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden lg:flex-row">
       <aside className="flex w-full min-w-0 flex-col border-white/5 bg-gray-500 lg:min-h-screen lg:w-1/2 lg:border-r">
-        <div className="mx-auto flex w-full max-w-[952px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 lg:mx-0 lg:w-fit lg:max-w-[952px] lg:min-w-[809px] lg:self-end lg:px-8 xl:px-12">
+        <div className="mx-auto flex w-full max-w-[952px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 lg:mx-0 lg:w-full lg:max-w-[952px] lg:items-stretch lg:self-end lg:px-8 xl:min-w-[809px] xl:px-12">
           <BackToStore onBack={handleBack} label={step <= 1 ? 'Back to store' : 'Back'} />
-          <div className="mt-6 flex w-full min-w-0 flex-1 flex-col sm:mt-8 lg:mt-10">
+          <div className="mt-6 flex w-full min-w-0 flex-1 flex-col items-center sm:mt-8 lg:mt-10 lg:items-stretch">
             {step === 1 || step === 2 ? <CartColumn checkoutStep={step} /> : null}
-            {step === 3 ? <CheckoutOverviewCard centerSecurityNote /> : null}
-            {step === 5 ? <CheckoutOverviewCard /> : null}
+            {step === 3 ? (
+              <CheckoutOverviewCard
+                centerSecurityNote
+                cryptocurrency={effectivePaymentSnapshot?.cryptocurrency}
+              />
+            ) : null}
+            {step === 5 ? (
+              <CheckoutOverviewCard
+                orderId={orderIdParam ?? undefined}
+                cryptocurrency={
+                  effectivePaymentSnapshot?.cryptocurrency ??
+                  cryptoPaymentQuery.data?.cryptocurrency
+                }
+              />
+            ) : null}
           </div>
           <LegalFooter />
         </div>
@@ -422,6 +472,7 @@ export function CheckoutPageClient() {
             ) : null}
             {step === 2 ? (
               <PaymentMethodPanel
+                totalUsd={totalUsd}
                 onBack={() => setStep(1)}
                 onContinue={handlePaymentMethodConfirm}
                 onWalletContinue={handleWalletPayment}
@@ -435,9 +486,19 @@ export function CheckoutPageClient() {
                 cryptoAmountLabel={effectivePaymentSnapshot?.cryptoLine ?? null}
                 amountUsdLabel={effectivePaymentSnapshot?.usdLine ?? null}
                 cryptoTitle={effectivePaymentSnapshot?.title ?? 'Cryptocurrency'}
+                cryptocurrency={
+                  effectivePaymentSnapshot?.cryptocurrency ??
+                  cryptoPaymentQuery.data?.cryptocurrency ??
+                  'BTC'
+                }
                 qrCode={effectivePaymentSnapshot?.qr}
                 initialTimeRemainingSec={effectivePaymentSnapshot?.timeRemaining ?? 20 * 60}
-                onNavigateStep={(s) => setStep(s)}
+                onNavigateStep={(s) => {
+                  if (s === 4 || s === 5) {
+                    clearLocalCart()
+                  }
+                  setStep(s)
+                }}
                 onExpired={() => {
                   setPaymentSnapshot(null)
                   toast.error('Payment window expired. Please choose a payment method again.')
@@ -445,7 +506,15 @@ export function CheckoutPageClient() {
                 }}
               />
             ) : null}
-            {step === 5 ? <CompletePaymentConfirmed /> : null}
+            {step === 5 ? (
+              <CompletePaymentConfirmed
+                orderId={orderIdParam ?? undefined}
+                cryptocurrency={
+                  effectivePaymentSnapshot?.cryptocurrency ??
+                  cryptoPaymentQuery.data?.cryptocurrency
+                }
+              />
+            ) : null}
           </div>
         </div>
       </main>
