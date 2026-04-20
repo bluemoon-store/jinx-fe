@@ -76,9 +76,12 @@ const dashboardSelectTriggerClass = cn(
 const ReviewRow: FunctionComponent<{
   row: ReviewPurchaseRow
   review?: OrderReview
+  status?: DashboardOrderStatus
   canAddReview: boolean
   onAddReview: () => void
-}> = ({ row, review, canAddReview, onAddReview }) => {
+}> = ({ row, review, status, canAddReview, onAddReview }) => {
+  const statusCfg = status ? dashboardOrderStatusConfig[status] : null
+
   return (
     <div className="border-darkslateblue flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 hover:bg-[#13253F] sm:gap-4 sm:p-5">
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
@@ -116,6 +119,29 @@ const ReviewRow: FunctionComponent<{
             <span>{row.date}</span>
             <span className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block" aria-hidden />
             <span>{row.time}</span>
+            {statusCfg ? (
+              <>
+                <span className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block" aria-hidden />
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 rounded-num-6 border border-[#16243B] bg-[#0D1B35] px-1.5 py-0.5 text-xs font-semibold',
+                    statusCfg.color
+                  )}
+                  aria-label={`Payment status: ${statusCfg.label}`}
+                >
+                  <CentralIcon
+                    name={statusCfg.icon as any}
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={12}
+                    ariaHidden={true}
+                  />
+                  <span>{statusCfg.label}</span>
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
@@ -525,13 +551,17 @@ export const DashboardReviewsSection: FunctionComponent = () => {
     </div>
   )
 
-  if (filtered.length === 0) {
+  if (filtered.length === 0 && !loading) {
     return (
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         {filterBar}
-        {loading ? (
-          <div className="text-lightsteelblue-100 py-10 text-center text-sm font-medium">
-            Loading reviews...
+        {loading && filtered.length === 0 ? (
+          <div className="flex py-12">
+            <div
+              className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+              role="status"
+              aria-label="Loading reviews"
+            />
           </div>
         ) : null}
         {!loading && error ? (
@@ -562,37 +592,45 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
       {filterBar}
-
-      <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
-        {loading ? (
-          <div className="text-lightsteelblue-100 px-4 py-8 text-center text-sm font-medium">
-            Loading reviews...
-          </div>
-        ) : null}
-        {!loading && error ? (
-          <div className="px-4 py-8 text-center">
-            <p className="text-sm text-red-300">{error}</p>
-            <button
-              type="button"
-              className="mt-2 text-sm font-semibold text-white underline underline-offset-4"
-              onClick={() => void loadReviewsPageData()}
-            >
-              Retry
-            </button>
-          </div>
-        ) : null}
-        <div className="flex flex-col">
-          {visibleRows.map(({ row }) => (
-            <ReviewRow
-              key={row.id}
-              row={row}
-              review={reviewsByPurchaseRowId[row.id]}
-              canAddReview={orders.find((o) => o.id === row.id)?.status === 'paid'}
-              onAddReview={() => setReviewDialogRow(row)}
-            />
-          ))}
+      {loading && visibleRows.length === 0 ? (
+        <div className="flex py-12">
+          <div
+            className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+            role="status"
+            aria-label="Loading reviews"
+          />
         </div>
-      </div>
+      ) : (
+        <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
+          {!loading && error ? (
+            <div className="px-4 py-8 text-center">
+              <p className="text-sm text-red-300">{error}</p>
+              <button
+                type="button"
+                className="mt-2 text-sm font-semibold text-white underline underline-offset-4"
+                onClick={() => void loadReviewsPageData()}
+              >
+                Retry
+              </button>
+            </div>
+          ) : null}
+          <div className="flex flex-col">
+            {visibleRows.map(({ row }) => {
+              const matchedOrder = orders.find((o) => o.id === row.id)
+              return (
+                <ReviewRow
+                  key={row.id}
+                  row={row}
+                  review={reviewsByPurchaseRowId[row.id]}
+                  status={matchedOrder?.status}
+                  canAddReview={matchedOrder?.status === 'paid'}
+                  onAddReview={() => setReviewDialogRow(row)}
+                />
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       <nav aria-label="Review list load more">
         <DashboardLoadMoreFooter

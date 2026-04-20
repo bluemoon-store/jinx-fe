@@ -38,16 +38,20 @@ export interface ProductCard {
   stockQuantity: number
 }
 
-export interface ProductDetail extends ProductCard {
-  shortNotice: string | null
+/** List (and related) payloads include enough fields to render Quick Buy without a detail fetch */
+export type ProductQuickBuy = ProductCard & {
   description: string
+  tags: ProductTag[]
+  variants: ProductVariant[]
+  regions: ProductRegion[]
+}
+
+export interface ProductDetail extends ProductQuickBuy {
+  shortNotice: string | null
   redeemProcess: string | null
   warrantyText: string | null
   countryOfOrigin: string | null
   heroImageUrl: string | null
   breadcrumbs: string[]
-  variants: ProductVariant[]
-  regions: ProductRegion[]
-  related: ProductCard[]
-  tags: ProductTag[]
+  related: ProductQuickBuy[]
 }

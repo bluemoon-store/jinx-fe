@@ -1,10 +1,7 @@
-'use client'
-
-import { FunctionComponent } from 'react'
 import { Reveal } from '@/components/ui/reveal'
 import CentralIcon from '@central-icons-react/all'
 
-const FeaturesSection: FunctionComponent = () => {
+export default async function FeaturesSection() {
   const features = [
     {
       title: 'Instant Access',
@@ -138,5 +135,3 @@ const FeaturesSection: FunctionComponent = () => {
     </section>
   )
 }
-
-export default FeaturesSection

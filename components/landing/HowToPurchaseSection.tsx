@@ -1,10 +1,7 @@
-'use client'
-
-import { FunctionComponent } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/ui/reveal'
 
-const HowToPurchaseSection: FunctionComponent = () => {
+export default async function HowToPurchaseSection() {
   const steps = [
     {
       id: 1,
@@ -91,5 +88,3 @@ const HowToPurchaseSection: FunctionComponent = () => {
     </section>
   )
 }
-
-export default HowToPurchaseSection

@@ -42,6 +42,7 @@ export type ApiOrderItem = {
   regionCountry?: string | null
   deliveredContent?: string | null
   product?: {
+    slug?: string
     name?: string
     description?: string | null
     shortNotice?: string | null
@@ -83,6 +84,13 @@ export type ApiOrder = {
   buyerProtectionAmount?: string | null
   items?: ApiOrderItem[]
   cryptoPayment?: ApiCryptoPayment | null
+  review?: {
+    id: string
+    orderId: string
+    rating: number
+    comment: string | null
+    createdAt: string
+  } | null
 }
 
 export type OrderListParams = {

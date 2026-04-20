@@ -3,7 +3,7 @@
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useMemo, useState } from 'react'
 
-import { useCategoriesQuery } from '@/hooks/use-products'
+import type { ProductCategory } from '@/types/product'
 
 type Row = {
   name: string
@@ -13,10 +13,10 @@ type Row = {
 }
 
 export const ShopCategorySidebar: FunctionComponent<{
+  categories: ProductCategory[]
   selectedSlug: string
   onSelect: (slug: string) => void
-}> = ({ selectedSlug, onSelect }) => {
-  const { data: categories = [], isLoading } = useCategoriesQuery()
+}> = ({ categories, selectedSlug, onSelect }) => {
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null)
 
   const rows: Row[] = useMemo(
@@ -37,9 +37,6 @@ export const ShopCategorySidebar: FunctionComponent<{
       <div className="tracking-num-0_02 text-ghostwhite shrink-0 font-extrabold uppercase">
         Category
       </div>
-      {isLoading ? (
-        <div className="text-lightsteelblue-100 text-xs opacity-80">Loading categories…</div>
-      ) : null}
       <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:overflow-visible sm:pb-0">
         {rows.map((c) => {
           const isSelected = selectedSlug === c.slug

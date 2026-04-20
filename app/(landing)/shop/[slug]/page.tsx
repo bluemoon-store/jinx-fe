@@ -1,45 +1,66 @@
-/* eslint-disable react/no-unescaped-entities */
-'use client'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { FunctionComponent } from 'react'
-import { useParams } from 'next/navigation'
-
+import { getProductBySlugAction } from '@/actions/product'
 import { ShopProductDetail } from '@/components/landing/shop/detail/ShopProductDetail'
 import Navbar from '@/components/landing/Navbar'
 import Footer from '@/components/landing/Footer'
-import { BrandLoader } from '@/components/ui/BrandLoader'
-import { parseApiError } from '@/lib/api-error'
-import { useProductDetailQuery } from '@/hooks/use-products'
+import type { ProductDetail } from '@/types/product'
 
-const ProductViewPage: FunctionComponent = () => {
-  const params = useParams<{ slug: string }>()
-  const slug = params?.slug ?? ''
+export const revalidate = 300
 
-  const { data: product, isLoading, isError, error } = useProductDetailQuery(slug)
+type ProductPageProps = {
+  params: Promise<{ slug: string }>
+}
 
+async function getProductOrNull(slug: string): Promise<ProductDetail | null> {
   if (!slug) return null
+  try {
+    return await getProductBySlugAction(slug)
+  } catch {
+    return null
+  }
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const product = await getProductOrNull(slug)
+
+  if (!product) {
+    return {
+      title: 'Product not found | Bluemoon Shop',
+      description: 'The requested product could not be found.',
+    }
+  }
+
+  const description = product.description?.trim() || `Buy ${product.name} on Bluemoon Shop.`
+
+  return {
+    title: `${product.name} | Bluemoon Shop`,
+    description,
+    openGraph: {
+      title: `${product.name} | Bluemoon Shop`,
+      description,
+      images: product.heroImageUrl ?? product.primaryImageUrl ?? undefined,
+    },
+  }
+}
+
+export default async function ProductViewPage({ params }: ProductPageProps) {
+  const { slug } = await params
+  const product = await getProductOrNull(slug)
+
+  if (!product) {
+    notFound()
+  }
 
   return (
     <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col overflow-x-clip bg-gray-400 pt-12 text-left sm:pt-[75px]">
       <Navbar />
       <div className="flex min-w-0 flex-1 flex-col">
-        {isLoading ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-6 py-24">
-            <BrandLoader />
-            <p className="text-lightsteelblue-100 text-sm">Loading product…</p>
-          </div>
-        ) : isError || !product ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center">
-            <p className="text-lg font-semibold text-white">Product not found</p>
-            <p className="text-lightsteelblue-100 max-w-md text-sm">{parseApiError(error)}</p>
-          </div>
-        ) : (
-          <ShopProductDetail product={product} />
-        )}
+        <ShopProductDetail product={product} />
       </div>
       <Footer />
     </div>
   )
 }
-
-export default ProductViewPage

@@ -4,6 +4,7 @@ import type {
   ProductCard,
   ProductCategory,
   ProductDetail,
+  ProductQuickBuy,
   ProductRegion,
   ProductTag,
   ProductVariant,
@@ -23,7 +24,7 @@ export type GetProductsParams = {
 }
 
 export type ProductsPageResult = {
-  items: ProductCard[]
+  items: ProductQuickBuy[]
   total: number
   page: number
   limit: number
@@ -104,11 +105,10 @@ function mapProductCard(raw: UnknownRecord): ProductCard {
   }
 }
 
-function mapProductDetail(raw: UnknownRecord): ProductDetail {
+function mapProductQuickBuy(raw: UnknownRecord): ProductQuickBuy {
   const card = mapProductCard(raw)
   const variantsRaw = raw.variants
   const regionsRaw = raw.regions
-  const relatedRaw = raw.related
 
   const variants = Array.isArray(variantsRaw)
     ? variantsRaw.map((v) => mapVariant(v as UnknownRecord))
@@ -116,30 +116,40 @@ function mapProductDetail(raw: UnknownRecord): ProductDetail {
   const regions = Array.isArray(regionsRaw)
     ? regionsRaw.map((r) => mapRegion(r as UnknownRecord))
     : []
+
+  return {
+    ...card,
+    description: pickStr(raw.description ?? raw.summary) ?? '',
+    variants,
+    regions,
+    tags: deriveTags(card.isHot, card.isNew, card.isNFA),
+  }
+}
+
+function mapProductDetail(raw: UnknownRecord): ProductDetail {
+  const base = mapProductQuickBuy(raw)
+  const relatedRaw = raw.related
+
   const related = Array.isArray(relatedRaw)
-    ? relatedRaw.map((r) => mapProductCard(r as UnknownRecord))
+    ? relatedRaw.map((r) => mapProductQuickBuy(r as UnknownRecord))
     : []
 
   const breadcrumbsRaw = raw.breadcrumbs
   const breadcrumbs = Array.isArray(breadcrumbsRaw)
     ? breadcrumbsRaw.filter((b): b is string => typeof b === 'string')
-    : ['All Products', card.category.name].filter(Boolean)
+    : ['All Products', base.category.name].filter(Boolean)
 
-  const heroImageUrl = pickStr(raw.heroImageUrl ?? raw.hero_image_url) ?? card.primaryImageUrl
+  const heroImageUrl = pickStr(raw.heroImageUrl ?? raw.hero_image_url) ?? base.primaryImageUrl
 
   return {
-    ...card,
+    ...base,
     shortNotice: pickStr(raw.shortNotice ?? raw.short_notice) ?? null,
-    description: pickStr(raw.description ?? raw.summary) ?? '',
     redeemProcess: pickStr(raw.redeemProcess ?? raw.redeem_process) ?? null,
     warrantyText: pickStr(raw.warrantyText ?? raw.warranty_text) ?? null,
     countryOfOrigin: pickStr(raw.countryOfOrigin ?? raw.country_of_origin) ?? null,
     heroImageUrl,
     breadcrumbs,
-    variants,
-    regions,
     related,
-    tags: deriveTags(card.isHot, card.isNew, card.isNFA),
   }
 }
 
@@ -149,7 +159,7 @@ function unwrapData<T>(res: { data: BackendResponse<T> }): T {
 
 function parseProductsPayload(payload: unknown): ProductsPageResult {
   if (Array.isArray(payload)) {
-    const items = payload.map((p) => mapProductCard(p as UnknownRecord))
+    const items = payload.map((p) => mapProductQuickBuy(p as UnknownRecord))
     return {
       items,
       total: items.length,
@@ -161,7 +171,7 @@ function parseProductsPayload(payload: unknown): ProductsPageResult {
   if (payload && typeof payload === 'object') {
     const o = payload as UnknownRecord
     const list = o.items ?? o.data ?? o.products
-    const items = Array.isArray(list) ? list.map((p) => mapProductCard(p as UnknownRecord)) : []
+    const items = Array.isArray(list) ? list.map((p) => mapProductQuickBuy(p as UnknownRecord)) : []
     const total = pickNum(o.total ?? o.totalCount ?? o.total_count) ?? items.length
     const page = pickNum(o.page ?? o.currentPage ?? o.current_page) ?? 1
     const limit =

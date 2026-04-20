@@ -1,6 +1,7 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import { useQueryClient } from '@tanstack/react-query'
 import { Reveal } from '@/components/ui/reveal'
 import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
@@ -8,6 +9,7 @@ import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { reviewsApi } from '@/lib/api'
 import {
+  ORDERS_QUERY_KEYS,
   mapApiOrderToDashboardCard,
   mapApiOrderStatus,
   useOrderDeliveryQuery,
@@ -24,16 +26,6 @@ import { FunctionComponent, useEffect, useRef, useState } from 'react'
 const modalShadowClass =
   'shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]'
 
-/** Matches shop listing URLs (`ShopProductsSection`, etc.). */
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
-
 const PAYMENT_CRYPTO_META: Record<OrderPaymentMethod, { src: string; label: string }> = {
   bitcoin: { src: '/icons/Crypto Logos/Bitcoin.svg', label: 'Bitcoin' },
   ethereum: {
@@ -47,6 +39,7 @@ const PAYMENT_CRYPTO_META: Record<OrderPaymentMethod, { src: string; label: stri
 }
 
 const DashboardOrderDetailPage: FunctionComponent = () => {
+  const queryClient = useQueryClient()
   const params = useParams()
   const rawId = typeof params.id === 'string' ? params.id : ''
   const markedUsedByOrderId = useOrderReviewStore((s) => s.markedUsedByOrderId)
@@ -69,7 +62,6 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const [reviewSent, setReviewSent] = useState(false)
   const [existingReviewId, setExistingReviewId] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
-  const [deleting, setDeleting] = useState(false)
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isOrderWarrantyOpen, setIsOrderWarrantyOpen] = useState(false)
   const [redeemCodeCopied, setRedeemCodeCopied] = useState(false)
@@ -84,35 +76,25 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   useEffect(() => {
     if (!rawId || apiOrder?.status !== 'COMPLETED') return
 
-    let isCancelled = false
-
     setExistingReviewId(null)
     setRating(0)
     setComment('')
     setReviewSent(false)
-    ;(async () => {
-      try {
-        const res = await reviewsApi.list({ page: 1, limit: 100 })
-        if (isCancelled) return
-        const found = res.items.find((r) => r.orderId === rawId)
-        if (!found) return
-        setExistingReviewId(found.id)
-        setRating(found.rating)
-        setComment(found.comment ?? '')
-        setReviewSent(true)
-      } catch {
-        // Keep default empty state on fetch failures.
-      }
-    })()
-
-    return () => {
-      isCancelled = true
-    }
-  }, [rawId, apiOrder?.status])
+    const review = apiOrder.review
+    if (!review || review.orderId !== rawId) return
+    setExistingReviewId(review.id)
+    setRating(review.rating)
+    setComment(review.comment ?? '')
+    setReviewSent(true)
+  }, [rawId, apiOrder?.status, apiOrder?.review])
 
   const previewRating = hoveredStar ?? rating
   const showReviewBox = rating >= 1
   const firstItem = apiOrder?.items?.[0]
+  const purchaseAgainSlug = firstItem?.product?.slug ?? firstItem?.productId
+  const purchaseAgainHref = purchaseAgainSlug
+    ? (`/shop/${purchaseAgainSlug}` as Route)
+    : ('/shop' as Route)
   const primaryProductImage =
     firstItem?.product?.images?.find((img) => img.isPrimary) ??
     firstItem?.product?.images?.[0] ??
@@ -122,8 +104,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   if (rawId && orderQuery.isPending) {
     return (
       <Reveal variant="fade-up" delay={140}>
-        <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-3 py-12 text-center">
-          <p className="text-lightsteelblue-100 text-sm font-medium">Loading order…</p>
+        <div className="flex py-12">
+          <div
+            className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+            role="status"
+            aria-label="Loading order"
+          />
         </div>
       </Reveal>
     )
@@ -229,7 +215,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         <article className="text-num-16 font-commissioner box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid border-gray-600 bg-gray-100 p-5 text-left text-white sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
           {/* Product preview & primary actions */}
-          <section className="flex w-full min-w-0 flex-col gap-5 lg:max-w-[min(100%,447px)] lg:shrink-0">
+          <section className="flex w-full min-w-0 flex-col gap-5 lg:w-1/2">
             <div className="rounded-num-12 flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden bg-[#051329]">
               <img
                 className="max-h-full max-w-full object-contain object-center"
@@ -242,7 +228,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-4">
               <Link
-                href={`/shop/${slugify(card.brand)}` as Route}
+                href={purchaseAgainHref}
                 className="rounded-num-8 p-num-12 box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid border-gray-600 bg-[#19263F] transition-colors hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
@@ -328,7 +314,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
           </section>
 
           {/* Order metadata, redeem, accordions, review */}
-          <div className="text-whitesmoke-100 flex min-w-0 flex-1 flex-col gap-6 sm:gap-8 lg:text-[18px]">
+          <div className="text-whitesmoke-100 flex min-w-0 flex-1 flex-col gap-6 sm:gap-8 lg:w-1/2 lg:text-[18px]">
             <header className="font-nata-sans flex flex-col gap-2 self-stretch">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="tracking-num-0_02 leading-8 font-extrabold uppercase">
@@ -598,13 +584,13 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
 
               <div className="text-num-14 text-lightsteelblue-200 flex flex-col gap-3">
-                <div className="flex flex-col gap-3 sm:flex-row sm:gap-3">
-                  <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Order ID</span>
                     <button
                       type="button"
                       onClick={handleCopyOrderId}
-                      className="text-num-16 tracking-num--0_01 focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold text-white [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none sm:max-w-[min(100%,280px)]"
+                      className="text-num-16 tracking-num--0_01 focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold text-white [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
                       aria-label={`Copy order ID ${apiOrder.orderNumber}`}
                     >
                       <span className="min-w-0 truncate text-right">{apiOrder.orderNumber}</span>
@@ -620,7 +606,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       />
                     </button>
                   </div>
-                  <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
+                  <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Payment Status</span>
                     <span className="text-num-16 tracking-num--0_01 flex items-center gap-1.5 font-semibold text-white">
                       <CentralIcon
@@ -645,7 +631,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="flex flex-col gap-3 md:flex-row">
                   <div className="rounded-num-8 py-num-10 px-num-12 flex flex-1 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
                     <span className="leading-num-20 font-semibold">Country</span>
                     <span className="text-num-16 tracking-num--0_01 flex items-center gap-2 font-semibold text-white">
@@ -772,6 +758,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                                 setExistingReviewId(created.id)
                                 toast.success('Review submitted')
                               }
+                              await queryClient.invalidateQueries({
+                                queryKey: ORDERS_QUERY_KEYS.detail(rawId),
+                              })
+                              await queryClient.invalidateQueries({
+                                queryKey: ORDERS_QUERY_KEYS.lists(),
+                              })
                               setReviewSent(true)
                             } catch {
                               toast.error('Failed to submit review. Please try again.')
@@ -787,32 +779,6 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                               ? 'Update Review'
                               : 'Submit Review'}
                         </button>
-
-                        {existingReviewId ? (
-                          <button
-                            type="button"
-                            disabled={deleting}
-                            onClick={async () => {
-                              if (!existingReviewId) return
-                              setDeleting(true)
-                              try {
-                                await reviewsApi.delete(existingReviewId)
-                                setExistingReviewId(null)
-                                setRating(0)
-                                setComment('')
-                                setReviewSent(false)
-                                toast.success('Review deleted')
-                              } catch {
-                                toast.error('Failed to delete review.')
-                              } finally {
-                                setDeleting(false)
-                              }
-                            }}
-                            className="text-num-16 tracking-num--0_01 border-fuchsia/30 bg-fuchsia/10 text-fuchsia flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] border px-4 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-40"
-                          >
-                            {deleting ? 'Deleting...' : 'Delete Review'}
-                          </button>
-                        ) : null}
 
                         <p className="font-commissioner text-ghostwhite text-center text-xs leading-4 font-semibold italic opacity-50">
                           Your feedback helps us improve our products, services, and overall

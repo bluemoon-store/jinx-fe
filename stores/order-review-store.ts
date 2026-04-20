@@ -7,7 +7,7 @@ import {
   type ApiOrder,
 } from '@/actions/order'
 import type { DashboardOrderStatus } from '@/components/dashboard/DashboardOrderCard'
-import { reviewsApi, type ReviewListItem } from '@/lib/api'
+import { reviewsApi } from '@/lib/api'
 
 /** Đơn hàng — trùng mock Orders dashboard. */
 export type OrderPaymentMethod =
@@ -116,7 +116,13 @@ function toPurchaseRow(order: ApiOrder): ReviewPurchaseRow {
   }
 }
 
-function toStoreReview(review: ReviewListItem): OrderReview {
+function toStoreReview(review: {
+  id: string
+  orderId: string
+  rating: number
+  comment: string | null
+  createdAt: string
+}): OrderReview {
   return {
     id: review.id,
     orderId: review.orderId,
@@ -137,15 +143,14 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
   loadReviewsPageData: async () => {
     set({ loading: true, error: null })
     try {
-      const [ordersRes, reviewsRes] = await Promise.all([
-        listOrdersAction({ page: 1, limit: 100 }),
-        reviewsApi.list({ page: 1, limit: 100, sort: 'newest' }),
-      ])
+      const ordersRes = await listOrdersAction({ page: 1, limit: 100 })
       const orders = ordersRes.items.map(toOrderModel)
       const pendingReviewRows = ordersRes.items.map(toPurchaseRow)
-      const reviewsByPurchaseRowId = reviewsRes.items.reduce<Record<string, OrderReview>>(
-        (acc, review) => {
-          acc[review.orderId] = toStoreReview(review)
+      const reviewsByPurchaseRowId = ordersRes.items.reduce<Record<string, OrderReview>>(
+        (acc, order) => {
+          const review = order.review
+          if (!review) return acc
+          acc[order.id] = toStoreReview(review)
           return acc
         },
         {}

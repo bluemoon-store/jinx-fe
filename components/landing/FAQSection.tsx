@@ -114,10 +114,6 @@ const FAQSection: FunctionComponent = () => {
     })
   }
 
-  const toggleAll = () => {
-    setOpenIds(allOpen ? new Set() : new Set(faqData.map((f) => f.id)))
-  }
-
   const col1 = faqData.slice(0, 4)
   const col2 = faqData.slice(4)
 

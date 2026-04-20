@@ -9,7 +9,7 @@ import { createPortal } from 'react-dom'
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useProductsQuery } from '@/hooks/use-products'
-import type { ProductCard } from '@/types/product'
+import type { ProductQuickBuy } from '@/types/product'
 
 import { ShopProductCard } from './ShopProductCard'
 import ShopProductDetailModal from './detail/ShopProductDetailModal'
@@ -32,9 +32,9 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
   const debouncedSearch = useDebounce(query.trim(), 400)
 
   const [page, setPage] = useState(INITIAL_PAGE)
-  const [merged, setMerged] = useState<ProductCard[]>([])
+  const [merged, setMerged] = useState<ProductQuickBuy[]>([])
 
-  const [quickBuySlug, setQuickBuySlug] = useState<string | null>(null)
+  const [quickBuyProduct, setQuickBuyProduct] = useState<ProductQuickBuy | null>(null)
   const [quickBuyPortalEl, setQuickBuyPortalEl] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -109,8 +109,12 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
       </div>
 
       {isLoading && page === INITIAL_PAGE ? (
-        <div className="text-lightsteelblue-100 font-commissioner py-12 text-center text-sm">
-          Loading products…
+        <div className="flex py-12">
+          <div
+            className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+            role="status"
+            aria-label="Loading products"
+          />
         </div>
       ) : total === 0 ? (
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-[5px] py-12 text-left text-lg">
@@ -135,7 +139,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
                 fromPrice={p.fromPrice.startsWith('$') ? p.fromPrice : `$${p.fromPrice}`}
                 imageSrc={p.primaryImageUrl ?? '/icons/airbnb.svg'}
                 detailHref={`/shop/${p.slug}`}
-                onQuickBuy={() => setQuickBuySlug(p.slug)}
+                onQuickBuy={() => setQuickBuyProduct(p)}
               />
             ))}
           </div>
@@ -153,7 +157,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
               />
             </nav>
           </div>
-          {quickBuySlug &&
+          {quickBuyProduct &&
             quickBuyPortalEl &&
             createPortal(
               <div className="fixed inset-0 z-[90] overflow-x-hidden overflow-y-auto overscroll-contain">
@@ -162,7 +166,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
                     type="button"
                     className="fixed inset-0 bg-black/60"
                     aria-label="Close quick buy dialog"
-                    onClick={() => setQuickBuySlug(null)}
+                    onClick={() => setQuickBuyProduct(null)}
                   />
                   <div
                     className="relative z-10 my-auto flex w-full max-w-[min(100vw-2rem,960px)] flex-col items-center overflow-visible"
@@ -170,8 +174,8 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
                     aria-modal="true"
                   >
                     <ShopProductDetailModal
-                      productSlug={quickBuySlug}
-                      onClose={() => setQuickBuySlug(null)}
+                      product={quickBuyProduct}
+                      onClose={() => setQuickBuyProduct(null)}
                     />
                   </div>
                 </div>

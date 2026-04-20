@@ -1,12 +1,10 @@
-'use client'
-
 import { FunctionComponent } from 'react'
-import { Reveal } from '@/components/ui/reveal'
 import { ShopDetailHero } from './ShopDetailHero'
 import { ShopDetailRelatedProducts } from './ShopDetailRelatedProducts'
 import { ShopDetailRightColumn } from './ShopDetailRightColumn'
 import FAQSection from '@/components/landing/FAQSection'
 import type { ProductDetail } from '@/types/product'
+import { Reveal } from '@/components/ui/reveal'
 
 type Props = {
   product: ProductDetail

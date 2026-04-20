@@ -104,9 +104,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
     ? (expiredQuery.data?.totalItems ?? 0)
     : (pagedQuery.data?.pages[0]?.metadata.totalItems ?? 0)
 
-  const listLoading = expiredMode
-    ? expiredQuery.isPending
-    : pagedQuery.isPending && !pagedQuery.data
+  const listLoading = expiredMode ? expiredQuery.isLoading : pagedQuery.isLoading
 
   const listError = expiredMode ? expiredQuery.isError : pagedQuery.isError
 
@@ -516,48 +514,57 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
 
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
-      {listLoading && ordersList.length === 0 ? (
-        <p className="text-lightsteelblue-100 text-sm font-medium">Loading orders…</p>
-      ) : null}
       {filterBar}
-      {viewMode === 'grid' ? (
-        <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-          {visibleOrders.map((o) => (
-            <DashboardOrderCard
-              key={o.id}
-              id={o.id}
-              brand={o.brand}
-              imageUrl={o.imageUrl}
-              itemCount={o.itemCount}
-              price={o.price}
-              status={o.status}
-            />
-          ))}
+      {listLoading && ordersList.length === 0 ? (
+        <div className="flex py-12">
+          <div
+            className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+            role="status"
+            aria-label="Loading orders"
+          />
         </div>
       ) : (
-        <div className="rounded-num-8 divide-y divide-[#16243B] border border-solid border-[#16243B] bg-[#0B1221]">
-          {visibleOrders.map((o) => (
-            <DashboardOrderRow
-              key={o.id}
-              id={o.id}
-              brand={o.brand}
-              imageUrl={o.imageUrl}
-              itemCount={o.itemCount}
-              price={o.price}
-              status={o.status}
-            />
-          ))}
-        </div>
-      )}
+        <>
+          {viewMode === 'grid' ? (
+            <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+              {visibleOrders.map((o) => (
+                <DashboardOrderCard
+                  key={o.id}
+                  id={o.id}
+                  brand={o.brand}
+                  imageUrl={o.imageUrl}
+                  itemCount={o.itemCount}
+                  price={o.price}
+                  status={o.status}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-num-8 divide-y divide-[#16243B] border border-solid border-[#16243B] bg-[#0B1221]">
+              {visibleOrders.map((o) => (
+                <DashboardOrderRow
+                  key={o.id}
+                  id={o.id}
+                  brand={o.brand}
+                  imageUrl={o.imageUrl}
+                  itemCount={o.itemCount}
+                  price={o.price}
+                  status={o.status}
+                />
+              ))}
+            </div>
+          )}
 
-      <nav aria-label="Order list load more">
-        <DashboardLoadMoreFooter
-          shown={shown}
-          total={totalForFooter}
-          canLoadMore={canLoadMore}
-          onLoadMore={() => void pagedQuery.fetchNextPage()}
-        />
-      </nav>
+          <nav aria-label="Order list load more">
+            <DashboardLoadMoreFooter
+              shown={shown}
+              total={totalForFooter}
+              canLoadMore={canLoadMore}
+              onLoadMore={() => void pagedQuery.fetchNextPage()}
+            />
+          </nav>
+        </>
+      )}
     </div>
   )
 }

@@ -29,16 +29,17 @@ export const DashboardLoadMoreFooter: FunctionComponent<{
           />
         </div>
       </div>
-      <button
-        type="button"
-        disabled={!canLoadMore}
-        onClick={onLoadMore}
-        className="border-darkslateblue rounded-num-30 flex items-center justify-center border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity disabled:cursor-not-allowed disabled:opacity-25"
-      >
-        <span className="relative leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-          Load More
-        </span>
-      </button>
+      {canLoadMore ? (
+        <button
+          type="button"
+          onClick={onLoadMore}
+          className="border-darkslateblue rounded-num-30 flex items-center justify-center border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity"
+        >
+          <span className="relative leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            Load More
+          </span>
+        </button>
+      ) : null}
     </div>
   )
 }

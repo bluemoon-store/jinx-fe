@@ -5,15 +5,11 @@ import Link from 'next/link'
 import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useState } from 'react'
 
-import { useHotProductsQuery } from '@/hooks/use-products'
-
 import { Reveal } from '@/components/ui/reveal'
+import type { ProductCard } from '@/types/product'
 
-export const HotSellingProducts: FunctionComponent = () => {
+export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = ({ items }) => {
   const [isHidden, setIsHidden] = useState(false)
-  const { data, isLoading } = useHotProductsQuery(10)
-
-  const items = data?.items ?? []
 
   return (
     <>
@@ -66,10 +62,8 @@ export const HotSellingProducts: FunctionComponent = () => {
         }}
       >
         <div className="min-h-0 overflow-hidden">
-          {isLoading ? (
-            <div className="text-lightsteelblue-100 p-6 text-center text-sm">
-              Loading hot products…
-            </div>
+          {items.length === 0 ? (
+            <div className="text-lightsteelblue-100 p-6 text-center text-sm">No hot products yet.</div>
           ) : (
             <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
               {items.map((item, idx) => (

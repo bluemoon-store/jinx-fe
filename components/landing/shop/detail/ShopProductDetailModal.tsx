@@ -3,14 +3,12 @@
 import { FunctionComponent, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
-import { BrandLoader } from '@/components/ui/BrandLoader'
-import { useProductDetailQuery } from '@/hooks/use-products'
-import type { ProductTag } from '@/types/product'
+import type { ProductQuickBuy, ProductTag } from '@/types/product'
 
 import { ShopDetailPurchaseControls } from './ShopDetailPurchasePanel'
 
 type Props = {
-  productSlug: string
+  product: ProductQuickBuy
   onClose: () => void
 }
 
@@ -67,11 +65,10 @@ function ProductTagBadges({ tags }: { tags: ProductTag[] }) {
   )
 }
 
-const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose }) => {
-  const { data: product, isLoading, isError } = useProductDetailQuery(productSlug)
+const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
 
-  const imageSrc = product?.primaryImageUrl ?? ''
+  const imageSrc = product.primaryImageUrl ?? ''
 
   return (
     <section className="text-ghostwhite font-commissioner border-darkslateblue mx-auto my-auto box-border flex w-full max-w-full flex-col items-start overflow-visible rounded-xl border-[1px] border-solid bg-gray-400 px-5 py-[18px] text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)]">
@@ -80,7 +77,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
           <div className="flex items-center justify-between gap-5 self-stretch">
             <div className="flex items-center">
               <div className="leading-num-28 font-extrabold tracking-[0.02em] uppercase">
-                {isLoading ? 'Loading…' : (product?.name ?? 'Product')}
+                {product.name}
               </div>
             </div>
             <button
@@ -103,94 +100,84 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ productSlug, onClose
           <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
         </header>
 
-        {isLoading ? (
-          <div className="flex w-full flex-col items-center gap-6 py-12">
-            <BrandLoader />
-          </div>
-        ) : isError || !product ? (
-          <div className="text-lightsteelblue-100 w-full px-4 py-8 text-center text-sm">
-            We couldn&apos;t load this product. Try again from the shop.
-          </div>
-        ) : (
-          <div className="text-whitesmoke-200 grid w-full grid-cols-1 items-start gap-5 self-stretch text-[12px] lg:grid-cols-2 lg:gap-6">
-            <div className="flex w-full min-w-0 flex-col items-stretch">
-              <div className="flex w-full min-w-0 flex-col items-start justify-center">
-                <div className="flex w-full min-w-0 flex-col items-start">
-                  <div className="border-whitesmoke-300 rounded-num-8 flex w-full min-w-0 flex-col items-center justify-center gap-4 overflow-hidden border-[1.8px] border-solid bg-gray-100 p-4 sm:gap-5 sm:p-6 md:p-8 lg:p-[25px]">
-                    <div className="aspect-video w-full overflow-hidden rounded-[14.61px] shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)]">
-                      {imageSrc ? (
-                        <img alt="" src={imageSrc} className="h-full w-full object-cover" />
-                      ) : (
-                        <div
-                          className="aspect-video min-h-[120px] w-full bg-gray-300/30"
-                          aria-hidden
-                        />
-                      )}
-                    </div>
-                    <ProductTagBadges tags={product.tags} />
+        <div className="text-whitesmoke-200 grid w-full grid-cols-1 items-start gap-5 self-stretch text-[12px] lg:grid-cols-2 lg:gap-6">
+          <div className="flex w-full min-w-0 flex-col items-stretch">
+            <div className="flex w-full min-w-0 flex-col items-start justify-center">
+              <div className="flex w-full min-w-0 flex-col items-start">
+                <div className="border-whitesmoke-300 rounded-num-8 flex w-full min-w-0 flex-col items-center justify-center gap-4 overflow-hidden border-[1.8px] border-solid bg-gray-100 p-4 sm:gap-5 sm:p-6 md:p-8 lg:p-[25px]">
+                  <div className="aspect-video w-full overflow-hidden rounded-[14.61px] shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)]">
+                    {imageSrc ? (
+                      <img alt="" src={imageSrc} className="h-full w-full object-cover" />
+                    ) : (
+                      <div
+                        className="aspect-video min-h-[120px] w-full bg-gray-300/30"
+                        aria-hidden
+                      />
+                    )}
                   </div>
+                  <ProductTagBadges tags={product.tags} />
                 </div>
               </div>
             </div>
-            <div className="text-num-16 flex w-full min-w-0 flex-col items-start gap-5 text-left text-white lg:min-h-0">
-              <div className="rounded-num-8 border-darkslateblue box-border flex w-full flex-col items-start overflow-hidden border-[1px] border-solid bg-gray-100/10 p-[15px]">
-                <button
-                  type="button"
-                  aria-expanded={isProductDescriptionOpen}
-                  className="flex w-full items-center justify-between gap-0 self-stretch"
-                  onClick={() => setIsProductDescriptionOpen((v) => !v)}
-                >
-                  <b className="tracking-num--0_01 leading-num-28 flex-1 text-left">
-                    Product Description
-                  </b>
-                  <CentralIcon
-                    name="IconChevronDownMedium"
-                    join="round"
-                    fill="outlined"
-                    stroke="1"
-                    radius="1"
-                    size={20}
-                    className="text-white opacity-75 transition-transform duration-300 ease-in-out"
-                    style={{
-                      transform: isProductDescriptionOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    }}
-                  />
-                </button>
-
-                <div
-                  className="grid transition-[grid-template-rows] duration-300 ease-in-out"
-                  style={{ gridTemplateRows: isProductDescriptionOpen ? '1fr' : '0fr' }}
-                >
-                  <div className="w-full overflow-hidden">
-                    <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
-                    <div className="pt-num-6 pb-num-6 flex max-h-[min(40vh,320px)] w-full flex-col items-start gap-5 overflow-x-hidden overflow-y-auto overscroll-contain text-white">
-                      {product.description.trim().startsWith('<') ? (
-                        <div
-                          className="prose prose-invert max-w-none text-sm leading-6"
-                          dangerouslySetInnerHTML={{ __html: product.description }}
-                        />
-                      ) : (
-                        <p className="m-0 text-sm leading-6 opacity-80">{product.description}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative z-1000 w-full min-w-0 overflow-visible">
-                <ShopDetailPurchaseControls
-                  productId={product.id}
-                  productName={product.name}
-                  productImageSrc={imageSrc}
-                  variants={product.variants}
-                  regions={product.regions}
-                  addToCartButtonClassName={ADD_TO_CART_MODAL_CLASS}
-                  onAddToCart={onClose}
+          </div>
+          <div className="text-num-16 flex w-full min-w-0 flex-col items-start gap-5 text-left text-white lg:min-h-0">
+            <div className="rounded-num-8 border-darkslateblue box-border flex w-full flex-col items-start overflow-hidden border-[1px] border-solid bg-gray-100/10 p-[15px]">
+              <button
+                type="button"
+                aria-expanded={isProductDescriptionOpen}
+                className="flex w-full items-center justify-between gap-0 self-stretch"
+                onClick={() => setIsProductDescriptionOpen((v) => !v)}
+              >
+                <b className="tracking-num--0_01 leading-num-28 flex-1 text-left">
+                  Product Description
+                </b>
+                <CentralIcon
+                  name="IconChevronDownMedium"
+                  join="round"
+                  fill="outlined"
+                  stroke="1"
+                  radius="1"
+                  size={20}
+                  className="text-white opacity-75 transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: isProductDescriptionOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  }}
                 />
+              </button>
+
+              <div
+                className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+                style={{ gridTemplateRows: isProductDescriptionOpen ? '1fr' : '0fr' }}
+              >
+                <div className="w-full overflow-hidden">
+                  <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
+                  <div className="pt-num-6 pb-num-6 flex max-h-[min(40vh,320px)] w-full flex-col items-start gap-5 overflow-x-hidden overflow-y-auto overscroll-contain text-white">
+                    {product.description.trim().startsWith('<') ? (
+                      <div
+                        className="prose prose-invert max-w-none text-sm leading-6"
+                        dangerouslySetInnerHTML={{ __html: product.description }}
+                      />
+                    ) : (
+                      <p className="m-0 text-sm leading-6 opacity-80">{product.description}</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
+
+            <div className="relative z-1000 w-full min-w-0 overflow-visible">
+              <ShopDetailPurchaseControls
+                productId={product.id}
+                productName={product.name}
+                productImageSrc={imageSrc}
+                variants={product.variants}
+                regions={product.regions}
+                addToCartButtonClassName={ADD_TO_CART_MODAL_CLASS}
+                onAddToCart={onClose}
+              />
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   )

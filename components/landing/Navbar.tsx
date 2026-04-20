@@ -40,8 +40,6 @@ const Navbar: FunctionComponent = () => {
   const cartItems = useCartStore((s) => s.items)
   const prevCartItemCountRef = useRef(0)
   const hasMountedRef = useRef(false)
-  // start in dark mode (switch to the right / pink)
-  const [themeSwitchOn, setThemeSwitchOn] = useState(true)
   const isLoggedIn = isAuthenticated
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
   const walletBalanceLabel = (() => {
@@ -158,45 +156,6 @@ const Navbar: FunctionComponent = () => {
     },
   ]
 
-  const themeToggleButton = (className: string) => (
-    <button
-      type="button"
-      onClick={() => setThemeSwitchOn((v) => !v)}
-      className={className}
-      aria-pressed={themeSwitchOn}
-    >
-      <CentralIcon
-        name="IconSun"
-        join="round"
-        fill="filled"
-        stroke="1"
-        radius="1"
-        size={20}
-        ariaHidden={true}
-      />
-      <div
-        className={`h-num-18 relative w-[30.8px] rounded-[31.5px] transition-colors duration-300 ease-out ${
-          themeSwitchOn ? 'bg-fuchsia-200' : 'bg-gray-500'
-        }`}
-      >
-        <div
-          className={`left-num-4 absolute top-1/2 h-[14px] w-[14px] -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-300 ease-out ${
-            themeSwitchOn ? 'translate-x-[10px]' : 'translate-x-0'
-          }`}
-        />
-      </div>
-      <CentralIcon
-        name="IconMoon"
-        join="round"
-        fill="filled"
-        stroke="1"
-        radius="1"
-        size={20}
-        ariaHidden={true}
-      />
-    </button>
-  )
-
   return (
     <header className="text-whitesmoke-100 font-commissioner fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 border-b border-solid border-gray-100 bg-gray-400/95 px-4 py-0 backdrop-blur-md sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
       {/* Logo and nav links */}
@@ -257,9 +216,6 @@ const Navbar: FunctionComponent = () => {
       <div className="hidden items-center gap-2 lg:flex">
         <div className="text-num-16 text-ghostwhite flex items-center justify-center gap-2 self-stretch rounded-xl py-[26px] text-left">
           <div className="flex shrink-0 items-center justify-center gap-2">
-            {themeToggleButton(
-              'rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5 transition-colors duration-300 ease-out'
-            )}
             {isLoggedIn ? (
               <>
                 <button
@@ -283,9 +239,6 @@ const Navbar: FunctionComponent = () => {
               </>
             ) : null}
             <div className="flex h-[46px] shrink-0 items-center gap-2">
-              {!isLoggedIn ? (
-                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
-              ) : null}
               <div className="relative shrink-0" ref={desktopCartMenuRef}>
                 <button
                   type="button"
@@ -449,44 +402,6 @@ const Navbar: FunctionComponent = () => {
 
       {/* Mobile: actions row + hamburger */}
       <div className="flex flex-1 items-center justify-end gap-1.5 lg:hidden">
-        {/* Theme toggle — always on mobile bar */}
-        <button
-          type="button"
-          onClick={() => setThemeSwitchOn((v) => !v)}
-          className="rounded-num-8 border-whitesmoke-300 box-border flex h-9 shrink-0 items-center justify-center gap-1 border border-solid bg-gray-700 px-1.5 transition-colors duration-300 ease-out"
-          aria-pressed={themeSwitchOn}
-        >
-          <CentralIcon
-            name="IconSun"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="1"
-            size={15}
-            ariaHidden={true}
-          />
-          <div
-            className={`relative h-[15px] w-[26px] rounded-full transition-colors duration-300 ease-out ${
-              themeSwitchOn ? 'bg-fuchsia-200' : 'bg-gray-500'
-            }`}
-          >
-            <div
-              className={`absolute top-1/2 h-[11px] w-[11px] -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-300 ease-out ${
-                themeSwitchOn ? 'translate-x-[13px]' : 'translate-x-[2px]'
-              }`}
-            />
-          </div>
-          <CentralIcon
-            name="IconMoon"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="1"
-            size={15}
-            ariaHidden={true}
-          />
-        </button>
-
         <div className="relative shrink-0" ref={mobileCartMenuRef}>
           <button
             type="button"
