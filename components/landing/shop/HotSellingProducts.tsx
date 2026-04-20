@@ -63,7 +63,9 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
       >
         <div className="min-h-0 overflow-hidden">
           {items.length === 0 ? (
-            <div className="text-lightsteelblue-100 p-6 text-center text-sm">No hot products yet.</div>
+            <div className="text-lightsteelblue-100 p-6 text-center text-sm">
+              No hot products yet.
+            </div>
           ) : (
             <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
               {items.map((item, idx) => (

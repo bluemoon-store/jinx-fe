@@ -121,10 +121,13 @@ const ReviewRow: FunctionComponent<{
             <span>{row.time}</span>
             {statusCfg ? (
               <>
-                <span className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block" aria-hidden />
+                <span
+                  className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block"
+                  aria-hidden
+                />
                 <span
                   className={cn(
-                    'inline-flex items-center gap-1 rounded-num-6 border border-[#16243B] bg-[#0D1B35] px-1.5 py-0.5 text-xs font-semibold',
+                    'rounded-num-6 inline-flex items-center gap-1 border border-[#16243B] bg-[#0D1B35] px-1.5 py-0.5 text-xs font-semibold',
                     statusCfg.color
                   )}
                   aria-label={`Payment status: ${statusCfg.label}`}
