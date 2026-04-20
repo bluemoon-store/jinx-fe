@@ -9,6 +9,7 @@ import { formatOrderBrandLabel } from './dashboard-order-brand'
 export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = ({
   id,
   brand,
+  imageUrl,
   itemCount,
   price,
   status,
@@ -18,8 +19,12 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
 
   return (
     <div className="group flex w-full min-w-0 flex-row items-center gap-3 bg-[#071935] px-3 py-3 transition-colors hover:bg-[#13253F] sm:gap-4 sm:px-4 sm:py-3.5 md:px-5">
-      <div className="rounded-num-8 flex h-12 w-[4.75rem] shrink-0 items-center justify-center overflow-hidden bg-[#FF5A5F] shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28">
-        <img className="h-full w-full scale-110 object-cover" alt="" src="/icons/airbnb.svg" />
+      <div className="rounded-num-8 flex h-12 w-[4.75rem] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28">
+        <img
+          className="h-full w-full scale-110 object-cover"
+          alt=""
+          src={imageUrl ?? '/icons/airbnb.svg'}
+        />
       </div>
 
       <div className="font-commissioner flex min-w-0 flex-1 flex-col gap-1">

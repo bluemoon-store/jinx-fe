@@ -43,7 +43,11 @@ export type ApiOrderItem = {
   deliveredContent?: string | null
   product?: {
     name?: string
-    images?: Array<{ url: string | null; isPrimary: boolean }>
+    description?: string | null
+    shortNotice?: string | null
+    warrantyText?: string | null
+    redeemProcess?: string | null
+    images?: Array<{ url: string | null; isPrimary: boolean; sortOrder?: number }>
   }
 }
 
@@ -68,6 +72,8 @@ export type ApiOrder = {
   orderNumber: string
   userId?: string | null
   guestEmail?: string | null
+  createdAt: string
+  updatedAt: string
   status: ApiOrderStatus
   totalAmount: string
   currency: string
@@ -230,6 +236,7 @@ export function mapCryptoToPaymentMethod(c?: ApiCryptoCurrency | null): OrderPay
 export type DashboardOrderCardModel = {
   id: string
   brand: string
+  imageUrl: string | null
   itemCount: number
   price: string
   status: DashboardOrderStatus
@@ -267,6 +274,9 @@ export function mapApiOrderToDashboardCard(order: ApiOrder): DashboardOrderCardM
   const items = order.items ?? []
   const itemCount = items.reduce((s, i) => s + i.quantity, 0)
   const first = items[0]
+  const primaryImage =
+    first?.product?.images?.find((img) => img.isPrimary) ?? first?.product?.images?.[0] ?? null
+  const imageUrl = primaryImage?.url ?? null
   const brand =
     (first?.variantLabel && String(first.variantLabel).trim()) || first?.product?.name || 'Order'
   const total = Number.parseFloat(order.totalAmount)
@@ -274,6 +284,7 @@ export function mapApiOrderToDashboardCard(order: ApiOrder): DashboardOrderCardM
   return {
     id: order.id,
     brand: String(brand).toUpperCase(),
+    imageUrl,
     itemCount,
     price,
     status: mapApiOrderStatus(order.status),

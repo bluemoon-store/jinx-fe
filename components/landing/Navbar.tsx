@@ -4,6 +4,7 @@ import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import CartDropdownPanel from '@/components/landing/CartDropdownPanel'
 import { useAuth } from '@/hooks/use-auth'
+import { useWalletBalanceQuery } from '@/hooks/use-wallet'
 import {
   siteSelectDropdownList,
   siteSelectDropdownOptionInteractive,
@@ -35,6 +36,7 @@ const Navbar: FunctionComponent = () => {
   const pathname = usePathname()
   const { openAuthModal, isAuthenticated } = useAuthModal()
   const { logout } = useAuth()
+  const walletBalanceQuery = useWalletBalanceQuery({ enabled: isAuthenticated })
   const cartItems = useCartStore((s) => s.items)
   const prevCartItemCountRef = useRef(0)
   const hasMountedRef = useRef(false)
@@ -42,6 +44,16 @@ const Navbar: FunctionComponent = () => {
   const [themeSwitchOn, setThemeSwitchOn] = useState(true)
   const isLoggedIn = isAuthenticated
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  const walletBalanceLabel = (() => {
+    const raw = Number.parseFloat(walletBalanceQuery.data?.balance ?? '0')
+    const amount = Number.isFinite(raw) ? raw : 0
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  })()
 
   useEffect(() => {
     if (!hasMountedRef.current) {
@@ -136,7 +148,7 @@ const Navbar: FunctionComponent = () => {
       label: 'Wallet',
       icon: 'IconBanknote2' as const,
       href: DASHBOARD_PATHS.wallet,
-      trailing: '$0.00',
+      trailing: walletBalanceLabel,
     },
     {
       key: 'settings',
@@ -264,7 +276,7 @@ const Navbar: FunctionComponent = () => {
                   <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
                   <span className="tracking-num--0_01 leading-num-28 font-semibold">Wallet</span>
                   <span className="font-nata-sans tracking-num--0_01 leading-num-28 font-extrabold">
-                    $0.00
+                    {walletBalanceLabel}
                   </span>
                 </Link>
                 <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
@@ -521,7 +533,7 @@ const Navbar: FunctionComponent = () => {
             >
               <img className="h-4 w-4" alt="" src="/icons/IconBanknote2.svg" />
               <span className="font-nata-sans tracking-num--0_01 text-sm leading-none font-extrabold">
-                $0.00
+                {walletBalanceLabel}
               </span>
             </Link>
             {/* Avatar — account menu only (separate from hamburger nav) */}

@@ -74,36 +74,36 @@ export function CheckoutPageClient() {
   const cartSyncInFlightRef = useRef<Promise<void> | null>(null)
 
   const pushLocalCartItemsToBackend = useCallback(async (localItems: CartItem[]) => {
-      const res = await syncCartMutateAsyncRef.current(
-        localItems.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-          variantId: item.variantId,
-          regionLabel: item.regionLabel,
-          regionCountry: item.regionCountry,
-        }))
+    const res = await syncCartMutateAsyncRef.current(
+      localItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        variantId: item.variantId,
+        regionLabel: item.regionLabel,
+        regionCountry: item.regionCountry,
+      }))
+    )
+    const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
+    for (const item of localItems) {
+      const backendItem = res.items.find(
+        (i) =>
+          i.productId === item.id &&
+          (i.variantId ?? '') === (item.variantId ?? '') &&
+          (i.regionLabel ?? '') === item.regionLabel
       )
-      const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
-      for (const item of localItems) {
-        const backendItem = res.items.find(
-          (i) =>
-            i.productId === item.id &&
-            (i.variantId ?? '') === (item.variantId ?? '') &&
-            (i.regionLabel ?? '') === item.regionLabel
+      if (backendItem) {
+        setBackendCartItemId(
+          {
+            id: item.id,
+            variantId: item.variantId,
+            variantLabel: item.variantLabel,
+            regionLabel: item.regionLabel,
+            regionCountry: item.regionCountry,
+          },
+          backendItem.id
         )
-        if (backendItem) {
-          setBackendCartItemId(
-            {
-              id: item.id,
-              variantId: item.variantId,
-              variantLabel: item.variantLabel,
-              regionLabel: item.regionLabel,
-              regionCountry: item.regionCountry,
-            },
-            backendItem.id
-          )
-        }
       }
+    }
   }, [])
 
   const awaitCheckoutCartSync = useCallback(

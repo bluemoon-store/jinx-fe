@@ -28,7 +28,9 @@ export function CompletePaymentConfirmed({
 }) {
   const orderQuery = useOrderQuery(orderId)
   const order = orderQuery.data
-  const effectiveCrypto = (cryptocurrency ?? order?.cryptoPayment?.cryptocurrency ?? 'BTC') as ApiCryptoCurrency
+  const effectiveCrypto = (cryptocurrency ??
+    order?.cryptoPayment?.cryptocurrency ??
+    'BTC') as ApiCryptoCurrency
   const confirmations = order?.cryptoPayment?.confirmations ?? 0
   const requiredConfirmations = order?.cryptoPayment?.requiredConfirmations ?? 0
   const isConfirming = order?.cryptoPayment?.status === 'CONFIRMING'
@@ -40,7 +42,7 @@ export function CompletePaymentConfirmed({
         : 'Confirmed'
 
   return (
-    <div className="flex w-full max-w-[729px] flex-col gap-6 sm:gap-num-30">
+    <div className="sm:gap-num-30 flex w-full max-w-[729px] flex-col gap-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
         <h2 className="font-nata-sans text-ghostwhite text-xl font-extrabold tracking-[0.48px] sm:text-2xl">
           COMPLETE PAYMENT
@@ -48,10 +50,16 @@ export function CompletePaymentConfirmed({
         <InvoiceBadge />
       </div>
 
-      <div className="flex flex-col gap-6 sm:gap-num-30">
+      <div className="sm:gap-num-30 flex flex-col gap-6">
         <div className="flex flex-col rounded-xl border border-[#eeeeee1a] bg-gray-500">
           <div className="flex items-start gap-3 p-4 sm:items-center sm:p-6 lg:p-8">
-            <Image src={CRYPTO_ICON[effectiveCrypto] ?? checkoutImg.btc} alt="" width={40} height={40} className="shrink-0" />
+            <Image
+              src={CRYPTO_ICON[effectiveCrypto] ?? checkoutImg.btc}
+              alt=""
+              width={40}
+              height={40}
+              className="shrink-0"
+            />
             <div className="min-w-0 flex-1">
               <div className="text-base font-bold tracking-[0.36px] text-white sm:text-lg">
                 Pay with {cryptoHumanTitle(effectiveCrypto)}

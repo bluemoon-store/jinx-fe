@@ -5,12 +5,22 @@ import { createPortal } from 'react-dom'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { DashboardWalletTxnPopup } from '@/components/dashboard/DashboardWalletTxnPopup'
+import { useExchangeRatesQuery } from '@/hooks/use-payments'
+import {
+  useCreateWalletTopUpMutation,
+  useWalletBalanceQuery,
+  useWalletTopUpStatusQuery,
+  useWalletTransactionsQuery,
+} from '@/hooks/use-wallet'
+import { formatUsd, parseUsdDecimalString } from '@/lib/cart-format'
+import { toast } from '@/lib/toast'
 import {
   siteSelectDropdownList,
   siteSelectDropdownOptionInteractive,
   siteSelectDropdownOptionRow,
   siteSelectDropdownPanel,
 } from '@/components/ui/siteSelectDropdown'
+import type { ApiCryptoCurrency, ApiWalletTopUp, ApiWalletTransaction } from '@/types/api'
 import { cn } from '@/lib/utils'
 
 type WalletTxStatus = 'paid' | 'pending' | 'expired'
@@ -33,60 +43,6 @@ type WalletTx = {
   userId: string
 }
 
-const MOCK_TX: WalletTx[] = [
-  {
-    id: '1',
-    kind: 'purchase',
-    title: 'Purchase',
-    date: 'March 30, 2026',
-    time: '11:11 AM',
-    amountLabel: '25.00 USD',
-    positive: false,
-    status: 'paid',
-    invoiceId: 'c3beee33-36d0-42ec-a6c9-3b81..',
-    invoiceHref: 'https://example.com/dashboard/orders/1',
-    address: '1eksalkcmnzxcsad..',
-    addressHref: 'https://www.blockchain.com/explorer/addresses/btc/1eksalkcmnzxcsad',
-    txnHash: '1sldkldasnmcxzdjeqwe..',
-    txnHashHref: 'https://www.blockchain.com/explorer/transactions/btc/1sldkldasnmcxzdjeqwe',
-    userId: 'JINX-LKXJLKNALSDJ',
-  },
-  {
-    id: '2',
-    kind: 'credit',
-    title: 'Balance Added',
-    date: 'March 12, 2026',
-    time: '1:37 PM',
-    amountLabel: '5.00 USD',
-    positive: true,
-    status: 'paid',
-    invoiceId: '31f06f90-5a41-43de-9829-6bf3..',
-    invoiceHref: 'https://example.com/dashboard/orders/2',
-    address: '1xj91jd9salkm01a..',
-    addressHref: 'https://www.blockchain.com/explorer/addresses/btc/1xj91jd9salkm01a',
-    txnHash: '87sld8djaskd77as9sd..',
-    txnHashHref: 'https://www.blockchain.com/explorer/transactions/btc/87sld8djaskd77as9sd',
-    userId: 'JINX-LKXJLKNALSDJ',
-  },
-  {
-    id: '3',
-    kind: 'credit',
-    title: 'Balance Added',
-    date: 'March 2, 2026',
-    time: '4:28 AM',
-    amountLabel: '10.00 USD',
-    positive: true,
-    status: 'pending',
-    invoiceId: 'f9dcab21-b5f5-4e5a-a281-74f0..',
-    invoiceHref: 'https://example.com/dashboard/orders/3',
-    address: '3nnxkajd0092kald..',
-    addressHref: 'https://www.blockchain.com/explorer/addresses/btc/3nnxkajd0092kald',
-    txnHash: '11aa8b9c3d7723de4ff..',
-    txnHashHref: 'https://www.blockchain.com/explorer/transactions/btc/11aa8b9c3d7723de4ff',
-    userId: 'JINX-LKXJLKNALSDJ',
-  },
-]
-
 type StatusFilter = 'all' | WalletTxStatus
 
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
@@ -106,22 +62,70 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ]
 
 type CoinOption = {
-  value: string
+  value: ApiCryptoCurrency
   label: string
   iconSrc: string
 }
 
 const COIN_OPTIONS: CoinOption[] = [
-  { value: 'btc', label: 'Bitcoin', iconSrc: '/icons/Crypto Logos/Bitcoin.svg' },
+  { value: 'BTC', label: 'Bitcoin', iconSrc: '/icons/Crypto Logos/Bitcoin.svg' },
   {
-    value: 'eth',
+    value: 'ETH',
     label: 'Ethereum',
     iconSrc: 'https://c.animaapp.com/mng8f1pdQTkIkY/img/crypto-logos---ethereum-eth.svg',
   },
-  { value: 'usdt', label: 'Tether', iconSrc: '/icons/Crypto Logos/Tether.svg' },
-  { value: 'ltc', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
-  { value: 'bch', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
+  { value: 'USDT_TRC20', label: 'USDT (Tron)', iconSrc: '/icons/Crypto Logos/Tether.svg' },
+  { value: 'LTC', label: 'Litecoin', iconSrc: '/icons/Crypto Logos/Litecoin LTC.svg' },
+  { value: 'BCH', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
 ]
+
+const WALLET_TX_PAGE_SIZE = 50
+const DEFAULT_USER_LABEL = 'JINX-LKXJLKNALSDJ'
+
+function coinUnitLabel(coin: ApiCryptoCurrency): string {
+  if (coin === 'USDT_TRC20' || coin === 'USDT_ERC20') return 'USDT'
+  if (coin === 'USDC_ERC20') return 'USDC'
+  return coin
+}
+
+function mapTransactionToWalletTx(tx: ApiWalletTransaction): WalletTx {
+  const dateObj = new Date(tx.createdAt)
+  const amount = parseUsdDecimalString(tx.amount)
+  const date = Number.isNaN(dateObj.getTime())
+    ? '-'
+    : dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  const time = Number.isNaN(dateObj.getTime())
+    ? '-'
+    : dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+
+  const isCredit = tx.type === 'DEPOSIT' || tx.type === 'REFUND' || tx.type === 'ADMIN_ADJUST'
+  const title =
+    tx.type === 'PURCHASE'
+      ? 'Purchase'
+      : tx.type === 'REFUND'
+        ? 'Refund'
+        : tx.type === 'ADMIN_ADJUST'
+          ? 'Balance Adjusted'
+          : 'Balance Added'
+
+  return {
+    id: tx.id,
+    kind: isCredit ? 'credit' : 'purchase',
+    title,
+    date,
+    time,
+    amountLabel: `${Math.abs(amount).toFixed(2)} USD`,
+    positive: isCredit,
+    status: tx.type === 'DEPOSIT' ? 'paid' : undefined,
+    invoiceId: tx.referenceId ?? '-',
+    invoiceHref: tx.referenceId ? `/dashboard/orders/${tx.referenceId}` : '#',
+    address: tx.description || '-',
+    addressHref: '#',
+    txnHash: tx.id,
+    txnHashHref: '#',
+    userId: DEFAULT_USER_LABEL,
+  }
+}
 
 const walletCoinTriggerClass =
   'rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left'
@@ -133,8 +137,9 @@ const walletFilterTriggerClass = cn(
 /** Wallet — balance card, add funds, history; matches dashboard shell + Orders/Reviews layout. */
 export const DashboardWalletSection: FunctionComponent = () => {
   const [balanceVisible, setBalanceVisible] = useState(true)
-  const [amountUnit, setAmountUnit] = useState<'USD' | 'BTC'>('USD')
+  const [amountUnit, setAmountUnit] = useState<'USD' | 'CRYPTO'>('USD')
   const [selectedCoin, setSelectedCoin] = useState<CoinOption>(COIN_OPTIONS[0])
+  const [amountInput, setAmountInput] = useState('10.00')
   const [coinMenuOpen, setCoinMenuOpen] = useState(false)
   const coinMenuRef = useRef<HTMLDivElement>(null)
   const [historySearch, setHistorySearch] = useState('')
@@ -145,6 +150,32 @@ export const DashboardWalletSection: FunctionComponent = () => {
   const [sortOption, setSortOption] = useState<SortOption>('newest')
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
+  const [topUpModalOpen, setTopUpModalOpen] = useState(false)
+  const [createdTopUp, setCreatedTopUp] = useState<ApiWalletTopUp | null>(null)
+
+  const balanceQuery = useWalletBalanceQuery()
+  const txQuery = useWalletTransactionsQuery({ page: 1, limit: WALLET_TX_PAGE_SIZE })
+  const ratesQuery = useExchangeRatesQuery()
+  const createTopUpMutation = useCreateWalletTopUpMutation()
+  const topUpStatusQuery = useWalletTopUpStatusQuery(createdTopUp?.id)
+
+  const walletBalanceAmount = parseUsdDecimalString(balanceQuery.data?.balance ?? '0')
+  const walletBalanceLabel = formatUsd(walletBalanceAmount)
+
+  const selectedRate = ratesQuery.data?.rates.find(
+    (r) => r.cryptocurrency === selectedCoin.value
+  )?.rate
+  const selectedCoinUnit = coinUnitLabel(selectedCoin.value)
+  const amountUsd = Number.parseFloat(amountInput)
+  const computedCryptoAmount =
+    amountUnit === 'CRYPTO' && selectedRate && Number.isFinite(amountUsd) && amountUsd > 0
+      ? (amountUsd / selectedRate).toFixed(6)
+      : null
+
+  const txRows = useMemo(
+    () => (txQuery.data?.items ?? []).map(mapTransactionToWalletTx),
+    [txQuery.data?.items]
+  )
   const toggleMenu = (menu: 'coin' | 'status' | 'sort') => {
     setCoinMenuOpen((prev) => (menu === 'coin' ? !prev : false))
     setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
@@ -182,9 +213,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
   const filteredTx = useMemo(() => {
     const q = historySearch.trim().toLowerCase()
     const statusFiltered =
-      statusFilter === 'all'
-        ? MOCK_TX
-        : MOCK_TX.filter((t) => (t.status ?? 'paid') === statusFilter)
+      statusFilter === 'all' ? txRows : txRows.filter((t) => (t.status ?? 'paid') === statusFilter)
     if (!q) return statusFiltered
     return statusFiltered.filter(
       (t) =>
@@ -196,7 +225,21 @@ export const DashboardWalletSection: FunctionComponent = () => {
         t.address.toLowerCase().includes(q) ||
         t.txnHash.toLowerCase().includes(q)
     )
-  }, [historySearch, statusFilter])
+  }, [historySearch, statusFilter, txRows])
+
+  useEffect(() => {
+    if (!topUpStatusQuery.data || !createdTopUp) return
+    const status = topUpStatusQuery.data.status
+    if (status === 'CONFIRMED' || status === 'FORWARDED') {
+      toast.success('Wallet top-up confirmed')
+      setTopUpModalOpen(false)
+      setCreatedTopUp(null)
+      return
+    }
+    if (status === 'EXPIRED' || status === 'FAILED') {
+      toast.error('Top-up expired or failed. Please try again.')
+    }
+  }, [createdTopUp, topUpStatusQuery.data])
 
   const sortedTx = useMemo(() => {
     const parseAmount = (label: string) => {
@@ -251,7 +294,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     className="font-commissioner text-[24px] leading-[32px] font-bold tracking-normal text-white tabular-nums"
                     aria-live="polite"
                   >
-                    {balanceVisible ? '$0.00' : '$••••'}
+                    {balanceVisible ? walletBalanceLabel : '$••••'}
                   </span>
                   <button
                     type="button"
@@ -357,20 +400,26 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 <div className="rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5">
                   <div className="flex min-w-0 items-baseline gap-1.5">
                     <span className="text-base font-bold text-white">$</span>
-                    <span className="text-lightsteelblue-200 text-base font-semibold">0.00</span>
+                    <input
+                      inputMode="decimal"
+                      value={amountInput}
+                      onChange={(e) => setAmountInput(e.target.value.replace(/[^0-9.]/g, ''))}
+                      className="text-lightsteelblue-200 w-full min-w-0 border-none bg-transparent text-base font-semibold outline-none"
+                      placeholder="0.00"
+                    />
                   </div>
                   <button
                     type="button"
-                    onClick={() => setAmountUnit((u) => (u === 'USD' ? 'BTC' : 'USD'))}
+                    onClick={() => setAmountUnit((u) => (u === 'USD' ? 'CRYPTO' : 'USD'))}
                     className="focus-visible:ring-fuchsia/40 flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none"
-                    aria-label={`Switch amount unit to ${amountUnit === 'USD' ? 'BTC' : 'USD'}`}
+                    aria-label={`Switch amount unit to ${amountUnit === 'USD' ? selectedCoinUnit : 'USD'}`}
                   >
                     <span className={amountUnit === 'USD' ? 'text-white' : 'text-white/50'}>
                       USD
                     </span>
                     <span className="text-white/40">/</span>
-                    <span className={amountUnit === 'BTC' ? 'text-white' : 'text-white/50'}>
-                      BTC
+                    <span className={amountUnit === 'CRYPTO' ? 'text-white' : 'text-white/50'}>
+                      {selectedCoinUnit}
                     </span>
                   </button>
                 </div>
@@ -382,7 +431,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
                   Exchange Rate
                 </span>
-                <span className="text-sm font-bold text-white">1 BTC</span>
+                <span className="text-sm font-bold text-white">1 {selectedCoinUnit}</span>
                 <CentralIcon
                   name="IconArrowRightLeft"
                   join="round"
@@ -393,10 +442,30 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   ariaHidden={true}
                   className="text-[#C3C3E3]"
                 />
-                <span className="text-sm font-bold text-white">$68,487.94</span>
+                <span className="text-sm font-bold text-white">
+                  {selectedRate ? formatUsd(selectedRate) : '-'}
+                </span>
               </div>
               <button
                 type="button"
+                disabled={createTopUpMutation.isPending}
+                onClick={async () => {
+                  const parsedAmount = Number.parseFloat(amountInput)
+                  if (!Number.isFinite(parsedAmount) || parsedAmount < 1) {
+                    toast.error('Minimum top-up amount is $1.00')
+                    return
+                  }
+                  try {
+                    const topUp = await createTopUpMutation.mutateAsync({
+                      cryptocurrency: selectedCoin.value,
+                      amountUsd: parsedAmount,
+                    })
+                    setCreatedTopUp(topUp)
+                    setTopUpModalOpen(true)
+                  } catch {
+                    toast.error('Could not create top-up request')
+                  }
+                }}
                 className="rounded-num-8 px-num-12 box-border flex min-h-12 w-full shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-sm font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] sm:w-auto sm:min-w-[200px]"
               >
                 <CentralIcon
@@ -565,12 +634,16 @@ export const DashboardWalletSection: FunctionComponent = () => {
           </div>
         </div>
 
-        {sortedTx.length === 0 ? (
+        {txQuery.isPending ? (
+          <div className="text-lightsteelblue-200 flex items-center justify-center py-12 text-sm font-semibold">
+            Loading transactions...
+          </div>
+        ) : sortedTx.length === 0 ? (
           <div className="text-ghostwhite font-commissioner flex flex-col items-center gap-2 py-12 text-center">
             <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
-            <b className="tracking-num--0_01 text-base sm:text-lg">No transactions match</b>
+            <b className="tracking-num--0_01 text-base sm:text-lg">No transactions found</b>
             <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
-              Try another search term.
+              Your wallet activity will appear here.
             </p>
           </div>
         ) : (
@@ -627,6 +700,68 @@ export const DashboardWalletSection: FunctionComponent = () => {
           </div>
         )}
       </div>
+
+      {topUpModalOpen && createdTopUp && typeof document !== 'undefined'
+        ? createPortal(
+            <div className="fixed inset-0 z-120 flex min-h-dvh w-full items-center justify-center p-4 sm:p-6">
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/70"
+                onClick={() => setTopUpModalOpen(false)}
+                aria-label="Close top-up dialog"
+              />
+              <div className="relative z-10 w-full max-w-[560px] rounded-xl border border-[#eeeeee1a] bg-gray-500 p-5 text-center sm:p-6">
+                <div className="relative mb-4 flex items-center justify-start gap-3 text-left">
+                  <h3 className="font-nata-sans text-lg font-extrabold text-white sm:text-xl">
+                    COMPLETE TOP-UP
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setTopUpModalOpen(false)}
+                    className="rounded-num-8 absolute top-1/2 right-0 h-8 w-8 -translate-y-1/2 border border-[#18263E] text-white/60"
+                  >
+                    x
+                  </button>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className="text-lightsteelblue-200 text-sm">
+                    Send exactly <b className="text-white">{createdTopUp.amount}</b>{' '}
+                    {createdTopUp.cryptocurrency} to the address below.
+                  </div>
+                  {createdTopUp.qrCode ? (
+                    <img
+                      src={createdTopUp.qrCode}
+                      alt="Top-up QR code"
+                      className="mx-auto h-auto w-full max-w-[220px] rounded-lg bg-white p-2"
+                    />
+                  ) : null}
+                  <div className="rounded-num-8 border border-[#16243B] bg-[#051329] p-3 text-center text-xs text-white sm:text-sm">
+                    {createdTopUp.paymentAddress}
+                  </div>
+                  <div className="text-lightsteelblue-200 text-xs sm:text-sm">
+                    Status:{' '}
+                    <span className="font-semibold text-white">
+                      {topUpStatusQuery.data?.status ?? createdTopUp.status}
+                    </span>{' '}
+                    | Confirmations{' '}
+                    {topUpStatusQuery.data?.confirmations ?? createdTopUp.confirmations}/
+                    {topUpStatusQuery.data?.requiredConfirmations ??
+                      createdTopUp.requiredConfirmations}
+                  </div>
+                  <div className="text-lightsteelblue-200 text-xs sm:text-sm">
+                    Expires: {new Date(createdTopUp.expiresAt).toLocaleString('en-US')}
+                  </div>
+                  {computedCryptoAmount ? (
+                    <div className="text-lightsteelblue-200 text-xs sm:text-sm">
+                      Approx amount: {computedCryptoAmount} {createdTopUp.cryptocurrency}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
 
       {txnDialogRow && typeof document !== 'undefined'
         ? createPortal(

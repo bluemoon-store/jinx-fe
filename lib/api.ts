@@ -3,6 +3,7 @@ import type { InternalAxiosRequestConfig } from 'axios'
 
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from './token'
 import { HTTP_STATUS } from './constants'
+import type { BackendResponse } from '@/types/auth'
 
 declare module 'axios' {
   interface InternalAxiosRequestConfig {
@@ -97,3 +98,70 @@ api.interceptors.response.use(
     }
   }
 )
+
+function unwrap<T>(res: { data: BackendResponse<T> }): T {
+  return res.data.data
+}
+
+export type CreateReviewDto = {
+  orderId: string
+  rating: number
+  comment?: string
+}
+
+export type UpdateReviewDto = {
+  rating?: number
+  comment?: string
+}
+
+export type ReviewListParams = {
+  page?: number
+  limit?: number
+  sort?: 'newest' | 'oldest' | 'rating_high' | 'rating_low'
+}
+
+export type ReviewListItem = {
+  id: string
+  orderId: string
+  rating: number
+  comment: string | null
+  createdAt: string
+  order: {
+    brand: string
+    itemCount: number
+    price: string
+    date: string
+    time: string
+    paymentMethod: string
+  }
+}
+
+export type PaginatedResponse<T> = {
+  items: T[]
+  metadata: {
+    currentPage: number
+    itemsPerPage: number
+    totalItems: number
+    totalPages: number
+  }
+}
+
+export const reviewsApi = {
+  async create(data: CreateReviewDto): Promise<ReviewListItem> {
+    const res = await api.post<BackendResponse<ReviewListItem>>('/reviews', data)
+    return unwrap(res)
+  },
+  async list(params?: ReviewListParams): Promise<PaginatedResponse<ReviewListItem>> {
+    const res = await api.get<BackendResponse<PaginatedResponse<ReviewListItem>>>('/reviews', {
+      params,
+    })
+    return unwrap(res)
+  },
+  async update(id: string, data: UpdateReviewDto): Promise<ReviewListItem> {
+    const res = await api.put<BackendResponse<ReviewListItem>>(`/reviews/${id}`, data)
+    return unwrap(res)
+  },
+  async delete(id: string): Promise<void> {
+    await api.delete(`/reviews/${id}`)
+  },
+}

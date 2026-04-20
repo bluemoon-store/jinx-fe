@@ -109,10 +109,7 @@ export function PaymentMethodPanel({
   const amountByCrypto = useMemo(() => {
     const map = new Map<ApiCryptoCurrency, string>()
     for (const row of rows) {
-      map.set(
-        row.crypto,
-        amountForRow(row.crypto, totalUsd, ratesQuery.data, ratesLoading)
-      )
+      map.set(row.crypto, amountForRow(row.crypto, totalUsd, ratesQuery.data, ratesLoading))
     }
     return map
   }, [ratesLoading, ratesQuery.data, totalUsd])
@@ -195,7 +192,13 @@ export function PaymentMethodPanel({
               onClick={() => onWalletContinue()}
               className="focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:p-[22px]"
             >
-              <Image src={checkoutImg.banknote} alt="" width={32} height={32} className="shrink-0" />
+              <Image
+                src={checkoutImg.banknote}
+                alt=""
+                width={32}
+                height={32}
+                className="shrink-0"
+              />
               <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">
                 <div className="text-lg font-bold tracking-[0.36px] text-white">Wallet</div>
                 <div className="text-lightsteelblue-200 text-base [text-shadow:0px_0px_8.63px_#00000099]">

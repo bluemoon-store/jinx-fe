@@ -5,6 +5,7 @@ import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { mapApiOrderToDashboardCard, useOrderQuery } from '@/hooks/use-orders'
+import { useWalletBalanceQuery } from '@/hooks/use-wallet'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
 import Link from 'next/link'
@@ -38,10 +39,15 @@ const headerByPath: Record<string, { title: string; icon: string }> = {
 
 type SidebarNavProps = {
   pathname: string
+  walletBalanceLabel: string
   onNavigate?: () => void
 }
 
-const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({ pathname, onNavigate }) => {
+const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
+  pathname,
+  walletBalanceLabel,
+  onNavigate,
+}) => {
   return (
     <>
       <div className="flex flex-col gap-1">
@@ -82,7 +88,7 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({ pathname, onN
               </div>
               {item.label === 'Wallet' ? (
                 <b className="tracking-num--0_01 font-nata-sans leading-num-20 sm:text-num-14 shrink-0 text-sm text-white">
-                  $0.00
+                  {walletBalanceLabel}
                 </b>
               ) : null}
             </Link>
@@ -144,6 +150,17 @@ function formatBrandForBreadcrumb(brand: string): string {
 
 export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => {
   const pathname = usePathname()
+  const walletBalanceQuery = useWalletBalanceQuery()
+  const walletBalanceLabel = useMemo(() => {
+    const raw = Number.parseFloat(walletBalanceQuery.data?.balance ?? '0')
+    const amount = Number.isFinite(raw) ? raw : 0
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  }, [walletBalanceQuery.data?.balance])
 
   const isOrderDetail =
     pathname.startsWith(`${DASHBOARD_PATHS.orders}/`) && pathname !== DASHBOARD_PATHS.orders
@@ -193,6 +210,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
               >
                 <DashboardSidebarNav
                   pathname={pathname}
+                  walletBalanceLabel={walletBalanceLabel}
                   onNavigate={() => setMobileNavOpen(false)}
                 />
               </aside>
@@ -232,7 +250,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                 aria-label="Account navigation"
                 className="text-lightsteelblue-200 flex min-w-0 flex-col gap-5 sm:gap-4"
               >
-                <DashboardSidebarNav pathname={pathname} />
+                <DashboardSidebarNav pathname={pathname} walletBalanceLabel={walletBalanceLabel} />
               </aside>
             </Reveal>
 

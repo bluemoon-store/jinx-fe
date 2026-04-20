@@ -3,7 +3,11 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 
-import { getCryptoPaymentAction, getExchangeRatesAction, getPaymentStatusAction } from '@/actions/order'
+import {
+  getCryptoPaymentAction,
+  getExchangeRatesAction,
+  getPaymentStatusAction,
+} from '@/actions/order'
 
 export const PAYMENTS_QUERY_KEYS = {
   crypto: (orderId: string) => ['payments', 'crypto', orderId] as const,

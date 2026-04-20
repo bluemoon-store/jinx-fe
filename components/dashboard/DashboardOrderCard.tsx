@@ -8,6 +8,7 @@ export type DashboardOrderStatus = 'paid' | 'pending' | 'expired'
 export type DashboardOrderSummaryProps = {
   id: string
   brand: string
+  imageUrl?: string | null
   itemCount: number
   price: string
   status: DashboardOrderStatus
@@ -27,6 +28,7 @@ export const dashboardOrderStatusConfig: Record<
 export const DashboardOrderCard: FunctionComponent<Props> = ({
   id,
   brand,
+  imageUrl,
   itemCount,
   price,
   status,
@@ -39,7 +41,11 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
       className="rounded-num-8 border-darkslateblue focus-visible:ring-fuchsia/50 box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid bg-[#0D1B35] p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-2 focus-visible:outline-none"
     >
       <div className="rounded-num-8 flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
-        <img className="h-full w-full scale-110 object-cover" alt="" src="/icons/airbnb.svg" />
+        <img
+          className="h-full w-full scale-110 object-cover"
+          alt=""
+          src={imageUrl ?? '/icons/airbnb.svg'}
+        />
       </div>
       <div className="flex w-36 flex-col items-center gap-1.5">
         <div className="tracking-num-0_02 truncate text-center text-sm font-extrabold uppercase sm:text-base">

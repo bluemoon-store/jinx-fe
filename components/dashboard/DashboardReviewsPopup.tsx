@@ -13,6 +13,7 @@ const reviewLabelClass =
 
 export type DashboardReviewsPopupProps = {
   brand?: string
+  imageUrl?: string | null
   itemCount?: number
   price?: string
   date?: string
@@ -21,11 +22,16 @@ export type DashboardReviewsPopupProps = {
   initialRating?: number
   initialComment?: string
   onClose?: () => void
-  onSubmit?: (payload: { rating: number; comment: string }) => void
+  allowDelete?: boolean
+  submitting?: boolean
+  deleting?: boolean
+  onDelete?: () => void | Promise<void>
+  onSubmit?: (payload: { rating: number; comment: string }) => void | Promise<void>
 }
 
 export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps> = ({
   brand = 'Airbnb',
+  imageUrl = null,
   itemCount = 1,
   price = '$2.50',
   date = 'March 30, 2026',
@@ -33,6 +39,10 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
   initialRating,
   initialComment,
   onClose,
+  allowDelete = false,
+  submitting = false,
+  deleting = false,
+  onDelete,
   onSubmit,
 }) => {
   const [rating, setRating] = useState(initialRating ?? 0)
@@ -41,6 +51,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
 
   const previewRating = hoveredStar ?? rating
   const showReviewBox = rating >= 1
+  const isEdit = initialRating !== undefined
 
   const handleSubmit = () => {
     if (rating < 1) return
@@ -56,7 +67,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
           <div className="flex items-center justify-between gap-5 self-stretch">
             <div className="flex min-w-0 flex-1 items-center">
               <h2 className="tracking-num-0.02 relative leading-7 font-extrabold uppercase">
-                Add review
+                {isEdit ? 'Edit review' : 'Add review'}
               </h2>
             </div>
             <button
@@ -84,7 +95,25 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
           <div
             className="rounded-num-8 relative flex h-12 w-[98.7px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_3.31px_rgba(0,0,0,0.6)]"
             aria-hidden
-          />
+          >
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt=""
+                className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <img
+                src="/icons/airbnb.svg"
+                alt=""
+                className="h-8 w-8 object-contain opacity-70"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+          </div>
           <div className="flex min-w-0 flex-1 flex-col items-start">
             <b className="font-commissioner leading-num-28 tracking-num-0.02 relative text-[18px] font-bold text-white">
               {brand}
@@ -164,12 +193,24 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
 
             <button
               type="button"
-              disabled={rating < 1}
+              disabled={rating < 1 || submitting}
               onClick={handleSubmit}
               className="bg-fuchsia text-num-16 mt-4 box-border flex min-h-11 w-full touch-manipulation items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] [-webkit-tap-highlight-color:transparent] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <span className="relative leading-7 tracking-[-0.01em]">Submit review</span>
+              <span className="relative leading-7 tracking-[-0.01em]">
+                {submitting ? 'Submitting...' : isEdit ? 'Update review' : 'Submit review'}
+              </span>
             </button>
+            {allowDelete ? (
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => void onDelete?.()}
+                className="text-num-14 mt-2 box-border flex min-h-10 w-full items-center justify-center rounded-[7.79px] border border-white/15 px-4 py-2.5 font-semibold text-white/85 transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deleting ? 'Deleting...' : 'Delete review'}
+              </button>
+            ) : null}
 
             <p className="font-commissioner text-ghostwhite relative mx-auto mt-2 flex max-w-[285px] items-center justify-center text-center text-xs leading-4 font-semibold tracking-normal italic opacity-50">
               Your feedback helps us improve our products, services, and overall customer

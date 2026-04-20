@@ -169,8 +169,12 @@ export function CheckoutOverviewCard({
     : coverage === 'enhanced'
       ? BUYER_PROTECTION_ENHANCED_USD
       : 0
-  const totalDue = orderId ? Number.parseFloat(order?.totalAmount ?? '0') || 0 : subtotal - discount + buyerProtectionUsd
-  const effectiveCrypto = (order?.cryptoPayment?.cryptocurrency ?? cryptocurrency ?? 'BTC') as ApiCryptoCurrency
+  const totalDue = orderId
+    ? Number.parseFloat(order?.totalAmount ?? '0') || 0
+    : subtotal - discount + buyerProtectionUsd
+  const effectiveCrypto = (order?.cryptoPayment?.cryptocurrency ??
+    cryptocurrency ??
+    'BTC') as ApiCryptoCurrency
   const paymentLabel = CRYPTO_LABEL[effectiveCrypto] ?? 'Cryptocurrency'
   const promoCodeLabel = orderId ? order?.promoCode : appliedPromo?.code
   const protectionLabel = orderId

@@ -6,6 +6,7 @@ import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
+import { reviewsApi } from '@/lib/api'
 import {
   mapApiOrderToDashboardCard,
   mapApiOrderStatus,
@@ -22,17 +23,6 @@ import { FunctionComponent, useEffect, useRef, useState } from 'react'
 
 const modalShadowClass =
   'shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]'
-
-function iconSrcForBrand(brand: string): string {
-  const u = brand.toUpperCase()
-  if (u.includes('NETFLIX')) return '/icons/netflix.svg'
-  if (u.includes('AIRBNB')) return '/icons/airbnb.svg'
-  if (u.includes('STARBUCKS')) return '/icons/starbucks.svg'
-  if (u.includes('BEST BUY') || u.includes('BESTBUY')) return '/icons/best-buy.svg'
-  if (u.includes('PLAYSTATION')) return '/icons/playstation.svg'
-  if (u.includes('CHIPOTLE')) return '/icons/Chipotle Mexican Grill, Inc..svg'
-  return '/icons/airbnb.svg'
-}
 
 /** Matches shop listing URLs (`ShopProductsSection`, etc.). */
 function slugify(value: string): string {
@@ -77,6 +67,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const [hoveredStar, setHoveredStar] = useState<number | null>(null)
   const [comment, setComment] = useState('')
   const [reviewSent, setReviewSent] = useState(false)
+  const [existingReviewId, setExistingReviewId] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isOrderWarrantyOpen, setIsOrderWarrantyOpen] = useState(false)
   const [redeemCodeCopied, setRedeemCodeCopied] = useState(false)
@@ -88,9 +81,43 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (!rawId || apiOrder?.status !== 'COMPLETED') return
+
+    let isCancelled = false
+
+    setExistingReviewId(null)
+    setRating(0)
+    setComment('')
+    setReviewSent(false)
+    ;(async () => {
+      try {
+        const res = await reviewsApi.list({ page: 1, limit: 100 })
+        if (isCancelled) return
+        const found = res.items.find((r) => r.orderId === rawId)
+        if (!found) return
+        setExistingReviewId(found.id)
+        setRating(found.rating)
+        setComment(found.comment ?? '')
+        setReviewSent(true)
+      } catch {
+        // Keep default empty state on fetch failures.
+      }
+    })()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [rawId, apiOrder?.status])
+
   const previewRating = hoveredStar ?? rating
   const showReviewBox = rating >= 1
-  const heroSrc = card ? iconSrcForBrand(card.brand) : '/icons/airbnb.svg'
+  const firstItem = apiOrder?.items?.[0]
+  const primaryProductImage =
+    firstItem?.product?.images?.find((img) => img.isPrimary) ??
+    firstItem?.product?.images?.[0] ??
+    null
+  const heroSrc = primaryProductImage?.url ?? '/icons/airbnb.svg'
 
   if (rawId && orderQuery.isPending) {
     return (
@@ -194,6 +221,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const cryptoUi = PAYMENT_CRYPTO_META[card.paymentMethod]
 
   const firstLine = apiOrder.items?.[0]
+  const redeemProcess = firstLine?.product?.redeemProcess ?? null
+  const warrantyText = firstLine?.product?.warrantyText ?? null
 
   return (
     <Reveal variant="fade-up" delay={140}>
@@ -430,42 +459,48 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <div className="w-full overflow-hidden">
                     <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
                     <div className="pt-num-6 pb-num-6 w-full">
-                      <div className="flex flex-col items-start gap-5 text-white">
-                        <div className="leading-num-24 opacity-[0.8]">
-                          <b>Step 1: Add to Cart</b>
-                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                            <li className="mb-0">
-                              Choose your variant and quantity, then click{' '}
-                              <span className="font-medium">Add to Cart</span>.
-                            </li>
-                          </ul>
-                        </div>
+                      {redeemProcess ? (
+                        <p className="leading-num-24 whitespace-pre-wrap opacity-[0.8]">
+                          {redeemProcess}
+                        </p>
+                      ) : (
+                        <div className="flex flex-col items-start gap-5 text-white">
+                          <div className="leading-num-24 opacity-[0.8]">
+                            <b>Step 1: Add to Cart</b>
+                            <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                              <li className="mb-0">
+                                Choose your variant and quantity, then click{' '}
+                                <span className="font-medium">Add to Cart</span>.
+                              </li>
+                            </ul>
+                          </div>
 
-                        <div className="leading-num-24 opacity-[0.8]">
-                          <b>Step 2: Complete Checkout</b>
-                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                            <li className="mb-0">
-                              Finish payment using the available options, and confirm your order.
-                            </li>
-                          </ul>
-                        </div>
+                          <div className="leading-num-24 opacity-[0.8]">
+                            <b>Step 2: Complete Checkout</b>
+                            <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                              <li className="mb-0">
+                                Finish payment using the available options, and confirm your order.
+                              </li>
+                            </ul>
+                          </div>
 
-                        <div className="leading-num-24 opacity-[0.8]">
-                          <b>Step 3: Redeem on the Platform</b>
-                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                            <li className="mb-0">
-                              After purchase, your code will appear in your account.
-                            </li>
-                            <li className="mb-0">
-                              Enter the code at checkout on the e-commerce platform.
-                            </li>
-                            <li className="mb-0">
-                              <span className="font-medium">If you need help</span>, contact support
-                              from the page footer.
-                            </li>
-                          </ul>
+                          <div className="leading-num-24 opacity-[0.8]">
+                            <b>Step 3: Redeem on the Platform</b>
+                            <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                              <li className="mb-0">
+                                After purchase, your code will appear in your account.
+                              </li>
+                              <li className="mb-0">
+                                Enter the code at checkout on the e-commerce platform.
+                              </li>
+                              <li className="mb-0">
+                                <span className="font-medium">If you need help</span>, contact
+                                support from the page footer.
+                              </li>
+                            </ul>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -500,35 +535,41 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <div className="w-full overflow-hidden">
                     <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
                     <div className="pt-num-6 pb-num-6 w-full">
-                      <div className="flex flex-col items-start gap-5 text-white">
-                        <div className="leading-num-24 opacity-[0.8]">
-                          <b>Warranty Coverage</b>
-                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                            <li className="mb-0">
-                              If your code is invalid or cannot be applied, we will help you resolve
-                              it as quickly as possible.
-                            </li>
-                          </ul>
-                        </div>
+                      {warrantyText ? (
+                        <p className="leading-num-24 whitespace-pre-wrap opacity-[0.8]">
+                          {warrantyText}
+                        </p>
+                      ) : (
+                        <div className="flex flex-col items-start gap-5 text-white">
+                          <div className="leading-num-24 opacity-[0.8]">
+                            <b>Warranty Coverage</b>
+                            <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                              <li className="mb-0">
+                                If your code is invalid or cannot be applied, we will help you
+                                resolve it as quickly as possible.
+                              </li>
+                            </ul>
+                          </div>
 
-                        <div className="leading-num-24 opacity-[0.8]">
-                          <b>How to Request Help</b>
-                          <p className="m-0">
-                            Contact support within 48 hours with your order details.
-                          </p>
-                          <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                            <li className="mb-0">
-                              <span className="font-medium">Include your order id</span> and
-                              screenshot (if available).
-                            </li>
-                            <li>
-                              <span className="font-medium">
-                                We will investigate and provide a replacement or resolution.
-                              </span>
-                            </li>
-                          </ul>
+                          <div className="leading-num-24 opacity-[0.8]">
+                            <b>How to Request Help</b>
+                            <p className="m-0">
+                              Contact support within 48 hours with your order details.
+                            </p>
+                            <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
+                              <li className="mb-0">
+                                <span className="font-medium">Include your order id</span> and
+                                screenshot (if available).
+                              </li>
+                              <li>
+                                <span className="font-medium">
+                                  We will investigate and provide a replacement or resolution.
+                                </span>
+                              </li>
+                            </ul>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -628,101 +669,161 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
             </section>
 
-            <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
+            {apiOrder.status === 'COMPLETED' ? (
+              <>
+                <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
 
-            <section aria-labelledby="add-review-heading" className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 text-white opacity-75">
-                <CentralIcon
-                  name="IconStar"
-                  join="round"
-                  fill="filled"
-                  stroke="2"
-                  radius="1"
-                  size={18}
-                  ariaHidden={true}
-                />
-                <h2 id="add-review-heading" className="leading-num-28 tracking-num-0_02 font-bold">
-                  Add Review
-                </h2>
-              </div>
-
-              <div
-                className={`text-num-14 text-lightsteelblue-200 gap-num-18 flex flex-col overflow-hidden rounded-xl border border-solid border-gray-600 bg-gray-200 p-5 ${modalShadowClass}`}
-              >
-                <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="leading-num-20 font-semibold">Your Rating</span>
-                  <div
-                    className="flex items-center gap-2"
-                    role="group"
-                    aria-label="Rating"
-                    onMouseLeave={() => setHoveredStar(null)}
-                  >
-                    {[1, 2, 3, 4, 5].map((n) => (
-                      <button
-                        key={n}
-                        type="button"
-                        onClick={() => setRating(n)}
-                        onMouseEnter={() => setHoveredStar(n)}
-                        className="rounded-num-8 focus-visible:ring-fuchsia/40 box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid border-[#16243B] bg-gray-100 transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
-                        aria-label={`${n} stars`}
-                        aria-pressed={rating >= n}
-                      >
-                        <CentralIcon
-                          name="IconStar"
-                          join="round"
-                          fill="filled"
-                          stroke="1"
-                          radius="3"
-                          size={22}
-                          ariaHidden={true}
-                          className={previewRating >= n ? undefined : 'text-lightsteelblue-200/40'}
-                          style={
-                            previewRating >= n
-                              ? { color: RATING_STAR_COLORS[previewRating - 1] }
-                              : undefined
-                          }
-                        />
-                      </button>
-                    ))}
+                <section aria-labelledby="add-review-heading" className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2 text-white opacity-75">
+                    <CentralIcon
+                      name="IconStar"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={18}
+                      ariaHidden={true}
+                    />
+                    <h2
+                      id="add-review-heading"
+                      className="leading-num-28 tracking-num-0_02 font-bold"
+                    >
+                      {existingReviewId ? 'Edit Review' : 'Add Review'}
+                    </h2>
                   </div>
-                </div>
 
-                {showReviewBox ? (
-                  <div className="animate-fade-in flex w-full flex-col gap-4 self-stretch motion-reduce:animate-none">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex flex-wrap items-start justify-between gap-2">
-                        <span className="leading-num-20 font-semibold">Your Review</span>
-                        <span className="leading-num-20 font-semibold opacity-50">Optional</span>
+                  <div
+                    className={`text-num-14 text-lightsteelblue-200 gap-num-18 flex flex-col overflow-hidden rounded-xl border border-solid border-gray-600 bg-gray-200 p-5 ${modalShadowClass}`}
+                  >
+                    <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="leading-num-20 font-semibold">Your Rating</span>
+                      <div
+                        className="flex items-center gap-2"
+                        role="group"
+                        aria-label="Rating"
+                        onMouseLeave={() => setHoveredStar(null)}
+                      >
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <button
+                            key={n}
+                            type="button"
+                            onClick={() => setRating(n)}
+                            onMouseEnter={() => setHoveredStar(n)}
+                            className="rounded-num-8 focus-visible:ring-fuchsia/40 box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid border-[#16243B] bg-gray-100 transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
+                            aria-label={`${n} stars`}
+                            aria-pressed={rating >= n}
+                          >
+                            <CentralIcon
+                              name="IconStar"
+                              join="round"
+                              fill="filled"
+                              stroke="1"
+                              radius="3"
+                              size={22}
+                              ariaHidden={true}
+                              className={
+                                previewRating >= n ? undefined : 'text-lightsteelblue-200/40'
+                              }
+                              style={
+                                previewRating >= n
+                                  ? { color: RATING_STAR_COLORS[previewRating - 1] }
+                                  : undefined
+                              }
+                            />
+                          </button>
+                        ))}
                       </div>
-                      <textarea
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        placeholder="Tell us about what you liked or disliked"
-                        rows={4}
-                        className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none transition-[border-color,box-shadow] outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
-                      />
                     </div>
 
-                    <button
-                      type="button"
-                      disabled={rating < 1 || reviewSent}
-                      onClick={() => {
-                        if (rating < 1) return
-                        setReviewSent(true)
-                      }}
-                      className="bg-fuchsia text-num-16 tracking-num--0_01 flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      {reviewSent ? 'Review submitted' : 'Submit Review'}
-                    </button>
+                    {showReviewBox ? (
+                      <div className="animate-fade-in flex w-full flex-col gap-4 self-stretch motion-reduce:animate-none">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <span className="leading-num-20 font-semibold">Your Review</span>
+                            <span className="leading-num-20 font-semibold opacity-50">
+                              Optional
+                            </span>
+                          </div>
+                          <textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Tell us about what you liked or disliked"
+                            rows={4}
+                            className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none transition-[border-color,box-shadow] outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                          />
+                        </div>
 
-                    <p className="font-commissioner text-ghostwhite text-center text-xs leading-4 font-semibold italic opacity-50">
-                      Your feedback helps us improve our products, services, and overall customer
-                      experience.
-                    </p>
+                        <button
+                          type="button"
+                          disabled={rating < 1 || submitting || (reviewSent && !existingReviewId)}
+                          onClick={async () => {
+                            if (!rawId || rating < 1 || submitting) return
+                            setSubmitting(true)
+                            try {
+                              if (existingReviewId) {
+                                await reviewsApi.update(existingReviewId, { rating, comment })
+                                toast.success('Review updated')
+                              } else {
+                                const created = await reviewsApi.create({
+                                  orderId: rawId,
+                                  rating,
+                                  comment,
+                                })
+                                setExistingReviewId(created.id)
+                                toast.success('Review submitted')
+                              }
+                              setReviewSent(true)
+                            } catch {
+                              toast.error('Failed to submit review. Please try again.')
+                            } finally {
+                              setSubmitting(false)
+                            }
+                          }}
+                          className="bg-fuchsia text-num-16 tracking-num--0_01 flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          {submitting
+                            ? 'Submitting...'
+                            : existingReviewId
+                              ? 'Update Review'
+                              : 'Submit Review'}
+                        </button>
+
+                        {existingReviewId ? (
+                          <button
+                            type="button"
+                            disabled={deleting}
+                            onClick={async () => {
+                              if (!existingReviewId) return
+                              setDeleting(true)
+                              try {
+                                await reviewsApi.delete(existingReviewId)
+                                setExistingReviewId(null)
+                                setRating(0)
+                                setComment('')
+                                setReviewSent(false)
+                                toast.success('Review deleted')
+                              } catch {
+                                toast.error('Failed to delete review.')
+                              } finally {
+                                setDeleting(false)
+                              }
+                            }}
+                            className="text-num-16 tracking-num--0_01 border-fuchsia/30 bg-fuchsia/10 text-fuchsia flex min-h-11 w-full items-center justify-center self-stretch rounded-[7.79px] border px-4 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            {deleting ? 'Deleting...' : 'Delete Review'}
+                          </button>
+                        ) : null}
+
+                        <p className="font-commissioner text-ghostwhite text-center text-xs leading-4 font-semibold italic opacity-50">
+                          Your feedback helps us improve our products, services, and overall
+                          customer experience.
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
-                ) : null}
-              </div>
-            </section>
+                </section>
+              </>
+            ) : null}
           </div>
         </article>
       </div>

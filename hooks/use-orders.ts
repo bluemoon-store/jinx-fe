@@ -20,6 +20,7 @@ import type {
 } from '@/actions/order'
 import { CART_QUERY_KEYS } from '@/hooks/use-carts'
 import { PAYMENTS_QUERY_KEYS } from '@/hooks/use-payments'
+import { WALLET_QUERY_KEYS } from '@/hooks/use-wallet'
 
 export type {
   ApiCryptoCurrency,
@@ -111,6 +112,7 @@ export function usePayOrderWithWalletMutation() {
       void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.detail(orderId) })
       void queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.lists() })
       void queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.root() })
+      void queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.balance() })
     },
   })
 }

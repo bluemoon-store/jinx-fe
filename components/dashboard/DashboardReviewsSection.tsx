@@ -15,6 +15,7 @@ import {
   type OrderPaymentMethod,
   useOrderReviewStore,
 } from '@/stores/order-review-store'
+import { toast } from '@/lib/toast'
 
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { DashboardReviewsPopup } from '@/components/dashboard/DashboardReviewsPopup'
@@ -75,15 +76,34 @@ const dashboardSelectTriggerClass = cn(
 const ReviewRow: FunctionComponent<{
   row: ReviewPurchaseRow
   review?: OrderReview
+  canAddReview: boolean
   onAddReview: () => void
-}> = ({ row, review, onAddReview }) => {
+}> = ({ row, review, canAddReview, onAddReview }) => {
   return (
     <div className="border-darkslateblue flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 hover:bg-[#13253F] sm:gap-4 sm:p-5">
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
         <div
           className="rounded-num-8 flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
           aria-hidden
-        />
+        >
+          {row.imageUrl ? (
+            <img
+              src={row.imageUrl}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <img
+              src="/icons/airbnb.svg"
+              alt=""
+              className="h-8 w-8 object-contain opacity-70"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+        </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <b className="tracking-num-0_02 text-base leading-6 lg:text-[18px]">{row.brand}</b>
           <div className="text-lightsteelblue-200 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:gap-2">
@@ -101,7 +121,7 @@ const ReviewRow: FunctionComponent<{
       </div>
       <div className="flex shrink-0 flex-col items-end gap-2">
         {review ? (
-          <div className={ratedBadgeClass}>
+          <div className={ratedBadgeClass} aria-disabled="true">
             <div className="relative font-semibold">Rated </div>
             <div className="flex items-center gap-0.5">
               <div className="relative font-semibold">{review.rating}</div>
@@ -120,7 +140,13 @@ const ReviewRow: FunctionComponent<{
           </div>
         ) : null}
         {!review ? (
-          <button type="button" onClick={onAddReview} className={addReviewBtnClass}>
+          <button
+            type="button"
+            onClick={onAddReview}
+            disabled={!canAddReview}
+            title={!canAddReview ? 'Review is available only for paid orders' : undefined}
+            className={`${addReviewBtnClass} disabled:cursor-not-allowed disabled:opacity-40`}
+          >
             <CentralIcon
               name="IconPlusLarge"
               join="round"
@@ -143,9 +169,14 @@ const ReviewRow: FunctionComponent<{
 /** Reviews — purchases eligible for review; layout aligned with Orders / dashboard shell (no absolute canvas). */
 export const DashboardReviewsSection: FunctionComponent = () => {
   const orders = useOrderReviewStore((s) => s.orders)
+  const loading = useOrderReviewStore((s) => s.loading)
+  const error = useOrderReviewStore((s) => s.error)
+  const loadReviewsPageData = useOrderReviewStore((s) => s.loadReviewsPageData)
   const pendingReviewRows = useOrderReviewStore((s) => s.pendingReviewRows)
   const reviewsByPurchaseRowId = useOrderReviewStore((s) => s.reviewsByPurchaseRowId)
   const submitReviewForPurchaseRow = useOrderReviewStore((s) => s.submitReviewForPurchaseRow)
+  const updateReview = useOrderReviewStore((s) => s.updateReview)
+  const removeReview = useOrderReviewStore((s) => s.removeReview)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [paymentMethodFilter, setPaymentMethodFilter] = useState<PaymentMethodFilter>('all')
@@ -158,6 +189,12 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [reviewDialogRow, setReviewDialogRow] = useState<ReviewPurchaseRow | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [deletingRowId, setDeletingRowId] = useState<string | null>(null)
+
+  useEffect(() => {
+    void loadReviewsPageData()
+  }, [loadReviewsPageData])
   const toggleMenu = (menu: 'status' | 'payment' | 'sort') => {
     setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
     setPaymentMethodMenuOpen((prev) => (menu === 'payment' ? !prev : false))
@@ -492,6 +529,23 @@ export const DashboardReviewsSection: FunctionComponent = () => {
     return (
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         {filterBar}
+        {loading ? (
+          <div className="text-lightsteelblue-100 py-10 text-center text-sm font-medium">
+            Loading reviews...
+          </div>
+        ) : null}
+        {!loading && error ? (
+          <div className="text-center">
+            <p className="text-sm text-red-300">{error}</p>
+            <button
+              type="button"
+              className="mt-2 text-sm font-semibold text-white underline underline-offset-4"
+              onClick={() => void loadReviewsPageData()}
+            >
+              Retry
+            </button>
+          </div>
+        ) : null}
         <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
           <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
           <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
@@ -510,12 +564,30 @@ export const DashboardReviewsSection: FunctionComponent = () => {
       {filterBar}
 
       <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
+        {loading ? (
+          <div className="text-lightsteelblue-100 px-4 py-8 text-center text-sm font-medium">
+            Loading reviews...
+          </div>
+        ) : null}
+        {!loading && error ? (
+          <div className="px-4 py-8 text-center">
+            <p className="text-sm text-red-300">{error}</p>
+            <button
+              type="button"
+              className="mt-2 text-sm font-semibold text-white underline underline-offset-4"
+              onClick={() => void loadReviewsPageData()}
+            >
+              Retry
+            </button>
+          </div>
+        ) : null}
         <div className="flex flex-col">
           {visibleRows.map(({ row }) => (
             <ReviewRow
               key={row.id}
               row={row}
               review={reviewsByPurchaseRowId[row.id]}
+              canAddReview={orders.find((o) => o.id === row.id)?.status === 'paid'}
               onAddReview={() => setReviewDialogRow(row)}
             />
           ))}
@@ -547,16 +619,45 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                 <DashboardReviewsPopup
                   key={reviewDialogRow.id}
                   brand={reviewDialogRow.brand}
+                  imageUrl={reviewDialogRow.imageUrl}
                   itemCount={reviewDialogRow.itemCount}
                   price={reviewDialogRow.price}
                   date={reviewDialogRow.date}
                   time={reviewDialogRow.time}
                   initialRating={reviewsByPurchaseRowId[reviewDialogRow.id]?.rating}
                   initialComment={reviewsByPurchaseRowId[reviewDialogRow.id]?.comment}
+                  submitting={submitting}
+                  deleting={deletingRowId === reviewDialogRow.id}
+                  allowDelete={Boolean(reviewsByPurchaseRowId[reviewDialogRow.id])}
+                  onDelete={async () => {
+                    const purchaseRowId = reviewDialogRow.id
+                    const existing = reviewsByPurchaseRowId[purchaseRowId]
+                    if (!existing) return
+                    setDeletingRowId(purchaseRowId)
+                    try {
+                      await removeReview(purchaseRowId)
+                      setReviewDialogRow(null)
+                    } catch {
+                      toast.error('Could not delete review. Please try again.')
+                    } finally {
+                      setDeletingRowId(null)
+                    }
+                  }}
                   onClose={() => setReviewDialogRow(null)}
-                  onSubmit={({ rating, comment }) => {
-                    submitReviewForPurchaseRow(reviewDialogRow.id, { rating, comment })
-                    setReviewDialogRow(null)
+                  onSubmit={async ({ rating, comment }) => {
+                    setSubmitting(true)
+                    try {
+                      if (reviewsByPurchaseRowId[reviewDialogRow.id]) {
+                        await updateReview(reviewDialogRow.id, { rating, comment })
+                      } else {
+                        await submitReviewForPurchaseRow(reviewDialogRow.id, { rating, comment })
+                      }
+                      setReviewDialogRow(null)
+                    } catch {
+                      toast.error('Could not submit review. Please try again.')
+                    } finally {
+                      setSubmitting(false)
+                    }
                   }}
                 />
               </div>

@@ -1,6 +1,13 @@
 import { create } from 'zustand'
 
+import {
+  listOrdersAction,
+  mapApiOrderStatus,
+  mapCryptoToPaymentMethod,
+  type ApiOrder,
+} from '@/actions/order'
 import type { DashboardOrderStatus } from '@/components/dashboard/DashboardOrderCard'
+import { reviewsApi, type ReviewListItem } from '@/lib/api'
 
 /** Đơn hàng — trùng mock Orders dashboard. */
 export type OrderPaymentMethod =
@@ -24,6 +31,7 @@ export type Order = {
 export type ReviewPurchaseRow = {
   id: string
   brand: string
+  imageUrl: string | null
   itemCount: number
   price: string
   date: string
@@ -32,6 +40,8 @@ export type ReviewPurchaseRow = {
 
 /** Review đã gửi; `purchaseRowId` khóa theo `ReviewPurchaseRow.id`. */
 export type OrderReview = {
+  id: string
+  orderId: string
   purchaseRowId: string
   rating: number
   comment: string
@@ -40,12 +50,12 @@ export type OrderReview = {
 
 type OrderReviewState = {
   orders: Order[]
-  /** Hàng chờ review (seed giống mock Reviews cũ). */
+  loading: boolean
+  error: string | null
   pendingReviewRows: ReviewPurchaseRow[]
-  /** Review đã gửi, key = `ReviewPurchaseRow.id`. */
   reviewsByPurchaseRowId: Record<string, OrderReview>
-  /** User-marked “code redeemed / used” on order detail; key = `Order.id`. */
   markedUsedByOrderId: Record<string, boolean>
+  loadReviewsPageData: () => Promise<void>
   setOrders: (orders: Order[]) => void
   setPendingReviewRows: (rows: ReviewPurchaseRow[]) => void
   upsertOrder: (order: Order) => void
@@ -53,15 +63,101 @@ type OrderReviewState = {
   submitReviewForPurchaseRow: (
     purchaseRowId: string,
     payload: Pick<OrderReview, 'rating' | 'comment'>
-  ) => void
-  removeReview: (purchaseRowId: string) => void
+  ) => Promise<void>
+  updateReview: (
+    purchaseRowId: string,
+    payload: Pick<OrderReview, 'rating' | 'comment'>
+  ) => Promise<void>
+  removeReview: (purchaseRowId: string) => Promise<void>
+}
+
+function formatOrderDate(iso: string) {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) {
+    return { date: '-', time: '-' }
+  }
+  return {
+    date: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+  }
+}
+
+function toOrderModel(order: ApiOrder): Order {
+  const firstItem = order.items?.[0]
+  const brand = firstItem?.product?.name || firstItem?.variantLabel || 'Order'
+  const itemCount = (order.items ?? []).reduce((sum, item) => sum + item.quantity, 0)
+  return {
+    id: order.id,
+    brand: String(brand).toUpperCase(),
+    itemCount,
+    price: `$${Number(order.totalAmount || 0).toFixed(2)}`,
+    status: mapApiOrderStatus(order.status),
+    paymentMethod: mapCryptoToPaymentMethod(order.cryptoPayment?.cryptocurrency),
+  }
+}
+
+function toPurchaseRow(order: ApiOrder): ReviewPurchaseRow {
+  const firstItem = order.items?.[0]
+  const brand = firstItem?.product?.name || firstItem?.variantLabel || 'Order'
+  const primaryImage =
+    firstItem?.product?.images?.find((img) => img.isPrimary) ??
+    firstItem?.product?.images?.[0] ??
+    null
+  const itemCount = (order.items ?? []).reduce((sum, item) => sum + item.quantity, 0)
+  const { date, time } = formatOrderDate(order.createdAt as unknown as string)
+  return {
+    id: order.id,
+    brand: String(brand).toUpperCase(),
+    imageUrl: primaryImage?.url ?? null,
+    itemCount,
+    price: `$${Number(order.totalAmount || 0).toFixed(2)}`,
+    date,
+    time,
+  }
+}
+
+function toStoreReview(review: ReviewListItem): OrderReview {
+  return {
+    id: review.id,
+    orderId: review.orderId,
+    purchaseRowId: review.orderId,
+    rating: review.rating,
+    comment: review.comment ?? '',
+    createdAt: review.createdAt,
+  }
 }
 
 export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
   orders: [],
+  loading: false,
+  error: null,
   pendingReviewRows: [],
   reviewsByPurchaseRowId: {},
   markedUsedByOrderId: {},
+  loadReviewsPageData: async () => {
+    set({ loading: true, error: null })
+    try {
+      const [ordersRes, reviewsRes] = await Promise.all([
+        listOrdersAction({ page: 1, limit: 100 }),
+        reviewsApi.list({ page: 1, limit: 100, sort: 'newest' }),
+      ])
+      const orders = ordersRes.items.map(toOrderModel)
+      const pendingReviewRows = ordersRes.items.map(toPurchaseRow)
+      const reviewsByPurchaseRowId = reviewsRes.items.reduce<Record<string, OrderReview>>(
+        (acc, review) => {
+          acc[review.orderId] = toStoreReview(review)
+          return acc
+        },
+        {}
+      )
+      set({ orders, pendingReviewRows, reviewsByPurchaseRowId, loading: false })
+    } catch {
+      set({
+        loading: false,
+        error: 'Could not load reviews right now. Please try again.',
+      })
+    }
+  },
   setOrders: (orders) => set({ orders }),
   setPendingReviewRows: (pendingReviewRows) => set({ pendingReviewRows }),
   upsertOrder: (order) =>
@@ -79,23 +175,44 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
         [orderId]: marked,
       },
     })),
-  submitReviewForPurchaseRow: (purchaseRowId, payload) =>
+  submitReviewForPurchaseRow: async (purchaseRowId, payload) => {
+    const created = await reviewsApi.create({
+      orderId: purchaseRowId,
+      rating: payload.rating,
+      comment: payload.comment,
+    })
     set((state) => ({
       reviewsByPurchaseRowId: {
         ...state.reviewsByPurchaseRowId,
-        [purchaseRowId]: {
-          purchaseRowId,
-          rating: payload.rating,
-          comment: payload.comment,
-          createdAt: new Date().toISOString(),
-        },
+        [purchaseRowId]: toStoreReview(created),
       },
-    })),
-  removeReview: (purchaseRowId) =>
+      error: null,
+    }))
+  },
+  updateReview: async (purchaseRowId, payload) => {
+    const existing = useOrderReviewStore.getState().reviewsByPurchaseRowId[purchaseRowId]
+    if (!existing) return
+    const updated = await reviewsApi.update(existing.id, {
+      rating: payload.rating,
+      comment: payload.comment,
+    })
+    set((state) => ({
+      reviewsByPurchaseRowId: {
+        ...state.reviewsByPurchaseRowId,
+        [purchaseRowId]: toStoreReview(updated),
+      },
+      error: null,
+    }))
+  },
+  removeReview: async (purchaseRowId) => {
+    const existing = useOrderReviewStore.getState().reviewsByPurchaseRowId[purchaseRowId]
+    if (!existing) return
+    await reviewsApi.delete(existing.id)
     set((state) => {
       const { [purchaseRowId]: _, ...rest } = state.reviewsByPurchaseRowId
-      return { reviewsByPurchaseRowId: rest }
-    }),
+      return { reviewsByPurchaseRowId: rest, error: null }
+    })
+  },
 }))
 
 export function selectPendingReviewRows(

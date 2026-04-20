@@ -246,7 +246,7 @@ export function CompletePaymentPending({
           </div>
           <div className="flex items-center gap-2">
             <div
-              className="relative h-num-18 w-num-18 rounded-full"
+              className="h-num-18 w-num-18 relative rounded-full"
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={100}
