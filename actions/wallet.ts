@@ -16,6 +16,8 @@ export type WalletTransactionsParams = {
   page?: number
   limit?: number
   type?: ApiWalletTransactionType
+  sortBy?: 'createdAt' | 'amount'
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type WalletTransactionsResponse = {
@@ -48,8 +50,10 @@ export async function getWalletTransactionsAction(
   const res = await api.get<BackendResponse<WalletTransactionsResponse>>('/wallet/transactions', {
     params: {
       page: params.page ?? 1,
-      limit: params.limit ?? 20,
+      limit: params.limit ?? 12,
       type: params.type,
+      sortBy: params.sortBy,
+      sortOrder: params.sortOrder,
     },
   })
   return unwrap(res)

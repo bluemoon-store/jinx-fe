@@ -135,7 +135,9 @@ export type DashboardOrdersStatusFilter = 'all' | 'paid' | 'pending' | 'expired'
 
 export function useDashboardOrdersInfiniteQuery(
   statusFilter: DashboardOrdersStatusFilter,
-  enabled: boolean
+  enabled: boolean,
+  sortBy?: 'createdAt' | 'totalAmount',
+  sortOrder?: 'asc' | 'desc'
 ) {
   const apiStatus =
     statusFilter === 'paid'
@@ -145,7 +147,14 @@ export function useDashboardOrdersInfiniteQuery(
         : undefined
 
   return useInfiniteQuery({
-    queryKey: [...ORDERS_QUERY_KEYS.lists(), 'dashboard', 'paged', statusFilter] as const,
+    queryKey: [
+      ...ORDERS_QUERY_KEYS.lists(),
+      'dashboard',
+      'paged',
+      statusFilter,
+      sortBy ?? 'createdAt',
+      sortOrder ?? 'desc',
+    ] as const,
     enabled: enabled && statusFilter !== 'expired',
     initialPageParam: 1,
     queryFn: ({ pageParam }) =>
@@ -153,6 +162,8 @@ export function useDashboardOrdersInfiniteQuery(
         page: pageParam,
         limit: DASHBOARD_ORDERS_PAGE_SIZE,
         status: apiStatus,
+        sortBy,
+        sortOrder,
       }),
     getNextPageParam: (lastPage) => {
       const cur = lastPage.metadata.currentPage

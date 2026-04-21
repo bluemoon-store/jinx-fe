@@ -97,6 +97,9 @@ export type OrderListParams = {
   page?: number
   limit?: number
   status?: ApiOrderStatus
+  sortBy?: 'createdAt' | 'totalAmount'
+  sortOrder?: 'asc' | 'desc'
+  cryptocurrency?: string
 }
 
 export type PaginatedOrders = {
@@ -187,6 +190,9 @@ export async function listOrdersAction(params: OrderListParams): Promise<Paginat
       page: params.page ?? 1,
       limit: params.limit ?? 12,
       status: params.status,
+      sortBy: params.sortBy,
+      sortOrder: params.sortOrder,
+      cryptocurrency: params.cryptocurrency,
     },
   })
   return unwrap(res)

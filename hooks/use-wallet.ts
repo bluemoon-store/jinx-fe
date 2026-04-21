@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
   createWalletTopUpAction,
@@ -39,6 +39,19 @@ export function useWalletTransactionsQuery(params: WalletTransactionsParams) {
   return useQuery({
     queryKey: WALLET_QUERY_KEYS.transactions(params),
     queryFn: () => getWalletTransactionsAction(params),
+  })
+}
+
+export function useWalletTransactionsInfiniteQuery(params: Omit<WalletTransactionsParams, 'page'>) {
+  return useInfiniteQuery({
+    queryKey: [...WALLET_QUERY_KEYS.all, 'transactions-infinite', params] as const,
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => getWalletTransactionsAction({ ...params, page: pageParam }),
+    getNextPageParam: (lastPage) => {
+      const cur = lastPage.metadata.currentPage
+      const total = lastPage.metadata.totalPages
+      return cur < total ? cur + 1 : undefined
+    },
   })
 }
 

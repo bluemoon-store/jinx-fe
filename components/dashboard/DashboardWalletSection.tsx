@@ -5,12 +5,13 @@ import { createPortal } from 'react-dom'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { DashboardWalletTxnPopup } from '@/components/dashboard/DashboardWalletTxnPopup'
+import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { useExchangeRatesQuery } from '@/hooks/use-payments'
 import {
   useCreateWalletTopUpMutation,
   useWalletBalanceQuery,
+  useWalletTransactionsInfiniteQuery,
   useWalletTopUpStatusQuery,
-  useWalletTransactionsQuery,
 } from '@/hooks/use-wallet'
 import { formatUsd, parseUsdDecimalString } from '@/lib/cart-format'
 import { toast } from '@/lib/toast'
@@ -43,15 +44,6 @@ type WalletTx = {
   userId: string
 }
 
-type StatusFilter = 'all' | WalletTxStatus
-
-const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'paid', label: 'Paid' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'expired', label: 'Expired' },
-]
-
 type SortOption = 'newest' | 'oldest' | 'amount_desc' | 'amount_asc'
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
@@ -79,7 +71,7 @@ const COIN_OPTIONS: CoinOption[] = [
   { value: 'BCH', label: 'Bitcoin Cash', iconSrc: '/icons/Crypto Logos/Bitcoin-1.svg' },
 ]
 
-const WALLET_TX_PAGE_SIZE = 50
+const WALLET_TX_PAGE_SIZE = 12
 const DEFAULT_USER_LABEL = 'JINX-LKXJLKNALSDJ'
 
 function coinUnitLabel(coin: ApiCryptoCurrency): string {
@@ -144,17 +136,26 @@ export const DashboardWalletSection: FunctionComponent = () => {
   const coinMenuRef = useRef<HTMLDivElement>(null)
   const [historySearch, setHistorySearch] = useState('')
   const [txnDialogRow, setTxnDialogRow] = useState<WalletTx | null>(null)
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
-  const [statusMenuOpen, setStatusMenuOpen] = useState(false)
-  const statusMenuRef = useRef<HTMLDivElement>(null)
   const [sortOption, setSortOption] = useState<SortOption>('newest')
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const [topUpModalOpen, setTopUpModalOpen] = useState(false)
   const [createdTopUp, setCreatedTopUp] = useState<ApiWalletTopUp | null>(null)
+  const walletSortParams =
+    sortOption === 'oldest'
+      ? { sortBy: 'createdAt' as const, sortOrder: 'asc' as const }
+      : sortOption === 'amount_desc'
+        ? { sortBy: 'amount' as const, sortOrder: 'desc' as const }
+        : sortOption === 'amount_asc'
+          ? { sortBy: 'amount' as const, sortOrder: 'asc' as const }
+          : { sortBy: 'createdAt' as const, sortOrder: 'desc' as const }
 
   const balanceQuery = useWalletBalanceQuery()
-  const txQuery = useWalletTransactionsQuery({ page: 1, limit: WALLET_TX_PAGE_SIZE })
+  const txQuery = useWalletTransactionsInfiniteQuery({
+    limit: WALLET_TX_PAGE_SIZE,
+    sortBy: walletSortParams.sortBy,
+    sortOrder: walletSortParams.sortOrder,
+  })
   const ratesQuery = useExchangeRatesQuery()
   const createTopUpMutation = useCreateWalletTopUpMutation()
   const topUpStatusQuery = useWalletTopUpStatusQuery(createdTopUp?.id)
@@ -173,33 +174,26 @@ export const DashboardWalletSection: FunctionComponent = () => {
       : null
 
   const txRows = useMemo(
-    () => (txQuery.data?.items ?? []).map(mapTransactionToWalletTx),
-    [txQuery.data?.items]
+    () => (txQuery.data?.pages ?? []).flatMap((page) => page.items.map(mapTransactionToWalletTx)),
+    [txQuery.data?.pages]
   )
   const toggleMenu = (menu: 'coin' | 'status' | 'sort') => {
     setCoinMenuOpen((prev) => (menu === 'coin' ? !prev : false))
-    setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
     setSortMenuOpen((prev) => (menu === 'sort' ? !prev : false))
   }
 
   useEffect(() => {
-    if (!coinMenuOpen && !statusMenuOpen && !sortMenuOpen) return
+    if (!coinMenuOpen && !sortMenuOpen) return
     const onDoc = (e: MouseEvent) => {
       const target = e.target as Node
-      if (
-        coinMenuRef.current?.contains(target) ||
-        statusMenuRef.current?.contains(target) ||
-        sortMenuRef.current?.contains(target)
-      )
+      if (coinMenuRef.current?.contains(target) || sortMenuRef.current?.contains(target))
         return
       setCoinMenuOpen(false)
-      setStatusMenuOpen(false)
       setSortMenuOpen(false)
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       setCoinMenuOpen(false)
-      setStatusMenuOpen(false)
       setSortMenuOpen(false)
     }
     document.addEventListener('mousedown', onDoc)
@@ -208,14 +202,12 @@ export const DashboardWalletSection: FunctionComponent = () => {
       document.removeEventListener('mousedown', onDoc)
       document.removeEventListener('keydown', onKey)
     }
-  }, [coinMenuOpen, sortMenuOpen, statusMenuOpen])
+  }, [coinMenuOpen, sortMenuOpen])
 
   const filteredTx = useMemo(() => {
     const q = historySearch.trim().toLowerCase()
-    const statusFiltered =
-      statusFilter === 'all' ? txRows : txRows.filter((t) => (t.status ?? 'paid') === statusFilter)
-    if (!q) return statusFiltered
-    return statusFiltered.filter(
+    if (!q) return txRows
+    return txRows.filter(
       (t) =>
         t.title.toLowerCase().includes(q) ||
         t.id.includes(q) ||
@@ -225,7 +217,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
         t.address.toLowerCase().includes(q) ||
         t.txnHash.toLowerCase().includes(q)
     )
-  }, [historySearch, statusFilter, txRows])
+  }, [historySearch, txRows])
 
   useEffect(() => {
     if (!topUpStatusQuery.data || !createdTopUp) return
@@ -241,30 +233,10 @@ export const DashboardWalletSection: FunctionComponent = () => {
     }
   }, [createdTopUp, topUpStatusQuery.data])
 
-  const sortedTx = useMemo(() => {
-    const parseAmount = (label: string) => {
-      const n = Number(label.replace(/[^0-9.]/g, ''))
-      return Number.isFinite(n) ? n : 0
-    }
-
-    const parseDateTime = (tx: WalletTx) => {
-      const ms = Date.parse(`${tx.date} ${tx.time}`)
-      return Number.isFinite(ms) ? ms : 0
-    }
-
-    const next = [...filteredTx]
-    next.sort((a, b) => {
-      if (sortOption === 'amount_desc')
-        return parseAmount(b.amountLabel) - parseAmount(a.amountLabel)
-      if (sortOption === 'amount_asc')
-        return parseAmount(a.amountLabel) - parseAmount(b.amountLabel)
-
-      const aMs = parseDateTime(a)
-      const bMs = parseDateTime(b)
-      return sortOption === 'newest' ? bMs - aMs : aMs - bMs
-    })
-    return next
-  }, [filteredTx, sortOption])
+  const totalTxItems = txQuery.data?.pages?.[0]?.metadata.totalItems ?? 0
+  const shownTxItems = filteredTx.length
+  const canLoadMoreTx =
+    !historySearch.trim() && !txQuery.isFetchingNextPage && Boolean(txQuery.hasNextPage)
 
   return (
     <div className="flex min-w-0 flex-col gap-6 sm:gap-8">
@@ -397,7 +369,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
                   Enter Amount
                 </span>
-                <div className="rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5">
+                <div className="rounded-num-8 flex h-12.5 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2">
                   <div className="flex min-w-0 items-baseline gap-1.5">
                     <span className="text-base font-bold text-white">$</span>
                     <input
@@ -516,65 +488,9 @@ export const DashboardWalletSection: FunctionComponent = () => {
               type="search"
               value={historySearch}
               onChange={(e) => setHistorySearch(e.target.value)}
-              placeholder="Search using Invoice ID, Txn Hash, Address"
+              placeholder="Search by invoice ID, transaction hash, or address"
               className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal text-white/75 placeholder-white/37.5 outline-none focus:ring-0"
             />
-          </div>
-          <div className="relative w-fit max-w-full shrink-0" ref={statusMenuRef}>
-            <button
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded={statusMenuOpen}
-              aria-label="Filter by status"
-              onClick={() => toggleMenu('status')}
-              className={cn(walletFilterTriggerClass, 'w-fit max-w-full')}
-            >
-              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-                Status
-              </span>
-              <span className="text-sm font-semibold">
-                {STATUS_OPTIONS.find((o) => o.value === statusFilter)?.label ?? 'All'}
-              </span>
-              <CentralIcon
-                name="IconChevronDownMedium"
-                join="round"
-                fill="filled"
-                stroke="2"
-                radius="1"
-                size={16}
-                ariaHidden={true}
-                className="shrink-0 text-[#C3C3E3]"
-              />
-            </button>
-            {statusMenuOpen ? (
-              <ul
-                role="listbox"
-                aria-label="Status"
-                className={`absolute top-full left-0 z-20 mt-2 min-w-[210px] overflow-hidden ${siteSelectDropdownPanel}`}
-              >
-                <div className={siteSelectDropdownList}>
-                  {STATUS_OPTIONS.map((opt) => (
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={statusFilter === opt.value}
-                      className={cn(
-                        siteSelectDropdownOptionRow,
-                        siteSelectDropdownOptionInteractive,
-                        'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm',
-                        statusFilter === opt.value && 'bg-white/5'
-                      )}
-                      onClick={() => {
-                        setStatusFilter(opt.value)
-                        setStatusMenuOpen(false)
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </ul>
-            ) : null}
           </div>
           <div className="relative w-fit max-w-full shrink-0" ref={sortMenuRef}>
             <button
@@ -635,10 +551,14 @@ export const DashboardWalletSection: FunctionComponent = () => {
         </div>
 
         {txQuery.isPending ? (
-          <div className="text-lightsteelblue-200 flex items-center justify-center py-12 text-sm font-semibold">
-            Loading transactions...
+          <div className="flex py-12">
+            <div
+              className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+              role="status"
+              aria-label="Loading transactions"
+            />
           </div>
-        ) : sortedTx.length === 0 ? (
+        ) : filteredTx.length === 0 ? (
           <div className="text-ghostwhite font-commissioner flex flex-col items-center gap-2 py-12 text-center">
             <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
             <b className="tracking-num--0_01 text-base sm:text-lg">No transactions found</b>
@@ -647,57 +567,67 @@ export const DashboardWalletSection: FunctionComponent = () => {
             </p>
           </div>
         ) : (
-          <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
-            <div className="flex flex-col">
-              {sortedTx.map((tx) => (
-                <button
-                  type="button"
-                  key={tx.id}
-                  onClick={() => setTxnDialogRow(tx)}
-                  className="border-darkslateblue focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 hover:bg-gray-700/20 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
-                  aria-label={`View transaction details for ${tx.title} on ${tx.date}`}
-                >
-                  <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#051329]">
-                      <CentralIcon
-                        name={tx.kind === 'purchase' ? 'IconBasket1' : 'IconCoinsAdd'}
-                        join="round"
-                        fill="filled"
-                        stroke="2"
-                        radius="1"
-                        size={24}
-                        ariaHidden={true}
-                        className="text-[#C3C3E3]"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="tracking-num-0.02 text-base leading-7 font-bold text-white">
-                        {tx.title}
-                      </div>
-                      <div className="text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
-                        <span>{tx.date}</span>
-                        <span
-                          className="bg-darkslateblue hidden h-3 w-px sm:inline-block"
-                          aria-hidden
+          <>
+            <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
+              <div className="flex flex-col">
+                {filteredTx.map((tx) => (
+                  <button
+                    type="button"
+                    key={tx.id}
+                    onClick={() => setTxnDialogRow(tx)}
+                    className="border-darkslateblue focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 hover:bg-gray-700/20 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
+                    aria-label={`View transaction details for ${tx.title} on ${tx.date}`}
+                  >
+                    <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#051329]">
+                        <CentralIcon
+                          name={tx.kind === 'purchase' ? 'IconBasket1' : 'IconCoinsAdd'}
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          ariaHidden={true}
+                          className="text-[#C3C3E3]"
                         />
-                        <span>{tx.time}</span>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="tracking-num-0.02 text-base leading-7 font-bold text-white">
+                          {tx.title}
+                        </div>
+                        <div className="text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
+                          <span>{tx.date}</span>
+                          <span
+                            className="bg-darkslateblue hidden h-3 w-px sm:inline-block"
+                            aria-hidden
+                          />
+                          <span>{tx.time}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <p className="shrink-0 text-right text-xl font-bold tracking-tight text-white">
-                    {tx.positive ? (
-                      <>
-                        <span className="mr-0.5 text-[#1ad824]">+</span>
-                        {tx.amountLabel}
-                      </>
-                    ) : (
-                      <>−{tx.amountLabel}</>
-                    )}
-                  </p>
-                </button>
-              ))}
+                    <p className="shrink-0 text-right text-xl font-bold tracking-tight text-white">
+                      {tx.positive ? (
+                        <>
+                          <span className="mr-0.5 text-[#1ad824]">+</span>
+                          {tx.amountLabel}
+                        </>
+                      ) : (
+                        <>−{tx.amountLabel}</>
+                      )}
+                    </p>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+            <nav aria-label="Wallet transactions load more">
+              <DashboardLoadMoreFooter
+                shown={shownTxItems}
+                total={historySearch.trim() ? shownTxItems : totalTxItems}
+                canLoadMore={canLoadMoreTx}
+                onLoadMore={() => void txQuery.fetchNextPage()}
+              />
+            </nav>
+          </>
         )}
       </div>
 

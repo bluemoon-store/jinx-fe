@@ -27,8 +27,6 @@ import {
 } from '@/components/ui/siteSelectDropdown'
 import { cn } from '@/lib/utils'
 
-const PAGE_SIZE = 8
-
 type StatusFilter = 'all' | DashboardOrderStatus
 
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
@@ -200,7 +198,10 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   const orders = useOrderReviewStore((s) => s.orders)
   const loading = useOrderReviewStore((s) => s.loading)
   const error = useOrderReviewStore((s) => s.error)
+  const loadingMore = useOrderReviewStore((s) => s.loadingMore)
+  const totalItems = useOrderReviewStore((s) => s.totalItems)
   const loadReviewsPageData = useOrderReviewStore((s) => s.loadReviewsPageData)
+  const loadMoreReviews = useOrderReviewStore((s) => s.loadMoreReviews)
   const pendingReviewRows = useOrderReviewStore((s) => s.pendingReviewRows)
   const reviewsByPurchaseRowId = useOrderReviewStore((s) => s.reviewsByPurchaseRowId)
   const submitReviewForPurchaseRow = useOrderReviewStore((s) => s.submitReviewForPurchaseRow)
@@ -216,14 +217,41 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   const paymentMethodMenuRef = useRef<HTMLDivElement>(null)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [reviewDialogRow, setReviewDialogRow] = useState<ReviewPurchaseRow | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [deletingRowId, setDeletingRowId] = useState<string | null>(null)
 
   useEffect(() => {
-    void loadReviewsPageData()
-  }, [loadReviewsPageData])
+    const sortParams =
+      sortOption === 'oldest'
+        ? { sortBy: 'createdAt' as const, sortOrder: 'asc' as const }
+        : sortOption === 'price_desc'
+          ? { sortBy: 'totalAmount' as const, sortOrder: 'desc' as const }
+          : sortOption === 'price_asc'
+            ? { sortBy: 'totalAmount' as const, sortOrder: 'asc' as const }
+            : { sortBy: 'createdAt' as const, sortOrder: 'desc' as const }
+    const cryptocurrency =
+      paymentMethodFilter === 'bitcoin'
+        ? 'BTC'
+        : paymentMethodFilter === 'ethereum'
+          ? 'ETH'
+          : paymentMethodFilter === 'usdt_tron'
+            ? 'USDT_TRC20'
+            : paymentMethodFilter === 'usdt_ethereum'
+              ? 'USDT_ERC20'
+              : paymentMethodFilter === 'litecoin'
+                ? 'LTC'
+                : paymentMethodFilter === 'bitcoin_cash'
+                  ? 'BCH'
+                  : undefined
+
+    void loadReviewsPageData({
+      page: 1,
+      sortBy: sortParams.sortBy,
+      sortOrder: sortParams.sortOrder,
+      cryptocurrency,
+    })
+  }, [loadReviewsPageData, paymentMethodFilter, sortOption])
   const toggleMenu = (menu: 'status' | 'payment' | 'sort') => {
     setStatusMenuOpen((prev) => (menu === 'status' ? !prev : false))
     setPaymentMethodMenuOpen((prev) => (menu === 'payment' ? !prev : false))
@@ -256,42 +284,6 @@ export const DashboardReviewsSection: FunctionComponent = () => {
         row.price.toLowerCase().includes(q)
     )
   }, [orders, paymentMethodFilter, pendingReviewRows, search, statusFilter])
-
-  const sorted = useMemo(() => {
-    const parsePrice = (price: string) => {
-      const n = Number(price.replace(/[^0-9.]/g, ''))
-      return Number.isFinite(n) ? n : 0
-    }
-
-    const parseId = (id: string) => {
-      const n = Number(id)
-      return Number.isFinite(n) ? n : null
-    }
-
-    const next = [...filtered]
-    next.sort((a, b) => {
-      const aRow = a.row
-      const bRow = b.row
-
-      if (sortOption === 'price_desc') return parsePrice(bRow.price) - parsePrice(aRow.price)
-      if (sortOption === 'price_asc') return parsePrice(aRow.price) - parsePrice(bRow.price)
-
-      const aId = parseId(aRow.id)
-      const bId = parseId(bRow.id)
-      if (aId !== null && bId !== null) {
-        return sortOption === 'newest' ? bId - aId : aId - bId
-      }
-      // Fallback when IDs aren't numeric
-      return sortOption === 'newest'
-        ? bRow.id.localeCompare(aRow.id)
-        : aRow.id.localeCompare(bRow.id)
-    })
-    return next
-  }, [filtered, sortOption])
-
-  useEffect(() => {
-    setVisibleCount(Math.min(PAGE_SIZE, filtered.length))
-  }, [filtered.length, paymentMethodFilter, search, sortOption, statusFilter])
 
   useEffect(() => {
     if (!statusMenuOpen && !paymentMethodMenuOpen && !sortMenuOpen) return
@@ -335,9 +327,10 @@ export const DashboardReviewsSection: FunctionComponent = () => {
     }
   }, [reviewDialogRow])
 
-  const shown = Math.min(visibleCount, sorted.length)
-  const canLoadMore = shown < sorted.length
-  const visibleRows = sorted.slice(0, shown)
+  const shown = filtered.length
+  const canLoadMore = !search.trim() && !loadingMore && shown < totalItems
+  const visibleRows = filtered
+  const isRefetching = loading && visibleRows.length > 0
 
   const filterBar = (
     <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
@@ -573,7 +566,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             <button
               type="button"
               className="mt-2 text-sm font-semibold text-white underline underline-offset-4"
-              onClick={() => void loadReviewsPageData()}
+              onClick={() => void loadReviewsPageData({ page: 1 })}
             >
               Retry
             </button>
@@ -595,6 +588,15 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
       {filterBar}
+      {isRefetching ? (
+        <div className="flex py-2">
+          <div
+            className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+            role="status"
+            aria-label="Refreshing reviews"
+          />
+        </div>
+      ) : null}
       {loading && visibleRows.length === 0 ? (
         <div className="flex py-12">
           <div
@@ -611,7 +613,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
               <button
                 type="button"
                 className="mt-2 text-sm font-semibold text-white underline underline-offset-4"
-                onClick={() => void loadReviewsPageData()}
+                onClick={() => void loadReviewsPageData({ page: 1 })}
               >
                 Retry
               </button>
@@ -638,11 +640,20 @@ export const DashboardReviewsSection: FunctionComponent = () => {
       <nav aria-label="Review list load more">
         <DashboardLoadMoreFooter
           shown={shown}
-          total={filtered.length}
+          total={search.trim() ? filtered.length : totalItems}
           canLoadMore={canLoadMore}
-          onLoadMore={() => setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))}
+          onLoadMore={() => void loadMoreReviews()}
         />
       </nav>
+      {loadingMore ? (
+        <div className="flex py-4">
+          <div
+            className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+            role="status"
+            aria-label="Loading more reviews"
+          />
+        </div>
+      ) : null}
 
       {reviewDialogRow && typeof document !== 'undefined'
         ? createPortal(

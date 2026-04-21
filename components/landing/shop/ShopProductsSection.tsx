@@ -23,10 +23,10 @@ const INITIAL_PAGE = 1
 
 export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
   const searchParams = useSearchParams()
-  const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? searchParams.get('search') ?? '')
 
   useEffect(() => {
-    setQuery(searchParams.get('q') ?? '')
+    setQuery(searchParams.get('q') ?? searchParams.get('search') ?? '')
   }, [searchParams])
 
   const debouncedSearch = useDebounce(query.trim(), 400)
@@ -70,6 +70,25 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
   const total = data?.total ?? merged.length
   const loaded = merged.length
   const canLoadMore = loaded < total && (data?.items?.length ?? 0) >= PAGE_SIZE
+
+  useEffect(() => {
+    const currentQ = searchParams.get('q') ?? ''
+    const nextQ = query.trim()
+    if (nextQ === currentQ) return
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (nextQ) {
+      params.set('q', nextQ)
+    } else {
+      params.delete('q')
+    }
+    // Keep URL clean if old query key was used before.
+    params.delete('search')
+
+    const qs = params.toString()
+    const nextUrl = qs ? `/shop?${qs}` : '/shop'
+    window.history.replaceState(null, '', nextUrl)
+  }, [query, searchParams])
 
   return (
     <div className="flex min-w-0 flex-col gap-3 sm:gap-4">

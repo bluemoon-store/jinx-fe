@@ -89,9 +89,22 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const selectedViewOption = VIEW_OPTIONS.find((o) => o.value === viewMode) ?? VIEW_OPTIONS[0]
   const expiredMode = statusFilter === 'expired'
+  const orderSortParams =
+    sortOption === 'oldest'
+      ? { sortBy: 'createdAt' as const, sortOrder: 'asc' as const }
+      : sortOption === 'price_desc'
+        ? { sortBy: 'totalAmount' as const, sortOrder: 'desc' as const }
+        : sortOption === 'price_asc'
+          ? { sortBy: 'totalAmount' as const, sortOrder: 'asc' as const }
+          : { sortBy: 'createdAt' as const, sortOrder: 'desc' as const }
 
   const expiredQuery = useDashboardExpiredOrdersQuery(expiredMode)
-  const pagedQuery = useDashboardOrdersInfiniteQuery(statusFilter, !expiredMode)
+  const pagedQuery = useDashboardOrdersInfiniteQuery(
+    statusFilter,
+    !expiredMode,
+    orderSortParams.sortBy,
+    orderSortParams.sortOrder
+  )
 
   const ordersList = useMemo(() => {
     if (expiredMode) return expiredQuery.data?.orders ?? []
@@ -170,34 +183,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
     }
   }, [paymentMethodMenuOpen, statusMenuOpen, sortMenuOpen, viewMenuOpen])
 
-  const sorted = useMemo(() => {
-    const parsePrice = (price: string) => {
-      const n = Number(price.replace(/[^0-9.]/g, ''))
-      return Number.isFinite(n) ? n : 0
-    }
-
-    const parseId = (id: string) => {
-      const n = Number(id)
-      return Number.isFinite(n) ? n : null
-    }
-
-    const next = [...filtered]
-    next.sort((a, b) => {
-      if (sortOption === 'price_desc') return parsePrice(b.price) - parsePrice(a.price)
-      if (sortOption === 'price_asc') return parsePrice(a.price) - parsePrice(b.price)
-
-      const aId = parseId(a.id)
-      const bId = parseId(b.id)
-      if (aId !== null && bId !== null) {
-        return sortOption === 'newest' ? bId - aId : aId - bId
-      }
-      // Fallback when IDs aren't numeric
-      return sortOption === 'newest' ? b.id.localeCompare(a.id) : a.id.localeCompare(b.id)
-    })
-    return next
-  }, [filtered, sortOption])
-
-  const visibleOrders = sorted
+  const visibleOrders = filtered
   const totalForFooter =
     orderSearch.trim() || paymentMethodFilter !== 'all'
       ? filtered.length

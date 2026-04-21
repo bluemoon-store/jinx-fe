@@ -51,11 +51,23 @@ export type OrderReview = {
 type OrderReviewState = {
   orders: Order[]
   loading: boolean
+  loadingMore: boolean
   error: string | null
+  page: number
+  totalItems: number
+  activeSortBy?: 'createdAt' | 'totalAmount'
+  activeSortOrder?: 'asc' | 'desc'
+  activeCryptocurrency?: string
   pendingReviewRows: ReviewPurchaseRow[]
   reviewsByPurchaseRowId: Record<string, OrderReview>
   markedUsedByOrderId: Record<string, boolean>
-  loadReviewsPageData: () => Promise<void>
+  loadReviewsPageData: (options?: {
+    page?: number
+    sortBy?: 'createdAt' | 'totalAmount'
+    sortOrder?: 'asc' | 'desc'
+    cryptocurrency?: string
+  }) => Promise<void>
+  loadMoreReviews: () => Promise<void>
   setOrders: (orders: Order[]) => void
   setPendingReviewRows: (rows: ReviewPurchaseRow[]) => void
   upsertOrder: (order: Order) => void
@@ -136,14 +148,35 @@ function toStoreReview(review: {
 export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
   orders: [],
   loading: false,
+  loadingMore: false,
   error: null,
+  page: 1,
+  totalItems: 0,
+  activeSortBy: undefined,
+  activeSortOrder: undefined,
+  activeCryptocurrency: undefined,
   pendingReviewRows: [],
   reviewsByPurchaseRowId: {},
   markedUsedByOrderId: {},
-  loadReviewsPageData: async () => {
-    set({ loading: true, error: null })
+  loadReviewsPageData: async (options) => {
+    const page = options?.page ?? 1
+    set({
+      loading: true,
+      error: null,
+      page: 1,
+      totalItems: 0,
+      orders: [],
+      pendingReviewRows: [],
+      reviewsByPurchaseRowId: {},
+    })
     try {
-      const ordersRes = await listOrdersAction({ page: 1, limit: 100 })
+      const ordersRes = await listOrdersAction({
+        page,
+        limit: 12,
+        sortBy: options?.sortBy,
+        sortOrder: options?.sortOrder,
+        cryptocurrency: options?.cryptocurrency,
+      })
       const orders = ordersRes.items.map(toOrderModel)
       const pendingReviewRows = ordersRes.items.map(toPurchaseRow)
       const reviewsByPurchaseRowId = ordersRes.items.reduce<Record<string, OrderReview>>(
@@ -155,11 +188,59 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
         },
         {}
       )
-      set({ orders, pendingReviewRows, reviewsByPurchaseRowId, loading: false })
+      set({
+        orders,
+        pendingReviewRows,
+        reviewsByPurchaseRowId,
+        page,
+        totalItems: ordersRes.metadata.totalItems,
+        activeSortBy: options?.sortBy,
+        activeSortOrder: options?.sortOrder,
+        activeCryptocurrency: options?.cryptocurrency,
+        loading: false,
+      })
     } catch {
       set({
         loading: false,
         error: 'Could not load reviews right now. Please try again.',
+      })
+    }
+  },
+  loadMoreReviews: async () => {
+    const state = useOrderReviewStore.getState()
+    if (state.loading || state.loadingMore) return
+    const nextPage = state.page + 1
+    const loaded = state.pendingReviewRows.length
+    if (loaded >= state.totalItems) return
+    set({ loadingMore: true, error: null })
+    try {
+      const ordersRes = await listOrdersAction({
+        page: nextPage,
+        limit: 12,
+        sortBy: state.activeSortBy,
+        sortOrder: state.activeSortOrder,
+        cryptocurrency: state.activeCryptocurrency,
+      })
+      const nextOrders = ordersRes.items.map(toOrderModel)
+      const nextRows = ordersRes.items.map(toPurchaseRow)
+      const nextReviews = ordersRes.items.reduce<Record<string, OrderReview>>((acc, order) => {
+        const review = order.review
+        if (!review) return acc
+        acc[order.id] = toStoreReview(review)
+        return acc
+      }, {})
+      set((prev) => ({
+        orders: [...prev.orders, ...nextOrders],
+        pendingReviewRows: [...prev.pendingReviewRows, ...nextRows],
+        reviewsByPurchaseRowId: { ...prev.reviewsByPurchaseRowId, ...nextReviews },
+        page: nextPage,
+        totalItems: ordersRes.metadata.totalItems,
+        loadingMore: false,
+      }))
+    } catch {
+      set({
+        loadingMore: false,
+        error: 'Could not load more reviews right now. Please try again.',
       })
     }
   },
