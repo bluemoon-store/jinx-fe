@@ -74,7 +74,7 @@ function SupportGuestChatPanel() {
         <div className="h-px max-h-full w-full max-w-full shrink-0 self-stretch bg-white opacity-[0.05]" />
 
         <div className="gap-num-15 flex items-center justify-center self-stretch text-center text-[#1AD824]">
-          <span className="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#0B5B2A]">
+          <span className="relative flex h-4 w-4 shrink-0 animate-[pulse_0.8s_ease-in-out_infinite] items-center justify-center rounded-full bg-[#0B5B2A]">
             <span className="h-2 w-2 rounded-full bg-[#1AD824]" />
           </span>
           <span className="relative leading-7 font-semibold tracking-[-0.01em]">
@@ -95,6 +95,7 @@ export default function SupportPage() {
     { id: 'EB2DEE', preview: 'You: okay, let me know', time: '11:13 AM', unread: 0 },
   ]
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(tickets[0]?.id ?? null)
+  const [isCreatingTicket, setIsCreatingTicket] = useState(false)
 
   const messages = [
     {
@@ -116,7 +117,7 @@ export default function SupportPage() {
   ]
 
   return (
-    <div className="text-num-14 text-ghostwhite font-nata-sans flex min-h-screen w-full flex-col bg-gray-400 text-left">
+    <div className="text-num-14 text-ghostwhite font-commissioner flex min-h-screen w-full flex-col bg-gray-400 text-left">
       <Navbar />
       <main className="flex flex-1 flex-col pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
@@ -137,7 +138,7 @@ export default function SupportPage() {
                     Support
                   </h1>
                   <span className="inline-flex items-center gap-2 rounded-[10px] bg-[#1ad82433] px-2.5 py-1 text-sm font-semibold text-[#1ad824]">
-                    <span className="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#0B5B2A]">
+                    <span className="relative flex h-4 w-4 shrink-0 animate-[pulse_0.8s_ease-in-out_infinite] items-center justify-center rounded-full bg-[#0B5B2A]">
                       <span className="h-2 w-2 rounded-full bg-[#1AD824]" />
                     </span>
                     Active
@@ -176,7 +177,10 @@ export default function SupportPage() {
                           <button
                             key={ticket.id}
                             type="button"
-                            onClick={() => setSelectedTicketId(ticket.id)}
+                            onClick={() => {
+                              setSelectedTicketId(ticket.id)
+                              setIsCreatingTicket(false)
+                            }}
                             className={`flex w-full items-center justify-between gap-3 border-b border-[#152850] bg-[#0D1B35] px-4 py-4 text-left transition-colors sm:px-6 ${
                               selectedTicketId === ticket.id ? 'bg-[#051329]' : 'hover:bg-[#051329]'
                             }`}
@@ -222,6 +226,7 @@ export default function SupportPage() {
                   <div className="border-t border-[#152850] bg-[#0D1B35] p-4 sm:p-6">
                     <button
                       type="button"
+                      onClick={() => setIsCreatingTicket(true)}
                       className="h-14 w-full rounded-[9px] bg-[linear-gradient(180deg,#EA2CFF_0%,#CF2DEB_100%)] text-lg font-semibold text-white shadow-[0px_2px_0px_#eb2dff80] transition-opacity hover:opacity-90"
                     >
                       Create New Ticket
@@ -232,6 +237,56 @@ export default function SupportPage() {
                 <section className="flex min-h-[430px] flex-1 flex-col bg-[linear-gradient(rgba(6,19,41,0.97),rgba(6,19,41,0.97)),url('/icons/support-bg.svg')] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
                   {!isAuthenticated ? (
                     <SupportGuestChatPanel />
+                  ) : isCreatingTicket ? (
+                    <div className="flex h-full w-full flex-1 items-center justify-center">
+                      <div className="w-full max-w-[520px] rounded-xl border border-[#111E33] bg-[#051329] p-4 sm:p-5">
+                        <div className="mb-4 flex flex-col items-center justify-center gap-1.5 border-b border-[#111E33] pb-4 text-center">
+                          <CentralIcon
+                            name="IconTicket"
+                            join="round"
+                            fill="filled"
+                            stroke="2"
+                            radius="1"
+                            size={26}
+                            color="#EA2CFF"
+                          />
+                          <h3 className="text-lg font-semibold text-white">Create a Ticket</h3>
+                          <p className="text-sm text-[#C2C6CD]">
+                            Enter your Order ID to create a ticket and get support
+                          </p>
+                        </div>
+
+                        <form className="space-y-4">
+                          <div>
+                            <label
+                              htmlFor="order-id"
+                              className="mb-2 block text-sm font-medium text-[#9EA0C6]"
+                            >
+                              Order ID <span className="text-[#EA2CFF]">*</span>
+                            </label>
+                            <input
+                              id="order-id"
+                              type="text"
+                              className="h-12 w-full rounded-lg border border-[#111E33] bg-[#031128] px-3 text-sm text-white placeholder:text-[#677084] focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+                            />
+                          </div>
+
+                          <button
+                            type="button"
+                            className="h-12 w-full rounded-lg bg-[linear-gradient(180deg,#EA2CFF_0%,#CF2DEB_100%)] text-sm font-semibold text-white shadow-[0px_2px_0px_#eb2dff80] transition-opacity hover:opacity-90"
+                          >
+                            Create Ticket
+                          </button>
+                        </form>
+
+                        <div className="mt-4 flex items-center justify-center gap-2 text-center text-sm font-semibold text-[#1AD824]">
+                          <span className="relative flex h-4 w-4 shrink-0 animate-[pulse_0.8s_ease-in-out_infinite] items-center justify-center rounded-full bg-[#0B5B2A]">
+                            <span className="h-2 w-2 rounded-full bg-[#1AD824]" />
+                          </span>
+                          Our support team is Live
+                        </div>
+                      </div>
+                    </div>
                   ) : tickets.length === 0 || selectedTicketId == null ? (
                     <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 text-center">
                       <p className="max-w-md text-sm leading-relaxed text-[#828994]">
