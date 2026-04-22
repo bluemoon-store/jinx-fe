@@ -18,7 +18,7 @@ function SupportGuestChatPanel() {
   const { openAuthModal } = useAuthModal()
 
   return (
-    <div className="font-commissioner box-border flex h-full min-h-0 w-full flex-1 shrink-0 flex-col items-center justify-center overflow-hidden rounded-t-none rounded-br-xl rounded-bl-none bg-[#051329] p-6 text-left text-base text-white sm:p-[34px]">
+    <div className="font-commissioner box-border flex h-full min-h-0 w-full flex-1 shrink-0 flex-col items-center justify-center overflow-hidden rounded-t-none rounded-br-xl rounded-bl-none p-6 text-left text-base text-white sm:p-[34px]">
       <div className="flex w-full max-w-[520px] flex-col items-stretch justify-center gap-6 overflow-hidden rounded-lg border border-solid border-[#111E33] bg-[#051329] p-4 sm:p-5">
         <div className="flex flex-col items-center justify-center gap-1.5 self-stretch text-center text-lg">
           <CentralIcon
@@ -229,7 +229,7 @@ export default function SupportPage() {
                   </div>
                 </aside>
 
-                <section className="flex min-h-[430px] flex-1 flex-col bg-[#061329] p-4 sm:p-6">
+                <section className="flex min-h-[430px] flex-1 flex-col bg-[linear-gradient(rgba(6,19,41,0.97),rgba(6,19,41,0.97)),url('/icons/support-bg.svg')] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
                   {!isAuthenticated ? (
                     <SupportGuestChatPanel />
                   ) : tickets.length === 0 || selectedTicketId == null ? (
