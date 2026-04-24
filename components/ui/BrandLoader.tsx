@@ -15,7 +15,11 @@ export function BrandLoader({
 }: BrandLoaderProps) {
   return (
     <div
-      className={cn('flex items-center justify-center', fullScreen && 'min-h-screen', className)}
+      className={cn(
+        'flex items-center justify-center',
+        fullScreen && 'min-h-screen bg-[#010F25]',
+        className
+      )}
       role="status"
       aria-live="polite"
       aria-label={label ?? 'Loading'}
