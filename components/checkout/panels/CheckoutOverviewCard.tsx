@@ -153,12 +153,19 @@ export function CheckoutOverviewCard({
     })
   }, [items, order?.items, orderId])
 
-  const subtotal = orderId
+  const lineItemsSubtotal = orderId
     ? (order?.items ?? []).reduce(
         (sum, i) => sum + (Number.parseFloat(i.priceAtPurchase) || 0) * i.quantity,
         0
       )
     : displayItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
+  const subtotalFromOrder = orderId
+    ? Number.parseFloat(order?.subtotalAmount ?? '')
+    : Number.NaN
+  const subtotal =
+    orderId && Number.isFinite(subtotalFromOrder) && subtotalFromOrder >= 0
+      ? subtotalFromOrder
+      : lineItemsSubtotal
   const discount = orderId
     ? Number.parseFloat(order?.discountAmount ?? '0') || 0
     : Math.min(appliedPromo?.discountUsd ?? 0, subtotal)
@@ -176,7 +183,9 @@ export function CheckoutOverviewCard({
     cryptocurrency ??
     'BTC') as ApiCryptoCurrency
   const paymentLabel = CRYPTO_LABEL[effectiveCrypto] ?? 'Cryptocurrency'
-  const promoCodeLabel = orderId ? order?.promoCode : appliedPromo?.code
+  const promoCodeLabel = orderId
+    ? (order?.couponCode ?? order?.promoCode ?? null)
+    : appliedPromo?.code
   const protectionLabel = orderId
     ? order?.buyerProtection
       ? 'Enhanced Buyer Protection'

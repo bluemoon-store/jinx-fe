@@ -2,17 +2,24 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { previewCouponAction } from '@/actions/coupon'
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
+import { useCouponPreviewMutation } from '@/hooks/use-coupons'
 import { useRemoveCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { formatUsd } from '@/lib/cart-format'
+import { toast } from '@/lib/toast'
+import { getAccessToken } from '@/lib/token'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
-import { getAccessToken } from '@/lib/token'
-import { resolvePromoCode, usePromoStore } from '@/stores/promo-store'
 import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
+import {
+  autoDescribePromo,
+  friendlyPromoError,
+  usePromoStore,
+} from '@/stores/promo-store'
 import CentralIcon from '@central-icons-react/all'
 
 import styles from './CartColumn.module.css'
@@ -133,6 +140,7 @@ function CartLine({
 }
 
 export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
+  const previewMutation = useCouponPreviewMutation()
   const updateCartItemMutation = useUpdateCartItemMutation()
   const removeCartItemMutation = useRemoveCartItemMutation()
 
@@ -164,6 +172,19 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
   const appliedPromo = usePromoStore((s) => s.appliedPromo)
   const setAppliedPromo = usePromoStore((s) => s.setAppliedPromo)
   const clearAppliedPromo = usePromoStore((s) => s.clearAppliedPromo)
+  const markPromoStale = usePromoStore((s) => s.markPromoStale)
+
+  const cartSignature = useMemo(
+    () =>
+      items
+        .map(
+          (i) =>
+            `${i.id}:${i.variantId ?? ''}:${i.regionLabel}:${i.quantity}:${i.unitPrice}:${i.backendCartItemId ?? ''}`
+        )
+        .join('|'),
+    [items]
+  )
+  const prevCartSignatureRef = useRef<string>('')
 
   const totalUnits = items.reduce((sum, i) => sum + i.quantity, 0)
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
@@ -187,15 +208,86 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
     return () => window.clearTimeout(timer)
   }, [coverage])
 
-  const handleApplyPromo = () => {
-    const nextPromo = resolvePromoCode(promoInput, subtotal)
-    if (!nextPromo) {
-      setPromoError('Invalid promo code')
+  useEffect(() => {
+    if (!appliedPromo) {
+      prevCartSignatureRef.current = cartSignature
       return
     }
-    setAppliedPromo(nextPromo)
-    setPromoInput('')
-    setPromoError('')
+    const prev = prevCartSignatureRef.current
+    if (prev && prev !== cartSignature) {
+      markPromoStale()
+    }
+    prevCartSignatureRef.current = cartSignature
+  }, [appliedPromo, cartSignature, markPromoStale])
+
+  /** Re-preview when the cart changes (or on mount) — reads latest code from the store to avoid duplicating the Apply request. */
+  useEffect(() => {
+    let cancelled = false
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        const code = usePromoStore.getState().appliedPromo?.code
+        if (!code || !getAccessToken()) return
+        try {
+          const res = await previewCouponAction(code)
+          if (cancelled) return
+          if (!res.valid) {
+            clearAppliedPromo()
+            toast.error(friendlyPromoError(res.reason))
+            return
+          }
+          if (res.discountType == null || res.discountValue == null) {
+            clearAppliedPromo()
+            toast.error(friendlyPromoError())
+            return
+          }
+          setAppliedPromo({
+            code: res.code ?? code,
+            description: res.description?.trim() ? res.description : autoDescribePromo(res),
+            discountUsd: Number.parseFloat(res.discountAmount ?? '0'),
+            discountType: res.discountType,
+            discountValue: res.discountValue,
+          })
+        } catch {
+          /* keep applied promo on transient errors */
+        }
+      })()
+    }, 400)
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [cartSignature, clearAppliedPromo, setAppliedPromo])
+
+  const handleApplyPromo = async () => {
+    const code = promoInput.trim().toUpperCase()
+    if (!code) return
+    if (!getAccessToken()) {
+      setPromoError('Please sign in to apply a promo code')
+      return
+    }
+    try {
+      const res = await previewMutation.mutateAsync(code)
+      if (!res.valid) {
+        setPromoError(friendlyPromoError(res.reason))
+        return
+      }
+      if (res.discountType == null || res.discountValue == null) {
+        setPromoError(friendlyPromoError())
+        return
+      }
+      setAppliedPromo({
+        code: res.code ?? code,
+        description: res.description?.trim() ? res.description : autoDescribePromo(res),
+        discountUsd: Number.parseFloat(res.discountAmount ?? '0'),
+        discountType: res.discountType,
+        discountValue: res.discountValue,
+      })
+      setPromoInput('')
+      setPromoError('')
+    } catch {
+      setPromoError('Could not validate promo code. Try again.')
+    }
   }
 
   if (!items.length) {
@@ -314,7 +406,7 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
                     if (promoError) setPromoError('')
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleApplyPromo()
+                    if (e.key === 'Enter') void handleApplyPromo()
                   }}
                   placeholder="Apply a promo code"
                   autoComplete="off"
@@ -323,8 +415,9 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
               </label>
               <button
                 type="button"
-                className="border-darkslateblue min-h-11 shrink-0 rounded-lg border bg-gray-100 px-6 py-2 text-sm font-bold tracking-[-0.16px] text-white hover:bg-gray-700 sm:h-[46px] sm:px-9 sm:text-base"
-                onClick={handleApplyPromo}
+                disabled={previewMutation.isPending}
+                className="border-darkslateblue min-h-11 shrink-0 rounded-lg border bg-gray-100 px-6 py-2 text-sm font-bold tracking-[-0.16px] text-white hover:bg-gray-700 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:h-[46px] sm:px-9 sm:text-base"
+                onClick={() => void handleApplyPromo()}
               >
                 Apply
               </button>

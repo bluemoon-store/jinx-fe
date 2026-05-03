@@ -78,8 +78,12 @@ export type ApiOrder = {
   status: ApiOrderStatus
   totalAmount: string
   currency: string
-  promoCode?: string | null
+  subtotalAmount?: string | null
   discountAmount?: string | null
+  couponCode?: string | null
+  couponId?: string | null
+  /** Legacy field; prefer `couponCode` when present. */
+  promoCode?: string | null
   buyerProtection?: boolean
   buyerProtectionAmount?: string | null
   items?: ApiOrderItem[]
@@ -115,6 +119,7 @@ export type PaginatedOrders = {
 export type OrderCreatePayload = {
   currency?: string
   buyerProtection?: boolean
+  couponCode?: string
 }
 
 export type CreateCryptoPaymentPayload = {

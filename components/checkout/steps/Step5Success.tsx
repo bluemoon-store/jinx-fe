@@ -392,6 +392,12 @@ export function Step5Success({
 
   const deliveryError = orderQuery.isError || deliveryQuery.isError
 
+  const receiptCouponCode = order?.couponCode ?? order?.promoCode ?? null
+  const receiptDiscountUsd =
+    order?.discountAmount != null && order.discountAmount !== ''
+      ? Number.parseFloat(order.discountAmount) || 0
+      : 0
+
   if (orderId && orderQuery.isPending) {
     return (
       <div className="flex min-h-[calc(100vh-120px)] flex-col items-center gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:px-8">
@@ -445,6 +451,17 @@ export function Step5Success({
           <p className="text-lightsteelblue-200 mt-2 text-sm font-semibold sm:text-base">
             Thank you for shopping with Jinx
           </p>
+          {orderId && order && receiptDiscountUsd > 0 ? (
+            <p className="text-lightsteelblue-200 mt-2 text-sm font-semibold sm:text-base">
+              {receiptCouponCode ? (
+                <>
+                  Promo <span className="text-fuchsia">{receiptCouponCode}</span>
+                  {' · '}
+                </>
+              ) : null}
+              Savings {formatUsd(receiptDiscountUsd)}
+            </p>
+          ) : null}
         </div>
         <InvoiceBadge />
       </div>

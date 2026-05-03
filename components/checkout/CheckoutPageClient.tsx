@@ -28,10 +28,11 @@ import {
 import { useCryptoPaymentQuery } from '@/hooks/use-payments'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
+import { orderCreateCouponToastMessage } from '@/lib/order-coupon-error'
 import { getAccessToken } from '@/lib/token'
+import { toast } from '@/lib/toast'
 import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
 import { usePromoStore } from '@/stores/promo-store'
-import { toast } from '@/lib/toast'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
   return (
@@ -296,7 +297,9 @@ export function CheckoutPageClient() {
         const order = await createOrderMutation.mutateAsync({
           currency: 'USD',
           buyerProtection,
+          couponCode: appliedPromo?.code,
         })
+        usePromoStore.getState().clearAppliedPromo()
         const newOrderId = order.id
 
         const pay = await createCryptoPaymentMutation.mutateAsync({
@@ -318,13 +321,19 @@ export function CheckoutPageClient() {
         sp.set('step', '3')
         sp.set('orderId', newOrderId)
         router.push(`/checkout?${sp.toString()}` as Route)
-      } catch {
+      } catch (err) {
+        const couponMsg = orderCreateCouponToastMessage(err)
+        if (couponMsg) {
+          usePromoStore.getState().clearAppliedPromo()
+          toast.error(couponMsg)
+          return
+        }
         toast.error('Checkout failed. Please try again.')
       } finally {
         setPaymentBusy(false)
       }
     },
-    [createCryptoPaymentMutation, createOrderMutation, router, searchParams]
+    [appliedPromo?.code, createCryptoPaymentMutation, createOrderMutation, router, searchParams]
   )
 
   const handleWalletPayment = useCallback(async () => {
@@ -340,7 +349,9 @@ export function CheckoutPageClient() {
       const order = await createOrderMutation.mutateAsync({
         currency: 'USD',
         buyerProtection,
+        couponCode: appliedPromo?.code,
       })
+      usePromoStore.getState().clearAppliedPromo()
 
       const paid = await payOrderWithWalletMutation.mutateAsync(order.id)
       if (paid.status !== 'COMPLETED') {
@@ -356,12 +367,19 @@ export function CheckoutPageClient() {
       sp.set('orderId', order.id)
       router.push(`/checkout?${sp.toString()}` as Route)
       fireConfetti()
-    } catch {
+    } catch (err) {
+      const couponMsg = orderCreateCouponToastMessage(err)
+      if (couponMsg) {
+        usePromoStore.getState().clearAppliedPromo()
+        toast.error(couponMsg)
+        return
+      }
       toast.error('Checkout failed. Please try again.')
     } finally {
       setPaymentBusy(false)
     }
   }, [
+    appliedPromo?.code,
     clearCartMutation,
     clearLocalCart,
     createOrderMutation,
