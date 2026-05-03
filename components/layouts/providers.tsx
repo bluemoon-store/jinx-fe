@@ -2,6 +2,7 @@
 
 import AuthModalLayer from '@/components/auth/AuthModalLayer'
 import { AuthModalProvider } from '@/components/auth/auth-modal-context'
+import { SupportRealtimeProvider } from '@/providers/support-realtime-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { useCurrentUser } from '@/hooks/use-auth'
 import { useAppStore } from '@/stores/app-store'
@@ -42,9 +43,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <AuthModalProvider>
           <AuthBootstrap />
-          {children}
-          <AuthModalLayer />
-          <Toaster />
+          <SupportRealtimeProvider>
+            {children}
+            <AuthModalLayer />
+            <Toaster />
+          </SupportRealtimeProvider>
         </AuthModalProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />

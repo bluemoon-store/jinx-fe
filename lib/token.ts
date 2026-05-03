@@ -17,6 +17,7 @@ export function setTokens(tokens: AuthTokens): void {
   localStorage.setItem(TOKEN_KEYS.ACCESS_TOKEN, tokens.accessToken)
   localStorage.setItem(TOKEN_KEYS.REFRESH_TOKEN, tokens.refreshToken)
   document.cookie = `${COOKIE_KEYS.ACCESS_TOKEN}=${tokens.accessToken}; path=/; SameSite=Lax`
+  window.dispatchEvent(new Event('bm-access-token-changed'))
 }
 
 export function clearTokens(): void {
@@ -24,4 +25,5 @@ export function clearTokens(): void {
   localStorage.removeItem(TOKEN_KEYS.ACCESS_TOKEN)
   localStorage.removeItem(TOKEN_KEYS.REFRESH_TOKEN)
   document.cookie = `${COOKIE_KEYS.ACCESS_TOKEN}=; path=/; max-age=0; SameSite=Lax`
+  window.dispatchEvent(new Event('bm-access-token-changed'))
 }

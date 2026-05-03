@@ -83,6 +83,15 @@ api.interceptors.response.use(
       })
       const { accessToken, refreshToken: newRefreshToken } = res.data.data
       setTokens({ accessToken, refreshToken: newRefreshToken })
+      if (typeof window !== 'undefined') {
+        void import('@/lib/support-socket')
+          .then((m) => {
+            m.refreshSupportSocketAuth()
+          })
+          .catch(() => {
+            /* optional module */
+          })
+      }
       drainQueue(accessToken)
       originalRequest.headers.Authorization = `Bearer ${accessToken}`
       return api(originalRequest)
