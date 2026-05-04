@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/siteSelectDropdown'
 import { useAddCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { parseUsdDecimalString } from '@/lib/cart-format'
+import { sanitizeHtml } from '@/lib/sanitize-html'
 import { sameCartLine, useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
 import { cn } from '@/lib/utils'
@@ -35,13 +36,19 @@ function RichHtml({
       <p className="text-lightsteelblue-100 m-0 text-sm leading-6 opacity-80">{emptyText}</p>
     ) : null
   }
+  const safe = sanitizeHtml(trimmed)
+  if (!safe.trim()) {
+    return emptyText ? (
+      <p className="text-lightsteelblue-100 m-0 text-sm leading-6 opacity-80">{emptyText}</p>
+    ) : null
+  }
   return (
     <div
       className={cn(
         'prose prose-invert max-w-none text-base leading-6 [&_a]:text-fuchsia-200',
         className
       )}
-      dangerouslySetInnerHTML={{ __html: trimmed }}
+      dangerouslySetInnerHTML={{ __html: safe }}
     />
   )
 }
@@ -605,13 +612,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
             <div className="w-full overflow-hidden">
               <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
               <div className="pt-num-6 pb-num-6 flex w-full flex-col items-start gap-5 text-white">
-                {product.description.trim().startsWith('<') ? (
-                  <RichHtml html={product.description} emptyText="No description yet." />
-                ) : (
-                  <p className="text-num-16 leading-num-24 text-lightsteelblue-100 m-0 font-medium opacity-90">
-                    {product.description || 'No description yet.'}
-                  </p>
-                )}
+                <RichHtml html={product.description} emptyText="No description yet." />
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@
 import { FunctionComponent, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
+import { sanitizeHtml } from '@/lib/sanitize-html'
 import type { ProductQuickBuy, ProductTag } from '@/types/product'
 
 import { ShopDetailPurchaseControls } from './ShopDetailPurchasePanel'
@@ -68,17 +69,30 @@ function ProductTagBadges({ tags }: { tags: ProductTag[] }) {
 const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
 
-  const imageSrc = product.primaryImageUrl ?? ''
+  const imageSrc = product.iconUrl ?? product.primaryImageUrl ?? '/icons/placeholder.svg'
+  const flairText = product.flair?.trim() ?? ''
 
   return (
     <section className="text-ghostwhite font-commissioner border-darkslateblue mx-auto my-auto box-border flex w-full max-w-full flex-col items-start overflow-visible rounded-xl border-[1px] border-solid bg-gray-400 px-5 py-[18px] text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,_0,_0,_0.1),_0px_6.213004112243652px_9.32px_-6.21px_rgba(0,_0,_0,_0.1)]">
       <div className="flex flex-col items-center gap-5 self-stretch">
         <header className="flex flex-col items-start gap-3 self-stretch">
           <div className="flex items-center justify-between gap-5 self-stretch">
-            <div className="flex items-center">
-              <div className="leading-num-28 font-extrabold tracking-[0.02em] uppercase">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+              {product.iconUrl ? (
+                <img
+                  src={product.iconUrl}
+                  alt=""
+                  className="border-darkslateblue size-8 shrink-0 rounded-md object-cover ring-1 ring-white/10 sm:size-9"
+                />
+              ) : null}
+              <div className="leading-num-28 min-w-0 flex-1 font-extrabold tracking-[0.02em] uppercase">
                 {product.name}
               </div>
+              {flairText ? (
+                <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 shrink-0 rounded-full border border-solid px-2 py-0.5 text-[11px] font-semibold tracking-wide uppercase">
+                  {flairText}
+                </span>
+              ) : null}
             </div>
             <button
               type="button"
@@ -106,14 +120,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
               <div className="flex w-full min-w-0 flex-col items-start">
                 <div className="border-whitesmoke-300 rounded-num-8 flex w-full min-w-0 flex-col items-center justify-center gap-4 overflow-hidden border-[1.8px] border-solid bg-gray-100 p-4 sm:gap-5 sm:p-6 md:p-8 lg:p-[25px]">
                   <div className="aspect-video w-full overflow-hidden rounded-[14.61px] shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)]">
-                    {imageSrc ? (
-                      <img alt="" src={imageSrc} className="h-full w-full object-cover" />
-                    ) : (
-                      <div
-                        className="aspect-video min-h-[120px] w-full bg-gray-300/30"
-                        aria-hidden
-                      />
-                    )}
+                    <img alt="" src={imageSrc} className="h-full w-full object-cover" />
                   </div>
                   <ProductTagBadges tags={product.tags} />
                 </div>
@@ -152,13 +159,15 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
                 <div className="w-full overflow-hidden">
                   <div className="bg-whitesmoke-300 relative left-1/2 mt-2 h-px w-screen -translate-x-1/2" />
                   <div className="pt-num-6 pb-num-6 flex max-h-[min(40vh,320px)] w-full flex-col items-start gap-5 overflow-x-hidden overflow-y-auto overscroll-contain text-white">
-                    {product.description.trim().startsWith('<') ? (
+                    {product.description.trim() ? (
                       <div
-                        className="prose prose-invert max-w-none text-sm leading-6"
-                        dangerouslySetInnerHTML={{ __html: product.description }}
+                        className="prose prose-invert max-w-none text-sm leading-6 [&_a]:text-fuchsia-200"
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizeHtml(product.description),
+                        }}
                       />
                     ) : (
-                      <p className="m-0 text-sm leading-6 opacity-80">{product.description}</p>
+                      <p className="m-0 text-sm leading-6 opacity-80">No description yet.</p>
                     )}
                   </div>
                 </div>

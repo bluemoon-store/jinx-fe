@@ -48,7 +48,7 @@ export default function SellingHotProductsClient({ items }: Props) {
                     <img
                       className="h-full w-full object-cover"
                       alt={`${item.name} logo`}
-                      src={item.primaryImageUrl ?? '/icons/dominos.svg'}
+                      src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
                     />
                   </div>
 
@@ -79,17 +79,24 @@ export default function SellingHotProductsClient({ items }: Props) {
                     >
                       <Link href={`/shop/${item.slug}`} className="block w-full min-w-0">
                         <div className="flex w-full max-w-full min-w-0 flex-col items-center gap-0.5">
-                          <div className="flex w-full min-w-0 justify-center">
-                            <div className="flex max-w-full min-w-0 items-center gap-[5px]">
-                              <div className="tracking-num-0.02 min-w-0 truncate text-center font-extrabold uppercase">
-                                {item.name}
+                          <div className="flex w-full min-w-0 flex-col items-center gap-1">
+                            <div className="flex w-full min-w-0 justify-center">
+                              <div className="flex max-w-full min-w-0 items-center gap-[5px]">
+                                <div className="tracking-num-0.02 min-w-0 truncate text-center font-extrabold uppercase">
+                                  {item.name}
+                                </div>
+                                <img
+                                  className="h-num-20.2 w-num-31 shrink-0"
+                                  alt=""
+                                  src="/icons/Hot.svg"
+                                />
                               </div>
-                              <img
-                                className="h-num-20.2 w-num-31 shrink-0"
-                                alt=""
-                                src="/icons/Hot.svg"
-                              />
                             </div>
+                            {item.flair?.trim() ? (
+                              <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 max-w-full truncate rounded-full border border-solid px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                                {item.flair.trim()}
+                              </span>
+                            ) : null}
                           </div>
                           <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
                             <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">

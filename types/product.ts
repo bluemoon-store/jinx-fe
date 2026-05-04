@@ -4,7 +4,6 @@ export interface ProductVariant {
   id: string
   label: string
   price: string
-  currency: string
   stockQuantity: number
   isActive: boolean
   sortOrder: number
@@ -28,6 +27,8 @@ export interface ProductCard {
   id: string
   name: string
   slug: string
+  flair: string | null
+  iconUrl: string | null
   fromPrice: string
   primaryImageUrl: string | null
   category: { name: string; slug: string; icon: string | null }

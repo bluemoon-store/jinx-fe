@@ -15,7 +15,6 @@ export type GetProductsParams = {
   isHot?: boolean
   isNew?: boolean
   isRestocked?: boolean
-  isFeatured?: boolean
   categorySlug?: string
   page?: number
   limit?: number
@@ -54,7 +53,6 @@ function mapVariant(raw: UnknownRecord): ProductVariant {
     id: pickStr(raw.id) ?? '',
     label: pickStr(raw.label) ?? '',
     price: normalizePrice(pickStr(raw.price) ?? String(raw.price ?? '')),
-    currency: pickStr(raw.currency) ?? 'USD',
     stockQuantity: pickNum(raw.stockQuantity ?? raw.stock_quantity) ?? 0,
     isActive: pickBool(raw.isActive ?? raw.is_active) ?? true,
     sortOrder: pickNum(raw.sortOrder ?? raw.sort_order) ?? 0,
@@ -90,6 +88,14 @@ function mapProductCard(raw: UnknownRecord): ProductCard {
     id: pickStr(raw.id) ?? '',
     name: pickStr(raw.name) ?? '',
     slug: pickStr(raw.slug) ?? '',
+    flair: (() => {
+      const s = pickStr(raw.flair)
+      return s?.trim() ? s.trim() : null
+    })(),
+    iconUrl: (() => {
+      const u = pickStr(raw.iconUrl ?? raw.icon_url)
+      return u?.trim() ? u.trim() : null
+    })(),
     fromPrice: normalizePrice(pickStr(raw.fromPrice ?? raw.from_price) ?? '0'),
     primaryImageUrl: pickStr(raw.primaryImageUrl ?? raw.primary_image_url) ?? null,
     category: {
@@ -189,14 +195,13 @@ export async function getProductsAction(params?: GetProductsParams): Promise<Pro
   if (params?.isHot !== undefined) q.isHot = params.isHot
   if (params?.isNew !== undefined) q.isNew = params.isNew
   if (params?.isRestocked !== undefined) q.isRestocked = params.isRestocked
-  if (params?.isFeatured !== undefined) q.isFeatured = params.isFeatured
   if (params?.categorySlug) q.categorySlug = params.categorySlug
   if (params?.page !== undefined) q.page = params.page
   if (params?.limit !== undefined) q.limit = params.limit
 
   if (search) {
     const res = await api.get<BackendResponse<unknown>>('/products/search', {
-      params: { q: search, page: params?.page, limit: params?.limit },
+      params: { searchQuery: search, page: params?.page, limit: params?.limit },
     })
     return parseProductsPayload(unwrapData(res))
   }

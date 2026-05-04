@@ -106,14 +106,19 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                         <img
                           className="rounded-num-8 h-12 w-12 shrink-0 object-cover shadow-[0_4px_14px_rgba(0,0,0,0.4)] sm:h-[60px] sm:w-[60px]"
                           alt=""
-                          src={item.primaryImageUrl ?? '/icons/best-buy.svg'}
+                          src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
                         />
 
                         <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">
-                          <div className="flex w-full max-w-full min-w-0 items-center gap-1 sm:gap-[5px]">
+                          <div className="flex w-full max-w-full min-w-0 flex-wrap items-center gap-1 sm:gap-[5px]">
                             <div className="tracking-num-0_02 min-w-0 flex-1 truncate text-sm leading-[20px] font-extrabold uppercase sm:text-base sm:leading-[20px]">
                               {item.name}
                             </div>
+                            {item.flair?.trim() ? (
+                              <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 max-w-[120px] shrink-0 truncate rounded-full border border-solid px-1.5 py-0.5 text-[9px] font-semibold tracking-wide uppercase sm:max-w-[140px] sm:px-2 sm:text-[10px]">
+                                {item.flair.trim()}
+                              </span>
+                            ) : null}
                             {item.isHot ? (
                               <div className="font-heydex flex shrink-0 items-center gap-1.5 text-[#FF2A2A] sm:gap-2">
                                 <div className="tracking-num-0.02 text-base font-extrabold sm:text-lg">

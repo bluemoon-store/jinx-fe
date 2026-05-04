@@ -1,6 +1,8 @@
 import { FunctionComponent } from 'react'
-import type { ProductDetail } from '@/types/product'
 import CentralIcon from '@central-icons-react/all'
+
+import { sanitizeHtml } from '@/lib/sanitize-html'
+import type { ProductDetail } from '@/types/product'
 
 type Props = {
   product: ProductDetail
@@ -32,8 +34,24 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
         ))}
       </div>
 
-      <div className="text-whitesmoke-100 font-nata-sans flex flex-col items-start self-stretch text-2xl sm:text-3xl lg:text-[30px]">
-        <div className="tracking-num-0_02 leading-8 font-extrabold uppercase">{product.name}</div>
+      <div className="text-whitesmoke-100 font-nata-sans flex flex-col items-start gap-2 self-stretch text-2xl sm:text-3xl lg:text-[30px]">
+        <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
+          {product.iconUrl ? (
+            <img
+              src={product.iconUrl}
+              alt=""
+              className="border-darkslateblue size-9 shrink-0 rounded-lg object-cover ring-1 ring-white/15 sm:size-10"
+            />
+          ) : null}
+          <div className="tracking-num-0_02 min-w-0 flex-1 leading-8 font-extrabold uppercase">
+            {product.name}
+          </div>
+          {product.flair?.trim() ? (
+            <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 shrink-0 rounded-full border border-solid px-2.5 py-1 text-xs font-semibold tracking-wide uppercase sm:text-sm">
+              {product.flair.trim()}
+            </span>
+          ) : null}
+        </div>
       </div>
 
       {product.shortNotice ? (
@@ -51,9 +69,12 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
         </div>
       ) : null}
 
-      <div className="text-num-16 leading-num-24 font-roobert-trial text-lightsteelblue-100 self-stretch font-medium">
-        {product.description}
-      </div>
+      {product.description.trim() ? (
+        <div
+          className="text-num-16 leading-num-24 font-roobert-trial text-lightsteelblue-100 prose prose-invert max-w-none self-stretch font-medium [&_a]:text-fuchsia-200"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
+        />
+      ) : null}
     </div>
   )
 }
