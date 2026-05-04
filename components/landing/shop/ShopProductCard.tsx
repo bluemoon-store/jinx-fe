@@ -10,6 +10,8 @@ type Props = {
   iconUrl?: string | null
   detailHref: `/shop/${string}`
   onQuickBuy?: () => void
+  /** True when every active variant (or the product itself if there are no variants) has no stock. */
+  allVariantsOutOfStock?: boolean
 }
 
 export const ShopProductCard: FunctionComponent<Props> = ({
@@ -20,6 +22,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
   iconUrl,
   detailHref,
   onQuickBuy,
+  allVariantsOutOfStock = false,
 }) => {
   const flairText = flair?.trim() ?? ''
   const handleQuickBuyClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -31,11 +34,20 @@ export const ShopProductCard: FunctionComponent<Props> = ({
   return (
     <div className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-2 border-[1px] border-solid bg-[#0D1B35] p-3 sm:gap-3">
       <Link href={detailHref} className="flex w-full flex-col items-center gap-2 sm:gap-3">
-        <img
-          className="max-w-num-257 rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
-          alt=""
-          src={imageSrc}
-        />
+        <div className="relative w-full">
+          <img
+            className="max-w-num-257 rounded-num-8 aspect-[257/125] w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+            alt=""
+            src={imageSrc}
+          />
+          {allVariantsOutOfStock ? (
+            <div className="rounded-num-8 absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[#0D1B35]/80 px-2 text-center backdrop-blur-[1px]">
+              <span className="font-commissioner rounded-md border border-white/20 bg-black/35 px-2 py-1 text-[10px] font-bold tracking-wide text-white uppercase sm:text-xs">
+                Out of stock
+              </span>
+            </div>
+          ) : null}
+        </div>
         <div className="flex w-full max-w-none flex-col items-center gap-0.5 text-center sm:max-w-none">
           <div className="flex min-w-0 flex-wrap items-center justify-center gap-1.5 self-stretch">
             {iconUrl ? (
@@ -66,8 +78,9 @@ export const ShopProductCard: FunctionComponent<Props> = ({
       </Link>
       <button
         type="button"
+        disabled={allVariantsOutOfStock}
         onClick={handleQuickBuyClick}
-        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-left text-white sm:gap-[5px]"
+        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-left text-white sm:gap-[5px] disabled:cursor-not-allowed disabled:opacity-40"
       >
         <CentralIcon
           name="IconZap"

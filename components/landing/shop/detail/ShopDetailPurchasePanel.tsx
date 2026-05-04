@@ -14,8 +14,14 @@ import {
   siteSelectDropdownPanel,
 } from '@/components/ui/siteSelectDropdown'
 import { useAddCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
+import { parseApiError } from '@/lib/api-error'
+import {
+  cartStockErrorToastMessage,
+  parseCartStockError,
+} from '@/lib/cart-stock-error'
 import { parseUsdDecimalString } from '@/lib/cart-format'
 import { sanitizeHtml } from '@/lib/sanitize-html'
+import { toast } from '@/lib/toast'
 import { sameCartLine, useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
 import { cn } from '@/lib/utils'
@@ -65,6 +71,12 @@ function sortActiveRegions(regions: ProductRegion[]) {
     .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label))
 }
 
+function variantStockMessage(stockQuantity: number): string {
+  if (stockQuantity <= 0) return 'Out of stock'
+  if (stockQuantity <= 10) return `Only ${stockQuantity} left`
+  return `In stock: ${stockQuantity}`
+}
+
 type PurchaseControlsProps = {
   productId: string
   productName: string
@@ -102,7 +114,20 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
-    if (variantList[0]) setSelectedVariantId(variantList[0].id)
+    if (!variantList.length) {
+      setSelectedVariantId('')
+      return
+    }
+    setSelectedVariantId((prev) => {
+      const cur = prev ? variantList.find((v) => v.id === prev) : undefined
+      if (cur) {
+        if (cur.stockQuantity > 0) return prev
+        const fallback = variantList.find((v) => v.stockQuantity > 0)
+        return fallback?.id ?? cur.id
+      }
+      const firstInStock = variantList.find((v) => v.stockQuantity > 0)
+      return (firstInStock ?? variantList[0]).id
+    })
   }, [variantList])
 
   useEffect(() => {
@@ -113,21 +138,69 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   const addCartItemMutation = useAddCartItemMutation()
   const updateCartItemMutation = useUpdateCartItemMutation()
   const addItem = useCartStore((s) => s.addItem)
+  const setItemQuantity = useCartStore((s) => s.setItemQuantity)
   const setBackendCartItemId = useCartStore((s) => s.setBackendCartItemId)
 
   const selectedVariant = variantList.find((v) => v.id === selectedVariantId) ?? variantList[0]
   const selectedRegion = regionList.find((r) => r.id === selectedRegionId) ?? regionList[0]
 
+  const variantStockQty = selectedVariant?.stockQuantity ?? 0
+
+  const maxSelectableUnits = selectedVariant
+    ? Math.min(99, Math.max(0, variantStockQty))
+    : 0
+
+  useEffect(() => {
+    if (!selectedVariant) return
+    const cap = Math.min(99, Math.max(0, variantStockQty))
+    setQuantity((q) => {
+      if (cap === 0) return 0
+      return Math.max(1, Math.min(q, cap))
+    })
+  }, [selectedVariantId, variantStockQty])
+
   const quantityText = String(quantity).padStart(2, '0')
 
-  const onDecrementQuantity = () => setQuantity((q) => Math.max(1, q - 1))
-  const onIncrementQuantity = () => setQuantity((q) => Math.min(99, q + 1))
+  const onDecrementQuantity = () =>
+    setQuantity((q) => {
+      if (maxSelectableUnits <= 0) return 0
+      return Math.max(1, q - 1)
+    })
+  const onIncrementQuantity = () =>
+    setQuantity((q) => {
+      if (maxSelectableUnits <= 0) return 0
+      return Math.min(maxSelectableUnits, q + 1)
+    })
 
-  const canPurchase = Boolean(selectedVariant && selectedRegion)
+  const canPurchase = Boolean(
+    selectedVariant && selectedRegion && selectedVariant.stockQuantity > 0
+  )
   const unitPrice = selectedVariant ? parseUsdDecimalString(selectedVariant.price) : 0
 
   const handleAddToCart = () => {
     if (!canPurchase || !selectedVariant || !selectedRegion) return
+    if (quantity < 1 || quantity > maxSelectableUnits) {
+      toast.error('Choose a valid quantity for the available stock.')
+      return
+    }
+
+    const cartKey = {
+      id: productId,
+      variantId: selectedVariant.id,
+      variantLabel: selectedVariant.label,
+      regionLabel: selectedRegion.label,
+      regionCountry: selectedRegion.countryCode,
+    }
+
+    const existing = useCartStore.getState().items.find((i) => sameCartLine(i, cartKey))
+    const merged = Math.min(99, (existing?.quantity ?? 0) + quantity)
+    if (merged > selectedVariant.stockQuantity) {
+      toast.error(cartStockErrorToastMessage('insufficientStock'))
+      return
+    }
+
+    const prevItems = useCartStore.getState().items.map((i) => ({ ...i }))
+
     addItem(
       {
         id: productId,
@@ -147,27 +220,28 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
     void (async () => {
       try {
-        const line = useCartStore.getState().items.find((i) =>
-          sameCartLine(i, {
-            id: productId,
-            variantId: selectedVariant.id,
-            variantLabel: selectedVariant.label,
-            regionLabel: selectedRegion.label,
-          })
-        )
+        let line = useCartStore.getState().items.find((i) => sameCartLine(i, cartKey))
         if (!line) return
+
+        let qtyForApi = Math.min(line.quantity, selectedVariant.stockQuantity)
+        if (qtyForApi < line.quantity) {
+          setItemQuantity(cartKey, qtyForApi)
+          const afterCap = useCartStore.getState().items.find((i) => sameCartLine(i, cartKey))
+          if (!afterCap || qtyForApi < 1) return
+          line = afterCap
+        }
 
         if (line.backendCartItemId) {
           await updateCartItemMutation.mutateAsync({
             cartItemId: line.backendCartItemId,
-            dto: { quantity: line.quantity },
+            dto: { quantity: qtyForApi },
           })
           return
         }
 
         const res = await addCartItemMutation.mutateAsync({
           productId,
-          quantity: line.quantity,
+          quantity: qtyForApi,
           variantId: selectedVariant.id,
           regionLabel: selectedRegion.label,
           regionCountry: selectedRegion.countryCode,
@@ -180,19 +254,12 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
             (i.regionLabel ?? '') === selectedRegion.label
         )
         if (backendItem) {
-          setBackendCartItemId(
-            {
-              id: productId,
-              variantId: selectedVariant.id,
-              variantLabel: selectedVariant.label,
-              regionLabel: selectedRegion.label,
-              regionCountry: selectedRegion.countryCode,
-            },
-            backendItem.id
-          )
+          setBackendCartItemId(cartKey, backendItem.id)
         }
       } catch (err) {
-        console.error('add-to-cart backend sync', err)
+        useCartStore.setState({ items: prevItems })
+        const kind = parseCartStockError(err)
+        toast.error(kind ? cartStockErrorToastMessage(kind) : parseApiError(err))
       }
     })()
   }
@@ -200,7 +267,14 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   return (
     <div className="text-lightsteelblue-200 flex w-full flex-col items-start gap-4">
       <div className="font-commissioner flex flex-col items-start gap-2 self-stretch">
-        <div className="leading-num-20 font-semibold">Select Variant</div>
+        <div className="flex w-full flex-col gap-1">
+          <div className="leading-num-20 font-semibold">Select Variant</div>
+          {selectedVariant ? (
+            <p className="text-lightsteelblue-100 m-0 text-sm font-medium">
+              {variantStockMessage(selectedVariant.stockQuantity)}
+            </p>
+          ) : null}
+        </div>
         <div className="relative box-border w-full overflow-visible rounded-lg border-[1px] border-solid border-[rgba(238,238,238,0.1)] bg-gray-200 text-white">
           <button
             type="button"
@@ -236,12 +310,15 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               <div className={siteSelectDropdownList}>
                 {variantList.map((option) => {
                   const isSelected = option.id === selectedVariantId
+                  const out = option.stockQuantity <= 0
                   return (
                     <button
                       key={option.id}
                       type="button"
                       aria-label={`Choose ${option.label}`}
+                      disabled={out}
                       onClick={() => {
+                        if (out) return
                         setSelectedVariantId(option.id)
                         setIsVariantOpen(false)
                       }}
@@ -250,9 +327,13 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                         siteSelectDropdownOptionInteractive,
                         'justify-between gap-5',
                         isSelected ? 'bg-white/5' : '',
+                        out ? 'cursor-not-allowed opacity-45' : '',
                       ].join(' ')}
                     >
-                      <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                      <span className="min-w-0 flex-1 truncate">
+                        {option.label}
+                        {out ? ' (Out)' : ''}
+                      </span>
                       {isSelected ? (
                         <CentralIcon
                           name="IconCheckmark2Small"
@@ -385,8 +466,9 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               <button
                 type="button"
                 aria-label="Decrease quantity"
+                disabled={maxSelectableUnits <= 0}
                 onClick={onDecrementQuantity}
-                className="flex items-center justify-center"
+                className="flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <CentralIcon
                   name="IconMinusLarge"
@@ -408,8 +490,9 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               <button
                 type="button"
                 aria-label="Increase quantity"
+                disabled={maxSelectableUnits <= 0 || quantity >= maxSelectableUnits}
                 onClick={onIncrementQuantity}
-                className="flex items-center justify-center"
+                className="flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <CentralIcon
                   name="IconPlusLarge"
@@ -429,8 +512,11 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       <div className="text-num-16 flex min-h-10 flex-col items-stretch gap-4 self-stretch text-white sm:flex-row sm:gap-2.5">
         <button
           type="button"
-          disabled={!canPurchase}
-          className={cn(addToCartButtonClassName, !canPurchase && 'cursor-not-allowed opacity-50')}
+          disabled={!canPurchase || quantity < 1}
+          className={cn(
+            addToCartButtonClassName,
+            (!canPurchase || quantity < 1) && 'cursor-not-allowed opacity-50'
+          )}
           onClick={handleAddToCart}
         >
           <CentralIcon
@@ -446,13 +532,13 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         </button>
         <button
           type="button"
-          disabled={!canPurchase}
+          disabled={!canPurchase || quantity < 1}
           className={cn(
             'bg-fuchsia py-num-8 px-num-16 box-border flex h-10 min-h-0 flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] shadow-[0px_2px_0px_rgba(235,_45,_255,_0.5)]',
-            !canPurchase && 'cursor-not-allowed opacity-50'
+            (!canPurchase || quantity < 1) && 'cursor-not-allowed opacity-50'
           )}
           onClick={() => {
-            if (!canPurchase) return
+            if (!canPurchase || quantity < 1) return
             handleAddToCart()
             router.push('/checkout' as Route)
           }}

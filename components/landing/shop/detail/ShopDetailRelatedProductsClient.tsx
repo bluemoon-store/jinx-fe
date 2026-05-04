@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import ShopProductDetailModal from '@/components/landing/shop/detail/ShopProductDetailModal'
 import { Reveal } from '@/components/ui/reveal'
+import { isQuickBuyProductOutOfStock } from '@/lib/shop-product-stock'
 import type { ProductQuickBuy } from '@/types/product'
 
 type Props = {
@@ -52,7 +53,9 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
 
       <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:mt-8 sm:px-6 lg:mt-10 lg:px-8">
         <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
-          {allItems.map((item, idx) => (
+          {allItems.map((item, idx) => {
+            const out = isQuickBuyProductOutOfStock(item)
+            return (
             <Reveal
               key={`${item.id}-${idx}`}
               variant="fade-up"
@@ -63,12 +66,19 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                 href={`/shop/${item.slug}`}
                 className="flex w-full min-w-0 flex-1 flex-col items-center gap-2"
               >
-                <div className="rounded-num-8 aspect-video w-full overflow-hidden shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                <div className="rounded-num-8 relative aspect-video w-full overflow-hidden shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)]">
                   <img
                     className="h-full w-full object-cover"
                     alt=""
                     src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
                   />
+                  {out ? (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[#0D1B35]/80 px-2 text-center backdrop-blur-[1px]">
+                      <span className="font-commissioner rounded-md border border-white/20 bg-black/35 px-2 py-1 text-[10px] font-bold tracking-wide text-white uppercase sm:text-xs">
+                        Out of stock
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
@@ -104,8 +114,9 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
               </Link>
               <button
                 type="button"
+                disabled={out}
                 onClick={() => setQuickBuyProduct(item)}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full shrink-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px]"
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full shrink-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <CentralIcon
                   name="IconZap"
@@ -119,7 +130,8 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                 <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
               </button>
             </Reveal>
-          ))}
+            )
+          })}
         </div>
 
         {quickBuyProduct &&

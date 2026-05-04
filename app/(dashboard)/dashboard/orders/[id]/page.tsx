@@ -145,6 +145,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   }
 
   const redeemDisplay = deliveryCode?.trim() || 'XXXXXXXXXXXXXXX'
+  const isMultilineRedeem =
+    redeemDisplay !== 'XXXXXXXXXXXXXXX' && redeemDisplay.includes('\n')
 
   const handleCopyRedeemCode = async () => {
     const code = redeemDisplay === 'XXXXXXXXXXXXXXX' ? '' : redeemDisplay
@@ -388,6 +390,31 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     Copied
                   </span>
                 </button>
+              ) : isMultilineRedeem ? (
+                <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <pre
+                    className="tracking-num-0_02 max-h-[min(50vh,280px)] w-full min-w-0 flex-1 overflow-auto text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg"
+                    tabIndex={0}
+                  >
+                    {redeemDisplay}
+                  </pre>
+                  <button
+                    type="button"
+                    onClick={handleCopyRedeemCode}
+                    className="focus-visible:ring-fuchsia/40 shrink-0 touch-manipulation self-end rounded-md p-1 [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none sm:self-start"
+                    aria-label="Copy redeem code"
+                  >
+                    <CentralIcon
+                      name="IconSquareBehindSquare1"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={26}
+                      ariaHidden={true}
+                    />
+                  </button>
+                </div>
               ) : (
                 <>
                   <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">

@@ -9,6 +9,7 @@ import { createPortal } from 'react-dom'
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useProductsQuery } from '@/hooks/use-products'
+import { isQuickBuyProductOutOfStock } from '@/lib/shop-product-stock'
 import type { ProductQuickBuy } from '@/types/product'
 
 import { ShopProductCard } from './ShopProductCard'
@@ -160,6 +161,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
                 flair={p.flair}
                 iconUrl={p.iconUrl}
                 detailHref={`/shop/${p.slug}`}
+                allVariantsOutOfStock={isQuickBuyProductOutOfStock(p)}
                 onQuickBuy={() => setQuickBuyProduct(p)}
               />
             ))}

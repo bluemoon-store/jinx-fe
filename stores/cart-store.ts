@@ -28,6 +28,8 @@ type CartState = {
   items: CartItem[]
   addItem: (item: Omit<CartItem, 'quantity'>, quantity: number) => void
   adjustItemQuantity: (key: CartItemKey, delta: number) => void
+  /** Sets absolute quantity for a line (0 removes). Used to revert failed server syncs. */
+  setItemQuantity: (key: CartItemKey, quantity: number) => void
   setBackendCartItemId: (key: CartItemKey, backendCartItemId: string) => void
   clear: () => void
 }
@@ -94,6 +96,19 @@ export const useCartStore = create<CartState>()(
           if (idx < 0) return state
           const next = [...state.items]
           const q = Math.max(0, Math.min(99, next[idx].quantity + delta))
+          if (q === 0) {
+            next.splice(idx, 1)
+          } else {
+            next[idx] = { ...next[idx], quantity: q }
+          }
+          return { items: next }
+        }),
+      setItemQuantity: (key, quantity) =>
+        set((state) => {
+          const idx = state.items.findIndex((i) => sameCartLine(i, key))
+          if (idx < 0) return state
+          const next = [...state.items]
+          const q = Math.max(0, Math.min(99, quantity))
           if (q === 0) {
             next.splice(idx, 1)
           } else {

@@ -9,6 +9,11 @@ import { checkoutImg } from '@/components/checkout/checkout-images'
 import { CountryFlag } from '@/components/ui/CountryFlag'
 import { useCouponPreviewMutation } from '@/hooks/use-coupons'
 import { useRemoveCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
+import { parseApiError } from '@/lib/api-error'
+import {
+  cartStockErrorToastMessage,
+  parseCartStockError,
+} from '@/lib/cart-stock-error'
 import { formatUsd } from '@/lib/cart-format'
 import { toast } from '@/lib/toast'
 import { getAccessToken } from '@/lib/token'
@@ -168,6 +173,7 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
 
   const items = useCartStore((s) => s.items)
   const adjustItemQuantity = useCartStore((s) => s.adjustItemQuantity)
+  const setItemQuantity = useCartStore((s) => s.setItemQuantity)
   const coverage = useBuyerProtectionStore((s) => s.coverage)
   const appliedPromo = usePromoStore((s) => s.appliedPromo)
   const setAppliedPromo = usePromoStore((s) => s.setAppliedPromo)
@@ -328,18 +334,39 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
             key={itemKey(item)}
             item={item}
             onDelta={(delta) => {
+              const prevQty = item.quantity
               const nextQty = Math.max(0, Math.min(99, item.quantity + delta))
-              adjustItemQuantity(
-                {
-                  id: item.id,
-                  variantId: item.variantId,
-                  variantLabel: item.variantLabel,
-                  regionLabel: item.regionLabel,
-                  regionCountry: item.regionCountry,
-                },
-                delta
-              )
-              syncBackendLineQuantity(item, nextQty)
+              const lineKey = {
+                id: item.id,
+                variantId: item.variantId,
+                variantLabel: item.variantLabel,
+                regionLabel: item.regionLabel,
+                regionCountry: item.regionCountry,
+              }
+              adjustItemQuantity(lineKey, delta)
+
+              const backendId = item.backendCartItemId
+              if (!backendId || !getAccessToken()) {
+                syncBackendLineQuantity(item, nextQty)
+                return
+              }
+
+              void (async () => {
+                try {
+                  if (nextQty <= 0) {
+                    await removeCartItemMutation.mutateAsync(backendId)
+                  } else {
+                    await updateCartItemMutation.mutateAsync({
+                      cartItemId: backendId,
+                      dto: { quantity: nextQty },
+                    })
+                  }
+                } catch (err) {
+                  setItemQuantity(lineKey, prevQty)
+                  const kind = parseCartStockError(err)
+                  toast.error(kind ? cartStockErrorToastMessage(kind) : parseApiError(err))
+                }
+              })()
             }}
             onRemove={() => {
               syncBackendLineQuantity(item, 0)

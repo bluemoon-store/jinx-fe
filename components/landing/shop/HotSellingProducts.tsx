@@ -6,6 +6,7 @@ import CentralIcon from '@central-icons-react/all'
 import { FunctionComponent, useState } from 'react'
 
 import { Reveal } from '@/components/ui/reveal'
+import { isProductCardOutOfStock } from '@/lib/shop-product-stock'
 import type { ProductCard } from '@/types/product'
 
 export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = ({ items }) => {
@@ -68,7 +69,9 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
             </div>
           ) : (
             <div className="grid grid-cols-1 justify-items-center gap-4 p-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5 xl:gap-6">
-              {items.map((item, idx) => (
+              {items.map((item, idx) => {
+                const out = isProductCardOutOfStock(item)
+                return (
                 <Reveal
                   key={item.id}
                   variant="fade-up"
@@ -102,6 +105,13 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                           'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
                       }}
                     >
+                      {out ? (
+                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 bg-[#0D1B35]/85 px-2 text-center backdrop-blur-[1px]">
+                          <span className="font-commissioner rounded-md border border-white/20 bg-black/40 px-2 py-1 text-[10px] font-bold tracking-wide text-white uppercase sm:text-xs">
+                            Out of stock
+                          </span>
+                        </div>
+                      ) : null}
                       <div className="flex w-full items-center gap-3 sm:gap-[17px]">
                         <img
                           className="rounded-num-8 h-12 w-12 shrink-0 object-cover shadow-[0_4px_14px_rgba(0,0,0,0.4)] sm:h-[60px] sm:w-[60px]"
@@ -142,7 +152,8 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                     </div>
                   </Link>
                 </Reveal>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
