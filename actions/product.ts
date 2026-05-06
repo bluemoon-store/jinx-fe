@@ -5,7 +5,6 @@ import type {
   ProductCategory,
   ProductDetail,
   ProductQuickBuy,
-  ProductRegion,
   ProductTag,
   ProductVariant,
 } from '@/types/product'
@@ -59,16 +58,6 @@ function mapVariant(raw: UnknownRecord): ProductVariant {
   }
 }
 
-function mapRegion(raw: UnknownRecord): ProductRegion {
-  return {
-    id: pickStr(raw.id) ?? '',
-    label: pickStr(raw.label) ?? '',
-    countryCode: pickStr(raw.countryCode ?? raw.country_code) ?? '',
-    isActive: pickBool(raw.isActive ?? raw.is_active) ?? true,
-    sortOrder: pickNum(raw.sortOrder ?? raw.sort_order) ?? 0,
-  }
-}
-
 function deriveTags(isHot: boolean, isNew: boolean, isNFA: boolean): ProductTag[] {
   const tags: ProductTag[] = []
   if (isHot) tags.push('Hot')
@@ -114,20 +103,15 @@ function mapProductCard(raw: UnknownRecord): ProductCard {
 function mapProductQuickBuy(raw: UnknownRecord): ProductQuickBuy {
   const card = mapProductCard(raw)
   const variantsRaw = raw.variants
-  const regionsRaw = raw.regions
 
   const variants = Array.isArray(variantsRaw)
     ? variantsRaw.map((v) => mapVariant(v as UnknownRecord))
-    : []
-  const regions = Array.isArray(regionsRaw)
-    ? regionsRaw.map((r) => mapRegion(r as UnknownRecord))
     : []
 
   return {
     ...card,
     description: pickStr(raw.description ?? raw.summary) ?? '',
     variants,
-    regions,
     tags: deriveTags(card.isHot, card.isNew, card.isNFA),
   }
 }

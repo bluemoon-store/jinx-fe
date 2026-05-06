@@ -80,17 +80,12 @@ export function CheckoutPageClient() {
         productId: item.id,
         quantity: item.quantity,
         variantId: item.variantId,
-        regionLabel: item.regionLabel,
-        regionCountry: item.regionCountry,
       }))
     )
     const setBackendCartItemId = useCartStore.getState().setBackendCartItemId
     for (const item of localItems) {
       const backendItem = res.items.find(
-        (i) =>
-          i.productId === item.id &&
-          (i.variantId ?? '') === (item.variantId ?? '') &&
-          (i.regionLabel ?? '') === item.regionLabel
+        (i) => i.productId === item.id && (i.variantId ?? '') === (item.variantId ?? '')
       )
       if (backendItem) {
         setBackendCartItemId(
@@ -98,8 +93,6 @@ export function CheckoutPageClient() {
             id: item.id,
             variantId: item.variantId,
             variantLabel: item.variantLabel,
-            regionLabel: item.regionLabel,
-            regionCountry: item.regionCountry,
           },
           backendItem.id
         )

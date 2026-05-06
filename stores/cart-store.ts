@@ -8,8 +8,6 @@ export type CartItem = {
   name: string
   variantId?: string
   variantLabel: string
-  regionLabel: string
-  regionCountry?: string
   /** Unit price in USD (dollars, not cents). */
   unitPrice: number
   quantity: number
@@ -19,10 +17,7 @@ export type CartItem = {
   backendCartItemId?: string
 }
 
-export type CartItemKey = Pick<
-  CartItem,
-  'id' | 'variantId' | 'variantLabel' | 'regionLabel' | 'regionCountry'
->
+export type CartItemKey = Pick<CartItem, 'id' | 'variantId' | 'variantLabel'>
 
 type CartState = {
   items: CartItem[]
@@ -40,27 +35,21 @@ const noopStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
   removeItem: () => {},
 }
 
-function lineKeyParts(item: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>) {
+function lineKeyParts(item: Pick<CartItem, 'id' | 'variantId' | 'variantLabel'>) {
   return {
     id: item.id,
     variantId: item.variantId ?? '',
     variantLabel: item.variantLabel,
-    regionLabel: item.regionLabel,
   }
 }
 
 export function sameCartLine(
-  a: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>,
-  b: Pick<CartItem, 'id' | 'variantId' | 'variantLabel' | 'regionLabel'>
+  a: Pick<CartItem, 'id' | 'variantId' | 'variantLabel'>,
+  b: Pick<CartItem, 'id' | 'variantId' | 'variantLabel'>
 ) {
   const ka = lineKeyParts(a)
   const kb = lineKeyParts(b)
-  return (
-    ka.id === kb.id &&
-    ka.variantId === kb.variantId &&
-    ka.variantLabel === kb.variantLabel &&
-    ka.regionLabel === kb.regionLabel
-  )
+  return ka.id === kb.id && ka.variantId === kb.variantId && ka.variantLabel === kb.variantLabel
 }
 
 export const useCartStore = create<CartState>()(

@@ -334,7 +334,7 @@ export default function Legal() {
                   </li>
                   <li className="mb-0">
                     <span className="text-foreground">Preferences</span>: remember your settings
-                    (e.g., language, region).
+                    (e.g., language).
                   </li>
                   <li className="mb-0">
                     <span className="text-foreground">Analytics</span>: help us understand usage to

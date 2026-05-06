@@ -1,28 +1,16 @@
-/** Single cart line: brand, subtitle, region flag, quantity stepper */
+/** Single cart line: brand, subtitle, quantity stepper */
 type CartLineRowProps = {
   title: string
   subtitle: string
-  regionCode: string
 }
 
-const CartLineRow = ({ title, subtitle, regionCode }: CartLineRowProps) => (
+const CartLineRow = ({ title, subtitle }: CartLineRowProps) => (
   <div className="flex items-center gap-3 self-stretch">
     <img className="max-h-full w-10" alt="" />
     <div className="flex flex-1 flex-col items-start justify-center gap-0.5">
       <b className="tracking-num--0_01 leading-num-20">{title}</b>
       <div className="text-lightsteelblue flex items-center gap-2 text-center">
         <div className="leading-num-20 font-medium">{subtitle}</div>
-        <div className="border-whitesmoke-200 box-border h-px w-[9px] shrink-0 border-t-[1px] border-solid" />
-        <div className="flex items-center gap-1.5">
-          <div className="h-num-14_4 w-num-19_2 grid shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-solid border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,_0,_0,_0.1)]">
-            <img className="col-span-full row-span-full h-full w-full object-cover" alt="" />
-            <div
-              className="col-span-full row-span-full [background:linear-gradient(240.64deg,_rgba(255,_255,_255,_0.3),_rgba(0,_0,_0,_0.27)_26.27%,_rgba(255,_255,_255,_0.26)_37%,_rgba(0,_0,_0,_0.55)_48.7%,_rgba(0,_0,_0,_0.24)_59.44%,_rgba(255,_255,_255,_0.3)_73.64%,_rgba(39,_39,_39,_0.22)_90.15%,_rgba(0,_0,_0,_0.2))]"
-              aria-hidden
-            />
-          </div>
-          <div className="leading-num-20 font-medium">{regionCode}</div>
-        </div>
       </div>
     </div>
     <div className="border-whitesmoke-100 flex items-center gap-2.5 overflow-hidden rounded-lg border-[1px] border-solid bg-gray-100 px-2 py-1 text-[16px] text-white">
@@ -39,9 +27,9 @@ const CartLineRow = ({ title, subtitle, regionCode }: CartLineRowProps) => (
 const CartDropdownFilled = () => {
   return (
     <section className="border-whitesmoke-200 text-num-14 text-ghostwhite font-commissioner box-border flex w-full flex-col items-center justify-center gap-[15px] rounded-lg border-[1px] border-solid bg-gray-200 p-[15px] text-left">
-      <CartLineRow title="Dominos" subtitle="$25 Gift Card" regionCode="AB" />
+      <CartLineRow title="Dominos" subtitle="$25 Gift Card" />
       <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
-      <CartLineRow title="Netflix" subtitle="1 Year 4K Ultra HD" regionCode="CA" />
+      <CartLineRow title="Netflix" subtitle="1 Year 4K Ultra HD" />
       <img className="h-px max-h-full max-w-full self-stretch overflow-hidden" alt="" />
       <div className="text-lightsteelblue flex items-center justify-between gap-5 self-stretch text-center text-[13px]">
         <div className="leading-num-20 font-medium">Cart Total</div>

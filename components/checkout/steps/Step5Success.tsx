@@ -7,7 +7,6 @@ import { useMemo, useState } from 'react'
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
 import { SupportRow } from '@/components/checkout/shared/SupportRow'
-import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
@@ -17,7 +16,7 @@ import { toast } from '@/lib/toast'
 import styles from './Step5Success.module.css'
 
 function itemKey(item: CartItem) {
-  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
+  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
 }
 
 type SuccessDisplayItem = CartItem & { orderItemId?: string }
@@ -122,27 +121,6 @@ function SuccessCard({
               <span className="text-ghostwhite max-w-full text-base font-bold wrap-break-word sm:text-[17.5px]">
                 {item.name}
               </span>
-              <div className="flex shrink-0 items-center gap-2">
-                <div className="h-num-18 relative w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
-                  <CountryFlag
-                    countryCode={item.regionCountry ?? 'CA'}
-                    alt="Region flag"
-                    className="h-full w-full"
-                    size={24}
-                    shape="rectangle"
-                  />
-                  <div
-                    className="pointer-events-none absolute inset-0 bg-blend-overlay"
-                    style={{
-                      background:
-                        'linear-gradient(225deg,rgba(255,255,255,0.3)_0%,rgba(0,0,0,0.27)_26%,rgba(255,255,255,0.26)_37%,rgba(0,0,0,0.55)_49%,rgba(0,0,0,0.24)_59%,rgba(255,255,255,0.3)_74%,rgba(39,39,39,0.22)_90%,rgba(0,0,0,0.2)_100%)',
-                    }}
-                  />
-                </div>
-                <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
-                  {item.regionLabel}
-                </span>
-              </div>
             </div>
             <div className="mt-1 flex items-center gap-2 text-sm text-[#c2c2e2] sm:text-[17.5px]">
               <span className="min-w-0 truncate opacity-75" title={item.variantLabel}>
@@ -242,7 +220,6 @@ function SuccessCard({
                   <p className="m-0 font-semibold text-white">{item.name}</p>
                   <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                     <li className="mb-0">Variant: {item.variantLabel}</li>
-                    <li className="mb-0">Region: {item.regionLabel}</li>
                     <li className="mb-0">Total paid: {formatUsd(lineTotal)}</li>
                     <li>
                       {revealed && effectiveCode
@@ -293,8 +270,7 @@ function SuccessCard({
                       it as quickly as possible.
                     </li>
                     <li>
-                      Contact support within 48 hours and include your product ({item.variantLabel})
-                      and region ({item.regionLabel}).
+                      Contact support within 48 hours and include your product ({item.variantLabel}).
                     </li>
                   </ul>
                 </div>
@@ -361,8 +337,6 @@ export function Step5Success({
         name: oi.product?.name ?? 'Product',
         variantId: oi.variantId ?? undefined,
         variantLabel: oi.variantLabel ?? 'Standard',
-        regionLabel: oi.regionLabel ?? 'Global',
-        regionCountry: oi.regionCountry ?? undefined,
         unitPrice: Number.parseFloat(oi.priceAtPurchase) || 0,
         quantity: oi.quantity,
         thumbUrl: thumbUrl ?? undefined,

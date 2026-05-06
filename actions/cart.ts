@@ -11,8 +11,6 @@ export type ApiCartItem = {
   variantId?: string | null
   quantity: number
   unitPrice: string
-  regionLabel?: string | null
-  regionCountry?: string | null
 }
 
 export type ApiCart = {
@@ -27,16 +25,12 @@ export type AddCartItemDto = {
   productId: string
   quantity: number
   variantId?: string
-  regionLabel?: string
-  regionCountry?: string
 }
 
 export type SyncCartItemDto = {
   productId: string
   quantity: number
   variantId?: string
-  regionLabel?: string
-  regionCountry?: string
 }
 
 export type UpdateCartItemDto = {

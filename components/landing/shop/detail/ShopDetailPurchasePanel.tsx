@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import CentralIcon from '@central-icons-react/all'
 
-import { CountryFlag } from '@/components/ui/CountryFlag'
 import {
   siteSelectDropdownList,
   siteSelectDropdownOptionInteractive,
@@ -25,7 +24,7 @@ import { toast } from '@/lib/toast'
 import { sameCartLine, useCartStore } from '@/stores/cart-store'
 import { getAccessToken } from '@/lib/token'
 import { cn } from '@/lib/utils'
-import type { ProductDetail, ProductRegion, ProductVariant } from '@/types/product'
+import type { ProductDetail, ProductVariant } from '@/types/product'
 
 function RichHtml({
   html,
@@ -65,12 +64,6 @@ function sortActiveVariants(variants: ProductVariant[]) {
     .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label))
 }
 
-function sortActiveRegions(regions: ProductRegion[]) {
-  return [...regions]
-    .filter((r) => r.isActive)
-    .sort((a, b) => a.sortOrder - b.sortOrder || a.label.localeCompare(b.label))
-}
-
 function variantStockMessage(stockQuantity: number): string {
   if (stockQuantity <= 0) return 'Out of stock'
   if (stockQuantity <= 10) return `Only ${stockQuantity} left`
@@ -82,7 +75,6 @@ type PurchaseControlsProps = {
   productName: string
   productImageSrc?: string
   variants: ProductVariant[]
-  regions: ProductRegion[]
   /** Override Add to Cart button classes (e.g. Quick Buy modal uses #0D1B35). */
   addToCartButtonClassName?: string
   /** z-index for open dropdown menus (high enough to stack above modals / siblings). */
@@ -99,18 +91,14 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   productName,
   productImageSrc,
   variants,
-  regions,
   addToCartButtonClassName = DEFAULT_ADD_TO_CART_CLASS,
   dropdownZClass = 'z-[999]',
   onAddToCart,
 }) => {
   const variantList = useMemo(() => sortActiveVariants(variants), [variants])
-  const regionList = useMemo(() => sortActiveRegions(regions), [regions])
 
   const [isVariantOpen, setIsVariantOpen] = useState(false)
-  const [isStateOpen, setIsStateOpen] = useState(false)
   const [selectedVariantId, setSelectedVariantId] = useState('')
-  const [selectedRegionId, setSelectedRegionId] = useState('')
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
@@ -130,10 +118,6 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
     })
   }, [variantList])
 
-  useEffect(() => {
-    if (regionList[0]) setSelectedRegionId(regionList[0].id)
-  }, [regionList])
-
   const router = useRouter()
   const addCartItemMutation = useAddCartItemMutation()
   const updateCartItemMutation = useUpdateCartItemMutation()
@@ -142,7 +126,6 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
   const setBackendCartItemId = useCartStore((s) => s.setBackendCartItemId)
 
   const selectedVariant = variantList.find((v) => v.id === selectedVariantId) ?? variantList[0]
-  const selectedRegion = regionList.find((r) => r.id === selectedRegionId) ?? regionList[0]
 
   const variantStockQty = selectedVariant?.stockQuantity ?? 0
 
@@ -172,13 +155,11 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       return Math.min(maxSelectableUnits, q + 1)
     })
 
-  const canPurchase = Boolean(
-    selectedVariant && selectedRegion && selectedVariant.stockQuantity > 0
-  )
+  const canPurchase = Boolean(selectedVariant && selectedVariant.stockQuantity > 0)
   const unitPrice = selectedVariant ? parseUsdDecimalString(selectedVariant.price) : 0
 
   const handleAddToCart = () => {
-    if (!canPurchase || !selectedVariant || !selectedRegion) return
+    if (!canPurchase || !selectedVariant) return
     if (quantity < 1 || quantity > maxSelectableUnits) {
       toast.error('Choose a valid quantity for the available stock.')
       return
@@ -188,8 +169,6 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       id: productId,
       variantId: selectedVariant.id,
       variantLabel: selectedVariant.label,
-      regionLabel: selectedRegion.label,
-      regionCountry: selectedRegion.countryCode,
     }
 
     const existing = useCartStore.getState().items.find((i) => sameCartLine(i, cartKey))
@@ -207,8 +186,6 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         name: productName,
         variantId: selectedVariant.id,
         variantLabel: selectedVariant.label,
-        regionLabel: selectedRegion.label,
-        regionCountry: selectedRegion.countryCode,
         unitPrice,
         thumbUrl: productImageSrc,
       },
@@ -243,15 +220,11 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
           productId,
           quantity: qtyForApi,
           variantId: selectedVariant.id,
-          regionLabel: selectedRegion.label,
-          regionCountry: selectedRegion.countryCode,
         })
 
         const backendItem = res.items.find(
           (i) =>
-            i.productId === productId &&
-            (i.variantId ?? '') === selectedVariant.id &&
-            (i.regionLabel ?? '') === selectedRegion.label
+            i.productId === productId && (i.variantId ?? '') === selectedVariant.id
         )
         if (backendItem) {
           setBackendCartItemId(cartKey, backendItem.id)
@@ -284,7 +257,6 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
             onClick={() => {
               if (!variantList.length) return
               setIsVariantOpen((v) => !v)
-              setIsStateOpen(false)
             }}
             className={`${siteSelectDropdownOptionRow} w-full items-center justify-between gap-5 disabled:opacity-50`}
           >
@@ -356,109 +328,6 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
       </div>
 
       <div className="flex flex-col items-stretch gap-4 self-stretch sm:flex-row sm:gap-5">
-        <div className="flex flex-1 flex-col items-start gap-2">
-          <div className="leading-num-20 font-semibold">Select State</div>
-          <div className="rounded-num-8 border-whitesmoke-300 relative w-full overflow-visible border border-solid bg-[#051329] text-white">
-            <button
-              type="button"
-              aria-label={`Select state for ${productName}`}
-              aria-expanded={isStateOpen}
-              disabled={!regionList.length}
-              onClick={() => {
-                if (!regionList.length) return
-                setIsStateOpen((v) => !v)
-                setIsVariantOpen(false)
-              }}
-              className="px-num-12 py-num-10 text-num-16 flex w-full items-center justify-between gap-5 self-stretch disabled:opacity-50"
-            >
-              <div className="flex min-w-0 items-center gap-2">
-                {selectedRegion ? (
-                  <>
-                    <CountryFlag
-                      countryCode={selectedRegion.countryCode}
-                      alt={`${selectedRegion.label} flag`}
-                      className="max-h-num-18 h-full w-full max-w-[28px]"
-                      size={28}
-                      shape="rectangle"
-                    />
-                    <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                      {selectedRegion.label}
-                    </div>
-                  </>
-                ) : (
-                  <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                    No regions available
-                  </div>
-                )}
-              </div>
-              <CentralIcon
-                name="IconChevronDownMedium"
-                join="round"
-                fill="outlined"
-                stroke="1"
-                radius="1"
-                size={20}
-                className="text-white opacity-75 transition-transform duration-300 ease-in-out"
-                style={{ transform: isStateOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-              />
-            </button>
-
-            {isStateOpen && regionList.length > 0 && (
-              <div
-                className={`absolute top-full right-0 left-0 ${dropdownZClass} mt-2 overflow-hidden ${siteSelectDropdownPanel}`}
-              >
-                <div className={siteSelectDropdownList}>
-                  {regionList.map((option) => {
-                    const isSelected = option.id === selectedRegionId
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        aria-label={`Choose ${option.label}`}
-                        onClick={() => {
-                          setSelectedRegionId(option.id)
-                          setIsStateOpen(false)
-                        }}
-                        className={[
-                          'px-num-12 py-num-10 text-num-16 flex w-full items-center text-left',
-                          siteSelectDropdownOptionInteractive,
-                          'justify-between gap-5',
-                          isSelected ? 'bg-white/5' : '',
-                        ].join(' ')}
-                      >
-                        <div className="flex min-w-0 flex-1 items-center gap-2">
-                          <CountryFlag
-                            countryCode={option.countryCode}
-                            alt={`${option.label} flag`}
-                            className="max-h-num-18 h-full w-full max-w-[28px]"
-                            size={28}
-                            shape="rectangle"
-                          />
-                          <div className="tracking-num--0_01 leading-num-28 font-semibold">
-                            {option.label}
-                          </div>
-                        </div>
-                        {isSelected ? (
-                          <CentralIcon
-                            name="IconCheckmark2Small"
-                            join="round"
-                            fill="filled"
-                            stroke="2"
-                            radius="1"
-                            size={18}
-                            className="shrink-0 text-white"
-                            ariaHidden={true}
-                          />
-                        ) : null}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
         <div className="flex flex-1 flex-col items-start gap-2">
           <div className="leading-num-20 font-semibold">Select Quantity</div>
           <div className="rounded-num-8 border-whitesmoke-300 px-num-12 py-num-10 text-num-16 w-full overflow-hidden border-[1px] border-solid bg-[#051329] text-white">
@@ -578,7 +447,6 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
           productName={product.name}
           productImageSrc={heroSrc}
           variants={product.variants}
-          regions={product.regions}
         />
       </div>
 

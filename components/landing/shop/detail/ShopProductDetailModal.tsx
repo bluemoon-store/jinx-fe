@@ -180,7 +180,6 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
                 productName={product.name}
                 productImageSrc={imageSrc}
                 variants={product.variants}
-                regions={product.regions}
                 addToCartButtonClassName={ADD_TO_CART_MODAL_CLASS}
                 onAddToCart={onClose}
               />

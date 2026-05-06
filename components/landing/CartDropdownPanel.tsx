@@ -5,7 +5,6 @@ import { Fragment, type FunctionComponent } from 'react'
 import CentralIcon from '@central-icons-react/all'
 import Link from 'next/link'
 
-import { CountryFlag } from '@/components/ui/CountryFlag'
 import type { CartItem } from '@/stores/cart-store'
 import { formatUsd } from '@/lib/cart-format'
 import { useCartStore } from '@/stores/cart-store'
@@ -41,19 +40,6 @@ const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
       <b className="tracking-num--0_01 leading-num-20">{item.name}</b>
       <div className="flex flex-wrap items-center gap-2 text-center text-[#C3C3E3]">
         <div className="leading-num-20 font-medium">{item.variantLabel}</div>
-        <div className="border-whitesmoke-200/10 box-border h-px w-[9px] shrink-0 border-t border-solid" />
-        <div className="flex items-center gap-1.5">
-          <div className="grid h-3 w-4 shrink-0 place-items-stretch overflow-hidden rounded-[1.2px] border-[0.6px] border-gray-300 shadow-[0px_1.2000732421875px_1.8px_rgba(0,0,0,0.1)]">
-            <CountryFlag
-              countryCode={item.regionCountry ?? 'CA'}
-              shape="rectangle"
-              alt="Region flag"
-              className="col-span-full row-span-full h-full w-full object-cover"
-              size={16}
-            />
-          </div>
-          <div className="leading-num-20 font-medium">{item.regionLabel}</div>
-        </div>
       </div>
     </div>
     <div className="text-num-16 ms-3 box-border flex shrink-0 items-center gap-2.5 overflow-hidden rounded-lg border border-white/10 bg-gray-100 px-2 py-1 text-white sm:ms-4">
@@ -109,7 +95,7 @@ export const CartDropdownPanel: FunctionComponent = () => {
   const cartTotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
 
   const lineKey = (item: CartItem) =>
-    `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
+    `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
 
   return (
     <div
@@ -128,8 +114,6 @@ export const CartDropdownPanel: FunctionComponent = () => {
                     id: item.id,
                     variantId: item.variantId,
                     variantLabel: item.variantLabel,
-                    regionLabel: item.regionLabel,
-                    regionCountry: item.regionCountry,
                   },
                   delta
                 )

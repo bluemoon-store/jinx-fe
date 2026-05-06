@@ -9,14 +9,6 @@ export interface ProductVariant {
   sortOrder: number
 }
 
-export interface ProductRegion {
-  id: string
-  label: string
-  countryCode: string
-  isActive: boolean
-  sortOrder: number
-}
-
 export interface ProductCategory {
   name: string
   slug: string
@@ -44,7 +36,6 @@ export type ProductQuickBuy = ProductCard & {
   description: string
   tags: ProductTag[]
   variants: ProductVariant[]
-  regions: ProductRegion[]
 }
 
 export interface ProductDetail extends ProductQuickBuy {

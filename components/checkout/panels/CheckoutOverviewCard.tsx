@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
-import { CountryFlag } from '@/components/ui/CountryFlag'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
@@ -37,7 +36,7 @@ const CRYPTO_ICON_SMALL: Record<ApiCryptoCurrency, string> = {
 }
 
 function itemKey(item: CartItem) {
-  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
+  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
 }
 
 function LineThumb({ item }: { item: CartItem }) {
@@ -73,27 +72,6 @@ function LineItemReadonly({ item }: { item: CartItem }) {
             <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] wrap-break-word sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
             </span>
-            <div className="flex shrink-0 items-center gap-[7.5px]">
-              <div className="h-num-18 relative w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
-                <CountryFlag
-                  countryCode={item.regionCountry ?? 'CA'}
-                  alt="Region flag"
-                  className="h-full w-full"
-                  size={24}
-                  shape="rectangle"
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 bg-blend-overlay"
-                  style={{
-                    background:
-                      'linear-gradient(225deg,rgba(255,255,255,0.3)_0%,rgba(0,0,0,0.27)_26%,rgba(255,255,255,0.26)_37%,rgba(0,0,0,0.55)_49%,rgba(0,0,0,0.24)_59%,rgba(255,255,255,0.3)_74%,rgba(39,39,39,0.22)_90%,rgba(0,0,0,0.2)_100%)',
-                  }}
-                />
-              </div>
-              <span className="text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]">
-                {item.regionLabel}
-              </span>
-            </div>
           </div>
           <span
             className="min-w-0 truncate text-sm font-medium text-[#c2c2e2] sm:text-[17.5px]"
@@ -144,8 +122,6 @@ export function CheckoutOverviewCard({
         name: oi.product?.name ?? 'Product',
         variantId: oi.variantId ?? undefined,
         variantLabel: oi.variantLabel ?? 'Standard',
-        regionLabel: oi.regionLabel ?? 'Global',
-        regionCountry: oi.regionCountry ?? undefined,
         unitPrice: Number.parseFloat(oi.priceAtPurchase) || 0,
         quantity: oi.quantity,
         thumbUrl: thumbUrl ?? undefined,

@@ -38,8 +38,6 @@ export type ApiOrderItem = {
   priceAtPurchase: string
   variantId?: string | null
   variantLabel?: string | null
-  regionLabel?: string | null
-  regionCountry?: string | null
   deliveredContent?: string | null
   deliveredAt?: string | null
   product?: {

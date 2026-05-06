@@ -6,7 +6,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { previewCouponAction } from '@/actions/coupon'
 import { checkoutImg } from '@/components/checkout/checkout-images'
-import { CountryFlag } from '@/components/ui/CountryFlag'
 import { useCouponPreviewMutation } from '@/hooks/use-coupons'
 import { useRemoveCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { parseApiError } from '@/lib/api-error'
@@ -32,7 +31,7 @@ import styles from './CartColumn.module.css'
 const BUYER_PROTECTION_ENHANCED_USD = 5
 
 function itemKey(item: CartItem) {
-  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}-${item.regionLabel}`
+  return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
 }
 
 function LineThumb({ item }: { item: CartItem }) {
@@ -76,27 +75,6 @@ function CartLine({
             <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] break-words sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
             </span>
-            <div className="flex shrink-0 items-center gap-[7.5px]">
-              <div className="relative h-[18px] w-6 overflow-hidden rounded-[1.5px] border-[0.75px] border-black/10 shadow-[0px_1.5px_2.25px_#0000001a]">
-                <CountryFlag
-                  countryCode={item.regionCountry ?? 'CA'}
-                  alt="Region flag"
-                  className="h-full w-full"
-                  size={24}
-                  shape="rectangle"
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 bg-blend-overlay"
-                  style={{
-                    background:
-                      'linear-gradient(225deg,rgba(255,255,255,0.3)_0%,rgba(0,0,0,0.27)_26%,rgba(255,255,255,0.26)_37%,rgba(0,0,0,0.55)_49%,rgba(0,0,0,0.24)_59%,rgba(255,255,255,0.3)_74%,rgba(39,39,39,0.22)_90%,rgba(0,0,0,0.2)_100%)',
-                  }}
-                />
-              </div>
-              <span className="text-sm leading-snug font-medium text-[#c2c2e2] sm:text-[17.5px] sm:leading-[25px]">
-                {item.regionLabel}
-              </span>
-            </div>
           </div>
           <span
             className="min-w-0 truncate text-sm leading-snug font-medium text-[#c2c2e2] sm:text-[17.5px] sm:leading-[25px]"
@@ -185,7 +163,7 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
       items
         .map(
           (i) =>
-            `${i.id}:${i.variantId ?? ''}:${i.regionLabel}:${i.quantity}:${i.unitPrice}:${i.backendCartItemId ?? ''}`
+            `${i.id}:${i.variantId ?? ''}:${i.quantity}:${i.unitPrice}:${i.backendCartItemId ?? ''}`
         )
         .join('|'),
     [items]
@@ -340,8 +318,6 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
                 id: item.id,
                 variantId: item.variantId,
                 variantLabel: item.variantLabel,
-                regionLabel: item.regionLabel,
-                regionCountry: item.regionCountry,
               }
               adjustItemQuantity(lineKey, delta)
 
@@ -375,8 +351,6 @@ export function CartColumn({ checkoutStep }: { checkoutStep: number }) {
                   id: item.id,
                   variantId: item.variantId,
                   variantLabel: item.variantLabel,
-                  regionLabel: item.regionLabel,
-                  regionCountry: item.regionCountry,
                 },
                 -item.quantity
               )
