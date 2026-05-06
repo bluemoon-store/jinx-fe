@@ -25,7 +25,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     <div className={`flex items-end gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
       {isUser ? (
         <>
-          <span className="text-xs text-[#646B86]">{time}</span>
+          <span className="text-xs text-muted-foreground">{time}</span>
           <div className="max-w-[90%] rounded-lg bg-[#ea2cff] px-4 py-3 text-sm font-semibold text-white sm:max-w-[78%] sm:text-base">
             {message.message}
           </div>
@@ -43,10 +43,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               color="#FFFFFF"
             />
           </div>
-          <div className="max-w-[90%] rounded-lg border border-[#152850] bg-[#0d1b35] px-4 py-3 text-sm text-[#c2c2e2] sm:max-w-[78%] sm:text-base">
+          <div className="max-w-[90%] rounded-lg border border-border-subtle bg-card px-4 py-3 text-sm text-body-foreground sm:max-w-[78%] sm:text-base">
             {message.message}
           </div>
-          <span className="text-xs text-[#646B86]">{time}</span>
+          <span className="text-xs text-muted-foreground">{time}</span>
         </>
       )}
     </div>

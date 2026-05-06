@@ -158,7 +158,7 @@ const Navbar: FunctionComponent = () => {
   ]
 
   return (
-    <header className="text-whitesmoke-100 font-commissioner fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 border-b border-solid border-gray-100 bg-gray-400/95 px-4 py-0 backdrop-blur-md sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
+    <header className="text-foreground font-commissioner fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 border-b border-solid border-border-subtle bg-background/95 px-4 py-0 backdrop-blur-md sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
       {/* Logo and nav links */}
       <nav className="flex h-14 flex-1 shrink-0 items-center gap-2 sm:gap-4 lg:gap-[15px]">
         <Link href="/" className="shrink-0">
@@ -168,7 +168,7 @@ const Navbar: FunctionComponent = () => {
             src="/icons/Jin X.svg"
           />
         </Link>
-        <div className="h-num-19 hidden w-px shrink-0 border-r border-solid border-white opacity-[0.25] lg:block" />
+        <div className="h-num-19 hidden w-px shrink-0 border-r border-solid border-divider lg:block" />
         {/* Desktop nav links */}
         <div className="hidden items-center gap-2 lg:flex lg:gap-3.5">
           {navLinks.map((link) => {
@@ -176,7 +176,7 @@ const Navbar: FunctionComponent = () => {
             const className = `sm:px-num-12 flex items-center gap-1.5 rounded-num-8 px-2 py-2 sm:py-[13.6px] ${
               isActive
                 ? 'opacity-100'
-                : 'opacity-75 transition-colors hover:bg-[#121F34] hover:opacity-100'
+                : 'opacity-75 transition-colors hover:bg-hover-bg hover:opacity-100'
             }`
             const content = (
               <>
@@ -215,15 +215,24 @@ const Navbar: FunctionComponent = () => {
 
       {/* Wallet and user actions - desktop */}
       <div className="hidden items-center gap-2 lg:flex">
-        <div className="text-num-16 text-ghostwhite flex items-center justify-center gap-2 self-stretch rounded-xl py-[26px] text-left">
+        <div className="text-num-16 text-foreground flex items-center justify-center gap-2 self-stretch rounded-xl py-[26px] text-left">
           <div className="flex shrink-0 items-center justify-center gap-2">
             {isLoggedIn ? (
               <>
                 <button
                   type="button"
-                  className="rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5"
+                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid border-border-subtle bg-card-elevated pt-px pb-0.5"
                 >
-                  <img className="h-4 w-4" alt="" src="/icons/IconRescueRing.svg" />
+                  <CentralIcon
+                    name="IconRescueRing"
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={16}
+                    color="currentColor"
+                    ariaHidden={true}
+                  />
                   <b className="tracking-num--0_01 leading-num-28">0</b>
                 </button>
                 <Link
@@ -236,7 +245,7 @@ const Navbar: FunctionComponent = () => {
                     {walletBalanceLabel}
                   </span>
                 </Link>
-                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+                <div className="h-num-19 w-px shrink-0 border-r border-solid border-divider" />
               </>
             ) : null}
             <div className="flex h-[46px] shrink-0 items-center gap-2">
@@ -250,11 +259,20 @@ const Navbar: FunctionComponent = () => {
                   aria-expanded={cartMenuOpen}
                   aria-haspopup="dialog"
                   aria-label="Shopping cart"
-                  className={`rounded-num-8 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-gray-700 transition-colors ${
+                  className={`rounded-num-8 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-card-elevated transition-colors ${
                     cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
                   }`}
                 >
-                  <img className="h-[24px] w-[24px]" alt="" src="/icons/IconBasket1-2.svg" />
+                  <CentralIcon
+                    name="IconBasket1"
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={24}
+                    color="currentColor"
+                    ariaHidden={true}
+                  />
                   {cartItemCount > 0 && (
                     <span className="bg-fuchsia absolute -top-1 -right-1 rounded-full px-1.5 text-[10px] leading-4 font-bold text-white">
                       {cartItemCount}
@@ -277,7 +295,7 @@ const Navbar: FunctionComponent = () => {
               </div>
               {isLoggedIn && (
                 <>
-                  <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+                  <div className="h-num-19 w-px shrink-0 border-r border-solid border-divider" />
                   <div className="relative shrink-0" ref={desktopUserMenuRef}>
                     <button
                       type="button"
@@ -324,12 +342,12 @@ const Navbar: FunctionComponent = () => {
                                   color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
                                   ariaHidden={true}
                                 />
-                                <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                                <span className="text-muted-foreground group-hover:text-foreground tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
                                   {item.label}
                                 </span>
                               </span>
                               {item.trailing ? (
-                                <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                                <span className="font-nata-sans text-foreground shrink-0 text-sm font-extrabold tabular-nums">
                                   {item.trailing}
                                 </span>
                               ) : null}
@@ -356,7 +374,7 @@ const Navbar: FunctionComponent = () => {
                               color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
                               ariaHidden={true}
                             />
-                            <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                            <span className="text-muted-foreground group-hover:text-foreground tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
                               Log Out
                             </span>
                           </button>
@@ -369,11 +387,11 @@ const Navbar: FunctionComponent = () => {
             </div>
             {!isLoggedIn ? (
               <>
-                <div className="h-num-19 w-px shrink-0 border-r border-solid border-white opacity-[0.25]" />
+                <div className="h-num-19 w-px shrink-0 border-r border-solid border-divider" />
                 <button
                   type="button"
                   onClick={() => openAuthModal('signin')}
-                  className="rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5 text-white"
+                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid border-border-subtle bg-card-elevated pt-px pb-0.5 text-foreground"
                 >
                   <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
                 </button>
@@ -414,11 +432,20 @@ const Navbar: FunctionComponent = () => {
             aria-expanded={cartMenuOpen}
             aria-haspopup="dialog"
             aria-label="Shopping cart"
-            className={`rounded-num-8 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-gray-700 transition-colors ${
+            className={`rounded-num-8 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-card-elevated transition-colors ${
               cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
             }`}
           >
-            <img className="h-5 w-5" alt="" src="/icons/IconBasket1-2.svg" />
+            <CentralIcon
+              name="IconBasket1"
+              join="round"
+              fill="filled"
+              stroke="1"
+              radius="1"
+              size={20}
+              color="currentColor"
+              ariaHidden={true}
+            />
             {cartItemCount > 0 && (
               <span className="bg-fuchsia absolute -top-1 -right-1 rounded-full px-1.5 text-[10px] leading-4 font-bold text-white">
                 {cartItemCount}
@@ -501,12 +528,12 @@ const Navbar: FunctionComponent = () => {
                             color={userMenuHoverKey === item.key ? '#EB2DFF' : '#9CA8BC'}
                             ariaHidden={true}
                           />
-                          <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                          <span className="text-muted-foreground group-hover:text-foreground tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
                             {item.label}
                           </span>
                         </span>
                         {item.trailing ? (
-                          <span className="font-nata-sans text-ghostwhite shrink-0 text-sm font-extrabold tabular-nums">
+                          <span className="font-nata-sans text-foreground shrink-0 text-sm font-extrabold tabular-nums">
                             {item.trailing}
                           </span>
                         ) : null}
@@ -533,7 +560,7 @@ const Navbar: FunctionComponent = () => {
                         color={userMenuHoverKey === 'logout' ? '#EB2DFF' : '#9CA8BC'}
                         ariaHidden={true}
                       />
-                      <span className="text-lightsteelblue-200 group-hover:text-ghostwhite tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
+                      <span className="text-muted-foreground group-hover:text-foreground tracking-num--0_01 font-medium transition-colors group-hover:font-semibold">
                         Log Out
                       </span>
                     </button>
@@ -547,7 +574,7 @@ const Navbar: FunctionComponent = () => {
             <button
               type="button"
               onClick={() => openAuthModal('signin')}
-              className="rounded-num-8 border-whitesmoke-300 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid bg-gray-700 pt-px pb-0.5 text-white"
+              className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid border-border-subtle bg-card-elevated pt-px pb-0.5 text-foreground"
             >
               <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
             </button>
@@ -609,7 +636,7 @@ const Navbar: FunctionComponent = () => {
       {mobileNavMenuOpen && (
         <div
           ref={mobileNavPanelRef}
-          className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1 border-b border-gray-100 bg-gray-400/95 px-4 py-4 backdrop-blur-md lg:hidden"
+          className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1 border-b border-border-subtle bg-background/95 px-4 py-4 backdrop-blur-md lg:hidden"
         >
           {navLinks.map((link) =>
             link.href.startsWith('/') ? (
@@ -617,7 +644,7 @@ const Navbar: FunctionComponent = () => {
                 key={link.label}
                 href={link.href as Route}
                 className={`rounded-num-8 flex min-h-[44px] items-center gap-2.5 px-4 text-base font-semibold ${
-                  isActiveLink(link.href) ? 'bg-gray-300 text-white' : 'opacity-80'
+                  isActiveLink(link.href) ? 'bg-active-bg text-foreground' : 'opacity-80'
                 }`}
                 onClick={() => setMobileNavMenuOpen(false)}
                 aria-current={isActiveLink(link.href) ? 'page' : undefined}
@@ -639,7 +666,7 @@ const Navbar: FunctionComponent = () => {
                 key={link.label}
                 href={link.href}
                 className={`rounded-num-8 flex min-h-[44px] items-center gap-2.5 px-4 text-base font-semibold ${
-                  isActiveLink(link.href) ? 'bg-gray-300 text-white' : 'opacity-80'
+                  isActiveLink(link.href) ? 'bg-active-bg text-foreground' : 'opacity-80'
                 }`}
                 onClick={() => setMobileNavMenuOpen(false)}
               >
@@ -657,13 +684,22 @@ const Navbar: FunctionComponent = () => {
             )
           )}
 
-          <div className="mt-2 border-t border-solid border-white/10 pt-3">
+          <div className="mt-2 border-t border-solid border-divider pt-3">
             <button
               type="button"
-              className="rounded-num-8 border-whitesmoke-300 flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid bg-gray-700/60 px-4 text-base font-semibold text-white transition-colors hover:bg-gray-700"
+              className="rounded-num-8 flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid border-border-subtle bg-card-elevated px-4 text-base font-semibold text-foreground transition-colors hover:bg-hover-bg"
             >
               <span className="flex items-center gap-2.5">
-                <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconRescueRing.svg" />
+                <CentralIcon
+                  name="IconRescueRing"
+                  join="round"
+                  fill="filled"
+                  stroke="1"
+                  radius="1"
+                  size={16}
+                  color="currentColor"
+                  ariaHidden={true}
+                />
                 Help
               </span>
               <b className="tracking-num--0_01 text-base leading-none">0</b>

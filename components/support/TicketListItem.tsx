@@ -27,14 +27,14 @@ export function TicketListItem({ ticket, selected, onSelect }: TicketListItemPro
     <button
       type="button"
       onClick={onSelect}
-      className={`flex w-full items-center justify-between gap-3 border-b border-[#152850] bg-[#0D1B35] px-4 py-4 text-left transition-colors sm:px-6 ${
-        selected ? 'bg-[#051329]' : 'hover:bg-[#051329]'
+      className={`flex w-full items-center justify-between gap-3 border-b border-border-subtle bg-card px-4 py-4 text-left transition-colors sm:px-6 ${
+        selected ? 'bg-card-elevated' : 'hover:bg-hover-bg'
       }`}
     >
       <div className="flex min-w-0 items-center gap-3">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold ${
-            selected ? 'bg-[#EA2CFF]' : 'bg-[#152950]'
+            selected ? 'bg-[#EA2CFF] text-white' : 'bg-card-elevated text-foreground'
           }`}
         >
           <CentralIcon
@@ -44,16 +44,16 @@ export function TicketListItem({ ticket, selected, onSelect }: TicketListItemPro
             stroke="2"
             radius="1"
             size={18}
-            color="#ffffff"
+            color="currentColor"
           />
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold sm:text-base">{ticket.ticketNumber}</p>
-          <p className="truncate text-sm text-[#828994]">{preview}</p>
+          <p className="truncate text-sm text-muted-foreground">{preview}</p>
         </div>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-2">
-        <span className="text-xs text-[#828994] sm:text-sm">{time}</span>
+        <span className="text-xs text-muted-foreground sm:text-sm">{time}</span>
         {unread > 0 ? (
           <span className="rounded-md bg-[#ea2cff] px-1.5 py-0.5 text-xs font-semibold text-white">{unread}</span>
         ) : null}

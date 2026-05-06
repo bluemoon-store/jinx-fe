@@ -850,6 +850,16 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
                 <section aria-labelledby="vouches-heading" className="flex flex-col gap-4">
                   <div className="flex items-center gap-2 text-white opacity-75">
+                    <CentralIcon
+                      name="IconShieldCheck"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={20}
+                      color="currentColor"
+                      className="shrink-0"
+                    />
                     <h2 id="vouches-heading" className="leading-num-28 tracking-num-0_02 font-bold">
                       Share a Vouch
                     </h2>

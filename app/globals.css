@@ -127,6 +127,52 @@
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
+
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-card: var(--card);
+  --color-card-elevated: var(--card-elev);
+  --color-footer: var(--footer);
+  --color-border-subtle: var(--border-subtle);
+  --color-divider: var(--divider);
+  --color-muted-foreground: var(--muted-fg);
+  --color-body-foreground: var(--body-fg);
+  --color-input-bg: var(--input-bg);
+  --color-hover-bg: var(--hover-bg);
+  --color-active-bg: var(--active-bg);
+  --color-active-border: var(--active-border);
+}
+
+:root {
+  --bg: #ffffff;
+  --fg: #0d1b35;
+  --card: #ffffff;
+  --card-elev: #f1f5f9;
+  --footer: #f8fafc;
+  --border-subtle: #e2e8f0;
+  --divider: rgba(13, 27, 53, 0.08);
+  --muted-fg: #64748b;
+  --body-fg: #475569;
+  --input-bg: #f8fafc;
+  --hover-bg: rgba(13, 27, 53, 0.04);
+  --active-bg: #f1f5f9;
+  --active-border: #cbd5e1;
+}
+
+.dark {
+  --bg: #051329;
+  --fg: #faf8ff;
+  --card: #0d1b35;
+  --card-elev: #071935;
+  --footer: #010f25;
+  --border-subtle: #152950;
+  --divider: rgba(255, 255, 255, 0.1);
+  --muted-fg: #9ea0c6;
+  --body-fg: #c3c3e3;
+  --input-bg: #0d1b35;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --active-bg: #071935;
+  --active-border: #2f3057;
 }
 
 /* ─── Scroll-Reveal Keyframes ────────────────────────────── */

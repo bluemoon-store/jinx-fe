@@ -38,8 +38,8 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
 
   return (
     <div className="flex h-full w-full flex-1 items-center justify-center">
-      <div className="w-full max-w-[520px] rounded-xl border border-[#111E33] bg-[#051329] p-4 sm:p-5">
-        <div className="mb-4 flex flex-col items-center justify-center gap-1.5 border-b border-[#111E33] pb-4 text-center">
+      <div className="w-full max-w-[520px] rounded-xl border border-border-subtle bg-card-elevated p-4 sm:p-5">
+        <div className="mb-4 flex flex-col items-center justify-center gap-1.5 border-b border-border-subtle pb-4 text-center">
           <CentralIcon
             name="IconTicket"
             join="round"
@@ -49,15 +49,15 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
             size={26}
             color="#EA2CFF"
           />
-          <h3 className="text-lg font-semibold text-white">Create a Ticket</h3>
-          <p className="text-sm text-[#C2C6CD]">
+          <h3 className="text-lg font-semibold text-foreground">Create a Ticket</h3>
+          <p className="text-sm text-body-foreground">
             Describe your issue and our team will respond here. You can optionally link an order.
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
           <div>
-            <label htmlFor="ticket-subject" className="mb-2 block text-sm font-medium text-[#9EA0C6]">
+            <label htmlFor="ticket-subject" className="mb-2 block text-sm font-medium text-muted-foreground">
               Subject <span className="text-[#EA2CFF]">*</span>
             </label>
             <input
@@ -66,13 +66,13 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               maxLength={200}
-              className="h-12 w-full rounded-lg border border-[#111E33] bg-[#031128] px-3 text-sm text-white placeholder:text-[#677084] focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+              className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
               placeholder="What do you need help with?"
             />
           </div>
 
           <div>
-            <label htmlFor="ticket-message" className="mb-2 block text-sm font-medium text-[#9EA0C6]">
+            <label htmlFor="ticket-message" className="mb-2 block text-sm font-medium text-muted-foreground">
               Message <span className="text-[#EA2CFF]">*</span>
             </label>
             <textarea
@@ -81,13 +81,13 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               onChange={(e) => setMessage(e.target.value)}
               maxLength={5000}
               rows={5}
-              className="w-full resize-y rounded-lg border border-[#111E33] bg-[#031128] px-3 py-2 text-sm text-white placeholder:text-[#677084] focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+              className="w-full resize-y rounded-lg border border-border-subtle bg-input-bg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
               placeholder="Include any order numbers, payment details, or steps to reproduce the issue."
             />
           </div>
 
           <div>
-            <label htmlFor="ticket-order" className="mb-2 block text-sm font-medium text-[#9EA0C6]">
+            <label htmlFor="ticket-order" className="mb-2 block text-sm font-medium text-muted-foreground">
               Order ID <span className="text-[#828994]">(optional)</span>
             </label>
             <input
@@ -95,7 +95,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               type="text"
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
-              className="h-12 w-full rounded-lg border border-[#111E33] bg-[#031128] px-3 text-sm text-white placeholder:text-[#677084] focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+              className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
               placeholder="UUID of your order if applicable"
             />
           </div>
@@ -106,7 +106,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
             <button
               type="button"
               onClick={onCancel}
-              className="h-12 flex-1 rounded-lg border border-[#1E2E47] bg-[#071935] text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className="h-12 flex-1 rounded-lg border border-border-subtle bg-card text-sm font-semibold text-foreground transition-opacity hover:opacity-90"
             >
               Cancel
             </button>
@@ -121,8 +121,9 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
         </form>
 
         <div className="mt-4 flex items-center justify-center gap-2 text-center text-sm font-semibold text-[#1AD824]">
-          <span className="relative flex h-4 w-4 shrink-0 animate-[pulse_0.8s_ease-in-out_infinite] items-center justify-center rounded-full bg-[#0B5B2A]">
-            <span className="h-2 w-2 rounded-full bg-[#1AD824]" />
+          <span className="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#1AD824]/10">
+            <span className="absolute inset-0 animate-pulse rounded-full bg-[#1AD824]/30" />
+            <span className="relative h-2 w-2 rounded-full bg-[#1AD824]" />
           </span>
           Our support team is Live
         </div>

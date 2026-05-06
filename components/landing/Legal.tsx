@@ -29,8 +29,8 @@ function NavItem({
       className={[
         'rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5 text-left',
         isActive
-          ? 'border border-solid border-[#2F3057] text-white [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
-          : 'text-white/90 hover:bg-[#0D1B35] hover:text-white',
+          ? 'border border-solid border-active-border text-foreground [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--active-bg),var(--active-bg))]'
+          : 'text-foreground/90 hover:bg-hover-bg hover:text-foreground',
       ].join(' ')}
     >
       <span className="leading-num-20 font-semibold">{label}</span>
@@ -54,7 +54,7 @@ export default function Legal() {
           <div className="flex w-full flex-col gap-[25px]">
             <section className="flex flex-col gap-[14px]">
               <h2 className="tracking-num--0_01 leading-num-28 font-semibold">Overview</h2>
-              <div className="text-num-16 text-lightsteelblue-100 leading-6 font-medium">
+              <div className="text-num-16 text-body-foreground leading-6 font-medium">
                 <p className="m-0">
                   These Terms of Service (“Terms”) govern your access to and use of Bluemoon (“we”,
                   “us”, “our”) websites, apps, and related services (collectively, the “Service”).
@@ -63,8 +63,8 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Eligibility and Accounts
               </h3>
               <div className="leading-num-30 font-medium">
@@ -82,8 +82,8 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Acceptable Use
               </h3>
               <div className="leading-num-30 font-medium">
@@ -104,8 +104,8 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Fees, Trials, and Billing (If Applicable)
               </h3>
               <p className="leading-6 font-medium">
@@ -115,8 +115,8 @@ export default function Legal() {
               </p>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Disclaimers and Limitation of Liability
               </h3>
               <p className="leading-6 font-medium">
@@ -127,13 +127,13 @@ export default function Legal() {
               </p>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Contact
               </h3>
               <p className="leading-6 font-medium">
                 Questions about these Terms? Contact us at{' '}
-                <span className="text-ghostwhite">support@jinx.to</span>.
+                <span className="text-foreground">support@jinx.to</span>.
               </p>
             </section>
           </div>
@@ -148,7 +148,7 @@ export default function Legal() {
           <div className="flex w-full flex-col gap-[25px]">
             <section className="flex flex-col gap-[14px]">
               <h2 className="tracking-num--0_01 leading-num-28 font-semibold">What this covers</h2>
-              <div className="text-num-16 text-lightsteelblue-100 leading-6 font-medium">
+              <div className="text-num-16 text-body-foreground leading-6 font-medium">
                 <p className="m-0">
                   This Privacy Policy explains how Bluemoon collects, uses, shares, and protects
                   information when you use the Service.
@@ -156,35 +156,35 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Information we collect
               </h3>
               <div className="leading-num-30 font-medium">
                 <ul className="font-inherit m-0 pl-[21px] text-[length:inherit]">
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Account data</span> (e.g., name, email,
+                    <span className="text-foreground">Account data</span> (e.g., name, email,
                     password hash, profile settings).
                   </li>
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Usage data</span> (e.g., pages viewed,
+                    <span className="text-foreground">Usage data</span> (e.g., pages viewed,
                     features used, device identifiers, IP address, logs).
                   </li>
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Payment data</span> (handled by payment
+                    <span className="text-foreground">Payment data</span> (handled by payment
                     processors; we typically receive limited metadata like last 4 digits and billing
                     status).
                   </li>
                   <li>
-                    <span className="text-ghostwhite">Support data</span> (messages, attachments,
+                    <span className="text-foreground">Support data</span> (messages, attachments,
                     and diagnostic details you provide).
                   </li>
                 </ul>
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 How we use information
               </h3>
               <div className="leading-num-30 font-medium">
@@ -197,8 +197,8 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Sharing
               </h3>
               <p className="leading-6 font-medium">
@@ -208,8 +208,8 @@ export default function Legal() {
               </p>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Your choices
               </h3>
               <div className="leading-num-30 font-medium">
@@ -223,13 +223,13 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Contact
               </h3>
               <p className="leading-6 font-medium">
                 Privacy questions? Email{' '}
-                <span className="text-ghostwhite">privacy@bluemoon.example</span>.
+                <span className="text-foreground">privacy@bluemoon.example</span>.
               </p>
             </section>
           </div>
@@ -244,7 +244,7 @@ export default function Legal() {
           <div className="flex w-full flex-col gap-[25px]">
             <section className="flex flex-col gap-[14px]">
               <h2 className="tracking-num--0_01 leading-num-28 font-semibold">Summary</h2>
-              <div className="text-num-16 text-lightsteelblue-100 leading-6 font-medium">
+              <div className="text-num-16 text-body-foreground leading-6 font-medium">
                 <p className="m-0">
                   This Refund Policy describes how refunds work for paid plans and purchases made
                   through the Service. This is sample text and should be replaced with your actual
@@ -253,30 +253,30 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Eligibility
               </h3>
               <div className="leading-num-30 font-medium">
                 <ul className="font-inherit m-0 pl-[21px] text-[length:inherit]">
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Monthly plans</span>: refund requests are
+                    <span className="text-foreground">Monthly plans</span>: refund requests are
                     eligible within 7 days of the initial purchase.
                   </li>
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Annual plans</span>: refund requests are
+                    <span className="text-foreground">Annual plans</span>: refund requests are
                     eligible within 14 days of the initial purchase.
                   </li>
                   <li>
-                    <span className="text-ghostwhite">Renewals</span>: generally non-refundable, but
+                    <span className="text-foreground">Renewals</span>: generally non-refundable, but
                     we may review exceptional cases.
                   </li>
                 </ul>
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Non-refundable items
               </h3>
               <div className="leading-num-30 font-medium">
@@ -288,12 +288,12 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 How to request a refund
               </h3>
               <p className="leading-6 font-medium">
-                Contact <span className="text-ghostwhite">support@jinx.to</span> with your account
+                Contact <span className="text-foreground">support@jinx.to</span> with your account
                 email, invoice (if available), and a short description of the issue. If approved,
                 refunds are typically processed back to the original payment method within 5–10
                 business days.
@@ -313,7 +313,7 @@ export default function Legal() {
               <h2 className="tracking-num--0_01 leading-num-28 font-semibold">
                 How we use cookies
               </h2>
-              <div className="text-num-16 text-lightsteelblue-100 leading-6 font-medium">
+              <div className="text-num-16 text-body-foreground leading-6 font-medium">
                 <p className="m-0">
                   Cookies are small text files stored on your device. We use cookies and similar
                   technologies to keep you signed in, remember preferences, measure performance, and
@@ -322,34 +322,34 @@ export default function Legal() {
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Types of cookies
               </h3>
               <div className="leading-num-30 font-medium">
                 <ul className="font-inherit m-0 pl-[21px] text-[length:inherit]">
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Essential</span>: required for core features
+                    <span className="text-foreground">Essential</span>: required for core features
                     like authentication and security.
                   </li>
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Preferences</span>: remember your settings
+                    <span className="text-foreground">Preferences</span>: remember your settings
                     (e.g., language, region).
                   </li>
                   <li className="mb-0">
-                    <span className="text-ghostwhite">Analytics</span>: help us understand usage to
+                    <span className="text-foreground">Analytics</span>: help us understand usage to
                     improve the product.
                   </li>
                   <li>
-                    <span className="text-ghostwhite">Marketing</span>: used to measure campaigns
+                    <span className="text-foreground">Marketing</span>: used to measure campaigns
                     and show relevant content where applicable.
                   </li>
                 </ul>
               </div>
             </section>
 
-            <section className="text-num-16 text-lightsteelblue-100 flex flex-col gap-3">
-              <h3 className="tracking-num--0_01 leading-num-28 text-ghostwhite font-semibold">
+            <section className="text-num-16 text-body-foreground flex flex-col gap-3">
+              <h3 className="tracking-num--0_01 leading-num-28 text-foreground font-semibold">
                 Managing cookies
               </h3>
               <p className="leading-6 font-medium">
@@ -386,13 +386,13 @@ export default function Legal() {
   }, [searchParams])
 
   return (
-    <section className="text-num-14 font-commissioner w-full text-left text-white">
+    <section className="text-num-14 font-commissioner w-full text-left text-foreground">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
         <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[208px_1fr] lg:gap-16">
           {/* Legal navigation */}
-          <aside className="text-lightsteelblue-200 flex w-full flex-col items-start self-start lg:sticky lg:top-24">
+          <aside className="text-muted-foreground flex w-full flex-col items-start self-start lg:sticky lg:top-24">
             <nav className="flex w-full flex-col items-start gap-1">
-              <div className="rounded-num-8 min-w-num-190 text-slategray box-border flex w-full items-center px-3 py-2 text-[12px]">
+              <div className="rounded-num-8 min-w-num-190 text-muted-foreground box-border flex w-full items-center px-3 py-2 text-[12px]">
                 <div className="leading-[15px] font-semibold uppercase">LEGAL</div>
               </div>
 
@@ -411,17 +411,17 @@ export default function Legal() {
           </aside>
 
           {/* Page content */}
-          <main className="text-ghostwhite flex w-full flex-col gap-6 text-[18px]">
+          <main className="text-foreground flex w-full flex-col gap-6 text-[18px]">
             <header className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
               <h1 className="leading-num-28 tracking-num-0.02 font-semibold">
                 {activeSection.title}
               </h1>
-              <div className="text-lightsteelblue-200 text-[12px] leading-[15px] font-semibold">
+              <div className="text-muted-foreground text-[12px] leading-[15px] font-semibold">
                 Last Revised: {activeSection.lastRevised}
               </div>
             </header>
 
-            <div className="h-px w-full bg-white/10" />
+            <div className="h-px w-full bg-divider" />
 
             {activeSection.content}
           </main>
