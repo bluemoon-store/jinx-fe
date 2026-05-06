@@ -48,8 +48,12 @@ export function TicketListSidebar({
             </p>
           </div>
         ) : isLoading ? (
-          <div className="flex flex-1 items-center justify-center px-6 py-10 text-sm text-muted-foreground">
-            Loading tickets…
+          <div className="flex flex-1 items-center justify-center px-6 py-10">
+            <div
+              className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-fuchsia-400"
+              role="status"
+              aria-label="Loading tickets"
+            />
           </div>
         ) : (
           <div className="max-h-[380px] flex-1 overflow-y-auto lg:max-h-none">

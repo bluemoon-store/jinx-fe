@@ -13,7 +13,6 @@ export default function VerifyEmailPage() {
       fallback={
         <BrandLoader
           fullScreen
-          label="Loading…"
           className="overflow-x-hidden bg-[#041329] px-4 py-8 sm:px-6 sm:py-10 lg:px-8"
           iconClassName="h-10"
         />

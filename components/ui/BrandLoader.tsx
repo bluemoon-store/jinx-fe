@@ -24,15 +24,12 @@ export function BrandLoader({
       aria-live="polite"
       aria-label={label ?? 'Loading'}
     >
-      <div className="flex flex-col items-center gap-3">
-        <img
-          src="/icons/loader.svg"
-          alt=""
-          aria-hidden="true"
-          className={cn('h-12 w-auto', iconClassName)}
-        />
-        {label ? <span className="text-sm text-white/75">{label}</span> : null}
-      </div>
+      <img
+        src="/icons/loader.svg"
+        alt=""
+        aria-hidden="true"
+        className={cn('h-12 w-auto', iconClassName)}
+      />
     </div>
   )
 }

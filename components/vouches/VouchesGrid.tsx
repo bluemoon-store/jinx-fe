@@ -2,6 +2,7 @@
 
 import { getVouchesAction } from '@/actions/vouch'
 import { DashboardLoadMoreFooter } from '@/components/dashboard/DashboardLoadMoreFooter'
+import { BrandLoader } from '@/components/ui/BrandLoader'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import type { FunctionComponent } from 'react'
 
@@ -23,7 +24,7 @@ export const VouchesGrid: FunctionComponent = () => {
   const total = pages[0]?.metadata.totalItems ?? 0
 
   if (query.isLoading) {
-    return <div className="py-14 text-center text-white/70">Loading vouches...</div>
+    return <BrandLoader className="py-14" />
   }
 
   if (query.isError) {

@@ -11,6 +11,7 @@ import { MessageComposer } from '@/components/support/MessageComposer'
 import { MessageList } from '@/components/support/MessageList'
 import { TicketHeader } from '@/components/support/TicketHeader'
 import { TicketListSidebar } from '@/components/support/TicketListSidebar'
+import { BrandLoader } from '@/components/ui/BrandLoader'
 import { Reveal } from '@/components/ui/reveal'
 import { useCurrentUser } from '@/hooks/use-auth'
 import { useSupportTicketRoom } from '@/hooks/use-support-ticket-room'
@@ -177,7 +178,7 @@ export default function SupportPage() {
 
                 <section className="flex min-h-[430px] flex-1 flex-col bg-[linear-gradient(var(--input-bg),var(--input-bg)),url('/icons/support-bg.svg')] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
                   {userLoading ? (
-                    <div className="text-muted-foreground flex flex-1 items-center justify-center text-sm">Loading…</div>
+                    <BrandLoader className="flex-1" />
                   ) : !isAuthenticated ? (
                     <SupportGuestChatPanel />
                   ) : isCreatingTicket ? (
@@ -197,9 +198,7 @@ export default function SupportPage() {
                       </p>
                     </div>
                   ) : detailLoading && !ticketDetail ? (
-                    <div className="text-muted-foreground flex flex-1 items-center justify-center text-sm">
-                      Loading conversation…
-                    </div>
+                    <BrandLoader className="flex-1" />
                   ) : ticketDetail ? (
                     <>
                       <TicketHeader
