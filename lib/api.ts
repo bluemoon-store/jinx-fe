@@ -19,6 +19,9 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+    delete config.headers['Content-Type']
+  }
   const token = getAccessToken()
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -155,6 +158,35 @@ export type PaginatedResponse<T> = {
   }
 }
 
+export type VouchUser = {
+  id: string
+  userName: string
+  avatar: string | null
+}
+
+export type VouchProduct = {
+  id: string
+  name: string
+  slug: string
+  imageUrl: string | null
+}
+
+export type Vouch = {
+  id: string
+  orderItemId: string
+  imageUrl: string
+  caption: string | null
+  createdAt: string
+  user: VouchUser
+  product: VouchProduct
+}
+
+export type VouchListParams = {
+  page?: number
+  limit?: number
+  sort?: 'newest' | 'oldest'
+}
+
 export const reviewsApi = {
   async create(data: CreateReviewDto): Promise<ReviewListItem> {
     const res = await api.post<BackendResponse<ReviewListItem>>('/reviews', data)
@@ -172,5 +204,33 @@ export const reviewsApi = {
   },
   async delete(id: string): Promise<void> {
     await api.delete(`/reviews/${id}`)
+  },
+}
+
+export const vouchesApi = {
+  async create(form: FormData): Promise<Vouch> {
+    const res = await api.post<BackendResponse<Vouch>>('/vouches', form)
+    return unwrap(res)
+  },
+  async list(params?: VouchListParams): Promise<PaginatedResponse<Vouch>> {
+    const res = await api.get<BackendResponse<PaginatedResponse<Vouch>>>('/vouches', { params })
+    return unwrap(res)
+  },
+  async listMine(params?: VouchListParams): Promise<PaginatedResponse<Vouch>> {
+    const res = await api.get<BackendResponse<PaginatedResponse<Vouch>>>('/vouches/me', { params })
+    return unwrap(res)
+  },
+  async listForProduct(
+    productId: string,
+    params?: VouchListParams
+  ): Promise<PaginatedResponse<Vouch>> {
+    const res = await api.get<BackendResponse<PaginatedResponse<Vouch>>>(
+      `/products/${productId}/vouches`,
+      { params }
+    )
+    return unwrap(res)
+  },
+  async delete(id: string): Promise<void> {
+    await api.delete(`/vouches/${id}`)
   },
 }

@@ -8,6 +8,8 @@ import { formatUsd } from '@/lib/cart-format'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { reviewsApi } from '@/lib/api'
+import { deleteVouchAction } from '@/actions/vouch'
+import { VouchUploadModal } from '@/components/vouches/VouchUploadModal'
 import {
   ORDERS_QUERY_KEYS,
   mapApiOrderToDashboardCard,
@@ -19,8 +21,9 @@ import type { OrderPaymentMethod } from '@/stores/order-review-store'
 import { useOrderReviewStore } from '@/stores/order-review-store'
 import { toast } from '@/lib/toast'
 import type { Route } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { FunctionComponent, useEffect, useRef, useState } from 'react'
 
 const modalShadowClass =
@@ -41,7 +44,9 @@ const PAYMENT_CRYPTO_META: Record<OrderPaymentMethod, { src: string; label: stri
 const DashboardOrderDetailPage: FunctionComponent = () => {
   const queryClient = useQueryClient()
   const params = useParams()
+  const searchParams = useSearchParams()
   const rawId = typeof params.id === 'string' ? params.id : ''
+  const shouldOpenVouch = searchParams.get('vouch') === 'true'
   const markedUsedByOrderId = useOrderReviewStore((s) => s.markedUsedByOrderId)
   const setOrderMarkedUsed = useOrderReviewStore((s) => s.setOrderMarkedUsed)
 
@@ -65,6 +70,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const [isProcessToRedeemOpen, setIsProcessToRedeemOpen] = useState(false)
   const [isOrderWarrantyOpen, setIsOrderWarrantyOpen] = useState(false)
   const [redeemCodeCopied, setRedeemCodeCopied] = useState(false)
+  const [vouchModalOpen, setVouchModalOpen] = useState(false)
+  const [vouchOrderItemId, setVouchOrderItemId] = useState('')
   const redeemCopiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -72,6 +79,30 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
       if (redeemCopiedTimeoutRef.current) clearTimeout(redeemCopiedTimeoutRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    if (shouldOpenVouch && apiOrder?.items && apiOrder.items.length > 0) {
+      // Find first item that has less than 5 vouches
+      const itemToVouch = apiOrder.items.find((i) => (i.vouches?.length || 0) < 5)
+      if (itemToVouch) {
+        setVouchOrderItemId(itemToVouch.id)
+        setVouchModalOpen(true)
+      }
+    }
+  }, [shouldOpenVouch, apiOrder?.items])
+
+  const handleDeleteVouch = async (vouchId: string) => {
+    if (!confirm('Are you sure you want to delete this vouch?')) return
+    try {
+      await deleteVouchAction(vouchId)
+      toast.success('Vouch deleted')
+      await queryClient.invalidateQueries({
+        queryKey: ORDERS_QUERY_KEYS.detail(rawId),
+      })
+    } catch {
+      toast.error('Failed to delete vouch')
+    }
+  }
 
   useEffect(() => {
     if (!rawId || apiOrder?.status !== 'COMPLETED') return
@@ -145,8 +176,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   }
 
   const redeemDisplay = deliveryCode?.trim() || 'XXXXXXXXXXXXXXX'
-  const isMultilineRedeem =
-    redeemDisplay !== 'XXXXXXXXXXXXXXX' && redeemDisplay.includes('\n')
+  const isMultilineRedeem = redeemDisplay !== 'XXXXXXXXXXXXXXX' && redeemDisplay.includes('\n')
 
   const handleCopyRedeemCode = async () => {
     const code = redeemDisplay === 'XXXXXXXXXXXXXXX' ? '' : redeemDisplay
@@ -815,10 +845,95 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     ) : null}
                   </div>
                 </section>
+
+                <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
+
+                <section aria-labelledby="vouches-heading" className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2 text-white opacity-75">
+                    <h2 id="vouches-heading" className="leading-num-28 tracking-num-0_02 font-bold">
+                      Share a Vouch
+                    </h2>
+                  </div>
+
+                  <div className="flex flex-col gap-4">
+                    {apiOrder.items?.map((item) => (
+                      <div
+                        key={item.id}
+                        className="rounded-xl border border-solid border-gray-600 bg-gray-200 p-4"
+                      >
+                        <div className="mb-3 flex items-center justify-between gap-3">
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-bold text-white uppercase">
+                              {item.variantLabel || item.product?.name}
+                            </p>
+                            <p className="text-lightsteelblue-200 text-xs">
+                              {item.vouches?.length || 0} / 5 vouches posted
+                            </p>
+                          </div>
+                          {(item.vouches?.length || 0) < 5 && (
+                            <button
+                              onClick={() => {
+                                setVouchOrderItemId(item.id)
+                                setVouchModalOpen(true)
+                              }}
+                              className="bg-fuchsia/10 text-fuchsia hover:bg-fuchsia/20 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors"
+                            >
+                              Add Vouch
+                            </button>
+                          )}
+                        </div>
+
+                        {item.vouches && item.vouches.length > 0 ? (
+                          <div className="flex flex-wrap gap-3">
+                            {item.vouches.map((vouch) => (
+                              <div
+                                key={vouch.id}
+                                className="group relative h-20 w-20 overflow-hidden rounded-lg bg-gray-100"
+                              >
+                                <Image
+                                  src={vouch.imageUrl}
+                                  alt="Vouch"
+                                  fill
+                                  className="object-cover"
+                                />
+                                <button
+                                  onClick={() => handleDeleteVouch(vouch.id)}
+                                  className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                                >
+                                  <CentralIcon
+                                    name="IconTrashCan"
+                                    join="round"
+                                    fill="filled"
+                                    stroke="2"
+                                    radius="1"
+                                    size={12}
+                                    ariaHidden={true}
+                                    color="#ff2a2a"
+                                  />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-white/30 italic">
+                            No vouches shared for this item yet.
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
               </>
             ) : null}
           </div>
         </article>
+
+        <VouchUploadModal
+          orderId={rawId}
+          orderItemId={vouchOrderItemId}
+          open={vouchModalOpen}
+          onOpenChange={setVouchModalOpen}
+        />
       </div>
     </Reveal>
   )

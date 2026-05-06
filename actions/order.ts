@@ -41,6 +41,7 @@ export type ApiOrderItem = {
   regionLabel?: string | null
   regionCountry?: string | null
   deliveredContent?: string | null
+  deliveredAt?: string | null
   product?: {
     slug?: string
     name?: string
@@ -50,6 +51,12 @@ export type ApiOrderItem = {
     redeemProcess?: string | null
     images?: Array<{ url: string | null; isPrimary: boolean; sortOrder?: number }>
   }
+  vouches?: Array<{
+    id: string
+    imageUrl: string
+    caption: string | null
+    createdAt: string
+  }>
 }
 
 export type ApiCryptoPayment = {

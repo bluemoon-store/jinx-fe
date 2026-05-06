@@ -71,6 +71,7 @@ const Navbar: FunctionComponent = () => {
   const navLinks = [
     { label: 'Shop', href: '/shop', icon: 'IconBasket1' },
     { label: 'Drops', href: '#', icon: 'IconGift1' },
+    { label: 'Vouches', href: '/vouches', icon: 'IconShieldKeyhole' },
     { label: 'FAQs', href: '/faqs', icon: 'IconCircleQuestionmark' },
     { label: 'Support', href: '/support', icon: 'IconRescueRing' },
   ]
