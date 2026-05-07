@@ -10,8 +10,8 @@ ARG CENTRAL_LICENSE_KEY
 ENV CENTRAL_LICENSE_KEY=$CENTRAL_LICENSE_KEY
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-  if [ -f yarn.lock ]; then yarn install --frozen-lockfile --network-timeout 600000; \
-  elif [ -f package-lock.json ]; then npm ci; \
+  if [ -f package-lock.json ]; then npm ci; \
+  elif [ -f yarn.lock ]; then yarn install --frozen-lockfile --network-timeout 600000; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable && pnpm i --frozen-lockfile; \
   else npm i; \
   fi
@@ -34,8 +34,8 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXT_TELEMETRY_DISABLED=1
 
 RUN \
-  if [ -f yarn.lock ]; then yarn build; \
-  elif [ -f package-lock.json ]; then npm run build; \
+  if [ -f package-lock.json ]; then npm run build; \
+  elif [ -f yarn.lock ]; then yarn build; \
   else npm run build; \
   fi
 
