@@ -324,6 +324,89 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
             <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
 
+            <section aria-labelledby="vouches-heading" className="flex flex-col gap-4">
+              <div className="flex items-center gap-2 text-white opacity-75">
+                <CentralIcon
+                  name="IconShieldCheck"
+                  join="round"
+                  fill="filled"
+                  stroke="2"
+                  radius="1"
+                  size={20}
+                  color="currentColor"
+                  className="shrink-0"
+                />
+                <h2 id="vouches-heading" className="leading-num-28 tracking-num-0_02 font-bold">
+                  Add a Vouch
+                </h2>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {apiOrder.items?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded-xl border border-solid border-gray-600 bg-gray-200 p-4"
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-bold text-white uppercase">
+                          {item.variantLabel || item.product?.name}
+                        </p>
+                        <p className="text-lightsteelblue-200 text-xs">
+                          {item.vouches?.length || 0} / 5 vouches posted
+                        </p>
+                      </div>
+                      {(item.vouches?.length || 0) < 5 && (
+                        <button
+                          onClick={() => {
+                            setVouchOrderItemId(item.id)
+                            setVouchModalOpen(true)
+                          }}
+                          className="bg-fuchsia/10 text-fuchsia hover:bg-fuchsia/20 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors"
+                        >
+                          Add Vouch
+                        </button>
+                      )}
+                    </div>
+
+                    {item.vouches && item.vouches.length > 0 ? (
+                      <div className="flex flex-wrap gap-3">
+                        {item.vouches.map((vouch) => (
+                          <div
+                            key={vouch.id}
+                            className="group relative h-20 w-20 overflow-hidden rounded-lg bg-gray-100"
+                          >
+                            <Image src={vouch.imageUrl} alt="Vouch" fill className="object-cover" />
+                            <button
+                              onClick={() => handleDeleteVouch(vouch.id)}
+                              className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                            >
+                              <CentralIcon
+                                name="IconTrashCan"
+                                join="round"
+                                fill="filled"
+                                stroke="2"
+                                radius="1"
+                                size={12}
+                                ariaHidden={true}
+                                color="#ff2a2a"
+                              />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-white/30 italic">
+                        No vouches shared for this item yet.
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
+
             <div className="text-num-14 text-lightsteelblue-200 flex w-full flex-wrap items-center justify-center gap-3">
               <span className="leading-num-20 font-semibold">Facing Issues?</span>
               <button
@@ -827,94 +910,6 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                         </p>
                       </div>
                     ) : null}
-                  </div>
-                </section>
-
-                <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
-
-                <section aria-labelledby="vouches-heading" className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2 text-white opacity-75">
-                    <CentralIcon
-                      name="IconShieldCheck"
-                      join="round"
-                      fill="filled"
-                      stroke="2"
-                      radius="1"
-                      size={20}
-                      color="currentColor"
-                      className="shrink-0"
-                    />
-                    <h2 id="vouches-heading" className="leading-num-28 tracking-num-0_02 font-bold">
-                      Share a Vouch
-                    </h2>
-                  </div>
-
-                  <div className="flex flex-col gap-4">
-                    {apiOrder.items?.map((item) => (
-                      <div
-                        key={item.id}
-                        className="rounded-xl border border-solid border-gray-600 bg-gray-200 p-4"
-                      >
-                        <div className="mb-3 flex items-center justify-between gap-3">
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-bold text-white uppercase">
-                              {item.variantLabel || item.product?.name}
-                            </p>
-                            <p className="text-lightsteelblue-200 text-xs">
-                              {item.vouches?.length || 0} / 5 vouches posted
-                            </p>
-                          </div>
-                          {(item.vouches?.length || 0) < 5 && (
-                            <button
-                              onClick={() => {
-                                setVouchOrderItemId(item.id)
-                                setVouchModalOpen(true)
-                              }}
-                              className="bg-fuchsia/10 text-fuchsia hover:bg-fuchsia/20 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors"
-                            >
-                              Add Vouch
-                            </button>
-                          )}
-                        </div>
-
-                        {item.vouches && item.vouches.length > 0 ? (
-                          <div className="flex flex-wrap gap-3">
-                            {item.vouches.map((vouch) => (
-                              <div
-                                key={vouch.id}
-                                className="group relative h-20 w-20 overflow-hidden rounded-lg bg-gray-100"
-                              >
-                                <Image
-                                  src={vouch.imageUrl}
-                                  alt="Vouch"
-                                  fill
-                                  className="object-cover"
-                                />
-                                <button
-                                  onClick={() => handleDeleteVouch(vouch.id)}
-                                  className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                                >
-                                  <CentralIcon
-                                    name="IconTrashCan"
-                                    join="round"
-                                    fill="filled"
-                                    stroke="2"
-                                    radius="1"
-                                    size={12}
-                                    ariaHidden={true}
-                                    color="#ff2a2a"
-                                  />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-xs text-white/30 italic">
-                            No vouches shared for this item yet.
-                          </p>
-                        )}
-                      </div>
-                    ))}
                   </div>
                 </section>
               </>

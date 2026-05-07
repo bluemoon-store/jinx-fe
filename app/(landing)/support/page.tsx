@@ -185,8 +185,12 @@ export default function SupportPage() {
                     <CreateTicketForm
                       isSubmitting={createMutation.isPending}
                       onCancel={() => setIsCreatingTicket(false)}
-                      onSubmit={async (payload) => {
-                        const detail = await createMutation.mutateAsync(payload)
+                      onSubmit={async ({ subject, message, orderNumber }) => {
+                        const detail = await createMutation.mutateAsync({
+                          subject,
+                          message,
+                          orderNumber,
+                        })
                         setSelectedTicketId(detail.id)
                         setIsCreatingTicket(false)
                       }}

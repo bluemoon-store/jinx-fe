@@ -54,18 +54,7 @@ export const createSupportTicketSchema = z
   .object({
     subject: z.string().trim().min(3, 'Subject must be at least 3 characters').max(200),
     message: z.string().trim().min(1, 'Message is required').max(5000),
-    orderId: z.string().trim().optional(),
-  })
-  .superRefine((data, ctx) => {
-    const raw = data.orderId?.trim()
-    if (!raw) return
-    if (!z.string().uuid().safeParse(raw).success) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Order ID must be a valid UUID',
-        path: ['orderId'],
-      })
-    }
+    orderNumber: z.string().trim().min(1, 'Order ID is required').max(64),
   })
 
 export type CreateSupportTicketInput = z.infer<typeof createSupportTicketSchema>

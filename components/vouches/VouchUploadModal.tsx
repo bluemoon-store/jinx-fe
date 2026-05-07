@@ -33,7 +33,6 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
   const queryClient = useQueryClient()
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
-  const [caption, setCaption] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -63,7 +62,6 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
       setFile(null)
       if (preview) URL.revokeObjectURL(preview)
       setPreview(null)
-      setCaption('')
       setSubmitting(false)
     }, 300)
   }, [onOpenChange, preview])
@@ -76,9 +74,6 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
       const formData = new FormData()
       formData.append('file', file)
       formData.append('orderItemId', orderItemId)
-      if (caption.trim()) {
-        formData.append('caption', caption.trim())
-      }
 
       await createVouchAction(formData)
       toast.success('Vouch uploaded successfully!')
@@ -111,7 +106,7 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <div className="flex items-center gap-2">
               <h2 className="font-nata-sans text-lg font-extrabold text-white uppercase">
-                Share a Vouch
+                Add a Vouch
               </h2>
             </div>
             <button
@@ -193,19 +188,6 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-lightsteelblue-100 text-sm font-semibold">Caption</label>
-                  <span className="text-[11px] text-white/30">{caption.length}/500</span>
-                </div>
-                <textarea
-                  value={caption}
-                  onChange={(e) => setCaption(e.target.value.slice(0, 500))}
-                  placeholder="Share your experience (optional)"
-                  rows={4}
-                  className="focus:ring-fuchsia/20 w-full rounded-xl border border-white/10 bg-gray-200 p-3 text-sm text-white transition-shadow outline-none focus:ring-2"
-                />
-              </div>
             </div>
           </div>
 

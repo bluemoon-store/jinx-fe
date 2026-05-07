@@ -6,14 +6,14 @@ import CentralIcon from '@central-icons-react/all'
 
 type CreateTicketFormProps = {
   onCancel: () => void
-  onSubmit: (payload: { subject: string; message: string; orderId?: string }) => Promise<void>
+  onSubmit: (payload: { subject: string; message: string; orderNumber: string }) => Promise<void>
   isSubmitting?: boolean
 }
 
 export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTicketFormProps) {
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
-  const [orderId, setOrderId] = useState('')
+  const [orderNumber, setOrderNumber] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,10 +29,14 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
       setError('Message must be between 1 and 5000 characters.')
       return
     }
+    if (orderNumber.trim() === '') {
+      setError('Order ID is required.')
+      return
+    }
     await onSubmit({
       subject: s,
       message: m,
-      orderId: orderId.trim() || undefined,
+      orderNumber: orderNumber.trim(),
     })
   }
 
@@ -50,9 +54,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
             color="#EA2CFF"
           />
           <h3 className="text-lg font-semibold text-foreground">Create a Ticket</h3>
-          <p className="text-sm text-body-foreground">
-            Describe your issue and our team will respond here. You can optionally link an order.
-          </p>
+          <p className="text-sm text-body-foreground">Describe your issue and our team will respond here.</p>
         </div>
 
         <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
@@ -79,6 +81,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               id="ticket-message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              required
               maxLength={5000}
               rows={5}
               className="w-full resize-y rounded-lg border border-border-subtle bg-input-bg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
@@ -88,15 +91,16 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
 
           <div>
             <label htmlFor="ticket-order" className="mb-2 block text-sm font-medium text-muted-foreground">
-              Order ID <span className="text-[#828994]">(optional)</span>
+              Order ID <span className="text-[#EA2CFF]">*</span>
             </label>
             <input
               id="ticket-order"
               type="text"
-              value={orderId}
-              onChange={(e) => setOrderId(e.target.value)}
+              value={orderNumber}
+              onChange={(e) => setOrderNumber(e.target.value)}
+              required
               className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
-              placeholder="UUID of your order if applicable"
+              placeholder="ORD-20260507-AB12C"
             />
           </div>
 

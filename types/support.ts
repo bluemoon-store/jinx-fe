@@ -65,7 +65,7 @@ export interface TicketDetail extends Ticket {
 export interface CreateTicketPayload {
   subject: string
   message: string
-  orderId?: string
+  orderNumber: string
 }
 
 export interface SendMessagePayload {

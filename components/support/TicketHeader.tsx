@@ -47,7 +47,7 @@ export function TicketHeader({ ticket, onResolve, isResolving }: TicketHeaderPro
         <div className="min-w-0">
           <p className="truncate text-base font-semibold text-foreground">{ticket.ticketNumber}</p>
           <p className="truncate text-sm text-muted-foreground">
-            {ticket.subject}
+            {ticket.order?.orderNumber ?? 'Order unavailable'}
             <span className="text-muted-foreground"> — Created: {created}</span>
           </p>
           <p className="mt-1 text-xs font-semibold text-[#EA2CFF]">{STATUS_LABEL[ticket.status] ?? ticket.status}</p>
