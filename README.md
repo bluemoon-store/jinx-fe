@@ -20,7 +20,6 @@ A production-ready Next.js starter template with modern tooling, best practices,
 - **Linting**: ESLint + Prettier
 - **Git Hooks**: Husky + lint-staged
 - **CI/CD**: GitHub Actions
-- **Error Tracking**: Sentry
 
 ## Prerequisites
 
@@ -79,10 +78,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `GITHUB_CLIENT_SECRET`   | GitHub OAuth app client secret | No       |
 | `GOOGLE_CLIENT_ID`       | Google OAuth client ID         | No       |
 | `GOOGLE_CLIENT_SECRET`   | Google OAuth client secret     | No       |
-| `SENTRY_DSN`             | Sentry DSN for error tracking  | No       |
-| `NEXT_PUBLIC_SENTRY_DSN` | Public Sentry DSN              | No       |
-| `RESEND_API_KEY`         | Resend API key for emails      | No       |
-| `NEXT_PUBLIC_GA_ID`      | Google Analytics ID            | No       |
 
 ## Available Scripts
 
