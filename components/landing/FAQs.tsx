@@ -116,7 +116,6 @@ export default function FAQs() {
             question: 'Can I use other cryptocurrencies to shop?',
             answer:
               'Supported payment methods depend on the product and checkout options shown at the time of purchase. If a payment method is available, you’ll see it during checkout.',
-            defaultOpen: true,
           },
           {
             id: 'general-4',
@@ -191,9 +190,11 @@ export default function FAQs() {
   )
 
   const [activeCategory, setActiveCategory] = useState<FaqCategoryId>('general')
-  const [openIds, setOpenIds] = useState<Set<string>>(
-    () => new Set(categories.flatMap((c) => c.items.map((i) => i.id)))
-  )
+  const [openIds, setOpenIds] = useState<Set<string>>(() => {
+    const general = categories.find((c) => c.id === 'general')
+    const firstId = general?.items[0]?.id
+    return new Set(firstId ? [firstId] : [])
+  })
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredCategories = useMemo(() => {

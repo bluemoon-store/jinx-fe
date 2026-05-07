@@ -6,12 +6,11 @@ import CentralIcon from '@central-icons-react/all'
 
 type CreateTicketFormProps = {
   onCancel: () => void
-  onSubmit: (payload: { subject: string; message: string; orderNumber: string }) => Promise<void>
+  onSubmit: (payload: { message: string; orderNumber: string }) => Promise<void>
   isSubmitting?: boolean
 }
 
 export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTicketFormProps) {
-  const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
   const [orderNumber, setOrderNumber] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -19,12 +18,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    const s = subject.trim()
     const m = message.trim()
-    if (s.length < 3 || s.length > 200) {
-      setError('Subject must be between 3 and 200 characters.')
-      return
-    }
     if (m.length < 1 || m.length > 5000) {
       setError('Message must be between 1 and 5000 characters.')
       return
@@ -34,7 +28,6 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
       return
     }
     await onSubmit({
-      subject: s,
       message: m,
       orderNumber: orderNumber.trim(),
     })
@@ -59,37 +52,6 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
 
         <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
           <div>
-            <label htmlFor="ticket-subject" className="mb-2 block text-sm font-medium text-muted-foreground">
-              Subject <span className="text-[#EA2CFF]">*</span>
-            </label>
-            <input
-              id="ticket-subject"
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              maxLength={200}
-              className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
-              placeholder="What do you need help with?"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="ticket-message" className="mb-2 block text-sm font-medium text-muted-foreground">
-              Message <span className="text-[#EA2CFF]">*</span>
-            </label>
-            <textarea
-              id="ticket-message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-              maxLength={5000}
-              rows={5}
-              className="w-full resize-y rounded-lg border border-border-subtle bg-input-bg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
-              placeholder="Include any order numbers, payment details, or steps to reproduce the issue."
-            />
-          </div>
-
-          <div>
             <label htmlFor="ticket-order" className="mb-2 block text-sm font-medium text-muted-foreground">
               Order ID <span className="text-[#EA2CFF]">*</span>
             </label>
@@ -101,6 +63,22 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               required
               className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
               placeholder="ORD-20260507-AB12C"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="ticket-message" className="mb-2 block text-sm font-medium text-muted-foreground">
+              Message <span className="text-[#EA2CFF]">*</span>
+            </label>
+            <input
+              id="ticket-message"
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              maxLength={5000}
+              className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+              placeholder="Briefly describe your issue."
             />
           </div>
 
