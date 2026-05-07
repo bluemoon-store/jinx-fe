@@ -14,7 +14,7 @@ export const ShopDetailHero: FunctionComponent<Props> = ({ product }) => {
       <div className="flex w-full min-w-0 flex-col items-stretch">
         <div className="border-whitesmoke-300 flex w-full min-w-0 flex-col items-center justify-center gap-4 overflow-hidden rounded-[14.61px] border-[1.8px] border-solid bg-gray-100 px-4 pt-6 pb-4 sm:gap-5 sm:px-6 sm:pt-8 sm:pb-5 md:px-8 md:pt-10 md:pb-5 lg:px-12 lg:pt-[50px] lg:pb-[25px] xl:px-[50px]">
           <div className="h-full w-full overflow-hidden rounded-[14.61px] shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)]">
-            <img alt="" src={heroSrc} className="max-h-full max-w-full scale-110 object-contain" />
+            <img alt="" src={heroSrc} className="block h-full w-full object-cover" />
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             {product.tags.includes('Hot') && (

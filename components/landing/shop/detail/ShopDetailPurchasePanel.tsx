@@ -460,7 +460,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
           </div>
           <div className="tracking-num-0_02 font-extrabold">GUARANTEES</div>
         </div>
-        <div className="py-num-0 text-num-14 sm:px-num-16 flex flex-wrap items-center justify-center gap-2 px-4 text-center sm:gap-3">
+        <div className="py-num-0 text-num-14 sm:px-num-16 flex w-full self-center flex-wrap items-center justify-center gap-2 px-4 text-center sm:gap-3">
           <div className="rounded-num-8 border-mediumslateblue p-num-10 flex flex-col items-start border-[1px] border-solid [background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.2)),_linear-gradient(#1a0d35,_#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon
