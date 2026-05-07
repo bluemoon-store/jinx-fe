@@ -3,6 +3,7 @@
 import LogOutConfirmModal from '@/components/auth/LogOutConfirmModal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 import CartDropdownPanel from '@/components/landing/CartDropdownPanel'
+import NavbarThemeSwitch from '@/components/landing/NavbarThemeSwitch'
 import { useAuth } from '@/hooks/use-auth'
 import { useWalletBalanceQuery } from '@/hooks/use-wallet'
 import {
@@ -70,7 +71,7 @@ const Navbar: FunctionComponent = () => {
 
   const navLinks = [
     { label: 'Shop', href: '/shop', icon: 'IconBasket1' },
-    { label: 'Drops', href: '#', icon: 'IconGift1' },
+    { label: 'Drops', href: '/drops', icon: 'IconGift1' },
     { label: 'Vouches', href: '/vouches', icon: 'IconShieldKeyhole' },
     { label: 'FAQs', href: '/faqs', icon: 'IconCircleQuestionmark' },
     { label: 'Support', href: '/support', icon: 'IconRescueRing' },
@@ -158,7 +159,7 @@ const Navbar: FunctionComponent = () => {
   ]
 
   return (
-    <header className="text-foreground font-commissioner fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 border-b border-solid border-border-subtle bg-background/95 px-4 py-0 backdrop-blur-md sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
+    <header className="text-foreground font-commissioner border-border-subtle bg-background/95 fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 border-b border-solid px-4 py-0 backdrop-blur-md sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
       {/* Logo and nav links */}
       <nav className="flex h-14 flex-1 shrink-0 items-center gap-2 sm:gap-4 lg:gap-[15px]">
         <Link href="/" className="shrink-0">
@@ -168,7 +169,7 @@ const Navbar: FunctionComponent = () => {
             src="/icons/Jin X.svg"
           />
         </Link>
-        <div className="h-num-19 hidden w-px shrink-0 border-r border-solid border-divider lg:block" />
+        <div className="h-num-19 border-divider hidden w-px shrink-0 border-r border-solid lg:block" />
         {/* Desktop nav links */}
         <div className="hidden items-center gap-2 lg:flex lg:gap-3.5">
           {navLinks.map((link) => {
@@ -219,9 +220,10 @@ const Navbar: FunctionComponent = () => {
           <div className="flex shrink-0 items-center justify-center gap-2">
             {isLoggedIn ? (
               <>
-                <button
-                  type="button"
-                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid border-border-subtle bg-card-elevated pt-px pb-0.5"
+                <NavbarThemeSwitch />
+                <Link
+                  href={'/support' as Route}
+                  className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid pt-px pb-0.5"
                 >
                   <CentralIcon
                     name="IconRescueRing"
@@ -234,7 +236,7 @@ const Navbar: FunctionComponent = () => {
                     ariaHidden={true}
                   />
                   <b className="tracking-num--0_01 leading-num-28">0</b>
-                </button>
+                </Link>
                 <Link
                   href={DASHBOARD_PATHS.wallet as Route}
                   className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
@@ -245,7 +247,7 @@ const Navbar: FunctionComponent = () => {
                     {walletBalanceLabel}
                   </span>
                 </Link>
-                <div className="h-num-19 w-px shrink-0 border-r border-solid border-divider" />
+                <div className="h-num-19 border-divider w-px shrink-0 border-r border-solid" />
               </>
             ) : null}
             <div className="flex h-[46px] shrink-0 items-center gap-2">
@@ -259,7 +261,7 @@ const Navbar: FunctionComponent = () => {
                   aria-expanded={cartMenuOpen}
                   aria-haspopup="dialog"
                   aria-label="Shopping cart"
-                  className={`rounded-num-8 box-border flex h-[38px] w-[38px] items-center justify-center border border-solid bg-card-elevated transition-colors ${
+                  className={`rounded-num-8 bg-card-elevated box-border flex h-[38px] w-[38px] items-center justify-center border border-solid transition-colors ${
                     cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
                   }`}
                 >
@@ -295,7 +297,7 @@ const Navbar: FunctionComponent = () => {
               </div>
               {isLoggedIn && (
                 <>
-                  <div className="h-num-19 w-px shrink-0 border-r border-solid border-divider" />
+                  <div className="h-num-19 border-divider w-px shrink-0 border-r border-solid" />
                   <div className="relative shrink-0" ref={desktopUserMenuRef}>
                     <button
                       type="button"
@@ -387,11 +389,11 @@ const Navbar: FunctionComponent = () => {
             </div>
             {!isLoggedIn ? (
               <>
-                <div className="h-num-19 w-px shrink-0 border-r border-solid border-divider" />
+                <div className="h-num-19 border-divider w-px shrink-0 border-r border-solid" />
                 <button
                   type="button"
                   onClick={() => openAuthModal('signin')}
-                  className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid border-border-subtle bg-card-elevated pt-px pb-0.5 text-foreground"
+                  className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated text-foreground box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid pt-px pb-0.5"
                 >
                   <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
                 </button>
@@ -432,7 +434,7 @@ const Navbar: FunctionComponent = () => {
             aria-expanded={cartMenuOpen}
             aria-haspopup="dialog"
             aria-label="Shopping cart"
-            className={`rounded-num-8 box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid bg-card-elevated transition-colors ${
+            className={`rounded-num-8 bg-card-elevated box-border flex h-9 w-9 shrink-0 items-center justify-center border border-solid transition-colors ${
               cartMenuOpen ? 'border-fuchsia-200' : 'border-whitesmoke-300'
             }`}
           >
@@ -574,7 +576,7 @@ const Navbar: FunctionComponent = () => {
             <button
               type="button"
               onClick={() => openAuthModal('signin')}
-              className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid border-border-subtle bg-card-elevated pt-px pb-0.5 text-foreground"
+              className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated text-foreground box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid pt-px pb-0.5"
             >
               <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
             </button>
@@ -636,7 +638,7 @@ const Navbar: FunctionComponent = () => {
       {mobileNavMenuOpen && (
         <div
           ref={mobileNavPanelRef}
-          className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1 border-b border-border-subtle bg-background/95 px-4 py-4 backdrop-blur-md lg:hidden"
+          className="border-border-subtle bg-background/95 absolute top-full right-0 left-0 z-50 flex flex-col gap-1 border-b px-4 py-4 backdrop-blur-md lg:hidden"
         >
           {navLinks.map((link) =>
             link.href.startsWith('/') ? (
@@ -684,10 +686,11 @@ const Navbar: FunctionComponent = () => {
             )
           )}
 
-          <div className="mt-2 border-t border-solid border-divider pt-3">
-            <button
-              type="button"
-              className="rounded-num-8 flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid border-border-subtle bg-card-elevated px-4 text-base font-semibold text-foreground transition-colors hover:bg-hover-bg"
+          <div className="border-divider mt-2 border-t border-solid pt-3">
+            <Link
+              href={'/support' as Route}
+              onClick={() => setMobileNavMenuOpen(false)}
+              className="rounded-num-8 border-border-subtle bg-card-elevated text-foreground hover:bg-hover-bg flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid px-4 text-base font-semibold transition-colors"
             >
               <span className="flex items-center gap-2.5">
                 <CentralIcon
@@ -703,7 +706,7 @@ const Navbar: FunctionComponent = () => {
                 Help
               </span>
               <b className="tracking-num--0_01 text-base leading-none">0</b>
-            </button>
+            </Link>
           </div>
         </div>
       )}

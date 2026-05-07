@@ -85,17 +85,6 @@ const Footer: FunctionComponent = () => {
             <b className="leading-num-21_93 uppercase">Settings</b>
           </div>
           <div className="text-foreground font-commissioner flex flex-col items-center gap-2 sm:flex-row sm:items-start sm:gap-[9px] sm:text-center">
-            <div className="flex w-full flex-col items-stretch sm:w-auto sm:items-start">
-              <div className="box-border flex h-12 min-h-[44px] w-full min-w-0 items-center justify-between gap-[8.8px] rounded-[8.77px] border border-solid border-border-subtle bg-card px-4 py-[1.1px] sm:h-[39.5px] sm:min-h-0 sm:min-w-[193.02px] sm:px-[14.3px]">
-                <div className="flex items-center gap-[8.8px]">
-                  <img className="h-[19.7px] w-[19.7px]" alt="" src="/icons/SVG-1.svg" />
-                  <div className="flex flex-col items-center overflow-hidden">
-                    <div className="leading-num-21_93 font-semibold">English</div>
-                  </div>
-                </div>
-                <img className="h-[21.9px] w-fit overflow-hidden" alt="" src="/icons/SVG.svg" />
-              </div>
-            </div>
             <FooterThemeToggle />
           </div>
         </div>

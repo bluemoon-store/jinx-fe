@@ -1,6 +1,7 @@
 'use client'
 
 import { CentralIcon } from '@central-icons-react/all'
+import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
 type FaqCategoryId = 'general' | 'orders' | 'replacements' | 'refunds'
@@ -314,7 +315,7 @@ export default function FAQs() {
 
               <div className="text-muted-foreground flex w-fit items-center justify-center gap-2 rounded-md bg-card-elevated px-2 py-1.5 text-[12px]">
                 <div className="leading-[15px] font-semibold">Can’t find answer to your query?</div>
-                <div className="text-foreground flex items-center gap-1">
+                <Link href="/support" className="text-foreground flex items-center gap-1">
                   <CentralIcon
                     name="IconRescueRing"
                     join="round"
@@ -326,7 +327,7 @@ export default function FAQs() {
                     ariaHidden={true}
                   />
                   <div className="leading-[15px] font-semibold">Contact Support</div>
-                </div>
+                </Link>
               </div>
             </header>
 

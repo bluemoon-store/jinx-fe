@@ -409,8 +409,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
             <div className="text-num-14 text-lightsteelblue-200 flex w-full flex-wrap items-center justify-center gap-3">
               <span className="leading-num-20 font-semibold">Facing Issues?</span>
-              <button
-                type="button"
+              <Link
+                href={'/support' as Route}
                 className="text-ghostwhite rounded-num-8 px-num-12 text-num-15_35 leading-num-21_93 flex items-center gap-2 bg-[#19263F] py-1.5 font-semibold transition-colors hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
@@ -423,7 +423,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   ariaHidden={true}
                 />
                 Contact Support
-              </button>
+              </Link>
             </div>
           </section>
 
