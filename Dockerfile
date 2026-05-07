@@ -6,6 +6,8 @@
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
+ARG CENTRAL_LICENSE_KEY
+ENV CENTRAL_LICENSE_KEY=$CENTRAL_LICENSE_KEY
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn install --frozen-lockfile --network-timeout 600000; \
