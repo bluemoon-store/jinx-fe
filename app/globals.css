@@ -54,6 +54,8 @@
   --color-seagreen: #26a07b;
   --color-indigo: #682a8f;
   --color-limegreen: #1bd924;
+  --color-limegreen-100: #1bd924;
+  --color-limegreen-200: rgba(27, 217, 36, 0.2);
 
   /* Spacing (used for w, h, p, m, gap, inset, etc.) */
   --spacing-num-0: 0px;
