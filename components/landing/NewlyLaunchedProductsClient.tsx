@@ -40,25 +40,13 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
                 <img
                   className="rounded-num-8 aspect-video w-full object-cover shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
                   alt=""
-                  src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
+                  src={item.primaryImageUrl ?? '/icons/placeholder.svg'}
                 />
                 <div className="flex w-full flex-col items-center gap-0.5">
                   <div className="flex flex-wrap items-center justify-center gap-1.5 self-stretch">
-                    {item.iconUrl ? (
-                      <img
-                        src={item.iconUrl}
-                        alt=""
-                        className="border-border-subtle size-5 shrink-0 rounded object-cover ring-1 ring-white/10"
-                      />
-                    ) : null}
                     <div className="tracking-num-0_02 min-w-0 text-center text-sm font-extrabold uppercase lg:text-base">
                       {item.name}
                     </div>
-                    {item.flair?.trim() ? (
-                      <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 shrink-0 rounded-full border border-solid px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-                        {item.flair.trim()}
-                      </span>
-                    ) : null}
                   </div>
                   <div className="font-commissioner text-body-foreground flex items-center justify-center gap-0.5 text-sm lg:text-base">
                     <div className="font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">

@@ -18,13 +18,10 @@ export const ShopProductCard: FunctionComponent<Props> = ({
   name,
   fromPrice,
   imageSrc,
-  flair,
-  iconUrl,
   detailHref,
   onQuickBuy,
   allVariantsOutOfStock = false,
 }) => {
-  const flairText = flair?.trim() ?? ''
   const handleQuickBuyClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     event.stopPropagation()
@@ -50,21 +47,9 @@ export const ShopProductCard: FunctionComponent<Props> = ({
         </div>
         <div className="flex w-full max-w-none flex-col items-center gap-0.5 text-center sm:max-w-none">
           <div className="flex min-w-0 flex-wrap items-center justify-center gap-1.5 self-stretch">
-            {iconUrl ? (
-              <img
-                src={iconUrl}
-                alt=""
-                className="border-border-subtle size-5 shrink-0 rounded object-cover ring-1 ring-white/10 sm:size-6"
-              />
-            ) : null}
             <div className="tracking-num-0_02 min-w-0 truncate text-xs font-extrabold uppercase sm:text-sm">
               {name}
             </div>
-            {flairText ? (
-              <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 shrink-0 rounded-full border border-solid px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase sm:text-[11px]">
-                {flairText}
-              </span>
-            ) : null}
           </div>
           <div className="text-body-foreground font-commissioner sm:text-num-16 flex items-center justify-center gap-0.5 text-sm">
             <div className="leading-num-24 font-medium text-muted-foreground [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>

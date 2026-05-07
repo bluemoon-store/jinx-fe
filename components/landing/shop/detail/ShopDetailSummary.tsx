@@ -36,13 +36,6 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
 
       <div className="text-whitesmoke-100 font-nata-sans flex flex-col items-start gap-2 self-stretch text-2xl sm:text-3xl lg:text-[30px]">
         <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
-          {product.iconUrl ? (
-            <img
-              src={product.iconUrl}
-              alt=""
-              className="border-darkslateblue size-9 shrink-0 rounded-lg object-cover ring-1 ring-white/15 sm:size-10"
-            />
-          ) : null}
           <div className="tracking-num-0_02 min-w-0 flex-1 leading-8 font-extrabold uppercase">
             {product.name}
           </div>

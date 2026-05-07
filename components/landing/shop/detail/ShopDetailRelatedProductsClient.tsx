@@ -70,7 +70,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                   <img
                     className="h-full w-full object-cover"
                     alt=""
-                    src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
+                    src={item.primaryImageUrl ?? '/icons/placeholder.svg'}
                   />
                   {out ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-card/80 px-2 text-center backdrop-blur-[1px]">
@@ -83,21 +83,9 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
 
                 <div className="mx-auto flex w-full max-w-38 flex-col items-center gap-0.5 sm:max-w-42">
                   <div className="flex flex-wrap items-center justify-center gap-1.5 self-stretch">
-                    {item.iconUrl ? (
-                      <img
-                        src={item.iconUrl}
-                        alt=""
-                        className="border-border-subtle size-5 shrink-0 rounded object-cover ring-1 ring-white/10"
-                      />
-                    ) : null}
                     <div className="tracking-num-0.02 min-w-0 flex-1 truncate text-center text-sm font-extrabold uppercase sm:text-base">
                       {item.name}
                     </div>
-                    {item.flair?.trim() ? (
-                      <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 max-w-full shrink-0 truncate rounded-full border border-solid px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-                        {item.flair.trim()}
-                      </span>
-                    ) : null}
                   </div>
 
                   <div className="text-body-foreground font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">

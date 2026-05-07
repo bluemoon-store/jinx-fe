@@ -69,7 +69,7 @@ function ProductTagBadges({ tags }: { tags: ProductTag[] }) {
 const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) => {
   const [isProductDescriptionOpen, setIsProductDescriptionOpen] = useState(true)
 
-  const imageSrc = product.iconUrl ?? product.primaryImageUrl ?? '/icons/placeholder.svg'
+  const imageSrc = product.primaryImageUrl ?? '/icons/placeholder.svg'
   const flairText = product.flair?.trim() ?? ''
 
   return (

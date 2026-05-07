@@ -157,7 +157,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
                 key={`${p.id}-${p.slug}`}
                 name={p.name}
                 fromPrice={p.fromPrice.startsWith('$') ? p.fromPrice : `$${p.fromPrice}`}
-                imageSrc={p.iconUrl ?? p.primaryImageUrl ?? '/icons/placeholder.svg'}
+                imageSrc={p.primaryImageUrl ?? '/icons/placeholder.svg'}
                 flair={p.flair}
                 iconUrl={p.iconUrl}
                 detailHref={`/shop/${p.slug}`}

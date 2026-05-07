@@ -116,7 +116,7 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                         <img
                           className="rounded-num-8 h-12 w-12 shrink-0 object-cover shadow-[0_4px_14px_rgba(0,0,0,0.4)] sm:h-[60px] sm:w-[60px]"
                           alt=""
-                          src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
+                          src={item.primaryImageUrl ?? '/icons/placeholder.svg'}
                         />
 
                         <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:gap-[5px]">

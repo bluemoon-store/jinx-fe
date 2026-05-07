@@ -48,7 +48,7 @@ export default function SellingHotProductsClient({ items }: Props) {
                     <img
                       className="h-full w-full object-cover"
                       alt={`${item.name} logo`}
-                      src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
+                      src={item.primaryImageUrl ?? '/icons/placeholder.svg'}
                     />
                   </div>
 
