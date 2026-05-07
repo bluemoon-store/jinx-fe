@@ -39,9 +39,9 @@ export default function SellingHotProductsClient({ items }: Props) {
               <div className="block w-full">
                 <div className="relative flex flex-col items-center pt-[50px] sm:pt-14">
                   <img
-                    className="pointer-events-none absolute inset-x-0 top-6 bottom-0 z-0 mx-auto h-[calc(50%-24px)] w-[85%] object-cover"
+                    className="pointer-events-none absolute inset-x-0 top-4 bottom-0 z-0 mx-auto h-[calc(50%-24px)] w-[85%] object-cover"
                     alt=""
-                    src="/icons/Vector 6.svg"
+                    src="/icons/Fire-Hot-Animated.svg"
                   />
 
                   <div className="rounded-num-8 relative z-20 -mb-[44px] flex h-[88px] w-[88px] items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)] sm:-mb-[45px] sm:h-[90px] sm:w-[90px]">
@@ -93,7 +93,7 @@ export default function SellingHotProductsClient({ items }: Props) {
                               </div>
                             </div>
                             {item.flair?.trim() ? (
-                              <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 max-w-full truncate rounded-full border border-solid px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                              <span className="max-w-full truncate rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-fuchsia-100 uppercase">
                                 {item.flair.trim()}
                               </span>
                             ) : null}
@@ -168,13 +168,13 @@ export default function SellingHotProductsClient({ items }: Props) {
         <div className="mt-8 flex justify-center sm:mt-10">
           <Link
             href="/shop"
-            className="border-border-subtle rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-card-elevated px-6 py-2.5 text-center text-base text-foreground shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
+            className="border-border-subtle rounded-num-30 font-commissioner bg-card-elevated text-foreground box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid px-6 py-2.5 text-center text-base shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
           >
             <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               View All Products
             </span>
             <svg
-              className="h-2 w-[5px] shrink-0 text-foreground"
+              className="text-foreground h-2 w-[5px] shrink-0"
               viewBox="0 0 6 10"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

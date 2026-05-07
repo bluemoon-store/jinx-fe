@@ -918,8 +918,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
         </article>
 
         <VouchUploadModal
-          orderId={rawId}
-          orderItemId={vouchOrderItemId}
+          target={{ type: 'order-item', orderId: rawId, orderItemId: vouchOrderItemId }}
           open={vouchModalOpen}
           onOpenChange={setVouchModalOpen}
         />

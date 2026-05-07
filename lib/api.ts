@@ -181,6 +181,14 @@ export type Vouch = {
   product: VouchProduct
 }
 
+export type DropClaimVouchResponse = {
+  id: string
+  dropClaimId: string
+  imageUrl: string | null
+  caption: string | null
+  createdAt: string
+}
+
 export type VouchListParams = {
   page?: number
   limit?: number
@@ -232,5 +240,12 @@ export const vouchesApi = {
   },
   async delete(id: string): Promise<void> {
     await api.delete(`/vouches/${id}`)
+  },
+  async createForDropClaim(form: FormData): Promise<DropClaimVouchResponse> {
+    const res = await api.post<BackendResponse<DropClaimVouchResponse>>('/vouches/drop-claim', form)
+    return unwrap(res)
+  },
+  async deleteForDropClaim(id: string): Promise<void> {
+    await api.delete(`/vouches/drop-claim/${id}`)
   },
 }

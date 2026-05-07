@@ -1,6 +1,6 @@
 'use client'
 
-import { createVouchAction } from '@/actions/vouch'
+import { createDropClaimVouchAction, createVouchAction } from '@/actions/vouch'
 import { toast } from '@/lib/toast'
 import CentralIcon from '@central-icons-react/all'
 import { useQueryClient } from '@tanstack/react-query'
@@ -9,10 +9,14 @@ import { FunctionComponent, useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Drawer } from 'vaul'
 import { ORDERS_QUERY_KEYS } from '@/hooks/use-orders'
+import { DROPS_QUERY_KEYS } from '@/hooks/use-drops'
+
+type VouchTarget =
+  | { type: 'order-item'; orderItemId: string; orderId?: string }
+  | { type: 'drop-claim'; dropClaimId: string }
 
 type Props = {
-  orderItemId: string
-  orderId?: string
+  target: VouchTarget
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -25,8 +29,7 @@ const ALLOWED_TYPES = {
 }
 
 export const VouchUploadModal: FunctionComponent<Props> = ({
-  orderItemId,
-  orderId,
+  target,
   open,
   onOpenChange,
 }) => {
@@ -67,20 +70,30 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
   }, [onOpenChange, preview])
 
   const handleSubmit = async () => {
-    if (!file || !orderItemId) return
+    if (!file) return
 
     setSubmitting(true)
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('orderItemId', orderItemId)
-
-      await createVouchAction(formData)
+      if (target.type === 'order-item') {
+        formData.append('orderItemId', target.orderItemId)
+        await createVouchAction(formData)
+      } else {
+        formData.append('dropClaimId', target.dropClaimId)
+        await createDropClaimVouchAction(formData)
+      }
       toast.success('Vouch uploaded successfully!')
 
-      // Invalidate relevant queries
-      if (orderId) {
-        await queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.detail(orderId) })
+      if (target.type === 'order-item') {
+        if (target.orderId) {
+          await queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.detail(target.orderId) })
+        }
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: DROPS_QUERY_KEYS.myDetail(target.dropClaimId),
+        })
+        await queryClient.invalidateQueries({ queryKey: DROPS_QUERY_KEYS.myList() })
       }
       await queryClient.invalidateQueries({ queryKey: ['vouches'] })
 

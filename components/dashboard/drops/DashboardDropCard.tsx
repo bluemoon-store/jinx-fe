@@ -3,7 +3,7 @@ import type { Route } from 'next'
 import Link from 'next/link'
 import { FunctionComponent } from 'react'
 
-export type DashboardDropStatus = 'claimed'
+export type DashboardDropStatus = 'claimed' | 'expired' | 'used'
 
 export type DashboardDropSummaryProps = {
   id: string
@@ -21,6 +21,8 @@ export const dashboardDropStatusConfig: Record<
   { label: string; icon: string; color: string }
 > = {
   claimed: { label: 'Claimed', icon: 'IconCircleCheck', color: 'text-seagreen' },
+  expired: { label: 'Expired', icon: 'IconClockAlert', color: 'text-darkorange' },
+  used: { label: 'Used', icon: 'IconDoupleCheckmark2Small', color: 'text-lightsteelblue-100' },
 }
 
 export const DashboardDropCard: FunctionComponent<Props> = ({

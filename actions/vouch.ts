@@ -1,4 +1,10 @@
-import { vouchesApi, type PaginatedResponse, type Vouch, type VouchListParams } from '@/lib/api'
+import {
+  vouchesApi,
+  type DropClaimVouchResponse,
+  type PaginatedResponse,
+  type Vouch,
+  type VouchListParams,
+} from '@/lib/api'
 
 export async function createVouchAction(form: FormData): Promise<Vouch> {
   return vouchesApi.create(form)
@@ -23,5 +29,13 @@ export async function getProductVouchesAction(
 
 export async function deleteVouchAction(id: string): Promise<void> {
   return vouchesApi.delete(id)
+}
+
+export async function createDropClaimVouchAction(form: FormData): Promise<DropClaimVouchResponse> {
+  return vouchesApi.createForDropClaim(form)
+}
+
+export async function deleteDropClaimVouchAction(id: string): Promise<void> {
+  return vouchesApi.deleteForDropClaim(id)
 }
 

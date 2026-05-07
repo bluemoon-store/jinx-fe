@@ -5,6 +5,8 @@ import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { mapApiOrderToDashboardCard, useOrderQuery } from '@/hooks/use-orders'
+import { useMyDropClaimQuery } from '@/hooks/use-drops'
+import { formatOrderBrandLabel } from '@/components/dashboard/dashboard-order-brand'
 import { useWalletBalanceQuery } from '@/hooks/use-wallet'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
@@ -138,16 +140,6 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
 
 type Props = { children: ReactNode }
 
-function formatBrandForBreadcrumb(brand: string): string {
-  return brand
-    .trim()
-    .split(/\s+/)
-    .map((word) =>
-      word.length ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word
-    )
-    .join(' ')
-}
-
 export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => {
   const pathname = usePathname()
   const walletBalanceQuery = useWalletBalanceQuery()
@@ -164,6 +156,8 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
 
   const isOrderDetail =
     pathname.startsWith(`${DASHBOARD_PATHS.orders}/`) && pathname !== DASHBOARD_PATHS.orders
+  const isDropDetail =
+    pathname.startsWith(`${DASHBOARD_PATHS.drops}/`) && pathname !== DASHBOARD_PATHS.drops
 
   const orderIdFromPath = useMemo(() => {
     if (!isOrderDetail || !pathname.startsWith(`${DASHBOARD_PATHS.orders}/`)) return ''
@@ -172,14 +166,28 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
   }, [isOrderDetail, pathname])
 
   const orderCrumbQuery = useOrderQuery(orderIdFromPath || undefined, {
-    select: (o) => formatBrandForBreadcrumb(mapApiOrderToDashboardCard(o).brand),
+    select: (o) => formatOrderBrandLabel(mapApiOrderToDashboardCard(o).brand),
   })
 
-  const breadcrumbCurrentLabel = orderCrumbQuery.data ?? 'Order details'
+  const dropClaimIdFromPath = useMemo(() => {
+    if (!isDropDetail || !pathname.startsWith(`${DASHBOARD_PATHS.drops}/`)) return ''
+    const rest = pathname.slice(DASHBOARD_PATHS.drops.length + 1)
+    return rest.split('/')[0] ?? ''
+  }, [isDropDetail, pathname])
 
-  const pageHeader = !isOrderDetail
+  const dropCrumbQuery = useMyDropClaimQuery(dropClaimIdFromPath || undefined, {
+    select: (claim) => formatOrderBrandLabel(claim.product.name),
+  })
+
+  const breadcrumbCurrentLabel = isOrderDetail
+    ? (orderCrumbQuery.data ?? 'Order details')
+    : (dropCrumbQuery.data ?? 'Drop details')
+
+  const pageHeader = !isOrderDetail && !isDropDetail
     ? (headerByPath[pathname] ?? headerByPath[DASHBOARD_PATHS.orders])
     : null
+  const detailId = isOrderDetail ? orderIdFromPath : isDropDetail ? dropClaimIdFromPath : ''
+  const detailIdDisplay = detailId ? `${detailId.slice(0, 8)}...${detailId.slice(-6)}` : '—'
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
@@ -257,16 +265,16 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
             <section className="relative flex min-h-[min(60vh,520px)] min-w-0 flex-col gap-4 md:min-h-0 md:gap-8">
               <Reveal variant="slide-right" delay={80}>
                 <div className="flex w-full flex-col gap-3 text-white md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5">
-                  {isOrderDetail ? (
+                  {isOrderDetail || isDropDetail ? (
                     <nav
                       aria-label="Breadcrumb"
                       className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-wrap items-center gap-2 text-base"
                     >
                       <Link
-                        href={DASHBOARD_PATHS.orders as Route}
+                        href={(isOrderDetail ? DASHBOARD_PATHS.orders : DASHBOARD_PATHS.drops) as Route}
                         className="hover:text-ghostwhite shrink-0 font-medium text-[#3F4A5A] transition-colors"
                       >
-                        Orders
+                        {isOrderDetail ? 'Orders' : 'Drops'}
                       </Link>
                       <CentralIcon
                         name="IconChevronRightMedium"
@@ -306,13 +314,12 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                     <span className="shrink-0 leading-[15px] font-semibold">ID</span>
                     <div className="text-ghostwhite flex min-w-0 items-center gap-1.5">
                       <span className="leading-[15px] font-semibold break-all">
-                        JNX-LKXJLKNALSDJ
+                        {detailId ? detailIdDisplay : 'JNX-LKXJLKNALSDJ'}
                       </span>
                       <button
                         type="button"
                         onClick={() => {
-                          // TODO: replace with real order ID when wired
-                          const valueToCopy = 'JNX-LKXJLKNALSDJ'
+                          const valueToCopy = detailId || 'JNX-LKXJLKNALSDJ'
                           navigator.clipboard
                             .writeText(valueToCopy)
                             .then(() => {

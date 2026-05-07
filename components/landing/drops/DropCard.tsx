@@ -33,18 +33,8 @@ type Props = {
 
 export function DropCard({ drop }: Props) {
   const claimMutation = useClaimDropMutation()
-  const testClaimResult = useMemo<DropClaimResult>(
-    () => ({
-      claimedContent: drop.variant.label || 'TEST-CODE-1234',
-      productSlug: drop.product.slug,
-      dashboardPath: '/dashboard/drops',
-      productId: drop.product.id,
-      variantLabel: drop.variant.label,
-    }),
-    [drop]
-  )
-  const [claimResult, setClaimResult] = useState<DropClaimResult | null>(testClaimResult)
-  const [modalOpen, setModalOpen] = useState(true)
+  const [claimResult, setClaimResult] = useState<DropClaimResult | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const available = Math.max(0, drop.quantity - drop.claimedCount)
   const imageSrc = useMemo(() => pickImage(drop), [drop])
   const alreadyClaimed = Boolean(drop.hasClaimed)

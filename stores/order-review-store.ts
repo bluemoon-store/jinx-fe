@@ -61,6 +61,7 @@ type OrderReviewState = {
   pendingReviewRows: ReviewPurchaseRow[]
   reviewsByPurchaseRowId: Record<string, OrderReview>
   markedUsedByOrderId: Record<string, boolean>
+  markedUsedByDropClaimId: Record<string, boolean>
   loadReviewsPageData: (options?: {
     page?: number
     sortBy?: 'createdAt' | 'totalAmount'
@@ -72,6 +73,7 @@ type OrderReviewState = {
   setPendingReviewRows: (rows: ReviewPurchaseRow[]) => void
   upsertOrder: (order: Order) => void
   setOrderMarkedUsed: (orderId: string, marked: boolean) => void
+  setDropClaimMarkedUsed: (claimId: string, marked: boolean) => void
   submitReviewForPurchaseRow: (
     purchaseRowId: string,
     payload: Pick<OrderReview, 'rating' | 'comment'>
@@ -158,6 +160,7 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
   pendingReviewRows: [],
   reviewsByPurchaseRowId: {},
   markedUsedByOrderId: {},
+  markedUsedByDropClaimId: {},
   loadReviewsPageData: async (options) => {
     const page = options?.page ?? 1
     set({
@@ -259,6 +262,13 @@ export const useOrderReviewStore = create<OrderReviewState>()((set) => ({
       markedUsedByOrderId: {
         ...state.markedUsedByOrderId,
         [orderId]: marked,
+      },
+    })),
+  setDropClaimMarkedUsed: (claimId, marked) =>
+    set((state) => ({
+      markedUsedByDropClaimId: {
+        ...state.markedUsedByDropClaimId,
+        [claimId]: marked,
       },
     })),
   submitReviewForPurchaseRow: async (purchaseRowId, payload) => {

@@ -37,6 +37,13 @@ function formatClaimDate(value: string) {
   }).format(date)
 }
 
+function getDropStatus(expiresAt: string | null): 'claimed' | 'expired' {
+  if (!expiresAt) return 'claimed'
+  const expires = new Date(expiresAt)
+  if (Number.isNaN(expires.getTime())) return 'claimed'
+  return expires.getTime() <= Date.now() ? 'expired' : 'claimed'
+}
+
 type Props = {
   onFilteredCountChange?: (count: number) => void
 }
@@ -78,9 +85,9 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
     if (!q) return dropsList
     return dropsList.filter(
       (d) =>
-        d.drop.product.name.toLowerCase().includes(q) ||
+        d.product.name.toLowerCase().includes(q) ||
         d.id.toLowerCase().includes(q) ||
-        d.drop.variant.label.toLowerCase().includes(q)
+        d.variant.label.toLowerCase().includes(q)
     )
   }, [dropSearch, dropsList])
 
@@ -296,17 +303,16 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
           {viewMode === 'grid' ? (
             <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {filtered.map((d) => {
-                const product = d.drop.product
-                const imageSrc = product.images?.find((img) => img.isPrimary && img.url)?.url ?? product.images?.[0]?.url
+                const status = getDropStatus(d.expiresAt)
                 return (
                   <DashboardDropCard
                     key={d.id}
                     id={d.id}
-                    name={product.name}
-                    imageUrl={imageSrc}
-                    variantLabel={d.drop.variant.label}
+                    name={d.product.name}
+                    imageUrl={d.product.imageUrl ?? d.product.iconUrl}
+                    variantLabel={d.variant.label}
                     claimedAt={formatClaimDate(d.claimedAt)}
-                    status="claimed"
+                    status={status}
                   />
                 )
               })}
@@ -314,17 +320,16 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
           ) : (
             <div className="rounded-num-8 divide-y divide-[#16243B] border border-solid border-[#16243B] bg-[#0B1221]">
               {filtered.map((d) => {
-                const product = d.drop.product
-                const imageSrc = product.images?.find((img) => img.isPrimary && img.url)?.url ?? product.images?.[0]?.url
+                const status = getDropStatus(d.expiresAt)
                 return (
                   <DashboardDropRow
                     key={d.id}
                     id={d.id}
-                    name={product.name}
-                    imageUrl={imageSrc}
-                    variantLabel={d.drop.variant.label}
+                    name={d.product.name}
+                    imageUrl={d.product.imageUrl ?? d.product.iconUrl}
+                    variantLabel={d.variant.label}
                     claimedAt={formatClaimDate(d.claimedAt)}
-                    status="claimed"
+                    status={status}
                   />
                 )
               })}

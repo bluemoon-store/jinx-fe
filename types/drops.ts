@@ -32,17 +32,33 @@ export type DropClaimResult = {
   variantLabel?: string
 }
 
+export type DropClaimVouch = {
+  id: string
+  imageUrl: string | null
+  caption: string | null
+  createdAt: string
+}
+
 export type MyDropClaim = {
   id: string
+  dropId: string
   claimedAt: string
   claimedContent: string
-  productSlug: string
-  drop: {
+  expiresAt: string | null
+  description: string | null
+  product: {
     id: string
-    product: DropProductSummary
-    variant: {
-      id: string
-      label: string
-    }
+    name: string
+    slug: string
+    iconUrl: string | null
+    imageUrl: string | null
+    redeemProcess: string | null
+    warrantyText: string | null
   }
+  variant: {
+    id: string
+    label: string
+    price: string
+  }
+  vouches: DropClaimVouch[]
 }
