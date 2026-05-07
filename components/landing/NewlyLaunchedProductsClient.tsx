@@ -110,13 +110,13 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
         <div className="mt-8 flex justify-center sm:mt-10">
           <Link
             href="/shop"
-            className="border-border-subtle rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-card-elevated px-6 py-2.5 text-center text-base text-foreground shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
+            className="border-border-subtle rounded-num-30 font-commissioner bg-card-elevated text-foreground box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid px-6 py-2.5 text-center text-base shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
           >
             <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               View All Products
             </span>
             <svg
-              className="h-2 w-[5px] shrink-0 text-foreground"
+              className="text-foreground h-2 w-[5px] shrink-0"
               viewBox="0 0 6 10"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

@@ -32,7 +32,7 @@ export default async function SellingSection() {
                 SELLING
               </div>
             </div>
-            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-sm leading-6 font-medium text-foreground opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
+            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
               From everyday essentials to premium digital rewards
               <br /> discover categories built for instant access.
             </div>

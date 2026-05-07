@@ -42,7 +42,9 @@ export function friendlyPromoError(reason?: CouponInvalidateReason): string {
 }
 
 /** Fallback label when the API omits `description`. */
-export function autoDescribePromo(p: Pick<CouponPreview, 'discountType' | 'discountValue'>): string {
+export function autoDescribePromo(
+  p: Pick<CouponPreview, 'discountType' | 'discountValue'>
+): string {
   const value = p.discountValue ?? 0
   if (p.discountType === 'PERCENT') {
     return `${value}% off`

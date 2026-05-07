@@ -31,28 +31,28 @@ npm run dev                       # http://localhost:3000
 
 Environment:
 
-| Variable | Example | Notes |
-|---|---|---|
-| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | this app's own URL |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:3001/v1` | backend base + version |
-| `NEXT_PUBLIC_WS_URL` | `http://localhost:3001` | WebSocket origin |
-| `NEXT_PUBLIC_SENTRY_DSN` | (optional) | client error tracking |
-| `NEXT_PUBLIC_GA_ID` | (optional) | analytics |
-| `CENTRAL_LICENSE_KEY` | (required) | needed at `npm install` time |
+| Variable                 | Example                    | Notes                        |
+| ------------------------ | -------------------------- | ---------------------------- |
+| `NEXT_PUBLIC_APP_URL`    | `http://localhost:3000`    | this app's own URL           |
+| `NEXT_PUBLIC_API_URL`    | `http://localhost:3001/v1` | backend base + version       |
+| `NEXT_PUBLIC_WS_URL`     | `http://localhost:3001`    | WebSocket origin             |
+| `NEXT_PUBLIC_SENTRY_DSN` | (optional)                 | client error tracking        |
+| `NEXT_PUBLIC_GA_ID`      | (optional)                 | analytics                    |
+| `CENTRAL_LICENSE_KEY`    | (required)                 | needed at `npm install` time |
 
 `NEXT_PUBLIC_*` values are baked into the bundle at **build time**, not read
 at runtime. Rebuilding is mandatory after changing any of them.
 
 ## Scripts
 
-| Script | Purpose |
-|---|---|
-| `npm run dev` | Turbopack dev server on `:3000` |
-| `npm run build` | `next build` — produces standalone output |
-| `npm run start` | Run the standalone server (used by the prod container) |
-| `npm run type-check` | `tsc --noEmit` |
-| `npm run lint` | ESLint |
-| `npm run analyze` | Bundle analyzer (`ANALYZE=true next build`) |
+| Script               | Purpose                                                |
+| -------------------- | ------------------------------------------------------ |
+| `npm run dev`        | Turbopack dev server on `:3000`                        |
+| `npm run build`      | `next build` — produces standalone output              |
+| `npm run start`      | Run the standalone server (used by the prod container) |
+| `npm run type-check` | `tsc --noEmit`                                         |
+| `npm run lint`       | ESLint                                                 |
+| `npm run analyze`    | Bundle analyzer (`ANALYZE=true next build`)            |
 
 ## Production build
 
@@ -61,6 +61,7 @@ at runtime. Rebuilding is mandatory after changing any of them.
 Final image is ~150 MB.
 
 The build needs three things in the environment:
+
 1. All `NEXT_PUBLIC_*` keys consumed by the bundle
 2. `CENTRAL_LICENSE_KEY` (set as `ARG` in the Dockerfile, exposed before
    `npm ci` so the `@central-icons-react` postinstall license check passes)

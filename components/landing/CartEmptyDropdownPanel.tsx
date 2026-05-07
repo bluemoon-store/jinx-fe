@@ -34,7 +34,7 @@ export const CartEmptyDropdownPanel: FunctionComponent<Props> = ({ onNavigate })
       <Link
         href={'/shop' as Route}
         onClick={onNavigate}
-        className="rounded-num-8 sm:text-md box-border flex min-h-11 w-full touch-manipulation items-center justify-center bg-card px-4 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-card-elevated"
+        className="rounded-num-8 sm:text-md bg-card text-foreground hover:bg-card-elevated box-border flex min-h-11 w-full touch-manipulation items-center justify-center px-4 py-3 text-center text-sm font-semibold transition-colors"
       >
         Browse Store
       </Link>

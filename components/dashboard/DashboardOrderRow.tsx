@@ -61,7 +61,7 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
         {status === 'paid' && (
           <Link
             href={`/dashboard/orders/${id}?vouch=true` as Route}
-            className="text-fuchsia font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 hidden bg-fuchsia/10 px-3 py-2 text-xs font-semibold transition-colors hover:bg-fuchsia/20 focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm md:block"
+            className="text-fuchsia font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 bg-fuchsia/10 hover:bg-fuchsia/20 hidden px-3 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm md:block"
           >
             Share Vouch
           </Link>

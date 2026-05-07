@@ -135,9 +135,7 @@ export function CheckoutOverviewCard({
         0
       )
     : displayItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
-  const subtotalFromOrder = orderId
-    ? Number.parseFloat(order?.subtotalAmount ?? '')
-    : Number.NaN
+  const subtotalFromOrder = orderId ? Number.parseFloat(order?.subtotalAmount ?? '') : Number.NaN
   const subtotal =
     orderId && Number.isFinite(subtotalFromOrder) && subtotalFromOrder >= 0
       ? subtotalFromOrder

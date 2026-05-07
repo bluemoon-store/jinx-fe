@@ -183,9 +183,10 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
     ? (orderCrumbQuery.data ?? 'Order details')
     : (dropCrumbQuery.data ?? 'Drop details')
 
-  const pageHeader = !isOrderDetail && !isDropDetail
-    ? (headerByPath[pathname] ?? headerByPath[DASHBOARD_PATHS.orders])
-    : null
+  const pageHeader =
+    !isOrderDetail && !isDropDetail
+      ? (headerByPath[pathname] ?? headerByPath[DASHBOARD_PATHS.orders])
+      : null
   const detailId = isOrderDetail ? orderIdFromPath : isDropDetail ? dropClaimIdFromPath : ''
   const detailIdDisplay = detailId ? `${detailId.slice(0, 8)}...${detailId.slice(-6)}` : '—'
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -271,7 +272,9 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                       className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-wrap items-center gap-2 text-base"
                     >
                       <Link
-                        href={(isOrderDetail ? DASHBOARD_PATHS.orders : DASHBOARD_PATHS.drops) as Route}
+                        href={
+                          (isOrderDetail ? DASHBOARD_PATHS.orders : DASHBOARD_PATHS.drops) as Route
+                        }
                         className="hover:text-ghostwhite shrink-0 font-medium text-[#3F4A5A] transition-colors"
                       >
                         {isOrderDetail ? 'Orders' : 'Drops'}

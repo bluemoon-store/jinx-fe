@@ -35,8 +35,8 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
 
   return (
     <div className="flex h-full w-full flex-1 items-center justify-center">
-      <div className="w-full max-w-[520px] rounded-xl border border-border-subtle bg-card-elevated p-4 sm:p-5">
-        <div className="mb-4 flex flex-col items-center justify-center gap-1.5 border-b border-border-subtle pb-4 text-center">
+      <div className="border-border-subtle bg-card-elevated w-full max-w-[520px] rounded-xl border p-4 sm:p-5">
+        <div className="border-border-subtle mb-4 flex flex-col items-center justify-center gap-1.5 border-b pb-4 text-center">
           <CentralIcon
             name="IconTicket"
             join="round"
@@ -46,13 +46,18 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
             size={26}
             color="#EA2CFF"
           />
-          <h3 className="text-lg font-semibold text-foreground">Create a Ticket</h3>
-          <p className="text-sm text-body-foreground">Describe your issue and our team will respond here.</p>
+          <h3 className="text-foreground text-lg font-semibold">Create a Ticket</h3>
+          <p className="text-body-foreground text-sm">
+            Describe your issue and our team will respond here.
+          </p>
         </div>
 
         <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
           <div>
-            <label htmlFor="ticket-order" className="mb-2 block text-sm font-medium text-muted-foreground">
+            <label
+              htmlFor="ticket-order"
+              className="text-muted-foreground mb-2 block text-sm font-medium"
+            >
               Order ID <span className="text-[#EA2CFF]">*</span>
             </label>
             <input
@@ -61,13 +66,16 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
               required
-              className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+              className="border-border-subtle bg-input-bg text-foreground placeholder:text-muted-foreground h-12 w-full rounded-lg border px-3 text-sm focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
               placeholder="ORD-20260507-AB12C"
             />
           </div>
 
           <div>
-            <label htmlFor="ticket-message" className="mb-2 block text-sm font-medium text-muted-foreground">
+            <label
+              htmlFor="ticket-message"
+              className="text-muted-foreground mb-2 block text-sm font-medium"
+            >
               Message <span className="text-[#EA2CFF]">*</span>
             </label>
             <input
@@ -77,7 +85,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
               onChange={(e) => setMessage(e.target.value)}
               required
               maxLength={5000}
-              className="h-12 w-full rounded-lg border border-border-subtle bg-input-bg px-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+              className="border-border-subtle bg-input-bg text-foreground placeholder:text-muted-foreground h-12 w-full rounded-lg border px-3 text-sm focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
               placeholder="Briefly describe your issue."
             />
           </div>
@@ -88,7 +96,7 @@ export function CreateTicketForm({ onCancel, onSubmit, isSubmitting }: CreateTic
             <button
               type="button"
               onClick={onCancel}
-              className="h-12 flex-1 rounded-lg border border-border-subtle bg-card text-sm font-semibold text-foreground transition-opacity hover:opacity-90"
+              className="border-border-subtle bg-card text-foreground h-12 flex-1 rounded-lg border text-sm font-semibold transition-opacity hover:opacity-90"
             >
               Cancel
             </button>

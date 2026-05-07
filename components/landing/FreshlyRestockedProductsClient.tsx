@@ -48,10 +48,10 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
               key={item.id}
               variant="fade-up"
               delay={idx * 70}
-              className="border-border-subtle rounded-num-8 p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid bg-card sm:gap-3"
+              className="border-border-subtle rounded-num-8 p-num-12 bg-card box-border flex h-full w-full flex-col items-stretch gap-2.5 border border-solid sm:gap-3"
             >
               <Link href={`/shop/${item.slug}`} className="flex w-full flex-1 flex-col gap-2">
-                <div className="rounded-num-8 relative aspect-video w-full overflow-hidden bg-card-elevated">
+                <div className="rounded-num-8 bg-card-elevated relative aspect-video w-full overflow-hidden">
                   <img
                     className="block h-full w-full object-cover"
                     alt=""
@@ -79,7 +79,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
               <button
                 type="button"
                 onClick={() => setQuickBuyProduct(item)}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 bg-active-bg px-4 text-foreground sm:gap-[5px]"
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 bg-active-bg text-foreground mt-auto box-border flex h-10 w-full items-center justify-center gap-1.5 px-4 sm:gap-[5px]"
               >
                 <CentralIcon
                   name="IconZap"
@@ -129,7 +129,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
             onClick={prev}
             disabled={page === 0}
             aria-label="Previous page"
-            className="border-border-subtle flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-card-elevated shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
+            className="border-border-subtle bg-card-elevated flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
             <CentralIcon
               name="IconChevronLeft"
@@ -142,7 +142,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
             />
           </button>
 
-          <div className="border-border-subtle flex items-center gap-[7.5px] rounded-[30px] border-[1.5px] border-solid bg-card-elevated px-[9px] py-[9px] shadow-[0px_15px_15px_rgba(0,0,0,0.01)]">
+          <div className="border-border-subtle bg-card-elevated flex items-center gap-[7.5px] rounded-[30px] border-[1.5px] border-solid px-[9px] py-[9px] shadow-[0px_15px_15px_rgba(0,0,0,0.01)]">
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
@@ -162,7 +162,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
             onClick={next}
             disabled={page === totalPages - 1}
             aria-label="Next page"
-            className="border-border-subtle flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid bg-card-elevated shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
+            className="border-border-subtle bg-card-elevated flex h-[30px] w-[30px] items-center justify-center rounded-full border border-solid shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:not-disabled:opacity-80 disabled:opacity-25"
           >
             <CentralIcon
               name="IconChevronRight"

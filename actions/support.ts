@@ -30,15 +30,14 @@ export async function createTicketAction(payload: CreateTicketPayload): Promise<
 }
 
 export async function listMyTicketsAction(params?: ListMyTicketsParams): Promise<PaginatedTickets> {
-  const res = await api.get<BackendResponse<{ items: ApiTicketRow[]; metadata: PaginatedTickets['metadata'] }>>(
-    '/tickets',
-    {
-      params: {
-        page: params?.page ?? 1,
-        limit: params?.limit ?? 50,
-      },
-    }
-  )
+  const res = await api.get<
+    BackendResponse<{ items: ApiTicketRow[]; metadata: PaginatedTickets['metadata'] }>
+  >('/tickets', {
+    params: {
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 50,
+    },
+  })
   const raw = unwrap(res)
   return {
     metadata: raw.metadata,
@@ -51,7 +50,10 @@ export async function getTicketDetailAction(id: string): Promise<TicketDetail> {
   return unwrap(res)
 }
 
-export async function sendMessageAction(id: string, payload: SendMessagePayload): Promise<TicketMessage> {
+export async function sendMessageAction(
+  id: string,
+  payload: SendMessagePayload
+): Promise<TicketMessage> {
   const res = await api.post<BackendResponse<TicketMessage>>(`/tickets/${id}/messages`, payload)
   return unwrap(res)
 }

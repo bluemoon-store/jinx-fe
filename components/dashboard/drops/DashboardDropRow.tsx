@@ -30,9 +30,7 @@ export const DashboardDropRow: FunctionComponent<DashboardDropSummaryProps> = ({
           {name}
         </div>
         <div className="text-lightsteelblue-100 sm:text-num-14 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs leading-5">
-          <span className="font-medium">
-            {variantLabel}
-          </span>
+          <span className="font-medium">{variantLabel}</span>
           <span className="text-lightsteelblue-200" aria-hidden>
             –
           </span>

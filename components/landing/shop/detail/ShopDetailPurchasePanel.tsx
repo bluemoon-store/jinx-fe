@@ -14,10 +14,7 @@ import {
 } from '@/components/ui/siteSelectDropdown'
 import { useAddCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { parseApiError } from '@/lib/api-error'
-import {
-  cartStockErrorToastMessage,
-  parseCartStockError,
-} from '@/lib/cart-stock-error'
+import { cartStockErrorToastMessage, parseCartStockError } from '@/lib/cart-stock-error'
 import { parseUsdDecimalString } from '@/lib/cart-format'
 import { sanitizeHtml } from '@/lib/sanitize-html'
 import { toast } from '@/lib/toast'
@@ -129,9 +126,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
   const variantStockQty = selectedVariant?.stockQuantity ?? 0
 
-  const maxSelectableUnits = selectedVariant
-    ? Math.min(99, Math.max(0, variantStockQty))
-    : 0
+  const maxSelectableUnits = selectedVariant ? Math.min(99, Math.max(0, variantStockQty)) : 0
 
   useEffect(() => {
     if (!selectedVariant) return
@@ -223,8 +218,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
         })
 
         const backendItem = res.items.find(
-          (i) =>
-            i.productId === productId && (i.variantId ?? '') === selectedVariant.id
+          (i) => i.productId === productId && (i.variantId ?? '') === selectedVariant.id
         )
         if (backendItem) {
           setBackendCartItemId(cartKey, backendItem.id)
@@ -460,7 +454,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
           </div>
           <div className="tracking-num-0_02 font-extrabold">GUARANTEES</div>
         </div>
-        <div className="py-num-0 text-num-14 sm:px-num-16 flex w-full self-center flex-wrap items-center justify-center gap-2 px-4 text-center sm:gap-3">
+        <div className="py-num-0 text-num-14 sm:px-num-16 flex w-full flex-wrap items-center justify-center gap-2 self-center px-4 text-center sm:gap-3">
           <div className="rounded-num-8 border-mediumslateblue p-num-10 flex flex-col items-start border-[1px] border-solid [background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.2)),_linear-gradient(#1a0d35,_#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon

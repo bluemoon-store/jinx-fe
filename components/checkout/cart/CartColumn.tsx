@@ -9,21 +9,14 @@ import { checkoutImg } from '@/components/checkout/checkout-images'
 import { useCouponPreviewMutation } from '@/hooks/use-coupons'
 import { useRemoveCartItemMutation, useUpdateCartItemMutation } from '@/hooks/use-carts'
 import { parseApiError } from '@/lib/api-error'
-import {
-  cartStockErrorToastMessage,
-  parseCartStockError,
-} from '@/lib/cart-stock-error'
+import { cartStockErrorToastMessage, parseCartStockError } from '@/lib/cart-stock-error'
 import { formatUsd } from '@/lib/cart-format'
 import { toast } from '@/lib/toast'
 import { getAccessToken } from '@/lib/token'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useBuyerProtectionStore } from '@/stores/buyer-protection-store'
-import {
-  autoDescribePromo,
-  friendlyPromoError,
-  usePromoStore,
-} from '@/stores/promo-store'
+import { autoDescribePromo, friendlyPromoError, usePromoStore } from '@/stores/promo-store'
 import CentralIcon from '@central-icons-react/all'
 
 import styles from './CartColumn.module.css'

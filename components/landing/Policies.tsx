@@ -1,6 +1,6 @@
 export default function Policies() {
   return (
-    <section className="text-num-14 font-commissioner w-full overflow-hidden text-left text-foreground">
+    <section className="text-num-14 font-commissioner text-foreground w-full overflow-hidden text-left">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
         <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[208px_1fr] lg:gap-16">
           {/* Legal navigation */}
@@ -13,7 +13,7 @@ export default function Policies() {
               <div className="rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5">
                 <div className="leading-num-20 font-semibold">Terms of Service</div>
               </div>
-              <div className="rounded-num-8 border-border-subtle min-w-num-190 box-border flex w-full items-center overflow-hidden border border-solid p-2.5 text-foreground [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--card-elev),var(--card-elev))]">
+              <div className="rounded-num-8 border-border-subtle min-w-num-190 text-foreground box-border flex w-full items-center overflow-hidden border border-solid p-2.5 [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--card-elev),var(--card-elev))]">
                 <div className="leading-num-20 font-semibold">Privacy Policy</div>
               </div>
               <div className="rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5">

@@ -31,7 +31,7 @@ export function TicketHeader({ ticket, onResolve, isResolving }: TicketHeaderPro
   const isClosed = ticket.status === 'CLOSED' || ticket.status === 'RESOLVED'
 
   return (
-    <div className="mb-6 flex flex-col gap-3 rounded-lg border border-border-subtle bg-card-elevated p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="border-border-subtle bg-card-elevated mb-6 flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EA2CFF]">
           <CentralIcon
@@ -45,21 +45,23 @@ export function TicketHeader({ ticket, onResolve, isResolving }: TicketHeaderPro
           />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-base font-semibold text-foreground">{ticket.ticketNumber}</p>
-          <p className="truncate text-sm text-muted-foreground">
+          <p className="text-foreground truncate text-base font-semibold">{ticket.ticketNumber}</p>
+          <p className="text-muted-foreground truncate text-sm">
             {ticket.order?.orderNumber ?? 'Order unavailable'}
             <span className="text-muted-foreground"> — Created: {created}</span>
           </p>
-          <p className="mt-1 text-xs font-semibold text-[#EA2CFF]">{STATUS_LABEL[ticket.status] ?? ticket.status}</p>
+          <p className="mt-1 text-xs font-semibold text-[#EA2CFF]">
+            {STATUS_LABEL[ticket.status] ?? ticket.status}
+          </p>
         </div>
       </div>
       <div className="flex flex-col gap-2 sm:items-end">
-        <span className="text-sm font-semibold text-foreground">Issue solved?</span>
+        <span className="text-foreground text-sm font-semibold">Issue solved?</span>
         <button
           type="button"
           disabled={isClosed || isResolving}
           onClick={onResolve}
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-hover-bg disabled:cursor-not-allowed disabled:opacity-50"
+          className="bg-card text-foreground hover:bg-hover-bg inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           <CentralIcon
             name="IconCircleCheck"

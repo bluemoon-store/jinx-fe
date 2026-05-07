@@ -10,7 +10,9 @@ export async function createVouchAction(form: FormData): Promise<Vouch> {
   return vouchesApi.create(form)
 }
 
-export async function getVouchesAction(params?: VouchListParams): Promise<PaginatedResponse<Vouch>> {
+export async function getVouchesAction(
+  params?: VouchListParams
+): Promise<PaginatedResponse<Vouch>> {
   return vouchesApi.list(params)
 }
 
@@ -38,4 +40,3 @@ export async function createDropClaimVouchAction(form: FormData): Promise<DropCl
 export async function deleteDropClaimVouchAction(id: string): Promise<void> {
   return vouchesApi.deleteForDropClaim(id)
 }
-

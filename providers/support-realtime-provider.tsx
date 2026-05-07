@@ -21,7 +21,9 @@ function isSocketTicketMessage(payload: unknown): payload is TicketMessage {
   )
 }
 
-function isTicketUpdatePayload(payload: unknown): payload is Partial<TicketDetail> & { id: string } {
+function isTicketUpdatePayload(
+  payload: unknown
+): payload is Partial<TicketDetail> & { id: string } {
   if (!payload || typeof payload !== 'object') return false
   const o = payload as Record<string, unknown>
   return typeof o.id === 'string'
@@ -46,20 +48,25 @@ export function SupportRealtimeProvider({ children }: { children: ReactNode }) {
         const message = payload
         const ticketId = message.ticketId
 
-        queryClient.setQueryData<TicketDetail | undefined>(SUPPORT_QUERY_KEYS.detail(ticketId), (old) => {
-          if (!old) return old
-          const list = old.messages ?? []
-          if (list.some((m) => m.id === message.id)) {
+        queryClient.setQueryData<TicketDetail | undefined>(
+          SUPPORT_QUERY_KEYS.detail(ticketId),
+          (old) => {
+            if (!old) return old
+            const list = old.messages ?? []
+            if (list.some((m) => m.id === message.id)) {
+              return {
+                ...old,
+                messages: list.map((m) =>
+                  m.id === message.id ? { ...message, pending: false } : m
+                ),
+              }
+            }
             return {
               ...old,
-              messages: list.map((m) => (m.id === message.id ? { ...message, pending: false } : m)),
+              messages: [...list, { ...message, pending: false }],
             }
           }
-          return {
-            ...old,
-            messages: [...list, { ...message, pending: false }],
-          }
-        })
+        )
 
         void queryClient.invalidateQueries({ queryKey: SUPPORT_QUERY_KEYS.lists() })
       }

@@ -40,7 +40,7 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
             {product.name}
           </div>
           {product.flair?.trim() ? (
-            <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 shrink-0 rounded-full border border-solid px-2.5 py-1 text-xs font-semibold tracking-wide uppercase sm:text-sm">
+            <span className="shrink-0 rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2.5 py-1 text-xs font-semibold tracking-wide text-fuchsia-100 uppercase sm:text-sm">
               {product.flair.trim()}
             </span>
           ) : null}

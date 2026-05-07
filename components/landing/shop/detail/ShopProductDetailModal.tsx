@@ -89,7 +89,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
                 {product.name}
               </div>
               {flairText ? (
-                <span className="border-fuchsia-300/40 bg-fuchsia-500/15 text-fuchsia-100 shrink-0 rounded-full border border-solid px-2 py-0.5 text-[11px] font-semibold tracking-wide uppercase">
+                <span className="shrink-0 rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-fuchsia-100 uppercase">
                   {flairText}
                 </span>
               ) : null}

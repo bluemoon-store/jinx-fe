@@ -41,7 +41,7 @@ export function DropCard({ drop }: Props) {
 
   return (
     <>
-      <Card className="relative flex w-full flex-col gap-6 overflow-hidden border border-fuchsia bg-gray-100 p-6 text-center font-commissioner text-sm text-white shadow-[0px_0px_0px_5px_rgba(235,45,255,0.25)] md:flex-row md:items-stretch">
+      <Card className="border-fuchsia font-commissioner relative flex w-full flex-col gap-6 overflow-hidden border bg-gray-100 p-6 text-center text-sm text-white shadow-[0px_0px_0px_5px_rgba(235,45,255,0.25)] md:flex-row md:items-stretch">
         <div className="h-[200px] w-full shrink-0 overflow-hidden rounded-lg bg-[#0b1221] shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)] md:h-auto md:w-1/2">
           {imageSrc ? (
             <img src={imageSrc} alt={drop.product.name} className="h-full w-full object-cover" />
@@ -61,53 +61,59 @@ export function DropCard({ drop }: Props) {
                 </div>
                 <b className="[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">LIVE</b>
               </div>
-              <div className="text-left font-nata-sans text-xl font-extrabold tracking-[0.02em] text-ghostwhite uppercase">
+              <div className="font-nata-sans text-ghostwhite text-left text-xl font-extrabold tracking-[0.02em] uppercase">
                 {drop.product.name}
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-[5px] text-base text-whitesmoke-200/75">
+            <div className="text-whitesmoke-200/75 flex items-center justify-center gap-[5px] text-base">
               <div className="leading-6 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                 Available Quantity
               </div>
               <div className="flex items-center justify-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-1.5 py-0 text-white">
-                <b className="leading-6 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">{available}</b>
+                <b className="leading-6 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                  {available}
+                </b>
               </div>
             </div>
           </div>
 
           <div className="flex w-full items-start text-left">
-          <Button
-            className="h-[38px] w-full gap-2 rounded-lg bg-fuchsia px-3 pb-0.5 pt-px tracking-[-0.01em] shadow-[0px_2px_0px_rgba(235,45,255,0.25)] transition-opacity hover:bg-fuchsia hover:opacity-90"
-            disabled={claimMutation.isPending || alreadyClaimed}
-            onClick={() => {
-              claimMutation.mutate(drop.id, {
-                onSuccess: (result) => {
-                  setClaimResult(result)
-                  setModalOpen(true)
-                  fireDropConfetti()
-                },
-              })
-            }}
-          >
-            <CentralIcon
-              name="IconAirdrop2"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={18}
-              color="#FFFFFF"
-              ariaHidden
-            />
-            {alreadyClaimed ? 'Already claimed' : 'Claim Free Drop'}
-            <ChevronRight className="h-[14px] w-[14px]" />
-          </Button>
+            <Button
+              className="bg-fuchsia hover:bg-fuchsia h-[38px] w-full gap-2 rounded-lg px-3 pt-px pb-0.5 tracking-[-0.01em] shadow-[0px_2px_0px_rgba(235,45,255,0.25)] transition-opacity hover:opacity-90"
+              disabled={claimMutation.isPending || alreadyClaimed}
+              onClick={() => {
+                claimMutation.mutate(drop.id, {
+                  onSuccess: (result) => {
+                    setClaimResult(result)
+                    setModalOpen(true)
+                    fireDropConfetti()
+                  },
+                })
+              }}
+            >
+              <CentralIcon
+                name="IconAirdrop2"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={18}
+                color="#FFFFFF"
+                ariaHidden
+              />
+              {alreadyClaimed ? 'Already claimed' : 'Claim Free Drop'}
+              <ChevronRight className="h-[14px] w-[14px]" />
+            </Button>
           </div>
         </div>
       </Card>
 
-      <DropClaimSuccessModal open={modalOpen} claim={claimResult} onClose={() => setModalOpen(false)} />
+      <DropClaimSuccessModal
+        open={modalOpen}
+        claim={claimResult}
+        onClose={() => setModalOpen(false)}
+      />
     </>
   )
 }

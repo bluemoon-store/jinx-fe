@@ -161,7 +161,7 @@ const Navbar: FunctionComponent = () => {
   return (
     <header className="text-foreground font-commissioner border-border-subtle bg-background/95 fixed top-0 right-0 left-0 z-50 box-border flex h-14 w-full shrink-0 items-center justify-between gap-0 border-b border-solid px-4 py-0 backdrop-blur-md sm:h-[75px] sm:px-6 lg:px-8 xl:px-14 2xl:px-56">
       {/* Logo and nav links */}
-      <nav className="flex h-14 flex-1 shrink-0 items-center gap-2 sm:gap-4 lg:gap-num-15">
+      <nav className="lg:gap-num-15 flex h-14 flex-1 shrink-0 items-center gap-2 sm:gap-4">
         <Link href="/" className="shrink-0">
           <img
             className="h-8 w-14 sm:h-[45.3px] sm:w-[82px]"

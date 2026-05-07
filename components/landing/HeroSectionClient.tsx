@@ -50,7 +50,7 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
         <main className="flex w-full flex-col bg-[#051329] pt-4 pb-0 md:pt-8">
           <div className="relative w-full overflow-hidden rounded-lg bg-[#051329] lg:aspect-[1476/700]">
             <div
-              className="pointer-events-none absolute inset-0 bg-[url('/icons/hero-background.png')] bg-cover bg-center bg-no-repeat"
+              className="pointer-events-none absolute inset-0 bg-[url('/icons/Main-Background-Hero.webp')] bg-cover bg-center bg-no-repeat"
               aria-hidden
             />
             <div className="relative z-10 flex w-full flex-1 flex-col gap-6 sm:gap-8 lg:h-full lg:min-h-0 lg:flex-row lg:items-stretch lg:justify-between lg:gap-0">

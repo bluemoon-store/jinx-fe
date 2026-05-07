@@ -38,11 +38,11 @@ const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
     </div>
     <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5">
       <b className="tracking-num--0_01 leading-num-20">{item.name}</b>
-      <div className="flex flex-wrap items-center gap-2 text-center text-body-foreground">
+      <div className="text-body-foreground flex flex-wrap items-center gap-2 text-center">
         <div className="leading-num-20 font-medium">{item.variantLabel}</div>
       </div>
     </div>
-    <div className="text-num-16 ms-3 box-border flex shrink-0 items-center gap-2.5 overflow-hidden rounded-lg border border-border-subtle bg-card-elevated px-2 py-1 text-foreground sm:ms-4">
+    <div className="text-num-16 border-border-subtle bg-card-elevated text-foreground ms-3 box-border flex shrink-0 items-center gap-2.5 overflow-hidden rounded-lg border px-2 py-1 sm:ms-4">
       <button
         type="button"
         aria-label="Decrease quantity"
@@ -94,8 +94,7 @@ export const CartDropdownPanel: FunctionComponent = () => {
 
   const cartTotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
 
-  const lineKey = (item: CartItem) =>
-    `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
+  const lineKey = (item: CartItem) => `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
 
   return (
     <div
@@ -123,9 +122,9 @@ export const CartDropdownPanel: FunctionComponent = () => {
           </Fragment>
         ))}
 
-        <div className="flex items-center justify-between gap-5 self-stretch text-center text-[13px] text-body-foreground">
+        <div className="text-body-foreground flex items-center justify-between gap-5 self-stretch text-center text-[13px]">
           <div className="leading-num-20 font-medium">Cart Total</div>
-          <b className="text-num-16 leading-6 text-foreground [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+          <b className="text-num-16 text-foreground leading-6 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             {formatUsd(cartTotal)}
           </b>
         </div>

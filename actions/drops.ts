@@ -68,7 +68,9 @@ function mapMyDropClaim(raw: UnknownRecord): MyDropClaim {
       name: pickString(raw.productName ?? raw.product_name ?? product.name),
       slug: pickString(raw.productSlug ?? raw.product_slug ?? product.slug),
       iconUrl: pickNullableString(raw.productIconUrl ?? raw.product_icon_url ?? product.iconUrl),
-      imageUrl: pickNullableString(raw.productImageUrl ?? raw.product_image_url ?? product.imageUrl),
+      imageUrl: pickNullableString(
+        raw.productImageUrl ?? raw.product_image_url ?? product.imageUrl
+      ),
       redeemProcess: pickNullableString(
         raw.productRedeemProcess ?? raw.product_redeem_process ?? product.redeemProcess
       ),

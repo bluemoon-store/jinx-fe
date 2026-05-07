@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function VouchesPage() {
   return (
-    <div className="text-foreground flex min-h-screen flex-col bg-background">
+    <div className="text-foreground bg-background flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1 pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
@@ -31,7 +31,7 @@ export default function VouchesPage() {
                     color="#EB2DFF"
                     ariaHidden
                   />
-                  <h1 className="text-lg leading-num-28 tracking-num-0.02 font-bold text-white">
+                  <h1 className="leading-num-28 tracking-num-0.02 text-lg font-bold text-white">
                     Customer Vouches
                   </h1>
                 </div>

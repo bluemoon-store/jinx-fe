@@ -10,7 +10,7 @@ import SellingSection from '@/components/landing/SellingSection'
 
 export default function LandingPage() {
   return (
-    <div className="text-num-14 text-foreground font-nata-sans flex min-h-screen w-full flex-col bg-background text-center">
+    <div className="text-num-14 text-foreground font-nata-sans bg-background flex min-h-screen w-full flex-col text-center">
       <Navbar />
       <main className="flex flex-1 flex-col gap-16 pt-14 sm:gap-20 sm:pt-[75px] lg:gap-24">
         <HeroSection />

@@ -21,8 +21,8 @@ export function MessageComposer({
 }: MessageComposerProps) {
   if (disabled) {
     return (
-      <div className="mt-5 rounded-lg border border-border-subtle bg-card-elevated px-4 py-3">
-        <p className="text-sm text-body-foreground">
+      <div className="border-border-subtle bg-card-elevated mt-5 rounded-lg border px-4 py-3">
+        <p className="text-body-foreground text-sm">
           {lockMessage ?? 'You cannot send messages on this ticket right now.'}
         </p>
       </div>
@@ -38,7 +38,7 @@ export function MessageComposer({
       }}
     >
       <div className="relative flex-1">
-        <div className="text-body-foreground pointer-events-none absolute top-1/2 left-3 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md bg-card">
+        <div className="text-body-foreground bg-card pointer-events-none absolute top-1/2 left-3 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md">
           <CentralIcon
             name="IconPaperclip1"
             join="round"
@@ -54,7 +54,7 @@ export function MessageComposer({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Write your message here"
-          className="h-13 w-full rounded-lg border border-border-subtle bg-card-elevated pr-28 pl-14 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
+          className="border-border-subtle bg-card-elevated text-foreground placeholder:text-muted-foreground h-13 w-full rounded-lg border pr-28 pl-14 text-sm focus:ring-2 focus:ring-[#ea2cff] focus:outline-none"
         />
         <button
           type="submit"

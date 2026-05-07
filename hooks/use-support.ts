@@ -12,7 +12,12 @@ import {
 import { useCurrentUser } from '@/hooks/use-auth'
 import { parseApiError } from '@/lib/api-error'
 import { toast } from '@/lib/toast'
-import type { CreateTicketPayload, ListMyTicketsParams, TicketDetail, TicketMessage } from '@/types/support'
+import type {
+  CreateTicketPayload,
+  ListMyTicketsParams,
+  TicketDetail,
+  TicketMessage,
+} from '@/types/support'
 
 export const SUPPORT_QUERY_KEYS = {
   all: ['support-tickets'] as const,
@@ -22,10 +27,7 @@ export const SUPPORT_QUERY_KEYS = {
   detail: (id: string) => [...SUPPORT_QUERY_KEYS.details(), id] as const,
 }
 
-export function useMyTicketsQuery(
-  params?: ListMyTicketsParams,
-  options?: { enabled?: boolean }
-) {
+export function useMyTicketsQuery(params?: ListMyTicketsParams, options?: { enabled?: boolean }) {
   const page = params?.page ?? 1
   const limit = params?.limit ?? 50
   const { data: user, isLoading: userLoading } = useCurrentUser()
@@ -44,8 +46,7 @@ export function useTicketDetailQuery(
   return useQuery({
     queryKey: SUPPORT_QUERY_KEYS.detail(ticketId ?? ''),
     queryFn: () => getTicketDetailAction(ticketId!),
-    enabled:
-      Boolean(ticketId) && Boolean(user) && !userLoading && (options?.enabled ?? true),
+    enabled: Boolean(ticketId) && Boolean(user) && !userLoading && (options?.enabled ?? true),
   })
 }
 
@@ -95,11 +96,14 @@ export function useSendMessageMutation() {
       toast.error(parseApiError(err))
     },
     onSuccess: (data, { ticketId }, ctx) => {
-      queryClient.setQueryData<TicketDetail | undefined>(SUPPORT_QUERY_KEYS.detail(ticketId), (old) => {
-        if (!old) return old
-        const without = (old.messages ?? []).filter((m) => m.id !== ctx?.tempId)
-        return { ...old, messages: [...without, { ...data, pending: false }] }
-      })
+      queryClient.setQueryData<TicketDetail | undefined>(
+        SUPPORT_QUERY_KEYS.detail(ticketId),
+        (old) => {
+          if (!old) return old
+          const without = (old.messages ?? []).filter((m) => m.id !== ctx?.tempId)
+          return { ...old, messages: [...without, { ...data, pending: false }] }
+        }
+      )
       void queryClient.invalidateQueries({ queryKey: SUPPORT_QUERY_KEYS.lists() })
     },
   })
@@ -111,15 +115,18 @@ export function useResolveTicketMutation() {
     mutationFn: (ticketId: string) => resolveTicketAction(ticketId),
     onSuccess: (row, ticketId) => {
       void queryClient.invalidateQueries({ queryKey: SUPPORT_QUERY_KEYS.lists() })
-      queryClient.setQueryData<TicketDetail | undefined>(SUPPORT_QUERY_KEYS.detail(ticketId), (old) => {
-        if (!old) return old
-        return {
-          ...old,
-          status: row.status,
-          closedAt: row.closedAt ?? old.closedAt,
-          updatedAt: row.updatedAt,
+      queryClient.setQueryData<TicketDetail | undefined>(
+        SUPPORT_QUERY_KEYS.detail(ticketId),
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            status: row.status,
+            closedAt: row.closedAt ?? old.closedAt,
+            updatedAt: row.updatedAt,
+          }
         }
-      })
+      )
       toast.success('Ticket marked as resolved.')
     },
     onError: (e) => {

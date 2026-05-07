@@ -14,16 +14,21 @@ export const VouchCard: FunctionComponent<Props> = ({ vouch }) => {
   const alt = vouch.caption?.trim() || 'Customer vouch'
 
   return (
-    <article className="font-nata-sans border-darkslateblue relative box-border flex w-full flex-col items-center gap-3 rounded-lg border border-solid bg-gray-100 p-3 text-center text-base text-ghostwhite">
+    <article className="font-nata-sans border-darkslateblue text-ghostwhite relative box-border flex w-full flex-col items-center gap-3 rounded-lg border border-solid bg-gray-100 p-3 text-center text-base">
       <div className="relative w-full shrink-0 overflow-hidden rounded-md">
-        <img src={vouch.imageUrl} alt={alt} className="block h-auto w-full object-contain" loading="lazy" />
+        <img
+          src={vouch.imageUrl}
+          alt={alt}
+          className="block h-auto w-full object-contain"
+          loading="lazy"
+        />
       </div>
 
       <div className="flex max-w-full flex-col items-center gap-0.5">
         <div className="flex w-full items-center justify-center">
           <Link
             href={`/shop/${vouch.product.slug}`}
-            className="relative shrink-0 font-extrabold uppercase leading-6 tracking-num-0.02 text-ghostwhite transition-colors hover:text-fuchsia-200"
+            className="tracking-num-0.02 text-ghostwhite relative shrink-0 leading-6 font-extrabold uppercase transition-colors hover:text-fuchsia-200"
           >
             {vouch.product.name}
           </Link>
@@ -46,7 +51,7 @@ export const VouchCard: FunctionComponent<Props> = ({ vouch }) => {
           color="#1bd924"
           ariaHidden
         />
-        <div className="relative font-semibold leading-7 tracking-[-0.01em]">Verified Customer</div>
+        <div className="relative leading-7 font-semibold tracking-[-0.01em]">Verified Customer</div>
       </div>
     </article>
   )

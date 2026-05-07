@@ -35,7 +35,7 @@ function NavItem({
       className={[
         'rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5 text-left',
         isActive
-          ? 'border border-solid border-active-border text-foreground [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--active-bg),var(--active-bg))]'
+          ? 'border-active-border text-foreground border border-solid [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--active-bg),var(--active-bg))]'
           : 'text-foreground/90 hover:bg-hover-bg hover:text-foreground',
       ].join(' ')}
     >
@@ -56,17 +56,17 @@ function FAQItem({
   onToggle: () => void
 }) {
   return (
-    <div className="rounded-num-8 border border-solid border-border-subtle bg-card">
+    <div className="rounded-num-8 border-border-subtle bg-card border border-solid">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="rounded-num-8 lg:p-num-19.1 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 bg-card p-4 text-left sm:gap-3 sm:p-5"
+        className="rounded-num-8 lg:p-num-19.1 bg-card flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 p-4 text-left sm:gap-3 sm:p-5"
       >
         <b className="tracking-num--0_01 sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
           {question}
         </b>
-        <div className="rounded-num-8 flex shrink-0 items-center justify-center bg-hover-bg p-1">
+        <div className="rounded-num-8 bg-hover-bg flex shrink-0 items-center justify-center p-1">
           <CentralIcon
             name="IconChevronDownMedium"
             join="round"
@@ -267,7 +267,7 @@ export default function FAQs() {
   }, [categories, activeCategory])
 
   return (
-    <section className="text-num-14 font-commissioner w-full text-left text-foreground">
+    <section className="text-num-14 font-commissioner text-foreground w-full text-left">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
         <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[208px_1fr] lg:gap-16">
           {/* FAQ navigation */}
@@ -313,7 +313,7 @@ export default function FAQs() {
                 </h1>
               </div>
 
-              <div className="text-muted-foreground flex w-fit items-center justify-center gap-2 rounded-md bg-card-elevated px-2 py-1.5 text-[12px]">
+              <div className="text-muted-foreground bg-card-elevated flex w-fit items-center justify-center gap-2 rounded-md px-2 py-1.5 text-[12px]">
                 <div className="leading-[15px] font-semibold">Can’t find answer to your query?</div>
                 <Link href="/support" className="text-foreground flex items-center gap-1">
                   <CentralIcon
@@ -332,7 +332,7 @@ export default function FAQs() {
             </header>
 
             {/* Search */}
-            <div className="text-num-16 text-body-foreground rounded-num-8 border-border-subtle px-num-12 mt-6 flex w-full items-center gap-2 overflow-hidden border border-solid bg-input-bg py-1">
+            <div className="text-num-16 text-body-foreground rounded-num-8 border-border-subtle px-num-12 bg-input-bg mt-6 flex w-full items-center gap-2 overflow-hidden border border-solid py-1">
               <CentralIcon
                 name="IconMagnifyingGlass"
                 join="round"
@@ -347,7 +347,7 @@ export default function FAQs() {
                 placeholder="Search for a question or a keyword"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 px-0 font-normal text-foreground/80 placeholder:text-muted-foreground/60 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
+                className="tracking-num--0_01 leading-num-28 text-foreground/80 placeholder:text-muted-foreground/60 w-full border-none bg-transparent p-1 px-0 font-normal outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
               />
             </div>
 
@@ -360,7 +360,7 @@ export default function FAQs() {
               ) : (
                 filteredCategories.map((cat, idx) => (
                   <div key={cat.id}>
-                    {idx !== 0 && <div className="h-px w-full bg-divider" />}
+                    {idx !== 0 && <div className="bg-divider h-px w-full" />}
 
                     <section
                       id={`faq-${cat.id}`}

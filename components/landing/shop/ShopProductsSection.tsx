@@ -24,7 +24,9 @@ const INITIAL_PAGE = 1
 
 export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
   const searchParams = useSearchParams()
-  const [query, setQuery] = useState(() => searchParams.get('q') ?? searchParams.get('search') ?? '')
+  const [query, setQuery] = useState(
+    () => searchParams.get('q') ?? searchParams.get('search') ?? ''
+  )
 
   useEffect(() => {
     setQuery(searchParams.get('q') ?? searchParams.get('search') ?? '')
@@ -109,7 +111,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
         </div>
       </div>
 
-      <div className="text-num-16 text-muted-foreground rounded-num-8 border-border-subtle px-num-12 flex min-h-[44px] w-full items-center gap-2 overflow-hidden border border-solid bg-card-elevated py-1">
+      <div className="text-num-16 text-muted-foreground rounded-num-8 border-border-subtle px-num-12 bg-card-elevated flex min-h-[44px] w-full items-center gap-2 overflow-hidden border border-solid py-1">
         <CentralIcon
           name="IconMagnifyingGlass2"
           join="round"
@@ -124,7 +126,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
           onChange={(e) => setQuery(e.target.value)}
           type="text"
           placeholder="Search for any product or bundle"
-          className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-normal text-foreground/75 placeholder:text-muted-foreground/75 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
+          className="tracking-num--0_01 leading-num-28 text-foreground/75 placeholder:text-muted-foreground/75 w-full border-none bg-transparent p-1 font-normal outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
         />
       </div>
 

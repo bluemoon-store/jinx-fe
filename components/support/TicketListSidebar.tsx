@@ -26,8 +26,8 @@ export function TicketListSidebar({
   const showEmpty = isAuthenticated && !isLoading && tickets.length === 0
 
   return (
-    <aside className="flex flex-col border-b border-border-subtle bg-footer lg:w-[360px] lg:border-r lg:border-b-0">
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-card lg:max-h-none">
+    <aside className="border-border-subtle bg-footer flex flex-col border-b lg:w-[360px] lg:border-r lg:border-b-0">
+      <div className="bg-card flex min-h-0 flex-1 flex-col overflow-hidden lg:max-h-none">
         {!isAuthenticated || showEmpty ? (
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
             <CentralIcon
@@ -40,8 +40,8 @@ export function TicketListSidebar({
               color="#EA2CFF"
               className="mb-2"
             />
-            <h3 className="text-lg font-semibold text-foreground">No Tickets Created</h3>
-            <p className="mt-2 max-w-[260px] text-sm leading-relaxed text-muted-foreground">
+            <h3 className="text-foreground text-lg font-semibold">No Tickets Created</h3>
+            <p className="text-muted-foreground mt-2 max-w-[260px] text-sm leading-relaxed">
               {isAuthenticated
                 ? 'You have no tickets on your account'
                 : 'Sign in to view and create support tickets'}
@@ -68,7 +68,7 @@ export function TicketListSidebar({
           </div>
         )}
       </div>
-      <div className="border-t border-border-subtle bg-card p-4 sm:p-6">
+      <div className="border-border-subtle bg-card border-t p-4 sm:p-6">
         <button
           type="button"
           onClick={onCreateClick}

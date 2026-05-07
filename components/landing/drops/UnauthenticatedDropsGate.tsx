@@ -20,7 +20,7 @@ export function UnauthenticatedDropsGate() {
           color="#EB2DFF"
           ariaHidden
         />
-        <h2 className="text-lg leading-num-28 tracking-num-0.02 font-bold text-white">
+        <h2 className="leading-num-28 tracking-num-0.02 text-lg font-bold text-white">
           Become a member to claim drops
         </h2>
         <p className="text-num-16 leading-num-24 font-medium text-white opacity-75 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
@@ -36,14 +36,14 @@ export function UnauthenticatedDropsGate() {
         <button
           type="button"
           onClick={() => openAuthModal('signin')}
-          className="border-[#1E2E47] flex h-[52px] flex-[0.8719] items-center justify-center rounded-lg border bg-gray-100 px-4 text-num-16 leading-num-28 tracking-num--0_01 font-semibold text-white transition-colors hover:border-[#2A3D5F] hover:bg-white/8"
+          className="text-num-16 leading-num-28 tracking-num--0_01 flex h-[52px] flex-[0.8719] items-center justify-center rounded-lg border border-[#1E2E47] bg-gray-100 px-4 font-semibold text-white transition-colors hover:border-[#2A3D5F] hover:bg-white/8"
         >
           Log In
         </button>
         <button
           type="button"
           onClick={() => openAuthModal('signup')}
-          className="bg-fuchsia flex flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] px-4 py-3 text-num-16 leading-num-28 tracking-num--0_01 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] transition-opacity hover:opacity-90"
+          className="bg-fuchsia text-num-16 leading-num-28 tracking-num--0_01 flex flex-1 items-center justify-center gap-[7.8px] rounded-[7.79px] px-4 py-3 font-semibold text-white shadow-[0px_2px_0px_rgba(235,45,255,0.5)] transition-opacity hover:opacity-90"
         >
           <CentralIcon
             name="IconPeople"

@@ -17,7 +17,7 @@ export function BrandLoader({
     <div
       className={cn(
         'flex items-center justify-center',
-        fullScreen && 'min-h-screen bg-background',
+        fullScreen && 'bg-background min-h-screen',
         className
       )}
       role="status"

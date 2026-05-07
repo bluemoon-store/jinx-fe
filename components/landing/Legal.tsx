@@ -29,7 +29,7 @@ function NavItem({
       className={[
         'rounded-num-8 min-w-num-190 box-border flex w-full items-center overflow-hidden p-2.5 text-left',
         isActive
-          ? 'border border-solid border-active-border text-foreground [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--active-bg),var(--active-bg))]'
+          ? 'border-active-border text-foreground border border-solid [background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(var(--active-bg),var(--active-bg))]'
           : 'text-foreground/90 hover:bg-hover-bg hover:text-foreground',
       ].join(' ')}
     >
@@ -386,7 +386,7 @@ export default function Legal() {
   }, [searchParams])
 
   return (
-    <section className="text-num-14 font-commissioner w-full text-left text-foreground">
+    <section className="text-num-14 font-commissioner text-foreground w-full text-left">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
         <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[208px_1fr] lg:gap-16">
           {/* Legal navigation */}
@@ -421,7 +421,7 @@ export default function Legal() {
               </div>
             </header>
 
-            <div className="h-px w-full bg-divider" />
+            <div className="bg-divider h-px w-full" />
 
             {activeSection.content}
           </main>

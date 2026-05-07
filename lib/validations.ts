@@ -50,11 +50,10 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 
-export const createSupportTicketSchema = z
-  .object({
-    subject: z.string().trim().min(3, 'Subject must be at least 3 characters').max(200),
-    message: z.string().trim().min(1, 'Message is required').max(5000),
-    orderNumber: z.string().trim().min(1, 'Order ID is required').max(64),
-  })
+export const createSupportTicketSchema = z.object({
+  subject: z.string().trim().min(3, 'Subject must be at least 3 characters').max(200),
+  message: z.string().trim().min(1, 'Message is required').max(5000),
+  orderNumber: z.string().trim().min(1, 'Order ID is required').max(64),
+})
 
 export type CreateSupportTicketInput = z.infer<typeof createSupportTicketSchema>

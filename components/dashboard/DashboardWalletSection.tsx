@@ -186,8 +186,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
     if (!coinMenuOpen && !sortMenuOpen) return
     const onDoc = (e: MouseEvent) => {
       const target = e.target as Node
-      if (coinMenuRef.current?.contains(target) || sortMenuRef.current?.contains(target))
-        return
+      if (coinMenuRef.current?.contains(target) || sortMenuRef.current?.contains(target)) return
       setCoinMenuOpen(false)
       setSortMenuOpen(false)
     }

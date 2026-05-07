@@ -270,7 +270,8 @@ function SuccessCard({
                       it as quickly as possible.
                     </li>
                     <li>
-                      Contact support within 48 hours and include your product ({item.variantLabel}).
+                      Contact support within 48 hours and include your product ({item.variantLabel}
+                      ).
                     </li>
                   </ul>
                 </div>

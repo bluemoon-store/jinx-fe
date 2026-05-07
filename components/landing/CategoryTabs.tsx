@@ -25,7 +25,7 @@ export default function CategoryTabs() {
 
               <button
                 type="button"
-                className="font-commissioner sm:px-num-12 relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed border-border-subtle px-4 py-3 text-sm text-muted-foreground transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2 sm:text-base"
+                className="font-commissioner sm:px-num-12 border-border-subtle text-muted-foreground relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed px-4 py-3 text-sm transition-all duration-200 group-hover:-rotate-1 hover:border-[#005eff] hover:bg-[#005eff] hover:text-white sm:w-auto sm:gap-1 sm:py-2 sm:text-base"
               >
                 <img className="h-4 w-4 shrink-0" alt="" src="/icons/IconDollar.svg" />
                 <span className="leading-num-20 font-semibold">{label}</span>

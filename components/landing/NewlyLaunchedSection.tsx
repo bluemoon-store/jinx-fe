@@ -25,7 +25,7 @@ export default async function NewlyLaunchedSection() {
               LAUNCHED
             </div>
           </div>
-          <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-foreground opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
+          <div className="font-commissioner text-foreground w-full max-w-[580px] text-sm font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
             Just added to Jinx Store, all new giftcards for you.
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>

@@ -15,7 +15,7 @@ export default function DropsPage() {
   const { isAuthenticated } = useAuthModal()
 
   return (
-    <div className="text-foreground flex min-h-screen flex-col bg-background">
+    <div className="text-foreground bg-background flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1 pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
@@ -33,7 +33,7 @@ export default function DropsPage() {
                     color="#EB2DFF"
                     ariaHidden
                   />
-                  <h1 className="text-lg leading-num-28 tracking-num-0.02 font-bold text-white">
+                  <h1 className="leading-num-28 tracking-num-0.02 text-lg font-bold text-white">
                     Claim Free Drops
                   </h1>
                 </div>
@@ -46,9 +46,9 @@ export default function DropsPage() {
                 href={TELEGRAM_DROPS_URL || '#'}
                 target="_blank"
                 rel="noreferrer"
-                className="relative flex shrink-0 flex-col items-start overflow-hidden rounded-lg border border-solid border-whitesmoke-300 p-4 text-left font-commissioner text-lg text-white box-border w-full lg:w-auto [background:linear-gradient(180deg,rgba(0,136,204,0),rgba(0,136,204,0.25)),linear-gradient(#0d1b35,#0d1b35)]"
+                className="border-whitesmoke-300 font-commissioner relative box-border flex w-full shrink-0 flex-col items-start overflow-hidden rounded-lg border border-solid p-4 text-left text-lg text-white [background:linear-gradient(180deg,rgba(0,136,204,0),rgba(0,136,204,0.25)),linear-gradient(#0d1b35,#0d1b35)] lg:w-auto"
               >
-                <div className="flex items-center gap-num-15">
+                <div className="gap-num-15 flex items-center">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7.11px] bg-[#0088CC]">
                     <CentralIcon
                       name="IconTelegram"
@@ -62,8 +62,8 @@ export default function DropsPage() {
                     />
                   </div>
                   <div className="flex flex-col items-start justify-center">
-                    <b className="relative leading-7 tracking-num-0.02">Join Telegram Channel</b>
-                    <div className="text-whitesmoke-100 relative text-base font-medium leading-6">
+                    <b className="tracking-num-0.02 relative leading-7">Join Telegram Channel</b>
+                    <div className="text-whitesmoke-100 relative text-base leading-6 font-medium">
                       Stay updated on all the latest drops
                     </div>
                   </div>

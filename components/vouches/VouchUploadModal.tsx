@@ -28,11 +28,7 @@ const ALLOWED_TYPES = {
   'image/webp': [],
 }
 
-export const VouchUploadModal: FunctionComponent<Props> = ({
-  target,
-  open,
-  onOpenChange,
-}) => {
+export const VouchUploadModal: FunctionComponent<Props> = ({ target, open, onOpenChange }) => {
   const queryClient = useQueryClient()
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -87,7 +83,9 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
 
       if (target.type === 'order-item') {
         if (target.orderId) {
-          await queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEYS.detail(target.orderId) })
+          await queryClient.invalidateQueries({
+            queryKey: ORDERS_QUERY_KEYS.detail(target.orderId),
+          })
         }
       } else {
         await queryClient.invalidateQueries({
@@ -200,7 +198,6 @@ export const VouchUploadModal: FunctionComponent<Props> = ({
                   before publishing — please ensure no personal info is visible in the screenshot.
                 </p>
               </div>
-
             </div>
           </div>
 

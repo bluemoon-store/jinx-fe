@@ -57,7 +57,15 @@ const DashboardDropDetailPage: FunctionComponent = () => {
             href={DASHBOARD_PATHS.drops as Route}
             className="text-fuchsia hover:text-fuchsia/90 mt-2 inline-flex items-center gap-2 text-sm font-semibold underline-offset-4 hover:underline"
           >
-            <CentralIcon name="IconChevronLeft" join="round" fill="filled" stroke="2" radius="1" size={18} ariaHidden={true} />
+            <CentralIcon
+              name="IconChevronLeft"
+              join="round"
+              fill="filled"
+              stroke="2"
+              radius="1"
+              size={18}
+              ariaHidden={true}
+            />
             Back to drops
           </Link>
         </div>
@@ -112,7 +120,11 @@ const DashboardDropDetailPage: FunctionComponent = () => {
         <article className="text-num-16 font-commissioner box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid border-gray-600 bg-gray-100 p-5 text-left text-white sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
           <section className="flex w-full min-w-0 flex-col gap-5 lg:w-1/2">
             <div className="rounded-num-12 flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden bg-[#051329]">
-              <img className="max-h-full max-w-full object-contain object-center" alt="" src={heroSrc} />
+              <img
+                className="max-h-full max-w-full object-contain object-center"
+                alt=""
+                src={heroSrc}
+              />
             </div>
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-4">
               <button
@@ -120,7 +132,16 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                 onClick={() => setDropClaimMarkedUsed(claim.id, !markedAsUsed)}
                 className="rounded-num-8 p-num-12 box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid border-gray-600 bg-[#19263F]"
               >
-                <CentralIcon name="IconDoupleCheckmark2Small" join="round" fill="filled" stroke="1" radius="1" size={18} ariaHidden={true} className="text-lightsteelblue-100 shrink-0" />
+                <CentralIcon
+                  name="IconDoupleCheckmark2Small"
+                  join="round"
+                  fill="filled"
+                  stroke="1"
+                  radius="1"
+                  size={18}
+                  ariaHidden={true}
+                  className="text-lightsteelblue-100 shrink-0"
+                />
                 <span className="tracking-num--0_01 leading-num-28 font-semibold">
                   {markedAsUsed ? 'Mark as Unused' : 'Mark as Used'}
                 </span>
@@ -242,21 +263,58 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                   {formatOrderBrandLabel(claim.product.name)}
                 </h1>
                 <div className="px-num-12 text-lightsteelblue-100 font-commissioner flex items-center gap-2 rounded-xl bg-[#19263F] py-1.5 text-[13px]">
-                  <CentralIcon name={statusIcon as any} join="round" fill="filled" stroke="1" radius="1" size={18} ariaHidden={true} className="shrink-0" />
+                  <CentralIcon
+                    name={statusIcon as any}
+                    join="round"
+                    fill="filled"
+                    stroke="1"
+                    radius="1"
+                    size={18}
+                    ariaHidden={true}
+                    className="shrink-0"
+                  />
                   <span className="leading-num-20 font-semibold">{statusLabel}</span>
                 </div>
               </div>
             </header>
             <div className="rounded-num-8 border-fuchsia font-nata-sans gap-num-15 flex flex-wrap items-center justify-center self-stretch border border-dashed p-6 text-[22px] [background:linear-gradient(180deg,rgba(235,45,255,0),rgba(235,45,255,0.25))] sm:p-9 sm:text-[24px]">
               {redeemCodeCopied ? (
-                <span className="gap-num-15 flex items-center justify-center"><CentralIcon name="IconCheckCircle2" join="round" fill="filled" stroke="2" radius="1" size={26} ariaHidden={true} className="shrink-0 text-[#0CC967]" />Copied</span>
+                <span className="gap-num-15 flex items-center justify-center">
+                  <CentralIcon
+                    name="IconCheckCircle2"
+                    join="round"
+                    fill="filled"
+                    stroke="2"
+                    radius="1"
+                    size={26}
+                    ariaHidden={true}
+                    className="shrink-0 text-[#0CC967]"
+                  />
+                  Copied
+                </span>
               ) : isMultilineRedeem ? (
-                <pre className="tracking-num-0_02 max-h-[min(50vh,280px)] w-full min-w-0 flex-1 overflow-auto text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg">{redeemDisplay}</pre>
+                <pre className="tracking-num-0_02 max-h-[min(50vh,280px)] w-full min-w-0 flex-1 overflow-auto text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg">
+                  {redeemDisplay}
+                </pre>
               ) : (
-                <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">{redeemDisplay}</span>
+                <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">
+                  {redeemDisplay}
+                </span>
               )}
-              <button type="button" onClick={handleCopyRedeemCode} className="focus-visible:ring-fuchsia/40 shrink-0 rounded-md p-1">
-                <CentralIcon name="IconSquareBehindSquare1" join="round" fill="filled" stroke="2" radius="1" size={26} ariaHidden={true} />
+              <button
+                type="button"
+                onClick={handleCopyRedeemCode}
+                className="focus-visible:ring-fuchsia/40 shrink-0 rounded-md p-1"
+              >
+                <CentralIcon
+                  name="IconSquareBehindSquare1"
+                  join="round"
+                  fill="filled"
+                  stroke="2"
+                  radius="1"
+                  size={26}
+                  ariaHidden={true}
+                />
               </button>
             </div>
             <div className="text-num-16 text-ghostwhite flex flex-col gap-4 self-stretch">
@@ -317,7 +375,8 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                             <b>Step 3: Confirm</b>
                             <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
                               <li className="mb-0">
-                                Submit the redeem form and verify the reward appears on your account.
+                                Submit the redeem form and verify the reward appears on your
+                                account.
                               </li>
                               <li className="mb-0">
                                 If it fails, contact support with your claim id and a screenshot.
@@ -379,12 +438,8 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                               Contact support within 48 hours and include the details below.
                             </p>
                             <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                              <li className="mb-0">
-                                Claim ID and drop ID.
-                              </li>
-                              <li>
-                                Screenshot of the redeem error.
-                              </li>
+                              <li className="mb-0">Claim ID and drop ID.</li>
+                              <li>Screenshot of the redeem error.</li>
                             </ul>
                           </div>
                         </div>
@@ -397,7 +452,9 @@ const DashboardDropDetailPage: FunctionComponent = () => {
             <hr className="h-px w-full border-0 bg-gray-600" aria-hidden />
             <section className="flex flex-col gap-3">
               <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
-                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">Claim ID</span>
+                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">
+                  Claim ID
+                </span>
                 <button
                   type="button"
                   onClick={() => void handleCopyText(claim.id, 'Claim ID')}
@@ -418,7 +475,9 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                 </button>
               </div>
               <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
-                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">Drop ID</span>
+                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">
+                  Drop ID
+                </span>
                 <button
                   type="button"
                   onClick={() => void handleCopyText(claim.dropId, 'Drop ID')}
@@ -439,13 +498,17 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                 </button>
               </div>
               <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
-                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">Claimed At</span>
+                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">
+                  Claimed At
+                </span>
                 <span className="text-num-16 tracking-num--0_01 max-w-full text-right font-semibold text-white">
                   {new Date(claim.claimedAt).toLocaleString('en-US')}
                 </span>
               </div>
               <div className="rounded-num-8 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid border-gray-600 bg-gray-200">
-                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">Variant</span>
+                <span className="text-lightsteelblue-200 leading-num-20 font-semibold">
+                  Variant
+                </span>
                 <span className="text-num-16 tracking-num--0_01 max-w-full text-right font-semibold text-white">
                   {claim.variant.label}
                 </span>
@@ -453,7 +516,11 @@ const DashboardDropDetailPage: FunctionComponent = () => {
             </section>
           </div>
         </article>
-        <VouchUploadModal target={{ type: 'drop-claim', dropClaimId: claim.id }} open={vouchModalOpen} onOpenChange={setVouchModalOpen} />
+        <VouchUploadModal
+          target={{ type: 'drop-claim', dropClaimId: claim.id }}
+          open={vouchModalOpen}
+          onOpenChange={setVouchModalOpen}
+        />
       </div>
     </Reveal>
   )
