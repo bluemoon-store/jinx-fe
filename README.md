@@ -1,167 +1,93 @@
-# Jinx.to
+# jinx-fe
 
-A production-ready Next.js starter template with modern tooling, best practices, and a comprehensive set of libraries out of the box.
+Customer-facing storefront for jinx.to. Next.js 16 (App Router, SSR) with
+React Query, Zustand, Tailwind v4, and socket.io for real-time updates.
 
-## Tech Stack
+## Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/) with App Router and Turbopack
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with CSS variables
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives + custom components
-- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/) + [TanStack Query](https://tanstack.com/query)
-- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) validation
-- **HTTP Client**: [Axios](https://axios-http.com/)
-- **Database ORM**: [Prisma](https://www.prisma.io/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Charts**: [Recharts](https://recharts.org/)
-- **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
-- **Theme**: [next-themes](https://github.com/pacocoursey/next-themes) (dark mode support)
-- **Testing**: [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) + [Playwright](https://playwright.dev/)
-- **Linting**: ESLint + Prettier
-- **Git Hooks**: Husky + lint-staged
-- **CI/CD**: GitHub Actions
+- **Framework**: Next.js 16, React 19, App Router, SSR + Server Actions
+- **State**: TanStack Query 5, Zustand
+- **Forms**: React Hook Form + Zod
+- **Styling**: Tailwind v4
+- **Icons**: `@central-icons-react/all` (requires `CENTRAL_LICENSE_KEY` at install time)
+- **Realtime**: socket.io-client → backend WebSocket gateway
 
-## Prerequisites
+## Package manager
 
-- Node.js 18+
-- [Bun](https://bun.sh/) (package manager)
-- PostgreSQL database (for Prisma)
+This project uses **npm**. Don't run `yarn install` — there's a
+`package-lock.json` and the Docker image installs with `npm ci`.
 
-## Getting Started
+If you see `yarn.lock` in the repo, delete it. The `Dockerfile` checks
+`package-lock.json` before falling back to yarn, but mixed lockfiles cause
+"frozen-lockfile" build failures.
 
-### 1. Clone the repository
+## Local development
 
 ```bash
-git clone <repository-url>
-cd jinx-to-fe
+npm install
+cp .env.example .env.local        # if .env.example exists; otherwise see below
+npm run dev                       # http://localhost:3000
 ```
 
-### 2. Install dependencies
+Environment:
+
+| Variable | Example | Notes |
+|---|---|---|
+| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | this app's own URL |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:3001/v1` | backend base + version |
+| `NEXT_PUBLIC_WS_URL` | `http://localhost:3001` | WebSocket origin |
+| `NEXT_PUBLIC_SENTRY_DSN` | (optional) | client error tracking |
+| `NEXT_PUBLIC_GA_ID` | (optional) | analytics |
+| `CENTRAL_LICENSE_KEY` | (required) | needed at `npm install` time |
+
+`NEXT_PUBLIC_*` values are baked into the bundle at **build time**, not read
+at runtime. Rebuilding is mandatory after changing any of them.
+
+## Scripts
+
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Turbopack dev server on `:3000` |
+| `npm run build` | `next build` — produces standalone output |
+| `npm run start` | Run the standalone server (used by the prod container) |
+| `npm run type-check` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
+| `npm run analyze` | Bundle analyzer (`ANALYZE=true next build`) |
+
+## Production build
+
+`next.config.ts` sets `output: 'standalone'`. The Docker runner stage copies
+`/.next/standalone`, `/.next/static`, and `/public`, then runs `node server.js`.
+Final image is ~150 MB.
+
+The build needs three things in the environment:
+1. All `NEXT_PUBLIC_*` keys consumed by the bundle
+2. `CENTRAL_LICENSE_KEY` (set as `ARG` in the Dockerfile, exposed before
+   `npm ci` so the `@central-icons-react` postinstall license check passes)
+3. Internet access to npm registry
+
+## Production deployment
+
+Lives in the sibling [`deploy`](../deploy/) repo. Build args for this service
+are passed in `docker-compose.yml` under `services.fe.build.args`. To rebuild
+with a fresh license key (or any other build-time change):
 
 ```bash
-bun install
+cd /opt/jinx/deploy
+docker compose build --no-cache fe
+docker compose up -d fe
 ```
 
-### 3. Set up environment variables
+## Routing
 
-```bash
-cp .env.example .env.local
-```
+The App Router uses route groups for clean URL structure without affecting
+the URL itself:
 
-Edit `.env.local` with your actual values (see Environment Variables section below).
+- `app/(landing)/` — public marketing pages
+- `app/(auth)/` — login, signup, OTP flows
+- `app/(dashboard)/` — authenticated user area
+- `app/(checkout)/` — checkout funnel
 
-### 4. Set up the database
-
-```bash
-bun run db:push
-bun run db:seed
-```
-
-### 5. Start the development server
-
-```bash
-bun run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Environment Variables
-
-| Variable                 | Description                    | Required |
-| ------------------------ | ------------------------------ | -------- |
-| `NEXT_PUBLIC_APP_URL`    | Public URL of the application  | Yes      |
-| `NEXT_PUBLIC_APP_NAME`   | Application name               | Yes      |
-| `DATABASE_URL`           | PostgreSQL connection string   | Yes      |
-| `NEXTAUTH_URL`           | NextAuth.js callback URL       | Yes      |
-| `NEXTAUTH_SECRET`        | NextAuth.js secret key         | Yes      |
-| `GITHUB_CLIENT_ID`       | GitHub OAuth app client ID     | No       |
-| `GITHUB_CLIENT_SECRET`   | GitHub OAuth app client secret | No       |
-| `GOOGLE_CLIENT_ID`       | Google OAuth client ID         | No       |
-| `GOOGLE_CLIENT_SECRET`   | Google OAuth client secret     | No       |
-
-## Available Scripts
-
-| Script                  | Description                             |
-| ----------------------- | --------------------------------------- |
-| `bun run dev`           | Start development server with Turbopack |
-| `bun run build`         | Build for production                    |
-| `bun run start`         | Start production server                 |
-| `bun run lint`          | Run ESLint                              |
-| `bun run lint:fix`      | Run ESLint with auto-fix                |
-| `bun run format`        | Format code with Prettier               |
-| `bun run format:check`  | Check code formatting                   |
-| `bun run type-check`    | Run TypeScript type checking            |
-| `bun run test`          | Run unit tests with Vitest              |
-| `bun run test:ui`       | Run tests with Vitest UI                |
-| `bun run test:coverage` | Run tests with coverage report          |
-| `bun run test:e2e`      | Run Playwright E2E tests                |
-| `bun run analyze`       | Analyze bundle size                     |
-| `bun run db:generate`   | Generate Prisma client                  |
-| `bun run db:migrate`    | Run database migrations                 |
-| `bun run db:push`       | Push schema to database                 |
-| `bun run db:studio`     | Open Prisma Studio                      |
-| `bun run db:seed`       | Seed the database                       |
-
-## Project Structure
-
-```
-jinx-to-fe/
-├── .github/
-│   └── workflows/         # GitHub Actions CI/CD
-├── .husky/                # Git hooks
-├── .vscode/               # VS Code settings
-├── actions/               # Next.js server actions
-├── app/                   # Next.js App Router
-│   ├── (dashboard)/       # Dashboard route group
-│   ├── api/               # API routes
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   ├── loading.tsx        # Loading UI
-│   ├── error.tsx          # Error UI
-│   └── not-found.tsx      # 404 page
-├── components/
-│   ├── forms/             # Form components
-│   ├── layouts/           # Layout components
-│   └── ui/                # Reusable UI components
-├── hooks/                 # Custom React hooks
-├── lib/                   # Utility functions and configurations
-├── prisma/                # Database schema and seeds
-├── public/                # Static assets
-├── styles/                # Additional styles
-├── tests/
-│   ├── e2e/               # Playwright E2E tests
-│   └── unit/              # Vitest unit tests
-└── types/                 # TypeScript type definitions
-```
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Import the project on [Vercel](https://vercel.com)
-3. Configure environment variables in Vercel dashboard
-4. Deploy
-
-### Manual
-
-```bash
-bun run build
-bun run start
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push to the branch: `git push origin feature/my-feature`
-5. Open a pull request
-
-Please ensure:
-
-- All tests pass (`bun run test`)
-- Code is properly formatted (`bun run format:check`)
-- TypeScript compiles without errors (`bun run type-check`)
-- ESLint passes (`bun run lint`)
+`actions/` holds Server Actions that proxy to the backend via axios; auth
+tokens are stored in cookies and refreshed automatically by the interceptor
+in `lib/api.ts`.
