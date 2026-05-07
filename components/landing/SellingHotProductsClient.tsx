@@ -24,7 +24,7 @@ export default function SellingHotProductsClient({ items }: Props) {
   return (
     <div className="mx-auto mt-8 w-full max-w-[1476.9px] px-4 sm:mt-10 sm:px-6 lg:px-8">
       {items.length === 0 ? (
-        <div className="text-lightsteelblue-100 py-12 text-center text-sm">
+        <div className="text-muted-foreground py-12 text-center text-sm">
           No hot products available right now.
         </div>
       ) : (
@@ -74,7 +74,7 @@ export default function SellingHotProductsClient({ items }: Props) {
                       className="rounded-num-8 relative z-10 flex flex-col items-center justify-end gap-3 px-3 pt-[56px] pb-3 sm:pt-[62px]"
                       style={{
                         background:
-                          'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                          'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), var(--card)',
                       }}
                     >
                       <Link href={`/shop/${item.slug}`} className="block w-full min-w-0">
@@ -98,7 +98,7 @@ export default function SellingHotProductsClient({ items }: Props) {
                               </span>
                             ) : null}
                           </div>
-                          <div className="text-num-16 text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5">
+                          <div className="text-num-16 text-body-foreground font-commissioner flex items-center justify-center gap-0.5">
                             <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                               from{' '}
                             </div>
@@ -168,13 +168,13 @@ export default function SellingHotProductsClient({ items }: Props) {
         <div className="mt-8 flex justify-center sm:mt-10">
           <Link
             href="/shop"
-            className="border-darkslateblue rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 text-center text-base text-white shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
+            className="border-border-subtle rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-card-elevated px-6 py-2.5 text-center text-base text-foreground shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
           >
             <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               View All Products
             </span>
             <svg
-              className="h-2 w-[5px] shrink-0 text-white"
+              className="h-2 w-[5px] shrink-0 text-foreground"
               viewBox="0 0 6 10"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

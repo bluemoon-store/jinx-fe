@@ -32,7 +32,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
   }
 
   return (
-    <div className="rounded-num-8 border-darkslateblue box-border flex w-full min-w-0 flex-col items-center justify-center gap-2 border-[1px] border-solid bg-[#0D1B35] p-3 sm:gap-3">
+    <div className="rounded-num-8 border-border-subtle box-border flex w-full min-w-0 flex-col items-center justify-center gap-2 border-[1px] border-solid bg-card p-3 sm:gap-3">
       <Link href={detailHref} className="flex w-full flex-col items-center gap-2 sm:gap-3">
         <div className="relative w-full">
           <img
@@ -41,7 +41,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
             src={imageSrc}
           />
           {allVariantsOutOfStock ? (
-            <div className="rounded-num-8 absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[#0D1B35]/80 px-2 text-center backdrop-blur-[1px]">
+            <div className="rounded-num-8 absolute inset-0 flex flex-col items-center justify-center gap-1 bg-card/80 px-2 text-center backdrop-blur-[1px]">
               <span className="font-commissioner rounded-md border border-white/20 bg-black/35 px-2 py-1 text-[10px] font-bold tracking-wide text-white uppercase sm:text-xs">
                 Out of stock
               </span>
@@ -54,7 +54,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
               <img
                 src={iconUrl}
                 alt=""
-                className="border-darkslateblue size-5 shrink-0 rounded object-cover ring-1 ring-white/10 sm:size-6"
+                className="border-border-subtle size-5 shrink-0 rounded object-cover ring-1 ring-white/10 sm:size-6"
               />
             ) : null}
             <div className="tracking-num-0_02 min-w-0 truncate text-xs font-extrabold uppercase sm:text-sm">
@@ -66,8 +66,8 @@ export const ShopProductCard: FunctionComponent<Props> = ({
               </span>
             ) : null}
           </div>
-          <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center justify-center gap-0.5 text-sm">
-            <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
+          <div className="text-body-foreground font-commissioner sm:text-num-16 flex items-center justify-center gap-0.5 text-sm">
+            <div className="leading-num-24 font-medium text-muted-foreground [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
             <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
               <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
                 {fromPrice}
@@ -80,7 +80,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
         type="button"
         disabled={allVariantsOutOfStock}
         onClick={handleQuickBuyClick}
-        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full min-w-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-left text-white sm:gap-[5px] disabled:cursor-not-allowed disabled:opacity-40"
+        className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 box-border flex h-10 w-full min-w-0 items-center justify-center gap-1.5 bg-active-bg px-4 text-left text-foreground sm:gap-[5px] disabled:cursor-not-allowed disabled:opacity-40"
       >
         <CentralIcon
           name="IconZap"

@@ -38,11 +38,11 @@ const CartLine: FunctionComponent<CartLineProps> = ({ item, onDelta }) => (
     </div>
     <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5">
       <b className="tracking-num--0_01 leading-num-20">{item.name}</b>
-      <div className="flex flex-wrap items-center gap-2 text-center text-[#C3C3E3]">
+      <div className="flex flex-wrap items-center gap-2 text-center text-body-foreground">
         <div className="leading-num-20 font-medium">{item.variantLabel}</div>
       </div>
     </div>
-    <div className="text-num-16 ms-3 box-border flex shrink-0 items-center gap-2.5 overflow-hidden rounded-lg border border-white/10 bg-gray-100 px-2 py-1 text-white sm:ms-4">
+    <div className="text-num-16 ms-3 box-border flex shrink-0 items-center gap-2.5 overflow-hidden rounded-lg border border-border-subtle bg-card-elevated px-2 py-1 text-foreground sm:ms-4">
       <button
         type="button"
         aria-label="Decrease quantity"
@@ -103,7 +103,7 @@ export const CartDropdownPanel: FunctionComponent = () => {
       role="dialog"
       aria-label="Shopping cart"
     >
-      <div className="gap-num-15 text-num-14 text-ghostwhite font-commissioner flex w-full min-w-0 flex-col text-left">
+      <div className="gap-num-15 text-num-14 text-foreground font-commissioner flex w-full min-w-0 flex-col text-left">
         {items.map((item) => (
           <Fragment key={lineKey(item)}>
             <CartLine
@@ -123,9 +123,9 @@ export const CartDropdownPanel: FunctionComponent = () => {
           </Fragment>
         ))}
 
-        <div className="flex items-center justify-between gap-5 self-stretch text-center text-[13px] text-[#C3C3E3]">
+        <div className="flex items-center justify-between gap-5 self-stretch text-center text-[13px] text-body-foreground">
           <div className="leading-num-20 font-medium">Cart Total</div>
-          <b className="text-num-16 leading-6 text-white [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+          <b className="text-num-16 leading-6 text-foreground [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             {formatUsd(cartTotal)}
           </b>
         </div>

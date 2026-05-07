@@ -24,7 +24,7 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
   return (
     <div className="mx-auto mt-6 w-full max-w-[1476.9px] px-4 sm:px-6 lg:mt-10 lg:px-8">
       {allItems.length === 0 ? (
-        <div className="text-lightsteelblue-100 py-12 text-center text-sm">
+        <div className="text-muted-foreground py-12 text-center text-sm">
           No new products available right now.
         </div>
       ) : (
@@ -34,7 +34,7 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
               key={item.id}
               variant="fade-up"
               delay={idx * 70}
-              className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(#0d1b35,_#0d1b35)_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent]"
+              className="rounded-num-8 box-border flex w-full flex-col items-center justify-center gap-2 p-3 [background:linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.15))_padding-box,_linear-gradient(var(--card),_var(--card))_padding-box,_linear-gradient(180deg,_rgba(27,_217,_36,_0),_rgba(27,_217,_36,_0.5))_border-box] [border:1px_solid_transparent]"
             >
               <Link href={`/shop/${item.slug}`} className="flex w-full flex-col gap-2">
                 <img
@@ -48,7 +48,7 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
                       <img
                         src={item.iconUrl}
                         alt=""
-                        className="border-darkslateblue size-5 shrink-0 rounded object-cover ring-1 ring-white/10"
+                        className="border-border-subtle size-5 shrink-0 rounded object-cover ring-1 ring-white/10"
                       />
                     ) : null}
                     <div className="tracking-num-0_02 min-w-0 text-center text-sm font-extrabold uppercase lg:text-base">
@@ -60,7 +60,7 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
                       </span>
                     ) : null}
                   </div>
-                  <div className="font-commissioner text-whitesmoke-200 flex items-center justify-center gap-0.5 text-sm lg:text-base">
+                  <div className="font-commissioner text-body-foreground flex items-center justify-center gap-0.5 text-sm lg:text-base">
                     <div className="font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
                       from{' '}
                     </div>
@@ -122,13 +122,13 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
         <div className="mt-8 flex justify-center sm:mt-10">
           <Link
             href="/shop"
-            className="border-darkslateblue rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-gray-100 px-6 py-2.5 text-center text-base text-white shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
+            className="border-border-subtle rounded-num-30 font-commissioner box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid bg-card-elevated px-6 py-2.5 text-center text-base text-foreground shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
           >
             <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               View All Products
             </span>
             <svg
-              className="h-2 w-[5px] shrink-0 text-white"
+              className="h-2 w-[5px] shrink-0 text-foreground"
               viewBox="0 0 6 10"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

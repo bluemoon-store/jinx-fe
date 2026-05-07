@@ -1,6 +1,6 @@
-export const siteSelectDropdownBorder = 'border-[1px] border-solid border-[rgba(238,238,238,0.1)]'
+export const siteSelectDropdownBorder = 'border border-solid border-border-subtle'
 
-export const siteSelectDropdownPanel = `rounded-lg bg-gray-200 text-base text-white shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)] box-border ${siteSelectDropdownBorder}`
+export const siteSelectDropdownPanel = `rounded-lg bg-card text-base text-foreground shadow-[0px_0px_15.76px_rgba(0,_0,_0,_0.6)] box-border ${siteSelectDropdownBorder}`
 
 export const siteSelectDropdownList = 'flex flex-col divide-y divide-white/10'
 

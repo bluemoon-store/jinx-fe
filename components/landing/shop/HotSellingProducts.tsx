@@ -15,7 +15,7 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
   return (
     <>
       <Reveal variant="fade-up">
-        <header className="text-whitesmoke-100 font-commissioner sm:text-num-14 box-border flex min-h-[56px] w-full items-center justify-between gap-2 overflow-y-auto border-b-[1px] border-solid border-gray-100 py-4 text-xs sm:min-h-[75px] sm:gap-4 lg:gap-4">
+        <header className="text-foreground font-commissioner sm:text-num-14 box-border flex min-h-[56px] w-full items-center justify-between gap-2 overflow-y-auto border-b-[1px] border-solid border-border-subtle py-4 text-xs sm:min-h-[75px] sm:gap-4 lg:gap-4">
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-[5px]">
             <CentralIcon
               name="IconFire3"
@@ -33,7 +33,7 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
           <button
             type="button"
             onClick={() => setIsHidden((v) => !v)}
-            className="border-darkslateblue font-commissioner sm:text-num-14 flex min-h-[44px] shrink-0 items-center justify-center gap-1.5 rounded-3xl border-[1.2px] border-solid bg-[#0D1B35] px-4 py-2 text-xs text-white shadow-[0px_12px_12px_rgba(0,_0,_0,_0.01)] sm:gap-2"
+            className="border-border-subtle font-commissioner sm:text-num-14 flex min-h-[44px] shrink-0 items-center justify-center gap-1.5 rounded-3xl border-[1.2px] border-solid bg-card px-4 py-2 text-xs text-foreground shadow-[0px_12px_12px_rgba(0,_0,_0,_0.01)] sm:gap-2"
           >
             <span className="leading-num-20 font-semibold">
               {isHidden ? 'Show Products' : 'Hide Products'}
@@ -64,7 +64,7 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
       >
         <div className="min-h-0 overflow-hidden">
           {items.length === 0 ? (
-            <div className="text-lightsteelblue-100 p-6 text-center text-sm">
+            <div className="text-muted-foreground p-6 text-center text-sm">
               No hot products yet.
             </div>
           ) : (
@@ -102,11 +102,11 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                       className="rounded-num-8 relative z-10 flex w-full min-w-0 flex-col overflow-hidden p-3"
                       style={{
                         background:
-                          'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), #0d1b35',
+                          'linear-gradient(180deg, rgba(255,42,42,0.04), rgba(255,42,42,0.18)), var(--card)',
                       }}
                     >
                       {out ? (
-                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 bg-[#0D1B35]/85 px-2 text-center backdrop-blur-[1px]">
+                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 bg-card/85 px-2 text-center backdrop-blur-[1px]">
                           <span className="font-commissioner rounded-md border border-white/20 bg-black/40 px-2 py-1 text-[10px] font-bold tracking-wide text-white uppercase sm:text-xs">
                             Out of stock
                           </span>
@@ -137,8 +137,8 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                               </div>
                             ) : null}
                           </div>
-                          <div className="text-whitesmoke-300 font-commissioner sm:text-num-16 flex items-center gap-0.5 text-sm">
-                            <div className="leading-num-24 font-medium text-[#C0BABF] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
+                          <div className="text-body-foreground font-commissioner sm:text-num-16 flex items-center gap-0.5 text-sm">
+                            <div className="leading-num-24 font-medium text-muted-foreground [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
                             <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
                               <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
                                 {item.fromPrice.startsWith('$')

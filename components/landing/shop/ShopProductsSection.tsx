@@ -99,7 +99,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
             All Products
           </div>
         </div>
-        <div className="text-lightsteelblue-200 font-commissioner sm:text-num-14 flex items-center gap-1.5 text-right text-xs sm:gap-2.5">
+        <div className="text-muted-foreground font-commissioner sm:text-num-14 flex items-center gap-1.5 text-right text-xs sm:gap-2.5">
           <span className="leading-num-20 font-semibold">Available Products : </span>
           <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-center text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
             <b className="leading-num-20 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
@@ -109,7 +109,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
         </div>
       </div>
 
-      <div className="text-num-16 text-lightsteelblue-100 rounded-num-8 border-darkslateblue px-num-12 flex min-h-[44px] w-full items-center gap-2 overflow-hidden border border-solid bg-gray-100 py-1">
+      <div className="text-num-16 text-muted-foreground rounded-num-8 border-border-subtle px-num-12 flex min-h-[44px] w-full items-center gap-2 overflow-hidden border border-solid bg-card-elevated py-1">
         <CentralIcon
           name="IconMagnifyingGlass2"
           join="round"
@@ -124,7 +124,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
           onChange={(e) => setQuery(e.target.value)}
           type="text"
           placeholder="Search for any product or bundle"
-          className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-normal text-white/75 placeholder-white/37.5 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
+          className="tracking-num--0_01 leading-num-28 w-full border-none bg-transparent p-1 font-normal text-foreground/75 placeholder:text-muted-foreground/75 outline-none focus:border-none focus:ring-0 focus:outline-none active:border-none active:outline-none"
         />
       </div>
 
@@ -137,14 +137,14 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
           />
         </div>
       ) : total === 0 ? (
-        <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-[5px] py-12 text-left text-lg">
+        <div className="text-foreground font-commissioner flex w-full flex-col items-center gap-[5px] py-12 text-left text-lg">
           <img className="size-36 opacity-90 md:size-52" alt="" src="/icons/not-found.svg" />
           <div className="flex flex-col items-center">
             <b className="relative leading-[26px] tracking-[-0.01em]">
               We couldn't find any matches
             </b>
           </div>
-          <div className="text-lightsteelblue-100 w-[411px] max-w-full text-center text-base leading-6 font-medium">
+          <div className="text-muted-foreground w-[411px] max-w-full text-center text-base leading-6 font-medium">
             There are no products that match your search criteria. Please refine your search and try
             again.
           </div>

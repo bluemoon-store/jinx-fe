@@ -21,11 +21,11 @@ export default async function NewlyLaunchedSection() {
               <img className="h-5 w-5 lg:h-7 lg:w-7" alt="" src="/icons/IconStarLines.svg" />
               <div className="tracking-num-0_02">NEWLY</div>
             </div>
-            <div className="tracking-num-0_02 font-nata-sans text-ghostwhite font-extrabold">
+            <div className="tracking-num-0_02 font-nata-sans text-foreground font-extrabold">
               LAUNCHED
             </div>
           </div>
-          <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
+          <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-foreground opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
             Just added to Jinx Store, all new giftcards for you.
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>

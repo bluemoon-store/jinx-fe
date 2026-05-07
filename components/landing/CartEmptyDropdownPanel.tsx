@@ -27,14 +27,14 @@ export const CartEmptyDropdownPanel: FunctionComponent<Props> = ({ onNavigate })
           className="h-auto w-[133px] max-w-full object-contain"
         />
       </div>
-      <h3 className="text-ghostwhite text-md mb-2 font-bold tracking-tight">Your Cart is Empty</h3>
-      <p className="text-lightsteelblue-200 mb-num-15 max-w-[260px] text-sm leading-relaxed">
+      <h3 className="text-foreground text-md mb-2 font-bold tracking-tight">Your Cart is Empty</h3>
+      <p className="text-muted-foreground mb-num-15 max-w-[260px] text-sm leading-relaxed">
         There&apos;s nothing in your cart. Let&apos;s get shopping!
       </p>
       <Link
         href={'/shop' as Route}
         onClick={onNavigate}
-        className="rounded-num-8 sm:text-md box-border flex min-h-11 w-full touch-manipulation items-center justify-center bg-[#13253F] px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#14253F]"
+        className="rounded-num-8 sm:text-md box-border flex min-h-11 w-full touch-manipulation items-center justify-center bg-card px-4 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:bg-card-elevated"
       >
         Browse Store
       </Link>

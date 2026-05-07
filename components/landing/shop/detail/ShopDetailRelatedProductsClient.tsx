@@ -40,7 +40,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
               </div>
             </div>
 
-            <div className="font-commissioner max-w-num-580 lg:leading-num-24 w-full text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7">
+            <div className="font-commissioner max-w-num-580 lg:leading-num-24 w-full text-sm leading-6 font-medium text-foreground opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7">
               Products with stocks just refreshed, they keep selling so quick.
               <br className="hidden sm:block" />
               <span className="hidden sm:inline">
@@ -60,7 +60,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
               key={`${item.id}-${idx}`}
               variant="fade-up"
               delay={idx * 70}
-              className="border-darkslateblue rounded-num-8 p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2 border border-solid bg-gray-200"
+              className="border-border-subtle rounded-num-8 p-num-12 box-border flex h-full w-full flex-col items-stretch gap-2 border border-solid bg-card"
             >
               <Link
                 href={`/shop/${item.slug}`}
@@ -73,7 +73,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                     src={item.iconUrl ?? item.primaryImageUrl ?? '/icons/placeholder.svg'}
                   />
                   {out ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[#0D1B35]/80 px-2 text-center backdrop-blur-[1px]">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-card/80 px-2 text-center backdrop-blur-[1px]">
                       <span className="font-commissioner rounded-md border border-white/20 bg-black/35 px-2 py-1 text-[10px] font-bold tracking-wide text-white uppercase sm:text-xs">
                         Out of stock
                       </span>
@@ -87,7 +87,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                       <img
                         src={item.iconUrl}
                         alt=""
-                        className="border-darkslateblue size-5 shrink-0 rounded object-cover ring-1 ring-white/10"
+                        className="border-border-subtle size-5 shrink-0 rounded object-cover ring-1 ring-white/10"
                       />
                     ) : null}
                     <div className="tracking-num-0.02 min-w-0 flex-1 truncate text-center text-sm font-extrabold uppercase sm:text-base">
@@ -100,7 +100,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                     ) : null}
                   </div>
 
-                  <div className="text-whitesmoke-200 font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
+                  <div className="text-body-foreground font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
                     <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                       from{' '}
                     </div>
@@ -116,7 +116,7 @@ export const ShopDetailRelatedProductsClient = ({ items: allItems }: Props) => {
                 type="button"
                 disabled={out}
                 onClick={() => setQuickBuyProduct(item)}
-                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full shrink-0 items-center justify-center gap-1.5 bg-[#19263F] px-4 text-white sm:gap-[5px] disabled:cursor-not-allowed disabled:opacity-40"
+                className="font-commissioner rounded-num-6 sm:px-num-10 sm:text-num-14 py-num-8 mt-auto box-border flex h-10 w-full shrink-0 items-center justify-center gap-1.5 bg-active-bg px-4 text-foreground sm:gap-[5px] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <CentralIcon
                   name="IconZap"

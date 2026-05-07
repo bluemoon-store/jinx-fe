@@ -27,7 +27,7 @@ export default async function ShopPage() {
   }
 
   return (
-    <div className="text-ghostwhite font-nata-sans sm:text-num-14 flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-12 text-left text-sm sm:pt-[75px]">
+    <div className="text-foreground font-nata-sans sm:text-num-14 flex min-h-screen w-full flex-col overflow-x-hidden bg-background pt-12 text-left text-sm sm:pt-[75px]">
       <Navbar />
 
       <main className="mx-auto flex w-full max-w-[1920px] flex-1 flex-col gap-4 sm:gap-6 lg:gap-12">
