@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
+import CentralIcon from '@central-icons-react/all'
+
 import Footer from '@/components/landing/Footer'
 import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { VouchesGrid } from '@/components/vouches/VouchesGrid'
+import { VouchesHeaderActions } from '@/components/vouches/VouchesHeaderActions'
 
 export const metadata: Metadata = {
   title: 'Vouches | BlueMoon',
@@ -11,26 +14,40 @@ export const metadata: Metadata = {
 
 export default function VouchesPage() {
   return (
-    <div className="text-num-14 text-foreground font-nata-sans flex min-h-screen w-full flex-col bg-background text-left">
+    <div className="text-foreground flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex flex-1 flex-col pt-14 sm:pt-[75px]">
-        <div className="mx-auto flex w-full max-w-[1476.9px] flex-1 flex-col px-4 pt-10 pb-16 sm:px-6 sm:pt-14 lg:px-8">
-          <Reveal variant="fade-up">
-            <header className="mb-10 flex flex-col gap-3 text-center sm:mb-14">
-              <h1 className="font-nata-sans text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl uppercase">
-                Customer <span className="text-fuchsia">Vouches</span>
-              </h1>
-              <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg">
-                Real proof of delivery from our community. Every image is automatically watermarked
-                to prevent theft.
-              </p>
-            </header>
-          </Reveal>
+      <main className="flex-1 pt-14 sm:pt-[75px]">
+        <Reveal variant="fade-up" threshold={0}>
+          <section className="mx-auto w-full max-w-[1473px] px-6 py-10 lg:px-12 lg:py-14">
+            <header className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <CentralIcon
+                    name="IconShieldCheck"
+                    join="round"
+                    fill="filled"
+                    stroke="2"
+                    radius="1"
+                    size={21}
+                    color="#EB2DFF"
+                    ariaHidden
+                  />
+                  <h1 className="text-lg leading-num-28 tracking-num-0_02 font-bold text-white">
+                    Customer Vouches
+                  </h1>
+                </div>
+                <p className="text-num-16 leading-num-24 text-lightsteelblue-200 font-medium">
+                  Real proof of delivery from our community — every image is watermarked
+                  automatically.
+                </p>
+              </div>
 
-          <Reveal variant="fade-up" delay={100}>
+              <VouchesHeaderActions />
+            </header>
+
             <VouchesGrid />
-          </Reveal>
-        </div>
+          </section>
+        </Reveal>
       </main>
       <Footer />
     </div>

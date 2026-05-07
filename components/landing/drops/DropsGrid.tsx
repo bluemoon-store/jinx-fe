@@ -26,9 +26,11 @@ export function DropsGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="flex flex-wrap justify-center gap-4">
       {data.map((drop) => (
-        <DropCard key={drop.id} drop={drop} />
+        <div key={drop.id} className="flex w-full justify-center md:w-[calc(50%-0.5rem)]">
+          <DropCard drop={drop} />
+        </div>
       ))}
     </div>
   )

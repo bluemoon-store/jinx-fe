@@ -6,7 +6,6 @@ import Footer from '@/components/landing/Footer'
 import Navbar from '@/components/landing/Navbar'
 import { DropsGrid } from '@/components/landing/drops/DropsGrid'
 import { UnauthenticatedDropsGate } from '@/components/landing/drops/UnauthenticatedDropsGate'
-import { Card } from '@/components/ui/card'
 import { Reveal } from '@/components/ui/reveal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 
@@ -20,40 +19,57 @@ export default function DropsPage() {
       <Navbar />
       <main className="flex-1 pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
-          <section className="mx-auto w-full max-w-[1200px] px-6 py-10 lg:px-12 lg:py-14">
-            <header className="mb-6 space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">🎁 Claim Free Drops</h1>
-              <p className="max-w-2xl text-sm text-white/75 sm:text-base">
-                Limited giveaways from the Jinx catalog. Claim one free unit while stock lasts.
-              </p>
-            </header>
-
-            {TELEGRAM_DROPS_URL ? (
-              <Card className="mb-6 border-border-subtle bg-card p-4">
-                <a
-                  href={TELEGRAM_DROPS_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-between gap-3"
-                >
-                  <div>
-                    <p className="text-sm font-semibold">Join our Telegram Drops Channel</p>
-                    <p className="text-xs text-white/70">
-                      Be the first to know when new free drops go live.
-                    </p>
-                  </div>
+          <section className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
+            <header className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
                   <CentralIcon
-                    name="IconArrowRight"
+                    name="IconAirdrop2"
                     join="round"
                     fill="filled"
-                    stroke="1"
+                    stroke="2"
                     radius="1"
-                    size={18}
+                    size={21}
+                    color="#EB2DFF"
                     ariaHidden
                   />
-                </a>
-              </Card>
-            ) : null}
+                  <h1 className="text-lg leading-num-28 tracking-num-0.02 font-bold text-white">
+                    Claim Free Drops
+                  </h1>
+                </div>
+                <p className="text-num-16 leading-num-24 text-lightsteelblue-200 font-medium">
+                  Claim free drops from our most premium selection of products
+                </p>
+              </div>
+
+              <a
+                href={TELEGRAM_DROPS_URL || '#'}
+                target="_blank"
+                rel="noreferrer"
+                className="relative flex shrink-0 flex-col items-start overflow-hidden rounded-lg border border-solid border-whitesmoke-300 p-4 text-left font-commissioner text-lg text-white box-border w-full lg:w-auto [background:linear-gradient(180deg,rgba(0,136,204,0),rgba(0,136,204,0.25)),linear-gradient(#0d1b35,#0d1b35)]"
+              >
+                <div className="flex items-center gap-num-15">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7.11px] bg-[#0088CC]">
+                    <CentralIcon
+                      name="IconTelegram"
+                      join="round"
+                      fill="filled"
+                      stroke="1"
+                      radius="1"
+                      size={18}
+                      color="#FFFFFF"
+                      ariaHidden
+                    />
+                  </div>
+                  <div className="flex flex-col items-start justify-center">
+                    <b className="relative leading-7 tracking-num-0.02">Join Telegram Channel</b>
+                    <div className="text-whitesmoke-100 relative text-base font-medium leading-6">
+                      Stay updated on all the latest drops
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </header>
 
             {isAuthenticated ? <DropsGrid /> : <UnauthenticatedDropsGate />}
           </section>

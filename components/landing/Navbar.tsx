@@ -71,7 +71,7 @@ const Navbar: FunctionComponent = () => {
 
   const navLinks = [
     { label: 'Shop', href: '/shop', icon: 'IconBasket1' },
-    { label: 'Drops', href: '/drops', icon: 'IconGift1' },
+    { label: 'Drops', href: '/drops', icon: 'IconAirdrop2' },
     { label: 'Vouches', href: '/vouches', icon: 'IconShieldKeyhole' },
     { label: 'FAQs', href: '/faqs', icon: 'IconCircleQuestionmark' },
     { label: 'Support', href: '/support', icon: 'IconRescueRing' },
@@ -218,9 +218,9 @@ const Navbar: FunctionComponent = () => {
       <div className="hidden items-center gap-2 lg:flex">
         <div className="text-num-16 text-foreground flex items-center justify-center gap-2 self-stretch rounded-xl py-[26px] text-left">
           <div className="flex shrink-0 items-center justify-center gap-2">
+            <NavbarThemeSwitch />
             {isLoggedIn ? (
               <>
-                <NavbarThemeSwitch />
                 <Link
                   href={'/support' as Route}
                   className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid pt-px pb-0.5"
@@ -423,6 +423,7 @@ const Navbar: FunctionComponent = () => {
 
       {/* Mobile: actions row + hamburger */}
       <div className="flex flex-1 items-center justify-end gap-1.5 lg:hidden">
+        <NavbarThemeSwitch />
         <div className="relative shrink-0" ref={mobileCartMenuRef}>
           <button
             type="button"

@@ -11,7 +11,8 @@
       "Bash(yarn remove:*)",
       "Bash(ls -la /Users/beiryu/Development/Echodzns/bluemoon/bluemoon-fe/*.ts)",
       "Bash(ls:*)",
-      "Bash(grep -r \"useAppStore\\\\|useAuthModal\" /Users/beiryu/Development/Echodzns/bluemoon/bluemoon-fe --include=*.ts --include=*.tsx)"
+      "Bash(grep -r \"useAppStore\\\\|useAuthModal\" /Users/beiryu/Development/Echodzns/bluemoon/bluemoon-fe --include=*.ts --include=*.tsx)",
+      "WebFetch(domain:www.figma.com)"
     ]
   }
 }

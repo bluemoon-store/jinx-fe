@@ -19,7 +19,7 @@ export default function NavbarThemeSwitch() {
   }, [mounted, resolvedTheme, theme])
 
   return (
-    <div className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid pt-px pb-0.5">
+    <div className="rounded-num-8 border-border-subtle bg-card-elevated box-border flex h-9 shrink-0 items-center justify-center gap-2 border border-solid px-2 pt-px pb-0.5 sm:h-[38px] sm:px-num-12">
       <CentralIcon
         name="IconSun"
         join="round"

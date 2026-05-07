@@ -1,9 +1,10 @@
 'use client'
 
 import confetti from 'canvas-confetti'
+import CentralIcon from '@central-icons-react/all'
 import { useMemo, useState } from 'react'
+import { ChevronRight } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useClaimDropMutation } from '@/hooks/use-drops'
@@ -40,8 +41,8 @@ export function DropCard({ drop }: Props) {
 
   return (
     <>
-      <Card className="overflow-hidden border-border-subtle bg-card">
-        <div className="aspect-[16/10] bg-[#0B1221]">
+      <Card className="relative flex w-full flex-col gap-6 overflow-hidden border border-fuchsia bg-gray-100 p-6 text-center font-commissioner text-sm text-white shadow-[0px_0px_0px_5px_rgba(235,45,255,0.25)] md:flex-row md:items-stretch">
+        <div className="h-[200px] w-full shrink-0 overflow-hidden rounded-lg bg-[#0b1221] shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)] md:h-auto md:w-1/2">
           {imageSrc ? (
             <img src={imageSrc} alt={drop.product.name} className="h-full w-full object-cover" />
           ) : (
@@ -50,17 +51,34 @@ export function DropCard({ drop }: Props) {
             </div>
           )}
         </div>
-        <div className="space-y-3 p-4">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <p className="text-sm text-white/70">{drop.variant.label}</p>
-              <h3 className="line-clamp-2 text-base font-semibold">{drop.product.name}</h3>
+
+        <div className="flex flex-1 flex-col items-start justify-center gap-6">
+          <div className="flex flex-col items-start justify-center gap-2.5">
+            <div className="flex flex-col items-start gap-2.5">
+              <div className="flex items-center justify-center gap-2 rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-2 py-1">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[rgba(255,42,42,0.125)]">
+                  <div className="h-2 w-2 rounded-full bg-[#ff2a2a]" />
+                </div>
+                <b className="[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">LIVE</b>
+              </div>
+              <div className="text-left font-nata-sans text-xl font-extrabold tracking-[0.02em] text-ghostwhite uppercase">
+                {drop.product.name}
+              </div>
             </div>
-            <Badge className="bg-green-500/20 text-green-300 hover:bg-green-500/20">LIVE</Badge>
+
+            <div className="flex items-center justify-center gap-[5px] text-base text-whitesmoke-200/75">
+              <div className="leading-6 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                Available Quantity
+              </div>
+              <div className="flex items-center justify-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-1.5 py-0 text-white">
+                <b className="leading-6 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">{available}</b>
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-white/75">Available Quantity {available}</p>
+
+          <div className="flex w-full items-start text-left">
           <Button
-            className="w-full"
+            className="h-[38px] w-full gap-2 rounded-lg bg-fuchsia px-3 pb-0.5 pt-px tracking-[-0.01em] shadow-[0px_2px_0px_rgba(235,45,255,0.25)] transition-opacity hover:bg-fuchsia hover:opacity-90"
             disabled={claimMutation.isPending || alreadyClaimed}
             onClick={() => {
               claimMutation.mutate(drop.id, {
@@ -72,8 +90,20 @@ export function DropCard({ drop }: Props) {
               })
             }}
           >
+            <CentralIcon
+              name="IconAirdrop2"
+              join="round"
+              fill="filled"
+              stroke="2"
+              radius="1"
+              size={18}
+              color="#FFFFFF"
+              ariaHidden
+            />
             {alreadyClaimed ? 'Already claimed' : 'Claim Free Drop'}
+            <ChevronRight className="h-[14px] w-[14px]" />
           </Button>
+          </div>
         </div>
       </Card>
 
