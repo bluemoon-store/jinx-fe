@@ -32,7 +32,7 @@ export default async function FreshlyRestockedSection() {
                 </div>
               </div>
             </div>
-            <div className="font-commissioner max-w-num-580 lg:leading-num-24 w-full text-sm leading-6 font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base sm:leading-7">
+            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
               Products with stocks just refreshed, they keep selling so quick.
               <br className="hidden sm:block" />
               <span className="hidden sm:inline">

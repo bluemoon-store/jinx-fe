@@ -89,7 +89,7 @@ export default async function FeaturesSection() {
               <div className="tracking-num-0_02">FeatuRES</div>
             </div>
           </div>
-          <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
+          <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
@@ -106,7 +106,7 @@ export default async function FeaturesSection() {
               key={feature.title}
               variant="scale-in"
               delay={idx * 60}
-              className={`rounded-num-8 flex flex-col items-start border-[1px] border-solid p-4 lg:p-[16px] ${feature.borderClass} ${feature.bgClass}`}
+              className={`rounded-num-8 border-border-subtle bg-card hover:bg-card-elevated dark:${feature.borderClass} dark:${feature.bgClass} flex flex-col items-start border-[1px] border-solid p-4 transition-colors lg:p-[16px]`}
             >
               <div className="flex w-full items-start justify-start gap-2.5 lg:gap-3">
                 <CentralIcon
@@ -120,10 +120,10 @@ export default async function FeaturesSection() {
                   color={feature.color}
                 />
                 <div className="flex flex-1 flex-col items-start gap-1 lg:gap-[5px]">
-                  <div className="tracking-num-0_02 self-stretch leading-snug font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,_0,_0,_0.6)]">
+                  <div className="tracking-num-0_02 text-foreground self-stretch leading-snug font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
                     {feature.title}
                   </div>
-                  <div className="font-commissioner text-lightsteelblue-200 self-stretch text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                  <div className="font-commissioner text-muted-foreground dark:text-lightsteelblue-200 self-stretch text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                     {feature.description}
                   </div>
                 </div>

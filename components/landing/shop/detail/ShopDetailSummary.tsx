@@ -10,7 +10,7 @@ type Props = {
 
 export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
   return (
-    <div className="text-num-14 text-whitesmoke-200 flex flex-col items-start gap-4 self-stretch sm:gap-5">
+    <div className="text-num-14 text-muted-foreground dark:text-whitesmoke-200 flex flex-col items-start gap-4 self-stretch sm:gap-5">
       <div className="flex flex-wrap items-center gap-1.5 self-stretch text-center sm:gap-[7px]">
         {product.breadcrumbs.map((crumb, idx) => (
           <div key={`${crumb}-${idx}`} className="contents">
@@ -27,20 +27,20 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
                 stroke="2"
                 radius="1"
                 size={12}
-                className="text-whitesmoke-200 opacity-25"
+                className="text-muted-foreground dark:text-whitesmoke-200 opacity-25"
               />
             )}
           </div>
         ))}
       </div>
 
-      <div className="text-whitesmoke-100 font-nata-sans flex flex-col items-start gap-2 self-stretch text-2xl sm:text-3xl lg:text-[30px]">
+      <div className="text-foreground dark:text-whitesmoke-100 font-nata-sans flex flex-col items-start gap-2 self-stretch text-2xl sm:text-3xl lg:text-[30px]">
         <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
-          <div className="tracking-num-0_02 min-w-0 flex-1 leading-8 font-extrabold uppercase">
+          <div className="tracking-num-0.02 min-w-0 flex-1 leading-8 font-extrabold uppercase">
             {product.name}
           </div>
           {product.flair?.trim() ? (
-            <span className="shrink-0 rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2.5 py-1 text-xs font-semibold tracking-wide text-fuchsia-100 uppercase sm:text-sm">
+            <span className="shrink-0 rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2.5 py-1 text-xs font-semibold tracking-wide text-fuchsia-600 dark:text-fuchsia-100 uppercase sm:text-sm">
               {product.flair.trim()}
             </span>
           ) : null}
@@ -48,7 +48,7 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
       </div>
 
       {product.shortNotice ? (
-        <div className="rounded-num-8 border-whitesmoke-300 p-num-10 flex items-center justify-center gap-2.5 border-[1.8px] border-solid bg-gray-100 text-center">
+        <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-whitesmoke-300 dark:bg-gray-100 p-num-10 flex items-center justify-center gap-2.5 border-[1.8px] border-solid text-center">
           <CentralIcon
             name="IconCloudCheck"
             join="round"
@@ -56,7 +56,7 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
             stroke="2"
             radius="1"
             size={16}
-            className="text-whitesmoke-200"
+            className="text-muted-foreground dark:text-whitesmoke-200"
           />
           <div className="leading-num-20 font-semibold">{product.shortNotice}</div>
         </div>
@@ -64,7 +64,7 @@ export const ShopDetailSummary: FunctionComponent<Props> = ({ product }) => {
 
       {product.description.trim() ? (
         <div
-          className="text-num-16 leading-num-24 font-roobert-trial text-lightsteelblue-100 prose prose-invert max-w-none self-stretch font-medium [&_a]:text-fuchsia-200"
+          className="text-num-16 leading-num-24 font-roobert-trial text-body-foreground dark:text-lightsteelblue-100 prose dark:prose-invert max-w-none self-stretch font-medium [&_a]:text-fuchsia-600 dark:[&_a]:text-fuchsia-200"
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
         />
       ) : null}

@@ -24,7 +24,7 @@ const VIEW_OPTIONS: { value: DropsViewMode; label: string; icon: string }[] = [
 ]
 
 const dashboardSelectTriggerClass = cn(
-  'rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2'
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2'
 )
 
 function formatClaimDate(value: string) {
@@ -117,8 +117,8 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
   }, [viewMenuOpen, sortMenuOpen])
 
   const filterBar = (
-    <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
-      <div className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
+    <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
+      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
         <CentralIcon
           name="IconMagnifyingGlass"
           join="round"
@@ -127,14 +127,14 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
           radius="1"
           size={18}
           ariaHidden={true}
-          className="text-lightsteelblue-200"
+          className="text-muted-foreground"
         />
         <input
           type="search"
           value={dropSearch}
           onChange={(e) => setDropSearch(e.target.value)}
           placeholder="Search using Product Name"
-          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal text-white/75 placeholder-white/37.5 outline-none focus:ring-0"
+          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal outline-none focus:ring-0"
         />
       </div>
 
@@ -181,8 +181,8 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
                     className={cn(
                       siteSelectDropdownOptionRow,
                       siteSelectDropdownOptionInteractive,
-                      'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
-                      sortOption === opt.value && 'bg-white/5'
+                      'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
+                      sortOption === opt.value && 'bg-foreground/5 dark:bg-white/5'
                     )}
                     onClick={() => {
                       setSortOption(opt.value)
@@ -239,8 +239,8 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
                     className={cn(
                       siteSelectDropdownOptionRow,
                       siteSelectDropdownOptionInteractive,
-                      'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
-                      viewMode === opt.value && 'bg-white/5'
+                      'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                      viewMode === opt.value && 'bg-foreground/5 dark:bg-white/5'
                     )}
                     onClick={() => {
                       setViewMode(opt.value)
@@ -272,12 +272,12 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
     return (
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         {filterBar}
-        <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
+        <div className="text-foreground dark:text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
           <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
           <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
             {myDropsQuery.isError ? 'Could not load drops' : 'No drops match'}
           </b>
-          <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
+          <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
             {myDropsQuery.isError
               ? 'Please refresh the page or try again later.'
               : 'Try another search to see your claimed drops.'}
@@ -318,7 +318,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
               })}
             </div>
           ) : (
-            <div className="rounded-num-8 divide-y divide-[#16243B] border border-solid border-[#16243B] bg-[#0B1221]">
+            <div className="rounded-num-8 border-border-subtle bg-card divide-y divide-border-subtle dark:divide-[#16243B] dark:border-[#16243B] dark:bg-[#0B1221] border border-solid">
               {filtered.map((d) => {
                 const status = getDropStatus(d.expiresAt)
                 return (

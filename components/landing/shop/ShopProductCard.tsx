@@ -52,9 +52,9 @@ export const ShopProductCard: FunctionComponent<Props> = ({
             </div>
           </div>
           <div className="text-body-foreground font-commissioner sm:text-num-16 flex items-center justify-center gap-0.5 text-sm">
-            <div className="leading-num-24 text-muted-foreground font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">{`from `}</div>
-            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-              <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+            <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">{`from `}</div>
+            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+              <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                 {fromPrice}
               </b>
             </div>
@@ -74,7 +74,7 @@ export const ShopProductCard: FunctionComponent<Props> = ({
           stroke="1"
           radius="1"
           size={16}
-          color="#FFFFFF"
+          className="text-foreground dark:text-white"
         />
         <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
       </button>

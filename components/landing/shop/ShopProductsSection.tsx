@@ -103,8 +103,8 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
         </div>
         <div className="text-muted-foreground font-commissioner sm:text-num-14 flex items-center gap-1.5 text-right text-xs sm:gap-2.5">
           <span className="leading-num-20 font-semibold">Available Products : </span>
-          <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-center text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-            <b className="leading-num-20 [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+          <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-center text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+            <b className="leading-num-20 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               {isLoading && page === INITIAL_PAGE ? '—' : total}
             </b>
           </div>
@@ -119,7 +119,7 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
           stroke="2"
           radius="1"
           size={20}
-          color="#FFFFFF"
+          className="text-muted-foreground"
         />
         <input
           value={query}

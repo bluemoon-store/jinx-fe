@@ -18,8 +18,8 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
   const displayName = formatOrderBrandLabel(brand)
 
   return (
-    <div className="group flex w-full min-w-0 flex-row items-center gap-3 bg-gray-700 px-3 py-3 transition-colors hover:bg-[#13253F] sm:gap-4 sm:px-4 sm:py-3.5 md:px-5">
-      <div className="rounded-num-8 flex h-12 w-19 shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28">
+    <div className="group hover:bg-hover-bg dark:bg-gray-700 dark:hover:bg-[#13253F] flex w-full min-w-0 flex-row items-center gap-3 bg-transparent px-3 py-3 transition-colors sm:gap-4 sm:px-4 sm:py-3.5 md:px-5">
+      <div className="bg-card-elevated dark:bg-[#0D1B35] rounded-num-8 flex h-12 w-19 shrink-0 items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28">
         <img
           className="h-full w-full scale-110 object-cover"
           alt=""
@@ -28,18 +28,18 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
       </div>
 
       <div className="font-commissioner flex min-w-0 flex-1 flex-col gap-1">
-        <div className="text-ghostwhite tracking-num-0.02 truncate text-sm font-bold sm:text-base">
+        <div className="text-foreground dark:text-ghostwhite tracking-num-0.02 truncate text-sm font-bold sm:text-base">
           {displayName}
         </div>
-        <div className="text-lightsteelblue-100 sm:text-num-14 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs leading-5">
+        <div className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs leading-5">
           <span className="font-medium">
             {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
           </span>
-          <span className="text-lightsteelblue-200" aria-hidden>
+          <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
             –
           </span>
-          <b className="text-ghostwhite font-bold">{price}</b>
-          <span className="text-lightsteelblue-200" aria-hidden>
+          <b className="text-foreground dark:text-ghostwhite font-bold">{price}</b>
+          <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
             –
           </span>
           <span className={`inline-flex items-center gap-1 ${cfg.color}`}>
@@ -68,7 +68,7 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
         )}
         <Link
           href={`/dashboard/orders/${id}` as Route}
-          className="text-ghostwhite font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 shrink-0 bg-[#13253F] px-3 py-2 text-xs font-semibold transition-colors group-hover:bg-white/10 focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm"
+          className="text-foreground bg-card-elevated dark:text-ghostwhite dark:bg-[#13253F] font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 shrink-0 px-3 py-2 text-xs font-semibold transition-colors group-hover:bg-foreground/10 dark:group-hover:bg-white/10 focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm"
         >
           View Details
         </Link>

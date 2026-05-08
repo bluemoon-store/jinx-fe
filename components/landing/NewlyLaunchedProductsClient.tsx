@@ -49,11 +49,11 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
                     </div>
                   </div>
                   <div className="font-commissioner text-body-foreground flex items-center justify-center gap-0.5 text-sm lg:text-base">
-                    <div className="font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                    <div className="font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                       from{' '}
                     </div>
-                    <div className="rounded-num-6 flex items-center justify-center px-1.5 py-0.5 text-white [background:linear-gradient(180deg,_rgba(255,_255,_255,_0.05),_rgba(255,_255,_255,_0.14))]">
-                      <b className="[text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
+                    <div className="rounded-num-6 flex items-center justify-center px-1.5 py-0.5 text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+                      <b className="[text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                         {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
                       </b>
                     </div>
@@ -112,7 +112,7 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
             href="/shop"
             className="border-border-subtle rounded-num-30 font-commissioner bg-card-elevated text-foreground box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid px-6 py-2.5 text-center text-base shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
           >
-            <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               View All Products
             </span>
             <svg

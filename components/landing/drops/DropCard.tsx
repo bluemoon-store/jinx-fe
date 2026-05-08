@@ -57,8 +57,8 @@ export function DropCard({ drop }: Props) {
 
   return (
     <>
-      <Card className="border-fuchsia font-commissioner relative flex w-full flex-col gap-6 overflow-hidden border bg-gray-100 p-6 text-center text-sm text-white shadow-[0px_0px_0px_5px_rgba(235,45,255,0.25)] md:flex-row md:items-stretch">
-        <div className="h-[200px] w-full shrink-0 overflow-hidden rounded-lg bg-[#0b1221] shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)] md:h-auto md:w-1/2">
+      <Card className="border-fuchsia bg-card text-foreground font-commissioner relative flex w-full flex-col gap-6 overflow-hidden border p-6 text-center text-sm shadow-[0px_0px_0px_5px_rgba(235,45,255,0.25)] md:flex-row md:flex-wrap md:items-stretch dark:bg-gray-100 dark:text-white">
+        <div className="bg-card-elevated h-[200px] w-full shrink-0 overflow-hidden rounded-lg shadow-[0px_0px_8.63px_rgba(0,0,0,0.6)] md:h-auto md:w-1/2 dark:bg-[#0b1221]">
           {imageSrc ? (
             <img src={imageSrc} alt={drop.product.name} className="h-full w-full object-cover" />
           ) : (
@@ -71,23 +71,25 @@ export function DropCard({ drop }: Props) {
         <div className="flex flex-1 flex-col items-start justify-center gap-6">
           <div className="flex flex-col items-start justify-center gap-2.5">
             <div className="flex flex-col items-start gap-2.5">
-              <div className="flex items-center justify-center gap-2 rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-2 py-1">
+              <div className="bg-foreground/10 flex items-center justify-center gap-2 rounded-md px-2 py-1 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
                 <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[rgba(255,42,42,0.125)]">
                   <div className="h-2 w-2 rounded-full bg-[#ff2a2a]" />
                 </div>
-                <b className="[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">LIVE</b>
+                <b className="[text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                  LIVE
+                </b>
               </div>
-              <div className="font-nata-sans text-ghostwhite text-left text-xl font-extrabold tracking-[0.02em] uppercase">
+              <div className="font-nata-sans text-foreground dark:text-ghostwhite text-left text-xl font-extrabold tracking-[0.02em] uppercase">
                 {drop.product.name}
               </div>
             </div>
 
-            <div className="text-whitesmoke-200/75 flex items-center justify-center gap-[5px] text-base">
-              <div className="leading-6 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            <div className="text-muted-foreground dark:text-whitesmoke-200/75 flex items-center justify-center gap-[5px] text-base">
+              <div className="leading-6 font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                 Available Quantity
               </div>
-              <div className="flex items-center justify-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-1.5 py-0 text-white">
-                <b className="leading-6 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+              <div className="flex items-center justify-center rounded-md bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] px-1.5 py-0 text-white dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+                <b className="leading-6 [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                   {available}
                 </b>
               </div>
@@ -98,10 +100,10 @@ export function DropCard({ drop }: Props) {
             <div className="flex w-full flex-col gap-4">
               <Link
                 href={dropDetailHref}
-                className="border-whitesmoke-300 group flex w-full min-h-[52px] items-center justify-between gap-3 rounded-lg border bg-gray-200 px-3 py-2.5 transition-colors hover:bg-gray-700 sm:px-4"
+                className="border-border-subtle bg-card-elevated text-foreground dark:border-whitesmoke-300 group hover:bg-card flex min-h-[52px] w-full items-center justify-between gap-3 rounded-lg border px-3 py-2.5 transition-colors sm:px-4 dark:bg-gray-200 dark:text-white dark:hover:bg-gray-700"
               >
                 <span className="flex min-w-0 flex-1 items-center gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center">
                     <CentralIcon
                       name="IconCheckCircle2"
                       join="round"
@@ -109,12 +111,13 @@ export function DropCard({ drop }: Props) {
                       stroke="2"
                       radius="1"
                       size={22}
+                      color="text-muted-foreground"
                       ariaHidden
-                      className="shrink-0 text-[#0b1221]"
+                      className="text-muted-foreground shrink-0"
                     />
                   </span>
-                  <span className="text-lightsteelblue-100 text-left text-sm leading-snug font-semibold sm:text-base">
-                    You have already claimed this drop
+                  <span className="text-muted-foreground dark:text-lightsteelblue-100 text-left text-sm leading-snug font-semibold sm:text-base">
+                    Already claimed
                   </span>
                 </span>
                 <CentralIcon
@@ -124,32 +127,10 @@ export function DropCard({ drop }: Props) {
                   stroke="1"
                   radius="1"
                   size={18}
-                  className="text-lightsteelblue-200 shrink-0 transition-transform group-hover:translate-x-0.5"
+                  className="text-muted-foreground dark:text-lightsteelblue-200 shrink-0 transition-transform group-hover:translate-x-0.5"
                   ariaHidden
                 />
               </Link>
-
-              <div className="border-white/10 flex w-full flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                <p className="text-lightsteelblue-200 text-left text-sm leading-snug font-medium">
-                  Add a vouch to get another chance to claim the drop
-                </p>
-                <Link
-                  href={dropDetailVouchHref}
-                  className="bg-fuchsia hover:bg-fuchsia inline-flex h-[38px] w-full shrink-0 items-center justify-center gap-2 rounded-lg px-4 pt-px pb-0.5 text-sm font-semibold tracking-[-0.01em] text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)] transition-opacity hover:opacity-90 sm:w-auto sm:min-w-[148px]"
-                >
-                  <CentralIcon
-                    name="IconReceiptBill"
-                    join="round"
-                    fill="filled"
-                    stroke="2"
-                    radius="1"
-                    size={18}
-                    color="#FFFFFF"
-                    ariaHidden
-                  />
-                  Add vouch
-                </Link>
-              </div>
             </div>
           ) : (
             <div className="flex w-full items-start text-left">
@@ -182,6 +163,31 @@ export function DropCard({ drop }: Props) {
             </div>
           )}
         </div>
+        {alreadyClaimed ? (
+          <div className="border-foreground/10 w-full border-t pt-4 md:basis-full dark:border-white/10">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              <p className="text-muted-foreground dark:text-lightsteelblue-200 text-left text-sm leading-snug font-medium">
+                Add a vouch to get another chance to claim the drop
+              </p>
+              <Link
+                href={dropDetailVouchHref}
+                className="bg-fuchsia hover:bg-fuchsia inline-flex h-[38px] w-full shrink-0 items-center justify-center gap-2 rounded-lg px-4 pt-px pb-0.5 text-sm font-semibold tracking-[-0.01em] text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)] transition-opacity hover:opacity-90 sm:w-auto sm:min-w-[148px]"
+              >
+                <CentralIcon
+                  name="IconReceiptBill"
+                  join="round"
+                  fill="filled"
+                  stroke="2"
+                  radius="1"
+                  size={18}
+                  color="#FFFFFF"
+                  ariaHidden
+                />
+                Add vouch
+              </Link>
+            </div>
+          </div>
+        ) : null}
       </Card>
 
       <DropClaimSuccessModal

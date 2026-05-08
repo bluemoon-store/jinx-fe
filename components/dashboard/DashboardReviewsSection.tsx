@@ -62,13 +62,13 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ]
 
 const addReviewBtnClass =
-  'rounded-xl box-border inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 border border-solid border-transparent bg-[#ffffff0d] px-4 py-1.5 font-inherit transition-colors hover:bg-[#ffffff18] focus:outline-none focus:ring-0'
+  'rounded-xl box-border inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 border border-solid border-border-subtle bg-card-elevated text-foreground dark:border-transparent dark:bg-[#ffffff0d] dark:text-white px-4 py-1.5 font-inherit transition-colors hover:bg-hover-bg dark:hover:bg-[#ffffff18] focus:outline-none focus:ring-0'
 
 const ratedBadgeClass =
-  'font-commissioner relative box-border inline-flex w-fit max-w-full items-center gap-3 rounded-xl border border-solid border-[rgba(238,238,238,0.1)] bg-gray-200 py-1.5 px-3 text-left text-num-15_35 leading-num-21_93 text-ghostwhite'
+  'font-commissioner relative box-border inline-flex w-fit max-w-full items-center gap-3 rounded-xl border border-solid border-border-subtle bg-card-elevated text-foreground dark:border-[rgba(238,238,238,0.1)] dark:bg-gray-200 dark:text-ghostwhite py-1.5 px-3 text-left text-num-15_35 leading-num-21_93'
 
 const dashboardSelectTriggerClass = cn(
-  'rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2'
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2'
 )
 
 const ReviewRow: FunctionComponent<{
@@ -81,10 +81,10 @@ const ReviewRow: FunctionComponent<{
   const statusCfg = status ? dashboardOrderStatusConfig[status] : null
 
   return (
-    <div className="border-darkslateblue flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 hover:bg-[#13253F] sm:gap-4 sm:p-5">
+    <div className="border-border-subtle dark:border-darkslateblue hover:bg-hover-bg dark:hover:bg-[#13253F] flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 sm:gap-4 sm:p-5">
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
         <div
-          className="rounded-num-8 flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+          className="rounded-num-8 bg-card dark:bg-[#0D1B35] flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
           aria-hidden
         >
           {row.imageUrl ? (
@@ -107,25 +107,25 @@ const ReviewRow: FunctionComponent<{
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <b className="tracking-num-0_02 text-base leading-6 lg:text-[18px]">{row.brand}</b>
-          <div className="text-lightsteelblue-200 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:gap-2">
+          <div className="text-muted-foreground dark:text-lightsteelblue-200 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:gap-2">
             <span>
               {row.itemCount} {row.itemCount === 1 ? 'Item' : 'Items'}
             </span>
-            <span className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block" aria-hidden />
-            <span className="tracking-num--0_01 font-semibold text-white">{row.price}</span>
-            <span className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block" aria-hidden />
+            <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
+            <span className="tracking-num--0_01 text-foreground dark:text-white font-semibold">{row.price}</span>
+            <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
             <span>{row.date}</span>
-            <span className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block" aria-hidden />
+            <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
             <span>{row.time}</span>
             {statusCfg ? (
               <>
                 <span
-                  className="hidden h-3 w-px shrink-0 bg-[#152950] sm:inline-block"
+                  className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block"
                   aria-hidden
                 />
                 <span
                   className={cn(
-                    'rounded-num-6 inline-flex items-center gap-1 border border-[#16243B] bg-[#0D1B35] px-1.5 py-0.5 text-xs font-semibold',
+                    'rounded-num-6 inline-flex items-center gap-1 border border-border-subtle bg-card px-1.5 py-0.5 text-xs font-semibold dark:border-[#16243B] dark:bg-[#0D1B35]',
                     statusCfg.color
                   )}
                   aria-label={`Payment status: ${statusCfg.label}`}
@@ -183,7 +183,7 @@ const ReviewRow: FunctionComponent<{
               size={16}
               ariaHidden={true}
             />
-            <span className="tracking-num--0_01 sm:text-num-14 text-sm font-semibold text-[#faf7ff]">
+            <span className="tracking-num--0_01 sm:text-num-14 text-sm font-semibold text-foreground dark:text-[#faf7ff]">
               Add Review
             </span>
           </button>
@@ -333,8 +333,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   const isRefetching = loading && visibleRows.length > 0
 
   const filterBar = (
-    <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
-      <div className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
+    <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
+      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
         <CentralIcon
           name="IconMagnifyingGlass"
           join="round"
@@ -343,14 +343,14 @@ export const DashboardReviewsSection: FunctionComponent = () => {
           radius="1"
           size={18}
           ariaHidden={true}
-          className="text-lightsteelblue-200"
+          className="text-muted-foreground"
         />
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search using Order ID, Product Name"
-          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal text-white/75 placeholder-white/37.5 outline-none focus:ring-0"
+          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal outline-none focus:ring-0"
         />
       </div>
 
@@ -400,8 +400,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                       className={cn(
                         siteSelectDropdownOptionRow,
                         siteSelectDropdownOptionInteractive,
-                        'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
-                        statusFilter === opt.value && 'bg-white/5'
+                        'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                        statusFilter === opt.value && 'bg-foreground/5 dark:bg-white/5'
                       )}
                       onClick={() => {
                         setStatusFilter(opt.value)
@@ -469,8 +469,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                     className={cn(
                       siteSelectDropdownOptionRow,
                       siteSelectDropdownOptionInteractive,
-                      'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
-                      paymentMethodFilter === opt.value && 'bg-white/5'
+                      'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                      paymentMethodFilter === opt.value && 'bg-foreground/5 dark:bg-white/5'
                     )}
                     onClick={() => {
                       setPaymentMethodFilter(opt.value)
@@ -528,8 +528,8 @@ export const DashboardReviewsSection: FunctionComponent = () => {
                     className={cn(
                       siteSelectDropdownOptionRow,
                       siteSelectDropdownOptionInteractive,
-                      'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
-                      sortOption === opt.value && 'bg-white/5'
+                      'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
+                      sortOption === opt.value && 'bg-foreground/5 dark:bg-white/5'
                     )}
                     onClick={() => {
                       setSortOption(opt.value)
@@ -572,12 +572,12 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             </button>
           </div>
         ) : null}
-        <div className="text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
+        <div className="text-foreground dark:text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
           <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
           <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
             No purchases match
           </b>
-          <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
+          <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
             Try another search to find orders you can review.
           </p>
         </div>
@@ -606,7 +606,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
           />
         </div>
       ) : (
-        <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
+        <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 overflow-hidden border border-solid">
           {!loading && error ? (
             <div className="px-4 py-8 text-center">
               <p className="text-sm text-red-300">{error}</p>

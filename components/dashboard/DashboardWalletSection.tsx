@@ -120,10 +120,10 @@ function mapTransactionToWalletTx(tx: ApiWalletTransaction): WalletTx {
 }
 
 const walletCoinTriggerClass =
-  'rounded-num-8 flex min-h-11 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2.5 text-left'
+  'rounded-num-8 bg-card-elevated text-foreground dark:text-white border-border-subtle dark:border-[#16243B] flex min-h-11 w-full items-center justify-between gap-2 border border-solid px-3 py-2.5 text-left'
 
 const walletFilterTriggerClass = cn(
-  'rounded-num-8 px-num-12 flex min-h-11 items-center gap-2 border border-solid border-[#16243B] bg-gray-100 py-2'
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 items-center gap-2 border border-solid py-2'
 )
 
 /** Wallet — balance card, add funds, history; matches dashboard shell + Orders/Reviews layout. */
@@ -243,7 +243,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
       <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-6 xl:gap-8">
         {/* Account balance card */}
         <div className="flex min-w-0 flex-col gap-3">
-          <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+          <p className="text-muted-foreground text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Account Balance
           </p>
           <div className="relative flex min-h-[202px] flex-col justify-between overflow-hidden rounded-2xl border border-solid border-[#ffffff26] bg-[url('/icons/wallet-account-balance-background.png')] bg-cover bg-center bg-no-repeat p-5 sm:p-6">
@@ -297,13 +297,13 @@ export const DashboardWalletSection: FunctionComponent = () => {
 
         {/* Add balance */}
         <div className="flex min-w-0 flex-col gap-3">
-          <p className="text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+          <p className="text-muted-foreground text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Add Balance
           </p>
-          <div className="rounded-num-8 border-darkslateblue flex min-h-[202px] flex-col gap-4 border border-solid bg-gray-100 p-4 sm:p-5">
+          <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 flex min-h-[202px] flex-col gap-4 border border-solid p-4 sm:p-5">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-4">
               <div className="flex min-w-0 flex-1 flex-col gap-2">
-                <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
+                <span className="text-muted-foreground text-xs font-semibold sm:text-sm">
                   Select Payment Method
                 </span>
                 <div className="relative" ref={coinMenuRef}>
@@ -317,7 +317,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       <img className="h-7 w-7 shrink-0" alt="" src={selectedCoin.iconSrc} />
-                      <span className="tracking-num--0_01 text-sm font-semibold text-white sm:text-base">
+                      <span className="tracking-num--0_01 text-sm font-semibold text-foreground dark:text-white sm:text-base">
                         {selectedCoin.label}
                       </span>
                     </span>
@@ -329,7 +329,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       radius="1"
                       size={18}
                       ariaHidden={true}
-                      className="shrink-0 text-[#C3C3E3]"
+                      className="text-muted-foreground shrink-0"
                     />
                   </button>
                   {coinMenuOpen ? (
@@ -347,8 +347,8 @@ export const DashboardWalletSection: FunctionComponent = () => {
                             className={cn(
                               siteSelectDropdownOptionRow,
                               siteSelectDropdownOptionInteractive,
-                              'text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
-                              selectedCoin.value === coin.value && 'bg-white/5'
+                              'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 gap-2 text-sm',
+                              selectedCoin.value === coin.value && 'bg-foreground/5 dark:bg-white/5'
                             )}
                             onClick={() => {
                               setSelectedCoin(coin)
@@ -365,24 +365,24 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 </div>
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-2">
-                <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
+                <span className="text-muted-foreground text-xs font-semibold sm:text-sm">
                   Enter Amount
                 </span>
-                <div className="rounded-num-8 flex h-12.5 w-full items-center justify-between gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2">
+                <div className="rounded-num-8 bg-card border-border-subtle dark:border-[#16243B] dark:bg-[#051329] flex h-12.5 w-full items-center justify-between gap-2 border border-solid px-3 py-2">
                   <div className="flex min-w-0 items-baseline gap-1.5">
-                    <span className="text-base font-bold text-white">$</span>
+                    <span className="text-base font-bold text-foreground dark:text-white">$</span>
                     <input
                       inputMode="decimal"
                       value={amountInput}
                       onChange={(e) => setAmountInput(e.target.value.replace(/[^0-9.]/g, ''))}
-                      className="text-lightsteelblue-200 w-full min-w-0 border-none bg-transparent text-base font-semibold outline-none"
+                      className="text-muted-foreground dark:text-lightsteelblue-200 w-full min-w-0 border-none bg-transparent text-base font-semibold outline-none"
                       placeholder="0.00"
                     />
                   </div>
                   <button
                     type="button"
                     onClick={() => setAmountUnit((u) => (u === 'USD' ? 'CRYPTO' : 'USD'))}
-                    className="focus-visible:ring-fuchsia/40 flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none"
+                    className="focus-visible:ring-fuchsia/40 text-foreground dark:text-white flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none"
                     aria-label={`Switch amount unit to ${amountUnit === 'USD' ? selectedCoinUnit : 'USD'}`}
                   >
                     <span className={amountUnit === 'USD' ? 'text-white' : 'text-white/50'}>
@@ -398,11 +398,11 @@ export const DashboardWalletSection: FunctionComponent = () => {
             </div>
 
             <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="rounded-num-8 flex w-full flex-wrap items-center gap-2 border border-solid border-[#16243B] bg-[#051329] px-3 py-2 sm:w-auto">
-                <span className="text-lightsteelblue-200 text-xs font-semibold sm:text-sm">
+              <div className="rounded-num-8 bg-card border-border-subtle dark:border-[#16243B] dark:bg-[#051329] flex w-full flex-wrap items-center gap-2 border border-solid px-3 py-2 sm:w-auto">
+                <span className="text-muted-foreground text-xs font-semibold sm:text-sm">
                   Exchange Rate
                 </span>
-                <span className="text-sm font-bold text-white">1 {selectedCoinUnit}</span>
+                <span className="text-foreground dark:text-white text-sm font-bold">1 {selectedCoinUnit}</span>
                 <CentralIcon
                   name="IconArrowRightLeft"
                   join="round"
@@ -411,9 +411,9 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   radius="1"
                   size={16}
                   ariaHidden={true}
-                  className="text-[#C3C3E3]"
+                  className="text-muted-foreground"
                 />
-                <span className="text-sm font-bold text-white">
+                <span className="text-foreground dark:text-white text-sm font-bold">
                   {selectedRate ? formatUsd(selectedRate) : '-'}
                 </span>
               </div>
@@ -456,23 +456,23 @@ export const DashboardWalletSection: FunctionComponent = () => {
         </div>
       </div>
 
-      <div className="bg-darkslateblue h-px w-full" aria-hidden />
+      <div className="bg-divider h-px w-full" aria-hidden />
 
       {/* Balance history */}
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="min-w-0 flex-1">
-            <h2 className="tracking-num-0.02 text-base leading-7 font-bold text-white sm:text-lg">
+            <h2 className="tracking-num-0.02 text-foreground dark:text-white text-base leading-7 font-bold sm:text-lg">
               Balance History
             </h2>
-            <p className="text-lightsteelblue-200 mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
+            <p className="text-muted-foreground mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
               All your recent transactions using account balance
             </p>
           </div>
         </div>
 
-        <div className="text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-          <div className="rounded-num-8 px-num-12 flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid border-[#16243B] bg-gray-100 py-0 sm:min-w-[min(100%,280px)]">
+        <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+          <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:min-w-[min(100%,280px)]">
             <CentralIcon
               name="IconMagnifyingGlass"
               join="round"
@@ -481,14 +481,14 @@ export const DashboardWalletSection: FunctionComponent = () => {
               radius="1"
               size={18}
               ariaHidden={true}
-              className="shrink-0 text-[#C3C3E3]"
+              className="text-muted-foreground shrink-0"
             />
             <input
               type="search"
               value={historySearch}
               onChange={(e) => setHistorySearch(e.target.value)}
               placeholder="Search by invoice ID, transaction hash, or address"
-              className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal text-white/75 placeholder-white/37.5 outline-none focus:ring-0"
+              className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal outline-none focus:ring-0"
             />
           </div>
           <div className="relative w-fit max-w-full shrink-0" ref={sortMenuRef}>
@@ -514,7 +514,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 radius="1"
                 size={16}
                 ariaHidden={true}
-                className="shrink-0 text-[#C3C3E3]"
+                className="text-muted-foreground shrink-0"
               />
             </button>
             {sortMenuOpen ? (
@@ -532,8 +532,8 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       className={cn(
                         siteSelectDropdownOptionRow,
                         siteSelectDropdownOptionInteractive,
-                        'text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
-                        sortOption === opt.value && 'bg-white/5'
+                        'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
+                        sortOption === opt.value && 'bg-foreground/5 dark:bg-white/5'
                       )}
                       onClick={() => {
                         setSortOption(opt.value)
@@ -558,27 +558,27 @@ export const DashboardWalletSection: FunctionComponent = () => {
             />
           </div>
         ) : filteredTx.length === 0 ? (
-          <div className="text-ghostwhite font-commissioner flex flex-col items-center gap-2 py-12 text-center">
+          <div className="text-foreground dark:text-ghostwhite font-commissioner flex flex-col items-center gap-2 py-12 text-center">
             <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
             <b className="tracking-num--0_01 text-base sm:text-lg">No transactions found</b>
-            <p className="text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
+            <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
               Your wallet activity will appear here.
             </p>
           </div>
         ) : (
           <>
-            <div className="rounded-num-8 border-darkslateblue overflow-hidden border border-solid bg-gray-100">
+            <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 overflow-hidden border border-solid">
               <div className="flex flex-col">
                 {filteredTx.map((tx) => (
                   <button
                     type="button"
                     key={tx.id}
                     onClick={() => setTxnDialogRow(tx)}
-                    className="border-darkslateblue focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 hover:bg-gray-700/20 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
+                    className="border-border-subtle dark:border-darkslateblue focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 hover:bg-hover-bg dark:hover:bg-gray-700/20 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
                     aria-label={`View transaction details for ${tx.title} on ${tx.date}`}
                   >
                     <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#051329]">
+                      <div className="bg-card border-border-subtle dark:bg-[#051329] flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border">
                         <CentralIcon
                           name={tx.kind === 'purchase' ? 'IconBasket1' : 'IconCoinsAdd'}
                           join="round"
@@ -587,14 +587,14 @@ export const DashboardWalletSection: FunctionComponent = () => {
                           radius="1"
                           size={24}
                           ariaHidden={true}
-                          className="text-[#C3C3E3]"
+                          className="text-muted-foreground"
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="tracking-num-0.02 text-base leading-7 font-bold text-white">
+                        <div className="tracking-num-0.02 text-foreground dark:text-white text-base leading-7 font-bold">
                           {tx.title}
                         </div>
-                        <div className="text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
+                        <div className="text-muted-foreground dark:text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
                           <span>{tx.date}</span>
                           <span
                             className="bg-darkslateblue hidden h-3 w-px sm:inline-block"
@@ -604,7 +604,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                         </div>
                       </div>
                     </div>
-                    <p className="shrink-0 text-right text-xl font-bold tracking-tight text-white">
+                    <p className="text-foreground dark:text-white shrink-0 text-right text-xl font-bold tracking-tight">
                       {tx.positive ? (
                         <>
                           <span className="mr-0.5 text-[#1ad824]">+</span>
@@ -639,22 +639,22 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 onClick={() => setTopUpModalOpen(false)}
                 aria-label="Close top-up dialog"
               />
-              <div className="relative z-10 w-full max-w-[560px] rounded-xl border border-[#eeeeee1a] bg-gray-500 p-5 text-center sm:p-6">
+              <div className="relative z-10 w-full max-w-[560px] rounded-xl border border-border-subtle bg-card text-foreground dark:border-[#eeeeee1a] dark:bg-gray-500 dark:text-white p-5 text-center sm:p-6">
                 <div className="relative mb-4 flex items-center justify-start gap-3 text-left">
-                  <h3 className="font-nata-sans text-lg font-extrabold text-white sm:text-xl">
+                  <h3 className="font-nata-sans text-lg font-extrabold text-foreground dark:text-white sm:text-xl">
                     COMPLETE TOP-UP
                   </h3>
                   <button
                     type="button"
                     onClick={() => setTopUpModalOpen(false)}
-                    className="rounded-num-8 absolute top-1/2 right-0 h-8 w-8 -translate-y-1/2 border border-[#18263E] text-white/60"
+                    className="rounded-num-8 absolute top-1/2 right-0 h-8 w-8 -translate-y-1/2 border border-border-subtle text-muted-foreground dark:border-[#18263E] dark:text-white/60"
                   >
                     x
                   </button>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <div className="text-lightsteelblue-200 text-sm">
-                    Send exactly <b className="text-white">{createdTopUp.amount}</b>{' '}
+                  <div className="text-muted-foreground dark:text-lightsteelblue-200 text-sm">
+                    Send exactly <b className="text-foreground dark:text-white">{createdTopUp.amount}</b>{' '}
                     {createdTopUp.cryptocurrency} to the address below.
                   </div>
                   {createdTopUp.qrCode ? (
@@ -664,12 +664,12 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       className="mx-auto h-auto w-full max-w-[220px] rounded-lg bg-white p-2"
                     />
                   ) : null}
-                  <div className="rounded-num-8 border border-[#16243B] bg-[#051329] p-3 text-center text-xs text-white sm:text-sm">
+                  <div className="rounded-num-8 border border-border-subtle bg-card-elevated text-foreground dark:border-[#16243B] dark:bg-[#051329] dark:text-white p-3 text-center text-xs sm:text-sm">
                     {createdTopUp.paymentAddress}
                   </div>
-                  <div className="text-lightsteelblue-200 text-xs sm:text-sm">
+                  <div className="text-muted-foreground dark:text-lightsteelblue-200 text-xs sm:text-sm">
                     Status:{' '}
-                    <span className="font-semibold text-white">
+                    <span className="font-semibold text-foreground dark:text-white">
                       {topUpStatusQuery.data?.status ?? createdTopUp.status}
                     </span>{' '}
                     | Confirmations{' '}
@@ -677,11 +677,11 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     {topUpStatusQuery.data?.requiredConfirmations ??
                       createdTopUp.requiredConfirmations}
                   </div>
-                  <div className="text-lightsteelblue-200 text-xs sm:text-sm">
+                  <div className="text-muted-foreground dark:text-lightsteelblue-200 text-xs sm:text-sm">
                     Expires: {new Date(createdTopUp.expiresAt).toLocaleString('en-US')}
                   </div>
                   {computedCryptoAmount ? (
-                    <div className="text-lightsteelblue-200 text-xs sm:text-sm">
+                    <div className="text-muted-foreground dark:text-lightsteelblue-200 text-xs sm:text-sm">
                       Approx amount: {computedCryptoAmount} {createdTopUp.cryptocurrency}
                     </div>
                   ) : null}

@@ -38,7 +38,7 @@ export default async function HowToPurchaseSection() {
               <div className="tracking-num-0_02">PuRChASE</div>
             </div>
           </div>
-          <div className="font-commissioner w-full max-w-[580px] text-sm font-medium text-white opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] sm:text-base">
+          <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
@@ -57,8 +57,8 @@ export default async function HowToPurchaseSection() {
                   key={step.id}
                   type="button"
                   className={cn(
-                    'group rounded-num-8 focus-visible:ring-cornflowerblue border-darkslateblue hover:border-cornflowerblue box-border flex w-full flex-col justify-end border-[1px] border-solid p-4 text-left text-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
-                    '[background:linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)] hover:[background:linear-gradient(180deg,_rgba(92,_133,_246,_0),_rgba(92,_133,_246,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
+                    'group rounded-num-8 focus-visible:ring-cornflowerblue border-border-subtle hover:border-cornflowerblue bg-card hover:bg-card-elevated box-border flex w-full flex-col justify-end border-[1px] border-solid p-4 text-left text-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:outline-none sm:min-h-[200px] sm:p-5 lg:min-h-[300px] lg:p-6 lg:text-[24px]',
+                    'dark:border-darkslateblue dark:bg-[linear-gradient(180deg,_rgba(139,_92,_246,_0),_rgba(139,_92,_246,_0.05)),_linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)] dark:hover:[background:linear-gradient(180deg,_rgba(92,_133,_246,_0),_rgba(92,_133,_246,_0.2)),_linear-gradient(#0d1b35,_#0d1b35)]'
                   )}
                 >
                   <div className="mx-auto flex w-full max-w-[325.5px] flex-col items-center gap-2 lg:gap-3">
@@ -66,16 +66,16 @@ export default async function HowToPurchaseSection() {
                     <div className="flex items-center justify-center gap-2.5 self-stretch lg:gap-3">
                       <div
                         className={cn(
-                          'border-darkslateblue flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-solid bg-white/5 opacity-40 transition-opacity duration-200 group-hover:opacity-100 lg:h-10 lg:w-10'
+                          'border-border-subtle bg-foreground/10 dark:border-darkslateblue dark:bg-white/5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-solid opacity-70 transition-opacity duration-200 group-hover:opacity-100 lg:h-10 lg:w-10'
                         )}
                       >
                         <img className="h-5 w-5 lg:h-6 lg:w-6" alt="" src={step.iconSrc} />
                       </div>
-                      <div className="tracking-num-0_02 leading-tight font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,_0,_0,_0.6)]">
+                      <div className="tracking-num-0_02 text-foreground leading-tight font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
                         {step.title}
                       </div>
                     </div>
-                    <div className="font-commissioner text-lightsteelblue-200 self-stretch text-center text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(0,_0,_0,_0.6)] lg:text-base">
+                    <div className="font-commissioner text-muted-foreground dark:text-lightsteelblue-200 self-stretch text-center text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] lg:text-base">
                       {step.description}
                     </div>
                   </div>

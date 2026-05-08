@@ -65,11 +65,11 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
                     </div>
                   </div>
                   <div className="text-body-foreground font-commissioner flex items-center justify-center gap-0.5 text-sm font-medium sm:text-base">
-                    <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                    <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                       from{' '}
                     </div>
-                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
-                      <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
+                      <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                         {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
                       </b>
                     </div>
@@ -88,7 +88,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
                   stroke="1"
                   radius="1"
                   size={16}
-                  className="text-white"
+                  className="text-foreground dark:text-white"
                 />
                 <span className="tracking-num--0_01 leading-num-24 font-semibold">Quick Buy</span>
               </button>
@@ -138,7 +138,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
               stroke="1"
               radius="1"
               size={16}
-              className="text-white"
+              className="text-foreground dark:text-white"
             />
           </button>
 
@@ -150,7 +150,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
                 onClick={() => setPage(i)}
                 aria-label={`Go to page ${i + 1}`}
                 className={cn(
-                  'rounded-[13.5px] bg-white transition-all duration-300',
+                  'rounded-[13.5px] bg-foreground dark:bg-white transition-all duration-300',
                   i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25'
                 )}
               />
@@ -171,7 +171,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
               stroke="1"
               radius="1"
               size={16}
-              className="text-white"
+              className="text-foreground dark:text-white"
             />
           </button>
         </div>

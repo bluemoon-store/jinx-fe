@@ -99,10 +99,10 @@ export default function SellingHotProductsClient({ items }: Props) {
                             ) : null}
                           </div>
                           <div className="text-num-16 text-body-foreground font-commissioner flex items-center justify-center gap-0.5">
-                            <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                            <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                               from{' '}
                             </div>
-                            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+                            <div className="rounded-num-6 py-num-0 flex items-center justify-center px-1.5 text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
                               <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                                 {item.fromPrice.startsWith('$')
                                   ? item.fromPrice
@@ -170,7 +170,7 @@ export default function SellingHotProductsClient({ items }: Props) {
             href="/shop"
             className="border-border-subtle rounded-num-30 font-commissioner bg-card-elevated text-foreground box-border inline-flex w-full max-w-md items-center justify-center gap-2.5 border-[1.5px] border-solid px-6 py-2.5 text-center text-base shadow-[0px_15px_15px_rgba(0,0,0,0.01)] transition-opacity hover:opacity-90 sm:w-auto"
           >
-            <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            <span className="leading-6 font-semibold [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               View All Products
             </span>
             <svg

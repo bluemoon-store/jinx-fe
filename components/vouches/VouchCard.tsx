@@ -14,7 +14,7 @@ export const VouchCard: FunctionComponent<Props> = ({ vouch }) => {
   const alt = vouch.caption?.trim() || 'Customer vouch'
 
   return (
-    <article className="font-nata-sans border-darkslateblue text-ghostwhite relative box-border flex w-full flex-col items-center gap-3 rounded-lg border border-solid bg-gray-100 p-3 text-center text-base">
+    <article className="font-nata-sans border-border-subtle text-foreground dark:border-darkslateblue dark:text-ghostwhite bg-card dark:bg-gray-100 relative box-border flex w-full flex-col items-center gap-3 rounded-lg border border-solid p-3 text-center text-base">
       <div className="relative w-full shrink-0 overflow-hidden rounded-md">
         <img
           src={vouch.imageUrl}
@@ -28,13 +28,13 @@ export const VouchCard: FunctionComponent<Props> = ({ vouch }) => {
         <div className="flex w-full items-center justify-center">
           <Link
             href={`/shop/${vouch.product.slug}`}
-            className="tracking-num-0.02 text-ghostwhite relative shrink-0 leading-6 font-extrabold uppercase transition-colors hover:text-fuchsia-200"
+            className="tracking-num-0.02 text-foreground dark:text-ghostwhite relative shrink-0 leading-6 font-extrabold uppercase transition-colors hover:text-fuchsia-200"
           >
             {vouch.product.name}
           </Link>
         </div>
-        <div className="font-commissioner flex items-center justify-center rounded-md bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-1.5 py-0 text-white">
-          <b className="relative leading-6 font-bold [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+        <div className="font-commissioner flex items-center justify-center rounded-md bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] px-1.5 py-0 text-white dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+          <b className="relative leading-6 font-bold [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             {format(new Date(vouch.createdAt), 'MMM d, yyyy')}
           </b>
         </div>

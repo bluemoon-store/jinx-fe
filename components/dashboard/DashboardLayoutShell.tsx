@@ -68,8 +68,8 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
                 'p-num-10 box-border flex min-h-11 w-full items-center gap-2 overflow-hidden border border-transparent text-left transition-colors',
                 item.label === 'Wallet' ? 'justify-between gap-3 sm:gap-5' : '',
                 isSelected
-                  ? 'rounded-num-8 text-ghostwhite border-[#3B3161] [background:linear-gradient(90deg,_rgba(235,_45,_255,_0.2),_rgba(235,_45,_255,_0)),_linear-gradient(#071935,_#071935)]'
-                  : 'rounded-num-8 hover:bg-gray-700',
+                  ? 'rounded-num-8 border-active-border bg-active-bg text-foreground dark:border-[#3B3161] dark:text-ghostwhite dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+                  : 'rounded-num-8 hover:bg-hover-bg dark:hover:bg-gray-700',
               ].join(' ')}
               aria-current={isSelected ? 'page' : undefined}
             >
@@ -89,7 +89,7 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
                 </span>
               </div>
               {item.label === 'Wallet' ? (
-                <b className="tracking-num--0_01 font-nata-sans leading-num-20 sm:text-num-14 shrink-0 text-sm text-white">
+                <b className="tracking-num--0_01 font-nata-sans leading-num-20 sm:text-num-14 shrink-0 text-sm text-foreground dark:text-white">
                   {walletBalanceLabel}
                 </b>
               ) : null}
@@ -112,8 +112,8 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
               className={[
                 'rounded-num-8 p-num-10 box-border flex min-h-11 w-full items-center gap-2 overflow-hidden border border-transparent text-left transition-colors',
                 isSelected
-                  ? 'text-ghostwhite border-[#3B3161] [background:linear-gradient(90deg,_rgba(235,_45,_255,_0.2),_rgba(235,_45,_255,_0)),_linear-gradient(#071935,_#071935)]'
-                  : 'hover:bg-gray-700',
+                  ? 'border-active-border bg-active-bg text-foreground dark:border-[#3B3161] dark:text-ghostwhite dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+                  : 'hover:bg-hover-bg dark:hover:bg-gray-700',
               ].join(' ')}
               aria-current={isSelected ? 'page' : undefined}
             >
@@ -196,7 +196,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
   }, [pathname])
 
   return (
-    <div className="text-ghostwhite font-commissioner sm:text-num-14 flex min-h-screen w-full flex-col overflow-x-hidden bg-gray-400 pt-16 text-left text-sm sm:pt-[95px] lg:text-[18px]">
+    <div className="text-foreground dark:text-ghostwhite font-commissioner sm:text-num-14 bg-background flex min-h-screen w-full flex-col overflow-x-hidden pt-16 text-left text-sm sm:pt-[95px] lg:text-[18px]">
       <Navbar />
 
       <Drawer.Root
@@ -209,13 +209,13 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
           <Drawer.Overlay className="fixed inset-0 z-50 bg-black/55" />
           <Drawer.Content
             aria-describedby={undefined}
-            className="border-whitesmoke-300/20 fixed top-0 left-0 z-[51] flex h-[100dvh] w-[min(100vw-2.5rem,288px)] max-w-[100vw] flex-col border-r border-solid bg-gray-400 shadow-[8px_0_40px_rgba(0,0,0,0.35)] outline-none"
+            className="border-border-subtle fixed top-0 left-0 z-[51] flex h-[100dvh] w-[min(100vw-2.5rem,288px)] max-w-[100vw] flex-col border-r border-solid bg-background shadow-[8px_0_40px_rgba(0,0,0,0.35)] outline-none"
           >
             <Drawer.Title className="sr-only">Dashboard navigation</Drawer.Title>
             <div className="flex flex-1 touch-pan-y flex-col gap-5 overflow-y-auto overscroll-contain px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-8">
               <aside
                 aria-label="Account navigation"
-                className="text-lightsteelblue-200 flex min-w-0 flex-col gap-5"
+                className="text-muted-foreground flex min-w-0 flex-col gap-5"
               >
                 <DashboardSidebarNav
                   pathname={pathname}
@@ -230,7 +230,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
         <button
           type="button"
           onClick={() => setMobileNavOpen(true)}
-          className="border-whitesmoke-300/30 fixed bottom-6 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-solid bg-[#071935] text-white shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:hidden"
+          className="border-border-subtle bg-card-elevated text-foreground dark:bg-[#071935] dark:text-white fixed bottom-6 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-solid shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:hidden"
           aria-label="Open dashboard menu"
           aria-expanded={mobileNavOpen}
         >
@@ -257,7 +257,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
             <Reveal variant="slide-left" className="hidden min-w-0 sm:block">
               <aside
                 aria-label="Account navigation"
-                className="text-lightsteelblue-200 flex min-w-0 flex-col gap-5 sm:gap-4"
+                className="text-muted-foreground flex min-w-0 flex-col gap-5 sm:gap-4"
               >
                 <DashboardSidebarNav pathname={pathname} walletBalanceLabel={walletBalanceLabel} />
               </aside>
@@ -265,7 +265,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
 
             <section className="relative flex min-h-[min(60vh,520px)] min-w-0 flex-col gap-4 md:min-h-0 md:gap-8">
               <Reveal variant="slide-right" delay={80}>
-                <div className="flex w-full flex-col gap-3 text-white md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5">
+                <div className="text-foreground dark:text-white flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5">
                   {isOrderDetail || isDropDetail ? (
                     <nav
                       aria-label="Breadcrumb"
@@ -275,7 +275,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                         href={
                           (isOrderDetail ? DASHBOARD_PATHS.orders : DASHBOARD_PATHS.drops) as Route
                         }
-                        className="hover:text-ghostwhite shrink-0 font-medium text-[#3F4A5A] transition-colors"
+                        className="text-muted-foreground hover:text-foreground dark:hover:text-ghostwhite shrink-0 font-medium transition-colors"
                       >
                         {isOrderDetail ? 'Orders' : 'Drops'}
                       </Link>
@@ -287,10 +287,10 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                         radius="1"
                         size={16}
                         ariaHidden={true}
-                        className="shrink-0 text-[#3F4A5A]"
+                        className="text-muted-foreground shrink-0"
                       />
                       <span
-                        className="text-ghostwhite tracking-num-0_02 min-w-0 truncate font-bold"
+                        className="text-foreground dark:text-ghostwhite tracking-num-0_02 min-w-0 truncate font-bold"
                         aria-current="page"
                       >
                         {breadcrumbCurrentLabel}
@@ -313,9 +313,9 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                       </b>
                     </div>
                   ) : null}
-                  <div className="text-lightsteelblue-200 flex w-full min-w-0 flex-wrap items-center gap-2 self-stretch rounded-md bg-gray-300 px-3 py-2.5 text-xs sm:w-fit sm:self-auto sm:px-2 sm:py-1.5 sm:text-[12px]">
+                  <div className="text-muted-foreground border-border-subtle bg-card-elevated flex w-full min-w-0 flex-wrap items-center gap-2 self-stretch rounded-md border px-3 py-2.5 text-xs sm:w-fit sm:self-auto sm:px-2 sm:py-1.5 sm:text-[12px]">
                     <span className="shrink-0 leading-[15px] font-semibold">ID</span>
-                    <div className="text-ghostwhite flex min-w-0 items-center gap-1.5">
+                    <div className="text-foreground dark:text-ghostwhite flex min-w-0 items-center gap-1.5">
                       <span className="leading-[15px] font-semibold break-all">
                         {detailId ? detailIdDisplay : 'JNX-LKXJLKNALSDJ'}
                       </span>

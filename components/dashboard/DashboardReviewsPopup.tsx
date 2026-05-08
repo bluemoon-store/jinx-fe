@@ -9,7 +9,7 @@ const modalShadowClass =
   'shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]'
 
 const reviewLabelClass =
-  'font-commissioner text-num-14 leading-num-20 font-semibold tracking-normal text-[#9497BC]'
+  'font-commissioner text-num-14 leading-num-20 font-semibold tracking-normal text-muted-foreground dark:text-[#9497BC]'
 
 export type DashboardReviewsPopupProps = {
   brand?: string
@@ -60,10 +60,10 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
 
   return (
     <div
-      className={`text-ghostwhite font-commissioner py-num-18 relative box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border border-solid border-gray-500 bg-gray-200 px-4 text-left text-base sm:px-5 ${modalShadowClass} lg:max-w-[480px] lg:text-lg`}
+      className={`text-foreground dark:text-ghostwhite font-commissioner border-border-subtle bg-card dark:border-gray-500 dark:bg-gray-200 py-num-18 relative box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border border-solid px-4 text-left text-base sm:px-5 ${modalShadowClass} lg:max-w-[480px] lg:text-lg`}
     >
       <div className="flex w-full min-w-0 flex-col items-center gap-6">
-        <div className="text-whitesmoke-100 flex w-full flex-col items-start gap-3 self-stretch text-base sm:text-lg lg:text-xl">
+        <div className="text-foreground dark:text-whitesmoke-100 flex w-full flex-col items-start gap-3 self-stretch text-base sm:text-lg lg:text-xl">
           <div className="flex items-center justify-between gap-5 self-stretch">
             <div className="flex min-w-0 flex-1 items-center">
               <h2 className="tracking-num-0.02 relative leading-7 font-extrabold uppercase">
@@ -73,7 +73,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
             <button
               type="button"
               onClick={onClose}
-              className="rounded-num-8 h-num-30 w-num-30 box-border flex shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] p-0 [-webkit-tap-highlight-color:transparent]"
+              className="rounded-num-8 h-num-30 w-num-30 border-border-subtle dark:border-[#18263E] box-border flex shrink-0 touch-manipulation items-center justify-center border border-solid p-0 [-webkit-tap-highlight-color:transparent]"
               aria-label="Close"
             >
               <CentralIcon
@@ -84,16 +84,16 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 radius="1"
                 size={20}
                 ariaHidden={true}
-                className="text-white/50"
+                className="text-muted-foreground dark:text-white/50"
               />
             </button>
           </div>
-          <div className="h-px w-full self-stretch bg-gray-100" aria-hidden />
+          <div className="bg-border-subtle dark:bg-gray-100 h-px w-full self-stretch" aria-hidden />
         </div>
 
-        <div className="flex items-center gap-3 self-stretch text-[18px] text-white">
+        <div className="text-foreground dark:text-white flex items-center gap-3 self-stretch text-[18px]">
           <div
-            className="rounded-num-8 relative flex h-12 w-[98.7px] shrink-0 items-center justify-center overflow-hidden bg-[#0D1B35] shadow-[0px_0px_3.31px_rgba(0,0,0,0.6)]"
+            className="rounded-num-8 relative flex h-12 w-[98.7px] shrink-0 items-center justify-center overflow-hidden bg-card-elevated dark:bg-[#0D1B35] shadow-[0px_0px_3.31px_rgba(0,0,0,0.6)]"
             aria-hidden
           >
             {imageUrl ? (
@@ -115,14 +115,14 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
             )}
           </div>
           <div className="flex min-w-0 flex-1 flex-col items-start">
-            <b className="font-commissioner leading-num-28 tracking-num-0.02 relative text-[18px] font-bold text-white">
+            <b className="font-commissioner leading-num-28 tracking-num-0.02 text-foreground dark:text-white relative text-[18px] font-bold">
               {brand}
             </b>
-            <div className="font-commissioner text-num-16 leading-num-20 text-lightsteelblue-200 self-stretch font-medium [text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            <div className="font-commissioner text-num-16 leading-num-20 text-muted-foreground dark:text-lightsteelblue-200 self-stretch font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               <span>
                 {itemCount} {itemCount === 1 ? 'Item' : 'Items'} -{' '}
               </span>
-              <span className="text-white">{price}</span>
+              <span className="text-foreground dark:text-white">{price}</span>
               <span>
                 {' '}
                 - {date} - {time}
@@ -131,7 +131,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
           </div>
         </div>
 
-        <div className="h-px w-full self-stretch bg-gray-100" aria-hidden />
+        <div className="bg-border-subtle dark:bg-gray-100 h-px w-full self-stretch" aria-hidden />
 
         <p className={`relative self-stretch ${reviewLabelClass}`}>
           Rate your purchase and overall experience with Jinx Store
@@ -151,7 +151,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 type="button"
                 onClick={() => setRating(n)}
                 onMouseEnter={() => setHoveredStar(n)}
-                className="rounded-num-8 focus-visible:ring-fuchsia/40 font-inherit box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid border-[#16243B] bg-gray-100 transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
+                className="rounded-num-8 focus-visible:ring-fuchsia/40 font-inherit box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid border-border-subtle bg-card-elevated dark:border-[#16243B] dark:bg-gray-100 transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
                 aria-label={`${n} stars`}
                 aria-pressed={rating >= n}
               >
@@ -187,7 +187,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Tell us about what you liked or disliked"
                 rows={4}
-                className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-[#16243B] bg-gray-100 px-3 py-2.5 leading-7 font-semibold text-white shadow-none transition-[border-color,box-shadow] outline-none placeholder:text-white placeholder:opacity-25 focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-border-subtle bg-card-elevated text-foreground placeholder:text-muted-foreground dark:border-[#16243B] dark:bg-gray-100 dark:text-white dark:placeholder:text-white dark:placeholder:opacity-25 px-3 py-2.5 leading-7 font-semibold shadow-none transition-[border-color,box-shadow] outline-none focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
               />
             </div>
 
@@ -206,13 +206,13 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 type="button"
                 disabled={deleting}
                 onClick={() => void onDelete?.()}
-                className="text-num-14 mt-2 box-border flex min-h-10 w-full items-center justify-center rounded-[7.79px] border border-white/15 px-4 py-2.5 font-semibold text-white/85 transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50"
+                className="text-num-14 mt-2 border-border-subtle text-foreground/85 hover:bg-foreground/5 dark:border-white/15 dark:text-white/85 dark:hover:bg-white/5 box-border flex min-h-10 w-full items-center justify-center rounded-[7.79px] border px-4 py-2.5 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {deleting ? 'Deleting...' : 'Delete review'}
               </button>
             ) : null}
 
-            <p className="font-commissioner text-ghostwhite relative mx-auto mt-2 flex max-w-[285px] items-center justify-center text-center text-xs leading-4 font-semibold tracking-normal italic opacity-50">
+            <p className="font-commissioner text-muted-foreground dark:text-ghostwhite relative mx-auto mt-2 flex max-w-[285px] items-center justify-center text-center text-xs leading-4 font-semibold tracking-normal italic opacity-70 dark:opacity-50">
               Your feedback helps us improve our products, services, and overall customer
               experience.
             </p>
