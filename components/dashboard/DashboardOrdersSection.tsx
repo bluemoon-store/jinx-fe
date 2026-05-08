@@ -1,6 +1,8 @@
 'use client'
 
 import CentralIcon from '@central-icons-react/all'
+import type { Route } from 'next'
+import Link from 'next/link'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { OrderPaymentMethod } from '@/stores/order-review-store'
@@ -479,20 +481,79 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
     </div>
   )
 
+  const hasActiveFilters =
+    orderSearch.trim() !== '' || statusFilter !== 'all' || paymentMethodFilter !== 'all'
+
   if (filtered.length === 0 && !listLoading) {
+    if (listError) {
+      return (
+        <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
+          {filterBar}
+          <div className="text-foreground dark:text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
+            <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
+            <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
+              Could not load orders
+            </b>
+            <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
+              Please refresh the page or try again later.
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    if (hasActiveFilters) {
+      return (
+        <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
+          {filterBar}
+          <div className="text-foreground dark:text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
+            <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
+            <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
+              No orders match
+            </b>
+            <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
+              Try another search or clear filters to see your orders.
+            </p>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         {filterBar}
-        <div className="text-foreground dark:text-ghostwhite font-commissioner flex w-full flex-col items-center gap-2 py-12 text-center">
-          <img className="size-28 opacity-90 sm:size-36" alt="" src="/icons/not-found.svg" />
-          <b className="tracking-num--0_01 text-base leading-[26px] sm:text-lg">
-            {listError ? 'Could not load orders' : 'No orders match'}
+        <div className="text-foreground dark:text-ghostwhite font-commissioner flex w-full flex-col items-center gap-0 py-12 text-center sm:py-16">
+          <img
+            className="size-36 sm:size-44 lg:size-52"
+            alt=""
+            src="/icons/order-404.svg"
+            aria-hidden
+          />
+          <b className="tracking-num--0_01 mt-2 text-lg leading-7 font-bold sm:text-xl">
+            No Orders Yet
           </b>
-          <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[411px] text-sm leading-6 font-medium">
-            {listError
-              ? 'Please refresh the page or try again later.'
-              : 'Try another search or clear filters to see your orders.'}
+          <p className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 max-w-[360px] text-sm leading-6 font-medium">
+            Explore our catalog and add products to your cart to view them here.
           </p>
+          <Link
+            href={'/shop' as Route}
+            aria-label="Explore Our Shop"
+            className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle hover:bg-hover-bg mt-4 box-border flex min-h-[52px] w-full max-w-[420px] items-center justify-center gap-3 border border-solid transition-colors dark:border-[#16243B] dark:bg-[#0F1B33] dark:text-white dark:hover:bg-[#15243F]"
+          >
+            <CentralIcon
+              name="IconBasket1"
+              join="round"
+              fill="filled"
+              stroke="2"
+              radius="1"
+              size={20}
+              ariaHidden={true}
+              className="text-foreground shrink-0 dark:text-white"
+            />
+            <span className="tracking-num--0_01 sm:text-num-16 text-sm font-semibold">
+              Explore Our Shop
+            </span>
+          </Link>
         </div>
       </div>
     )

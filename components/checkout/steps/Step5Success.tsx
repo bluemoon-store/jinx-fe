@@ -10,16 +10,22 @@ import { SupportRow } from '@/components/checkout/shared/SupportRow'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
-import { useOrderDeliveryQuery, useOrderQuery } from '@/hooks/use-orders'
+import { useOrderDeliveryQuery, useOrderQuery, ORDERS_QUERY_KEYS } from '@/hooks/use-orders'
 import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
 import { toast } from '@/lib/toast'
+import { deleteVouchAction } from '@/actions/vouch'
+import { VouchUploadModal } from '@/components/vouches/VouchUploadModal'
+import { useQueryClient } from '@tanstack/react-query'
 import styles from './Step5Success.module.css'
 
 function itemKey(item: CartItem) {
   return `${item.id}-${item.variantId ?? ''}-${item.variantLabel}`
 }
 
-type SuccessDisplayItem = CartItem & { orderItemId?: string }
+type SuccessDisplayItem = CartItem & {
+  orderItemId?: string
+  vouches?: Array<{ id: string; imageUrl: string; caption: string | null; createdAt: string }>
+}
 
 async function copyToClipboard(value: string, description?: string) {
   try {
@@ -83,12 +89,16 @@ function SuccessCard({
   deliveredCode,
   codeLoading,
   codeError,
+  onAddVouch,
+  onDeleteVouch,
 }: {
-  item: CartItem
+  item: SuccessDisplayItem
   onUnseal?: () => void
   deliveredCode?: string | null
   codeLoading: boolean
   codeError: boolean
+  onAddVouch?: (orderItemId: string) => void
+  onDeleteVouch?: (vouchId: string) => void
 }) {
   const [revealed, setRevealed] = useState(false)
   const [isProcessOpen, setIsProcessOpen] = useState(false)
@@ -287,6 +297,76 @@ function SuccessCard({
         height={1}
         className="h-px w-full opacity-60"
       />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <CentralIcon
+            name="IconShieldCheck"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={18}
+            ariaHidden={true}
+            className="text-lightsteelblue-200 shrink-0"
+          />
+          <span className="text-lg font-bold tracking-[0.36px] text-white">Add a Vouch</span>
+        </div>
+
+        <div className="border-whitesmoke-300 rounded-xl border border-solid bg-gray-200 p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="text-lightsteelblue-200 text-sm font-semibold">
+              {item.vouches?.length || 0} / 5 vouches posted
+            </p>
+            {(item.vouches?.length || 0) < 5 && (
+              <button
+                type="button"
+                onClick={() => item.orderItemId && onAddVouch?.(item.orderItemId)}
+                className="bg-fuchsia/10 text-fuchsia hover:bg-fuchsia/20 rounded-lg px-3 py-1.5 text-sm font-bold transition-colors"
+              >
+                Add Vouch
+              </button>
+            )}
+          </div>
+
+          {item.vouches && item.vouches.length > 0 ? (
+            <div className="flex flex-wrap gap-3">
+              {item.vouches.map((vouch) => (
+                <div
+                  key={vouch.id}
+                  className="group relative h-16 w-16 overflow-hidden rounded-lg bg-gray-100"
+                >
+                  <Image src={vouch.imageUrl} alt="Vouch" fill className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => onDeleteVouch?.(vouch.id)}
+                    className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    <CentralIcon
+                      name="IconTrashCan"
+                      join="round"
+                      fill="filled"
+                      stroke="2"
+                      radius="1"
+                      size={10}
+                      ariaHidden={true}
+                      color="#ff2a2a"
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-white/30 text-xs italic">No vouches shared for this item yet.</p>
+          )}
+        </div>
+      </div>
+      <Image
+        src={checkoutImg.divider}
+        alt=""
+        width={400}
+        height={1}
+        className="h-px w-full opacity-60"
+      />
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <CentralIcon
@@ -319,12 +399,32 @@ export function Step5Success({
   onUnseal?: () => void
   orderId?: string | null
 }) {
+  const queryClient = useQueryClient()
   const items = useCartStore((s) => s.items)
   const orderQuery = useOrderQuery(orderId ?? undefined)
   const order = orderQuery.data
   const deliveryQuery = useOrderDeliveryQuery(orderId ?? undefined, {
     enabled: Boolean(orderId) && order?.status === 'COMPLETED',
   })
+
+  const [vouchModalOpen, setVouchModalOpen] = useState(false)
+  const [vouchOrderItemId, setVouchOrderItemId] = useState('')
+
+  const handleDeleteVouch = async (vouchId: string) => {
+    if (!confirm('Are you sure you want to delete this vouch?')) return
+    try {
+      await deleteVouchAction(vouchId)
+      toast.success('Vouch deleted')
+      if (orderId) {
+        await queryClient.invalidateQueries({
+          queryKey: ORDERS_QUERY_KEYS.detail(orderId),
+        })
+      }
+    } catch {
+      toast.error('Failed to delete vouch')
+    }
+  }
+
   const displayItems = useMemo<SuccessDisplayItem[]>(() => {
     if (!orderId) return items
     const orderItems = order?.items ?? []
@@ -342,6 +442,7 @@ export function Step5Success({
         quantity: oi.quantity,
         thumbUrl: thumbUrl ?? undefined,
         orderItemId: oi.id,
+        vouches: oi.vouches,
       }
     })
   }, [items, order?.items, orderId])
@@ -450,11 +551,26 @@ export function Step5Success({
             deliveredCode={deliveryByKey[itemKey(item)]}
             codeLoading={deliveryLoading}
             codeError={deliveryError}
+            onAddVouch={(id) => {
+              setVouchOrderItemId(id)
+              setVouchModalOpen(true)
+            }}
+            onDeleteVouch={handleDeleteVouch}
           />
         ))}
       </div>
 
       <SupportRow />
+
+      <VouchUploadModal
+        target={{
+          type: 'order-item',
+          orderId: orderId ?? undefined,
+          orderItemId: vouchOrderItemId,
+        }}
+        open={vouchModalOpen}
+        onOpenChange={setVouchModalOpen}
+      />
     </div>
   )
 }

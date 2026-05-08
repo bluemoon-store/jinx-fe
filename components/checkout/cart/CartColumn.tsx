@@ -64,8 +64,8 @@ function CartLine({
       <div className="flex min-w-0 flex-1 items-start gap-[15px] sm:items-center">
         <LineThumb item={item} />
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-          <div className="flex max-w-full min-w-0 flex-wrap items-center gap-x-2 sm:gap-x-2.5">
-            <span className="text-ghostwhite max-w-full text-base leading-snug font-bold tracking-[-0.17px] break-words sm:text-[17.5px] sm:leading-[25px]">
+          <div className="flex max-w-full min-w-0 items-center gap-x-2 sm:gap-x-2.5">
+            <span className="text-ghostwhite max-w-full min-w-0 truncate text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
             </span>
           </div>

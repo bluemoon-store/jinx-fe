@@ -11,6 +11,7 @@ import { CheckoutOverviewCard } from '@/components/checkout/panels/CheckoutOverv
 import { CompletePaymentConfirmed } from '@/components/checkout/panels/CompletePaymentConfirmed'
 import { CompletePaymentPending } from '@/components/checkout/panels/CompletePaymentPending'
 import { PaymentMethodPanel } from '@/components/checkout/panels/PaymentMethodPanel'
+import { WalletPaymentConfirm } from '@/components/checkout/panels/WalletPaymentConfirm'
 import { BackToStore } from '@/components/checkout/shared/BackToStore'
 import { CheckoutLogo } from '@/components/checkout/shared/CheckoutLogo'
 import { LegalFooter } from '@/components/checkout/shared/LegalFooter'
@@ -117,6 +118,7 @@ export function CheckoutPageClient() {
   const raw = searchParams.get('step')
   const step = Math.min(MAX_CHECKOUT_STEP, Math.max(1, raw ? Number.parseInt(raw, 10) || 1 : 1))
   const orderIdParam = searchParams.get('orderId')
+  const walletConfirmMode = step === 2 && searchParams.get('pm') === 'wallet'
 
   const [cartBackendGate, setCartBackendGate] = useState<'loading' | 'ready' | 'error'>(() =>
     step > 2 ? 'ready' : 'loading'
@@ -232,12 +234,32 @@ export function CheckoutPageClient() {
       if (next < 3 || opts?.clearOrder) {
         sp.delete('orderId')
       }
+      sp.delete('pm')
       router.push(`/checkout?${sp.toString()}` as Route)
     },
     [router, searchParams]
   )
 
+  const enterWalletConfirm = useCallback(() => {
+    const sp = new URLSearchParams(searchParams.toString())
+    sp.set('step', '2')
+    sp.set('pm', 'wallet')
+    sp.delete('orderId')
+    router.push(`/checkout?${sp.toString()}` as Route)
+  }, [router, searchParams])
+
+  const exitWalletConfirm = useCallback(() => {
+    const sp = new URLSearchParams(searchParams.toString())
+    sp.set('step', '2')
+    sp.delete('pm')
+    router.push(`/checkout?${sp.toString()}` as Route)
+  }, [router, searchParams])
+
   const handleBack = useCallback(() => {
+    if (walletConfirmMode) {
+      exitWalletConfirm()
+      return
+    }
     if (step <= 1) {
       router.push('/shop')
       return
@@ -248,7 +270,7 @@ export function CheckoutPageClient() {
       return
     }
     setStep(step - 1)
-  }, [router, setStep, step])
+  }, [exitWalletConfirm, router, setStep, step, walletConfirmMode])
 
   useEffect(() => {
     if (step !== 4) unsealConfettiFiredRef.current = false
@@ -446,11 +468,15 @@ export function CheckoutPageClient() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden lg:flex-row">
-      <aside className="flex w-full min-w-0 flex-col border-white/5 bg-gray-500 lg:min-h-screen lg:w-1/2 lg:border-r">
-        <div className="mx-auto flex w-full max-w-[952px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 lg:mx-0 lg:w-full lg:max-w-[952px] lg:items-stretch lg:self-end lg:px-8 xl:min-w-[809px] xl:px-12">
-          <BackToStore onBack={handleBack} label={step <= 1 ? 'Back to store' : 'Back'} />
-          <div className="mt-6 flex w-full min-w-0 flex-1 flex-col items-center sm:mt-8 lg:mt-10 lg:items-stretch">
+    <div className="flex min-h-screen flex-col overflow-x-hidden md:flex-row">
+      <aside className="flex w-full min-w-0 flex-col border-white/5 bg-gray-500 md:min-h-screen md:w-1/2 md:border-r">
+        <div className="mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:ml-auto md:mr-0 md:w-full md:items-stretch md:pl-10 md:pr-6 lg:pl-14 lg:pr-10 xl:pl-16 xl:pr-12">
+          <BackToStore
+            onBack={() => router.push('/shop')}
+            label="Back to store"
+            className="bg-[#0E1B30]"
+          />
+          <div className="mt-6 flex w-full min-w-0 flex-1 flex-col items-center sm:mt-8 md:items-stretch lg:mt-10">
             {step === 1 || step === 2 ? <CartColumn checkoutStep={step} /> : null}
             {step === 3 ? (
               <CheckoutOverviewCard
@@ -472,8 +498,8 @@ export function CheckoutPageClient() {
         </div>
       </aside>
 
-      <main className="flex w-full min-w-0 flex-col bg-[#041329] lg:min-h-screen lg:w-1/2">
-        <div className="relative mx-auto flex w-full max-w-[800px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 lg:mx-0 lg:self-start lg:px-8 xl:px-12">
+      <main className="flex w-full min-w-0 flex-col bg-[#041329] md:min-h-screen md:w-1/2">
+        <div className="relative mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:ml-0 md:mr-auto md:pl-6 md:pr-10 lg:pl-10 lg:pr-14 xl:pl-12 xl:pr-16">
           <div className="flex shrink-0 justify-end pb-2">
             <CheckoutLogo variant="alt" />
           </div>
@@ -481,12 +507,20 @@ export function CheckoutPageClient() {
             {step === 1 ? (
               <BuyerProtectionPanel onBack={handleBack} onContinue={() => setStep(2)} />
             ) : null}
-            {step === 2 ? (
+            {step === 2 && !walletConfirmMode ? (
               <PaymentMethodPanel
                 totalUsd={totalUsd}
                 onBack={() => setStep(1)}
                 onContinue={handlePaymentMethodConfirm}
-                onWalletContinue={handleWalletPayment}
+                onWalletContinue={enterWalletConfirm}
+                busy={paymentBusy}
+              />
+            ) : null}
+            {step === 2 && walletConfirmMode ? (
+              <WalletPaymentConfirm
+                totalUsd={totalUsd}
+                onBack={exitWalletConfirm}
+                onConfirm={handleWalletPayment}
                 busy={paymentBusy}
               />
             ) : null}
