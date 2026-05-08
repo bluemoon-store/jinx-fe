@@ -1,7 +1,5 @@
-'use client'
-
-import Footer from '@/components/landing/Footer'
-import FAQs from '@/components/landing/FAQs'
+import FooterServer from '@/components/landing/FooterServer'
+import FAQsServer from '@/components/landing/FAQsServer'
 import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 
@@ -11,10 +9,10 @@ export default function FAQsPage() {
       <Navbar />
       <main className="flex flex-1 flex-col pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
-          <FAQs />
+          <FAQsServer />
         </Reveal>
       </main>
-      <Footer />
+      <FooterServer />
     </div>
   )
 }

@@ -1,8 +1,6 @@
-'use client'
-
-import Footer from '@/components/landing/Footer'
+import FooterServer from '@/components/landing/FooterServer'
 import Navbar from '@/components/landing/Navbar'
-import Legal from '@/components/landing/Legal'
+import LegalServer from '@/components/landing/LegalServer'
 import { Reveal } from '@/components/ui/reveal'
 
 export default function LegalPage() {
@@ -11,10 +9,10 @@ export default function LegalPage() {
       <Navbar />
       <main className="flex flex-1 flex-col pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
-          <Legal />
+          <LegalServer />
         </Reveal>
       </main>
-      <Footer />
+      <FooterServer />
     </div>
   )
 }

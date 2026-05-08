@@ -1,6 +1,6 @@
-import FAQSection from '@/components/landing/FAQSection'
+import FAQSectionServer from '@/components/landing/FAQSectionServer'
 import FeaturesSection from '@/components/landing/FeaturesSection'
-import Footer from '@/components/landing/Footer'
+import FooterServer from '@/components/landing/FooterServer'
 import FreshlyRestockedSection from '@/components/landing/FreshlyRestockedSection'
 import HeroSection from '@/components/landing/HeroSection'
 import HowToPurchaseSection from '@/components/landing/HowToPurchaseSection'
@@ -19,8 +19,8 @@ export default function LandingPage() {
         <NewlyLaunchedSection />
         <HowToPurchaseSection />
         <FeaturesSection />
-        <FAQSection />
-        <Footer />
+        <FAQSectionServer />
+        <FooterServer />
       </main>
     </div>
   )

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Footer from '@/components/landing/Footer'
+import FooterServer from '@/components/landing/FooterServer'
 import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 
@@ -49,7 +49,7 @@ export default function NotFound() {
         </Reveal>
       </main>
 
-      <Footer />
+      <FooterServer />
     </div>
   )
 }

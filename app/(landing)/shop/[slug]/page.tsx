@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { getProductBySlugAction } from '@/actions/product'
 import { ShopProductDetail } from '@/components/landing/shop/detail/ShopProductDetail'
 import Navbar from '@/components/landing/Navbar'
-import Footer from '@/components/landing/Footer'
+import FooterServer from '@/components/landing/FooterServer'
 import type { ProductDetail } from '@/types/product'
 
 export const revalidate = 300
@@ -60,7 +60,7 @@ export default async function ProductViewPage({ params }: ProductPageProps) {
       <div className="flex min-w-0 flex-1 flex-col">
         <ShopProductDetail product={product} />
       </div>
-      <Footer />
+      <FooterServer />
     </div>
   )
 }

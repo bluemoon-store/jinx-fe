@@ -4,7 +4,22 @@ import { FunctionComponent } from 'react'
 import FooterThemeToggle from '@/components/landing/FooterThemeToggle'
 import CentralIcon from '@central-icons-react/all'
 
-const Footer: FunctionComponent = () => {
+type FooterProps = {
+  supportLink?: string | null
+  telegramLink?: string | null
+  discordLink?: string | null
+}
+
+function isInternalLink(value: string): boolean {
+  return value.startsWith('/')
+}
+
+const Footer: FunctionComponent<FooterProps> = ({
+  supportLink = null,
+  telegramLink = null,
+  discordLink = null,
+}) => {
+  const resolvedSupportLink = supportLink ?? '/support'
   return (
     <footer className="text-foreground border-border-subtle bg-footer box-border flex w-full flex-col items-start gap-6 border-t border-solid px-4 py-4 text-left text-base sm:gap-8 sm:px-6 sm:py-8 sm:text-[18px] lg:gap-[41px] lg:px-8 lg:py-[60px] xl:px-14 2xl:px-[223px]">
       {/* Top row: logo, tagline, payment methods, support button */}
@@ -57,22 +72,43 @@ const Footer: FunctionComponent = () => {
             </div>
           </div>
         </div>
-        <Link
-          href={'/support' as Route}
-          className="rounded-num-8 py-num-4 text-num-16 font-commissioner border-border-subtle bg-card text-foreground hover:bg-hover-bg box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid px-6 transition-colors sm:ml-auto sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center"
-        >
-          <CentralIcon
-            name="IconRescueRing"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="1"
-            size={16}
-            color="currentColor"
-            ariaHidden={true}
-          />
-          <b className="tracking-num--0_01 leading-num-28">Support</b>
-        </Link>
+        {isInternalLink(resolvedSupportLink) ? (
+          <Link
+            href={resolvedSupportLink as Route}
+            className="rounded-num-8 py-num-4 text-num-16 font-commissioner border-border-subtle bg-card text-foreground hover:bg-hover-bg box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid px-6 transition-colors sm:ml-auto sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center"
+          >
+            <CentralIcon
+              name="IconRescueRing"
+              join="round"
+              fill="filled"
+              stroke="1"
+              radius="1"
+              size={16}
+              color="currentColor"
+              ariaHidden={true}
+            />
+            <b className="tracking-num--0_01 leading-num-28">Support</b>
+          </Link>
+        ) : (
+          <a
+            href={resolvedSupportLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-num-8 py-num-4 text-num-16 font-commissioner border-border-subtle bg-card text-foreground hover:bg-hover-bg box-border flex h-12 min-h-[44px] w-full items-center justify-center gap-[8.8px] border border-solid px-6 transition-colors sm:ml-auto sm:h-[41.7px] sm:min-h-0 sm:w-auto sm:self-start lg:shrink-0 lg:self-center"
+          >
+            <CentralIcon
+              name="IconRescueRing"
+              join="round"
+              fill="filled"
+              stroke="1"
+              radius="1"
+              size={16}
+              color="currentColor"
+              ariaHidden={true}
+            />
+            <b className="tracking-num--0_01 leading-num-28">Support</b>
+          </a>
+        )}
       </div>
 
       {/* Divider */}
@@ -134,36 +170,50 @@ const Footer: FunctionComponent = () => {
             </div>
             <div className="border-divider hidden h-1 w-[18px] border-b border-solid object-contain sm:block"></div>
             <div className="text-foreground font-commissioner flex items-center justify-center gap-4 sm:gap-[15px]">
-              <div className="flex flex-col items-center sm:items-start">
-                <div className="rounded-num-8 hover:bg-hover-bg flex cursor-pointer items-center gap-[4.4px] px-2 py-1 transition-colors">
-                  <CentralIcon
-                    name="IconTelegram"
-                    join="round"
-                    fill="filled"
-                    stroke="1"
-                    radius="1"
-                    size={18}
-                    color="currentColor"
-                    ariaHidden={true}
-                  />
-                  <div className="leading-num-21_93 font-semibold">Telegram</div>
+              {telegramLink ? (
+                <div className="flex flex-col items-center sm:items-start">
+                  <a
+                    href={telegramLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-num-8 hover:bg-hover-bg flex cursor-pointer items-center gap-[4.4px] px-2 py-1 transition-colors"
+                  >
+                    <CentralIcon
+                      name="IconTelegram"
+                      join="round"
+                      fill="filled"
+                      stroke="1"
+                      radius="1"
+                      size={18}
+                      color="currentColor"
+                      ariaHidden={true}
+                    />
+                    <div className="leading-num-21_93 font-semibold">Telegram</div>
+                  </a>
                 </div>
-              </div>
-              <div className="flex flex-col items-center sm:items-start">
-                <div className="rounded-num-8 hover:bg-hover-bg flex cursor-pointer items-center gap-[4.4px] px-2 py-1 transition-colors">
-                  <CentralIcon
-                    name="IconDiscord"
-                    join="round"
-                    fill="filled"
-                    stroke="1"
-                    radius="1"
-                    size={18}
-                    color="currentColor"
-                    ariaHidden={true}
-                  />
-                  <div className="leading-num-21_93 font-semibold">Discord</div>
+              ) : null}
+              {discordLink ? (
+                <div className="flex flex-col items-center sm:items-start">
+                  <a
+                    href={discordLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-num-8 hover:bg-hover-bg flex cursor-pointer items-center gap-[4.4px] px-2 py-1 transition-colors"
+                  >
+                    <CentralIcon
+                      name="IconDiscord"
+                      join="round"
+                      fill="filled"
+                      stroke="1"
+                      radius="1"
+                      size={18}
+                      color="currentColor"
+                      ariaHidden={true}
+                    />
+                    <div className="leading-num-21_93 font-semibold">Discord</div>
+                  </a>
                 </div>
-              </div>
+              ) : null}
             </div>
           </div>
         </div>

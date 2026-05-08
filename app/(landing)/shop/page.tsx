@@ -1,6 +1,6 @@
 import { getCategoriesAction, getProductsAction } from '@/actions/product'
-import FAQSection from '@/components/landing/FAQSection'
-import Footer from '@/components/landing/Footer'
+import FAQSectionServer from '@/components/landing/FAQSectionServer'
+import FooterServer from '@/components/landing/FooterServer'
 import HowToPurchaseSection from '@/components/landing/HowToPurchaseSection'
 import Navbar from '@/components/landing/Navbar'
 import { HotSellingProducts } from '@/components/landing/shop/HotSellingProducts'
@@ -41,11 +41,11 @@ export default async function ShopPage() {
           <HowToPurchaseSection />
         </div>
         <div className="my-14">
-          <FAQSection />
+          <FAQSectionServer />
         </div>
       </main>
 
-      <Footer />
+      <FooterServer />
     </div>
   )
 }

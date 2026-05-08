@@ -3,21 +3,8 @@
 import { CentralIcon } from '@central-icons-react/all'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-
-type FaqCategoryId = 'general' | 'orders' | 'replacements' | 'refunds'
-
-type FaqItem = {
-  id: string
-  question: string
-  answer: string
-  defaultOpen?: boolean
-}
-
-type FaqCategory = {
-  id: FaqCategoryId
-  label: string
-  items: FaqItem[]
-}
+import { sanitizeHtml } from '@/lib/sanitize-html'
+import type { FaqCategory } from '@/lib/faq-public'
 
 function NavItem({
   isActive,
@@ -46,12 +33,12 @@ function NavItem({
 
 function FAQItem({
   question,
-  answer,
+  answerHtml,
   isOpen,
   onToggle,
 }: {
   question: string
-  answer: string
+  answerHtml: string
   isOpen: boolean
   onToggle: () => void
 }) {
@@ -84,116 +71,24 @@ function FAQItem({
         style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
       >
         <div className="overflow-hidden">
-          <div className="text-body-foreground sm:leading-num-24 lg:px-num-19.1 lg:pb-num-19.1 px-4 pt-0 pb-4 text-sm leading-6 font-medium sm:px-5 sm:pt-0 sm:pb-5 sm:text-base lg:pt-0">
-            {answer}
-          </div>
+          <div
+            className="text-body-foreground sm:leading-num-24 lg:px-num-19.1 lg:pb-num-19.1 px-4 pt-0 pb-4 text-sm leading-6 font-medium sm:px-5 sm:pt-0 sm:pb-5 sm:text-base lg:pt-0"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(answerHtml) }}
+          />
         </div>
       </div>
     </div>
   )
 }
 
-export default function FAQs() {
-  const categories = useMemo<FaqCategory[]>(
-    () => [
-      {
-        id: 'general',
-        label: 'General',
-        items: [
-          {
-            id: 'general-1',
-            question: 'What kind of digital giftcards does Bluemoon offer?',
-            answer:
-              'Bluemoon offers a wide variety of digital giftcards across categories including food & dining, streaming services, gaming, travel, shopping, and more. Giftcards are delivered to your account after purchase.',
-          },
-          {
-            id: 'general-2',
-            question: 'What makes Bluemoon safe to shop on?',
-            answer:
-              'We use encrypted connections and monitor for fraud. For payments, we rely on trusted payment providers and do not store full card numbers on our servers.',
-          },
-          {
-            id: 'general-3',
-            question: 'Can I use other cryptocurrencies to shop?',
-            answer:
-              'Supported payment methods depend on the product and checkout options shown at the time of purchase. If a payment method is available, you’ll see it during checkout.',
-          },
-          {
-            id: 'general-4',
-            question: 'How do I browse for giftcards?',
-            answer:
-              'Use categories and search to find brands quickly. Each listing shows available denominations and delivery details.',
-          },
-        ],
-      },
-      {
-        id: 'orders',
-        label: 'Orders',
-        items: [
-          {
-            id: 'orders-1',
-            question: 'Where can I find my order after purchasing?',
-            answer:
-              'After purchase, your digital code and details will appear in your account under your orders/history (if available). You may also receive an email confirmation.',
-          },
-          {
-            id: 'orders-2',
-            question: 'How long does it take to receive my giftcard?',
-            answer:
-              'Most giftcards are delivered shortly after payment confirmation. In rare cases, additional verification may delay delivery.',
-          },
-        ],
-      },
-      {
-        id: 'replacements',
-        label: 'Replacements',
-        items: [
-          {
-            id: 'replacements-1',
-            question: 'What if I receive an invalid code?',
-            answer:
-              'If you receive an invalid code, contact support within 48 hours with your order details. We will investigate and, if confirmed, issue a replacement or other resolution.',
-          },
-          {
-            id: 'replacements-2',
-            question: 'What information should I include when contacting support?',
-            answer:
-              'Include the email on your account, order ID, the brand/product, and screenshots where relevant. This helps us resolve issues faster.',
-          },
-        ],
-      },
-      {
-        id: 'refunds',
-        label: 'Refunds',
-        items: [
-          {
-            id: 'refunds-1',
-            question: 'Can I get a refund for a giftcard I purchased?',
-            answer:
-              'Due to the digital nature of giftcards, sales are typically final once delivered. If there is a technical issue (e.g., invalid code), contact support and we will help.',
-          },
-          {
-            id: 'refunds-2',
-            question: 'How do refunds work if approved?',
-            answer:
-              'If a refund is approved, it is returned to the original payment method where possible. Processing time depends on your bank or payment provider.',
-          },
-          {
-            id: 'refunds-3',
-            question: 'Are there any fees associated with buying giftcards?',
-            answer:
-              'Any applicable fees (network, processing, or service fees) will be displayed at checkout before you pay.',
-          },
-        ],
-      },
-    ],
-    []
-  )
+type FAQsProps = {
+  categories: FaqCategory[]
+}
 
-  const [activeCategory, setActiveCategory] = useState<FaqCategoryId>('general')
+export default function FAQs({ categories }: FAQsProps) {
+  const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.id ?? '')
   const [openIds, setOpenIds] = useState<Set<string>>(() => {
-    const general = categories.find((c) => c.id === 'general')
-    const firstId = general?.items[0]?.id
+    const firstId = categories[0]?.items[0]?.id
     return new Set(firstId ? [firstId] : [])
   })
   const [searchQuery, setSearchQuery] = useState('')
@@ -207,7 +102,7 @@ export default function FAQs() {
         items: cat.items.filter(
           (item) =>
             item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.answer.toLowerCase().includes(searchQuery.toLowerCase())
+            item.answerHtml.toLowerCase().includes(searchQuery.toLowerCase())
         ),
       }))
       .filter((cat) => cat.items.length > 0)
@@ -240,14 +135,14 @@ export default function FAQs() {
         const viewportTop = window.scrollY
         const viewportCenter = viewportTop + window.innerHeight * 0.3
 
-        let bestId: FaqCategoryId | null = null
+        let bestId: string | null = null
         let bestDistance = Number.POSITIVE_INFINITY
 
         for (const el of sections) {
           const rect = el.getBoundingClientRect()
           const sectionTop = rect.top + window.scrollY
           const distance = Math.abs(sectionTop - viewportCenter)
-          const id = el.dataset.faqId as FaqCategoryId | undefined
+          const id = el.dataset.faqId
           if (!id) continue
           if (distance < bestDistance) {
             bestDistance = distance
@@ -266,6 +161,16 @@ export default function FAQs() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [categories, activeCategory])
 
+  useEffect(() => {
+    if (!categories.length) {
+      setActiveCategory('')
+      return
+    }
+    if (!categories.some((category) => category.id === activeCategory)) {
+      setActiveCategory(categories[0].id)
+    }
+  }, [categories, activeCategory])
+
   return (
     <section className="text-num-14 font-commissioner text-foreground w-full text-left">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
@@ -277,11 +182,11 @@ export default function FAQs() {
                 <div className="leading-[15px] font-semibold uppercase">FAQs</div>
               </div>
 
-              {categories.map((cat) => (
+              {filteredCategories.map((cat) => (
                 <NavItem
                   key={cat.id}
                   isActive={cat.id === activeCategory}
-                  label={cat.label}
+                  label={cat.name}
                   onClick={() => {
                     setActiveCategory(cat.id)
                     document.getElementById(`faq-${cat.id}`)?.scrollIntoView({
@@ -369,7 +274,7 @@ export default function FAQs() {
                     >
                       <div className="flex items-center">
                         <h2 className="tracking-num-0.02 leading-num-28 font-semibold">
-                          {cat.label}
+                          {cat.name}
                         </h2>
                       </div>
 
@@ -378,7 +283,7 @@ export default function FAQs() {
                           <FAQItem
                             key={item.id}
                             question={item.question}
-                            answer={item.answer}
+                            answerHtml={item.answerHtml}
                             isOpen={openIds.has(item.id)}
                             onToggle={() => toggleItem(item.id)}
                           />
