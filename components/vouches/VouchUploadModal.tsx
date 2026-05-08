@@ -1,6 +1,7 @@
 'use client'
 
 import { createDropClaimVouchAction, createVouchAction } from '@/actions/vouch'
+import { parseApiError } from '@/lib/api-error'
 import { toast } from '@/lib/toast'
 import CentralIcon from '@central-icons-react/all'
 import { useQueryClient } from '@tanstack/react-query'
@@ -98,7 +99,7 @@ export const VouchUploadModal: FunctionComponent<Props> = ({ target, open, onOpe
       handleClose()
     } catch (error) {
       console.error('Upload failed:', error)
-      toast.error('Failed to upload vouch. Please try again.')
+      toast.error(parseApiError(error))
     } finally {
       setSubmitting(false)
     }
