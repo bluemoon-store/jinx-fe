@@ -33,7 +33,7 @@ export default function DropsPage() {
                     color="#EB2DFF"
                     ariaHidden
                   />
-                  <h1 className="text-foreground dark:text-white leading-num-28 tracking-num-0.02 text-lg font-bold">
+                  <h1 className="text-foreground leading-num-28 tracking-num-0.02 text-lg font-bold dark:text-white">
                     Claim Free Drops
                   </h1>
                 </div>
@@ -46,7 +46,7 @@ export default function DropsPage() {
                 href={TELEGRAM_DROPS_URL || '#'}
                 target="_blank"
                 rel="noreferrer"
-                className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 dark:text-white dark:[background:linear-gradient(180deg,rgba(0,136,204,0),rgba(0,136,204,0.25)),linear-gradient(#0d1b35,#0d1b35)] font-commissioner relative box-border flex w-full shrink-0 flex-col items-start overflow-hidden rounded-lg border border-solid p-4 text-left text-lg lg:w-auto"
+                className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 font-commissioner relative box-border flex w-full shrink-0 flex-col items-start overflow-hidden rounded-lg border border-solid p-4 text-left text-lg lg:w-auto dark:text-white dark:[background:linear-gradient(180deg,rgba(0,136,204,0),rgba(0,136,204,0.25)),linear-gradient(#0d1b35,#0d1b35)]"
               >
                 <div className="gap-num-15 flex items-center">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7.11px] bg-[#0088CC]">

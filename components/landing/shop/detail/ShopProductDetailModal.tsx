@@ -31,7 +31,7 @@ function ProductTagBadges({ tags }: { tags: ProductTag[] }) {
             size={16}
             className="text-[#FF0000]"
           />
-          <div className="leading-num-20 text-sm font-semibold text-foreground dark:text-white">
+          <div className="leading-num-20 text-foreground text-sm font-semibold dark:text-white">
             Hot
           </div>
         </div>
@@ -47,7 +47,7 @@ function ProductTagBadges({ tags }: { tags: ProductTag[] }) {
             size={16}
             className="text-[#006BB6]"
           />
-          <div className="leading-num-20 text-sm font-semibold text-foreground dark:text-white">
+          <div className="leading-num-20 text-foreground text-sm font-semibold dark:text-white">
             NFA
           </div>
         </div>
@@ -63,7 +63,7 @@ function ProductTagBadges({ tags }: { tags: ProductTag[] }) {
             size={16}
             className="text-[#FFD900]"
           />
-          <div className="leading-num-20 text-sm font-semibold text-foreground dark:text-white">
+          <div className="leading-num-20 text-foreground text-sm font-semibold dark:text-white">
             New
           </div>
         </div>
@@ -79,7 +79,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
   const flairText = product.flair?.trim() ?? ''
 
   return (
-    <section className="font-commissioner border-border-subtle bg-card text-foreground mx-auto my-auto box-border flex w-full max-w-full flex-col items-start overflow-visible rounded-xl border border-solid px-5 py-num-18 text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]">
+    <section className="font-commissioner border-border-subtle bg-card text-foreground py-num-18 mx-auto my-auto box-border flex w-full max-w-full flex-col items-start overflow-visible rounded-xl border border-solid px-5 text-left text-[20px] shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]">
       <div className="flex flex-col items-center gap-5 self-stretch">
         <header className="flex flex-col items-start gap-3 self-stretch">
           <div className="flex items-center justify-between gap-5 self-stretch">
@@ -88,14 +88,14 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
                 <img
                   src={product.iconUrl}
                   alt=""
-                  className="border-border-subtle size-8 shrink-0 rounded-md object-cover ring-1 ring-foreground/10 dark:ring-white/10 sm:size-9"
+                  className="border-border-subtle ring-foreground/10 size-8 shrink-0 rounded-md object-cover ring-1 sm:size-9 dark:ring-white/10"
                 />
               ) : null}
-              <div className="leading-num-28 min-w-0 flex-1 font-extrabold tracking-num-0.02 uppercase">
+              <div className="leading-num-28 tracking-num-0.02 min-w-0 flex-1 font-extrabold uppercase">
                 {product.name}
               </div>
               {flairText ? (
-                <span className="shrink-0 rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-fuchsia-600 dark:text-fuchsia-100 uppercase">
+                <span className="shrink-0 rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-fuchsia-600 uppercase dark:text-fuchsia-100">
                   {flairText}
                 </span>
               ) : null}
@@ -104,7 +104,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
               type="button"
               aria-label="Close quick buy"
               onClick={onClose}
-              className="rounded-num-8 flex h-[26px] w-[26px] items-center justify-center bg-muted-foreground/10"
+              className="rounded-num-8 bg-muted-foreground/10 flex h-[26px] w-[26px] items-center justify-center"
             >
               <CentralIcon
                 name="IconCrossLarge"
@@ -133,8 +133,8 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
               </div>
             </div>
           </div>
-          <div className="text-num-16 flex w-full min-w-0 flex-col items-start gap-5 text-left text-foreground dark:text-white lg:min-h-0">
-            <div className="rounded-num-8 border-border-subtle bg-card-elevated/50 box-border flex w-full flex-col items-start overflow-hidden border border-solid p-num-15">
+          <div className="text-num-16 text-foreground flex w-full min-w-0 flex-col items-start gap-5 text-left lg:min-h-0 dark:text-white">
+            <div className="rounded-num-8 border-border-subtle bg-card-elevated/50 p-num-15 box-border flex w-full flex-col items-start overflow-hidden border border-solid">
               <button
                 type="button"
                 aria-expanded={isProductDescriptionOpen}
@@ -151,7 +151,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
                   stroke="1"
                   radius="1"
                   size={20}
-                  className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+                  className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
                   style={{
                     transform: isProductDescriptionOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                   }}
@@ -164,7 +164,7 @@ const ShopProductDetailModal: FunctionComponent<Props> = ({ product, onClose }) 
               >
                 <div className="w-full overflow-hidden">
                   <div className="bg-border-subtle relative left-1/2 mt-2 h-px w-screen -translate-x-1/2 opacity-50" />
-                  <div className="pt-num-6 pb-num-6 flex max-h-[min(40vh,320px)] w-full flex-col items-start gap-5 overflow-x-hidden overflow-y-auto overscroll-contain text-foreground dark:text-white">
+                  <div className="pt-num-6 pb-num-6 text-foreground flex max-h-[min(40vh,320px)] w-full flex-col items-start gap-5 overflow-x-hidden overflow-y-auto overscroll-contain dark:text-white">
                     {product.description.trim() ? (
                       <div
                         className="prose dark:prose-invert max-w-none text-sm leading-6 [&_a]:text-fuchsia-600 dark:[&_a]:text-fuchsia-200"

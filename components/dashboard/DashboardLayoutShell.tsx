@@ -68,7 +68,7 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
                 'p-num-10 box-border flex min-h-11 w-full items-center gap-2 overflow-hidden border border-transparent text-left transition-colors',
                 item.label === 'Wallet' ? 'justify-between gap-3 sm:gap-5' : '',
                 isSelected
-                  ? 'rounded-num-8 border-active-border bg-active-bg text-foreground dark:border-[#3B3161] dark:text-ghostwhite dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+                  ? 'rounded-num-8 border-active-border bg-active-bg text-foreground dark:text-ghostwhite dark:border-[#3B3161] dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
                   : 'rounded-num-8 hover:bg-hover-bg dark:hover:bg-gray-700',
               ].join(' ')}
               aria-current={isSelected ? 'page' : undefined}
@@ -89,7 +89,7 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
                 </span>
               </div>
               {item.label === 'Wallet' ? (
-                <b className="tracking-num--0_01 font-nata-sans leading-num-20 sm:text-num-14 shrink-0 text-sm text-foreground dark:text-white">
+                <b className="tracking-num--0_01 font-nata-sans leading-num-20 sm:text-num-14 text-foreground shrink-0 text-sm dark:text-white">
                   {walletBalanceLabel}
                 </b>
               ) : null}
@@ -112,7 +112,7 @@ const DashboardSidebarNav: FunctionComponent<SidebarNavProps> = ({
               className={[
                 'rounded-num-8 p-num-10 box-border flex min-h-11 w-full items-center gap-2 overflow-hidden border border-transparent text-left transition-colors',
                 isSelected
-                  ? 'border-active-border bg-active-bg text-foreground dark:border-[#3B3161] dark:text-ghostwhite dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
+                  ? 'border-active-border bg-active-bg text-foreground dark:text-ghostwhite dark:border-[#3B3161] dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
                   : 'hover:bg-hover-bg dark:hover:bg-gray-700',
               ].join(' ')}
               aria-current={isSelected ? 'page' : undefined}
@@ -209,7 +209,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
           <Drawer.Overlay className="fixed inset-0 z-50 bg-black/55" />
           <Drawer.Content
             aria-describedby={undefined}
-            className="border-border-subtle fixed top-0 left-0 z-[51] flex h-[100dvh] w-[min(100vw-2.5rem,288px)] max-w-[100vw] flex-col border-r border-solid bg-background shadow-[8px_0_40px_rgba(0,0,0,0.35)] outline-none"
+            className="border-border-subtle bg-background fixed top-0 left-0 z-[51] flex h-[100dvh] w-[min(100vw-2.5rem,288px)] max-w-[100vw] flex-col border-r border-solid shadow-[8px_0_40px_rgba(0,0,0,0.35)] outline-none"
           >
             <Drawer.Title className="sr-only">Dashboard navigation</Drawer.Title>
             <div className="flex flex-1 touch-pan-y flex-col gap-5 overflow-y-auto overscroll-contain px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-8">
@@ -230,7 +230,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
         <button
           type="button"
           onClick={() => setMobileNavOpen(true)}
-          className="border-border-subtle bg-card-elevated text-foreground dark:bg-[#071935] dark:text-white fixed bottom-6 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-solid shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:hidden"
+          className="border-border-subtle bg-card-elevated text-foreground fixed bottom-6 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-solid shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:hidden dark:bg-[#071935] dark:text-white"
           aria-label="Open dashboard menu"
           aria-expanded={mobileNavOpen}
         >
@@ -265,7 +265,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
 
             <section className="relative flex min-h-[min(60vh,520px)] min-w-0 flex-col gap-4 md:min-h-0 md:gap-8">
               <Reveal variant="slide-right" delay={80}>
-                <div className="text-foreground dark:text-white flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5">
+                <div className="text-foreground flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5 dark:text-white">
                   {isOrderDetail || isDropDetail ? (
                     <nav
                       aria-label="Breadcrumb"

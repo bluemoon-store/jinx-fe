@@ -244,10 +244,10 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   return (
     <Reveal variant="fade-up" delay={140}>
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
-        <article className="text-num-16 font-commissioner text-foreground dark:text-white border-border-subtle bg-card dark:border-gray-600 dark:bg-gray-100 box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid p-5 text-left sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
+        <article className="text-num-16 font-commissioner text-foreground border-border-subtle bg-card box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid p-5 text-left sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16 dark:border-gray-600 dark:bg-gray-100 dark:text-white">
           {/* Product preview & primary actions */}
           <section className="flex w-full min-w-0 flex-col gap-5 lg:w-1/2">
-            <div className="rounded-num-12 bg-card-elevated dark:bg-[#051329] flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden">
+            <div className="rounded-num-12 bg-card-elevated flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden dark:bg-[#051329]">
               <img
                 className="max-h-full max-w-full object-contain object-center"
                 alt=""
@@ -260,7 +260,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-4">
               <Link
                 href={purchaseAgainHref}
-                className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle dark:border-gray-600 dark:bg-[#19263F] dark:text-white box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid transition-colors hover:bg-hover-bg dark:hover:bg-[#1f2d4a]"
+                className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle hover:bg-hover-bg box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid transition-colors dark:border-gray-600 dark:bg-[#19263F] dark:text-white dark:hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
                   name="IconBasket2"
@@ -270,7 +270,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   radius="1"
                   size={18}
                   ariaHidden={true}
-                  className="text-foreground dark:text-white shrink-0"
+                  className="text-foreground shrink-0 dark:text-white"
                 />
                 <span className="tracking-num--0_01 leading-num-28 font-semibold">
                   Purchase Again
@@ -284,7 +284,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   if (!isPaidOrder) return
                   setOrderMarkedUsed(card.id, !markedAsUsed)
                 }}
-                className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle dark:border-gray-600 dark:bg-[#19263F] dark:text-white box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid transition-colors hover:bg-hover-bg dark:hover:bg-[#1f2d4a] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-active-bg dark:disabled:hover:bg-[#19263F]"
+                className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle hover:bg-hover-bg disabled:hover:bg-active-bg box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid transition-colors disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-600 dark:bg-[#19263F] dark:text-white dark:hover:bg-[#1f2d4a] dark:disabled:hover:bg-[#19263F]"
               >
                 {markedAsUsed ? (
                   <>
@@ -325,7 +325,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             <hr className="bg-divider h-px w-full border-0" aria-hidden />
 
             <section aria-labelledby="vouches-heading" className="flex flex-col gap-4">
-              <div className="text-foreground/75 dark:text-white flex items-center gap-2">
+              <div className="text-foreground/75 flex items-center gap-2 dark:text-white">
                 <CentralIcon
                   name="IconShieldCheck"
                   join="round"
@@ -345,11 +345,11 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 {apiOrder.items?.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-xl border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 border border-solid p-4"
+                    className="border-border-subtle bg-card-elevated rounded-xl border border-solid p-4 dark:border-gray-600 dark:bg-gray-200"
                   >
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-base font-bold text-foreground dark:text-white uppercase">
+                        <p className="text-foreground truncate text-base font-bold uppercase dark:text-white">
                           {item.variantLabel || item.product?.name}
                         </p>
                         <p className="text-muted-foreground dark:text-lightsteelblue-200 text-sm">
@@ -374,7 +374,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                         {item.vouches.map((vouch) => (
                           <div
                             key={vouch.id}
-                            className="group bg-card dark:bg-gray-100 relative h-20 w-20 overflow-hidden rounded-lg"
+                            className="group bg-card relative h-20 w-20 overflow-hidden rounded-lg dark:bg-gray-100"
                           >
                             <Image src={vouch.imageUrl} alt="Vouch" fill className="object-cover" />
                             <button
@@ -396,7 +396,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground/70 dark:text-white/30 text-xs italic">
+                      <p className="text-muted-foreground/70 text-xs italic dark:text-white/30">
                         No vouches shared for this item yet.
                       </p>
                     )}
@@ -411,7 +411,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               <span className="leading-num-20 font-semibold">Facing Issues?</span>
               <Link
                 href={'/support' as Route}
-                className="text-foreground dark:text-ghostwhite rounded-num-8 px-num-12 text-num-15_35 leading-num-21_93 bg-active-bg dark:bg-[#19263F] flex items-center gap-2 py-1.5 font-semibold transition-colors hover:bg-hover-bg dark:hover:bg-[#1f2d4a]"
+                className="text-foreground dark:text-ghostwhite rounded-num-8 px-num-12 text-num-15_35 leading-num-21_93 bg-active-bg hover:bg-hover-bg flex items-center gap-2 py-1.5 font-semibold transition-colors dark:bg-[#19263F] dark:hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
                   name="IconRescueRing"
@@ -434,7 +434,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 <h1 className="tracking-num-0_02 leading-8 font-extrabold uppercase">
                   {card.brand}
                 </h1>
-                <div className="px-num-12 text-muted-foreground dark:text-lightsteelblue-100 font-commissioner bg-active-bg dark:bg-[#19263F] flex items-center gap-2 rounded-xl py-1.5 text-[13px]">
+                <div className="px-num-12 text-muted-foreground dark:text-lightsteelblue-100 font-commissioner bg-active-bg flex items-center gap-2 rounded-xl py-1.5 text-[13px] dark:bg-[#19263F]">
                   <CentralIcon
                     name={
                       statusBadgeIcon as
@@ -454,7 +454,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <span className="leading-num-20 font-semibold">{statusBadgeLabel}</span>
                 </div>
               </div>
-              <div className="text-num-16 font-commissioner gap-x-num-15 text-foreground dark:text-white flex flex-wrap items-center gap-y-2">
+              <div className="text-num-16 font-commissioner gap-x-num-15 text-foreground flex flex-wrap items-center gap-y-2 dark:text-white">
                 <span className="tracking-num--0_01 leading-num-28 font-semibold opacity-75">
                   {formatUsd(Number.parseFloat(apiOrder.totalAmount))}
                 </span>
@@ -553,7 +553,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             </div>
 
             <div className="text-num-16 text-foreground dark:text-ghostwhite flex flex-col gap-4 self-stretch">
-              <div className="rounded-num-12 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5">
+              <div className="rounded-num-12 border-border-subtle bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5 dark:border-gray-600 dark:bg-gray-200">
                 <button
                   type="button"
                   aria-expanded={isProcessToRedeemOpen}
@@ -570,7 +570,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     stroke="1"
                     radius="1"
                     size={20}
-                    className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+                    className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
                     style={{
                       transform: isProcessToRedeemOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                     }}
@@ -589,7 +589,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                           {redeemProcess}
                         </p>
                       ) : (
-                        <div className="text-foreground dark:text-white flex flex-col items-start gap-5">
+                        <div className="text-foreground flex flex-col items-start gap-5 dark:text-white">
                           <div className="leading-num-24 opacity-[0.8]">
                             <b>Step 1: Add to Cart</b>
                             <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
@@ -631,7 +631,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 </div>
               </div>
 
-              <div className="rounded-num-12 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5">
+              <div className="rounded-num-12 border-border-subtle bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5 dark:border-gray-600 dark:bg-gray-200">
                 <button
                   type="button"
                   aria-expanded={isOrderWarrantyOpen}
@@ -646,7 +646,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                     stroke="1"
                     radius="1"
                     size={20}
-                    className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+                    className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
                     style={{
                       transform: isOrderWarrantyOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                     }}
@@ -665,7 +665,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                           {warrantyText}
                         </p>
                       ) : (
-                        <div className="text-foreground dark:text-white flex flex-col items-start gap-5">
+                        <div className="text-foreground flex flex-col items-start gap-5 dark:text-white">
                           <div className="leading-num-24 opacity-[0.8]">
                             <b>Warranty Coverage</b>
                             <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
@@ -704,7 +704,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
             <hr className="bg-divider h-px w-full border-0" aria-hidden />
 
             <section aria-labelledby="order-details-heading" className="flex flex-col gap-3">
-              <div className="text-foreground/75 dark:text-white flex items-center gap-2">
+              <div className="text-foreground/75 flex items-center gap-2 dark:text-white">
                 <CentralIcon
                   name="IconRewrite1"
                   join="round"
@@ -724,12 +724,12 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
 
               <div className="text-num-14 text-muted-foreground dark:text-lightsteelblue-200 flex flex-col gap-3">
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                  <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid">
+                  <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                     <span className="leading-num-20 font-semibold">Order ID</span>
                     <button
                       type="button"
                       onClick={handleCopyOrderId}
-                      className="text-num-16 tracking-num--0_01 text-foreground dark:text-white focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
+                      className="text-num-16 tracking-num--0_01 text-foreground focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 touch-manipulation items-center justify-end gap-2 rounded-md font-semibold [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none dark:text-white"
                       aria-label={`Copy order ID ${apiOrder.orderNumber}`}
                     >
                       <span className="min-w-0 truncate text-right">{apiOrder.orderNumber}</span>
@@ -745,9 +745,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       />
                     </button>
                   </div>
-                  <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid">
+                  <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                     <span className="leading-num-20 font-semibold">Payment Status</span>
-                    <span className="text-num-16 tracking-num--0_01 text-foreground dark:text-white flex items-center gap-1.5 font-semibold">
+                    <span className="text-num-16 tracking-num--0_01 text-foreground flex items-center gap-1.5 font-semibold dark:text-white">
                       <CentralIcon
                         name={paymentIcon as 'IconCircleCheck'}
                         join="round"
@@ -763,16 +763,16 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </div>
                 </div>
 
-                <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid">
+                <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                   <span className="leading-num-20 font-semibold">Variant</span>
-                  <span className="text-num-16 tracking-num--0_01 text-foreground dark:text-white max-w-full text-right font-semibold sm:max-w-[65%]">
+                  <span className="text-num-16 tracking-num--0_01 text-foreground max-w-full text-right font-semibold sm:max-w-[65%] dark:text-white">
                     {firstLine?.variantLabel ?? '—'}
                   </span>
                 </div>
 
-                <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid">
+                <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                   <span className="leading-num-20 font-semibold">Quantity</span>
-                  <span className="text-num-16 tracking-num--0_01 text-foreground dark:text-white font-semibold">
+                  <span className="text-num-16 tracking-num--0_01 text-foreground font-semibold dark:text-white">
                     {String(card.itemCount).padStart(2, '0')}
                   </span>
                 </div>
@@ -784,7 +784,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                 <hr className="bg-divider h-px w-full border-0" aria-hidden />
 
                 <section aria-labelledby="add-review-heading" className="flex flex-col gap-4">
-                  <div className="text-foreground/75 dark:text-white flex items-center gap-2">
+                  <div className="text-foreground/75 flex items-center gap-2 dark:text-white">
                     <CentralIcon
                       name="IconStar"
                       join="round"
@@ -803,7 +803,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </div>
 
                   <div
-                    className={`text-num-14 text-muted-foreground dark:text-lightsteelblue-200 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 gap-num-18 flex flex-col overflow-hidden rounded-xl border border-solid p-5 ${modalShadowClass}`}
+                    className={`text-num-14 text-muted-foreground dark:text-lightsteelblue-200 border-border-subtle bg-card-elevated gap-num-18 flex flex-col overflow-hidden rounded-xl border border-solid p-5 dark:border-gray-600 dark:bg-gray-200 ${modalShadowClass}`}
                   >
                     <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <span className="leading-num-20 font-semibold">Your Rating</span>
@@ -819,7 +819,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                             type="button"
                             onClick={() => setRating(n)}
                             onMouseEnter={() => setHoveredStar(n)}
-                            className="rounded-num-8 focus-visible:ring-fuchsia/40 border-border-subtle bg-card dark:border-[#16243B] dark:bg-gray-100 box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
+                            className="rounded-num-8 focus-visible:ring-fuchsia/40 border-border-subtle bg-card box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none dark:border-[#16243B] dark:bg-gray-100"
                             aria-label={`${n} stars`}
                             aria-pressed={rating >= n}
                           >
@@ -859,7 +859,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                             onChange={(e) => setComment(e.target.value)}
                             placeholder="Tell us about what you liked or disliked"
                             rows={4}
-                            className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia border-border-subtle bg-card text-foreground placeholder:text-muted-foreground dark:border-[#16243B] dark:bg-gray-100 dark:text-white dark:placeholder:text-white dark:placeholder:opacity-25 box-border min-h-[120px] w-full resize-y border border-solid px-3 py-2.5 leading-7 font-semibold shadow-none transition-[border-color,box-shadow] outline-none focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                            className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia border-border-subtle bg-card text-foreground placeholder:text-muted-foreground box-border min-h-[120px] w-full resize-y border border-solid px-3 py-2.5 leading-7 font-semibold shadow-none transition-[border-color,box-shadow] outline-none focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] dark:border-[#16243B] dark:bg-gray-100 dark:text-white dark:placeholder:text-white dark:placeholder:opacity-25"
                           />
                         </div>
 

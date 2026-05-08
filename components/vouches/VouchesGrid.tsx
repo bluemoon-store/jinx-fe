@@ -29,14 +29,16 @@ export const VouchesGrid: FunctionComponent = () => {
 
   if (query.isError) {
     return (
-      <div className="text-foreground/70 dark:text-white/70 py-14 text-center">
+      <div className="text-foreground/70 py-14 text-center dark:text-white/70">
         Failed to load vouches.
       </div>
     )
   }
 
   if (vouches.length === 0) {
-    return <div className="text-foreground/70 dark:text-white/70 py-14 text-center">No vouches yet.</div>
+    return (
+      <div className="text-foreground/70 py-14 text-center dark:text-white/70">No vouches yet.</div>
+    )
   }
 
   return (

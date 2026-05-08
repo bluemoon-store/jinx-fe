@@ -41,7 +41,7 @@ const DetailRow: FunctionComponent<DetailRowProps> = ({
         rel="noopener noreferrer"
         className={`tracking-num--0_01 text-num-16 leading-num-28 text-foreground dark:text-lightsteelblue-200 font-semibold ${
           underlined ? 'underline' : ''
-        } focus-visible:ring-fuchsia/40 rounded-sm transition-colors hover:text-foreground/85 dark:hover:text-white focus-visible:ring-2 focus-visible:outline-none`}
+        } focus-visible:ring-fuchsia/40 hover:text-foreground/85 rounded-sm transition-colors focus-visible:ring-2 focus-visible:outline-none dark:hover:text-white`}
       >
         {value}
       </a>
@@ -71,7 +71,7 @@ export const DashboardWalletTxnPopup: FunctionComponent<DashboardWalletTxnPopupP
   onClose,
 }) => {
   return (
-    <div className="font-nata-sans bg-card text-foreground dark:bg-gray-200 dark:text-white border-border-subtle dark:border-gray-500 py-num-18 w-full max-w-[440px] overflow-hidden rounded-xl border border-solid px-5 text-left shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)]">
+    <div className="font-nata-sans bg-card text-foreground border-border-subtle py-num-18 w-full max-w-[440px] overflow-hidden rounded-xl border border-solid px-5 text-left shadow-[0px_15.532510757446289px_23.3px_-4.66px_rgba(0,0,0,0.1),0px_6.213004112243652px_9.32px_-6.21px_rgba(0,0,0,0.1)] dark:border-gray-500 dark:bg-gray-200 dark:text-white">
       <div className="flex flex-col gap-5">
         <header className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-4">
@@ -81,7 +81,7 @@ export const DashboardWalletTxnPopup: FunctionComponent<DashboardWalletTxnPopupP
             <button
               type="button"
               onClick={onClose}
-              className="rounded-num-8 h-num-30 w-num-30 border-border-subtle dark:border-[#18263E] flex shrink-0 items-center justify-center border border-solid p-0"
+              className="rounded-num-8 h-num-30 w-num-30 border-border-subtle flex shrink-0 items-center justify-center border border-solid p-0 dark:border-[#18263E]"
               aria-label="Close"
             >
               <CentralIcon
@@ -96,15 +96,19 @@ export const DashboardWalletTxnPopup: FunctionComponent<DashboardWalletTxnPopupP
               />
             </button>
           </div>
-          <div className="bg-border-subtle dark:bg-gray-100 h-px w-full" aria-hidden />
+          <div className="bg-border-subtle h-px w-full dark:bg-gray-100" aria-hidden />
         </header>
 
         <main className="font-commissioner flex flex-col gap-4">
           <div className="flex items-start justify-between gap-4">
-            <b className="leading-num-28 tracking-num-0.02 text-[18px] text-foreground dark:text-white">{title}</b>
-            <b className="leading-num-28 tracking-num-0.02 text-[18px] text-foreground dark:text-white">{amount}</b>
+            <b className="leading-num-28 tracking-num-0.02 text-foreground text-[18px] dark:text-white">
+              {title}
+            </b>
+            <b className="leading-num-28 tracking-num-0.02 text-foreground text-[18px] dark:text-white">
+              {amount}
+            </b>
           </div>
-          <div className="bg-border-subtle dark:bg-gray-100 h-px w-full" aria-hidden />
+          <div className="bg-border-subtle h-px w-full dark:bg-gray-100" aria-hidden />
 
           <div className="flex flex-col gap-3">
             <DetailRow label="Invoice ID" value={invoiceId} href={invoiceHref} underlined />

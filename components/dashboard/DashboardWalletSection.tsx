@@ -300,7 +300,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
           <p className="text-muted-foreground text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Add Balance
           </p>
-          <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 flex min-h-[202px] flex-col gap-4 border border-solid p-4 sm:p-5">
+          <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue flex min-h-[202px] flex-col gap-4 border border-solid p-4 sm:p-5 dark:bg-gray-100">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-4">
               <div className="flex min-w-0 flex-1 flex-col gap-2">
                 <span className="text-muted-foreground text-xs font-semibold sm:text-sm">
@@ -317,7 +317,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       <img className="h-7 w-7 shrink-0" alt="" src={selectedCoin.iconSrc} />
-                      <span className="tracking-num--0_01 text-sm font-semibold text-foreground dark:text-white sm:text-base">
+                      <span className="tracking-num--0_01 text-foreground text-sm font-semibold sm:text-base dark:text-white">
                         {selectedCoin.label}
                       </span>
                     </span>
@@ -368,9 +368,9 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 <span className="text-muted-foreground text-xs font-semibold sm:text-sm">
                   Enter Amount
                 </span>
-                <div className="rounded-num-8 bg-card border-border-subtle dark:border-[#16243B] dark:bg-[#051329] flex h-12.5 w-full items-center justify-between gap-2 border border-solid px-3 py-2">
+                <div className="rounded-num-8 bg-card border-border-subtle flex h-12.5 w-full items-center justify-between gap-2 border border-solid px-3 py-2 dark:border-[#16243B] dark:bg-[#051329]">
                   <div className="flex min-w-0 items-baseline gap-1.5">
-                    <span className="text-base font-bold text-foreground dark:text-white">$</span>
+                    <span className="text-foreground text-base font-bold dark:text-white">$</span>
                     <input
                       inputMode="decimal"
                       value={amountInput}
@@ -382,7 +382,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   <button
                     type="button"
                     onClick={() => setAmountUnit((u) => (u === 'USD' ? 'CRYPTO' : 'USD'))}
-                    className="focus-visible:ring-fuchsia/40 text-foreground dark:text-white flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none"
+                    className="focus-visible:ring-fuchsia/40 text-foreground flex shrink-0 items-center gap-2 rounded px-1 text-sm font-semibold transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:outline-none dark:text-white"
                     aria-label={`Switch amount unit to ${amountUnit === 'USD' ? selectedCoinUnit : 'USD'}`}
                   >
                     <span className={amountUnit === 'USD' ? 'text-white' : 'text-white/50'}>
@@ -398,11 +398,13 @@ export const DashboardWalletSection: FunctionComponent = () => {
             </div>
 
             <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="rounded-num-8 bg-card border-border-subtle dark:border-[#16243B] dark:bg-[#051329] flex w-full flex-wrap items-center gap-2 border border-solid px-3 py-2 sm:w-auto">
+              <div className="rounded-num-8 bg-card border-border-subtle flex w-full flex-wrap items-center gap-2 border border-solid px-3 py-2 sm:w-auto dark:border-[#16243B] dark:bg-[#051329]">
                 <span className="text-muted-foreground text-xs font-semibold sm:text-sm">
                   Exchange Rate
                 </span>
-                <span className="text-foreground dark:text-white text-sm font-bold">1 {selectedCoinUnit}</span>
+                <span className="text-foreground text-sm font-bold dark:text-white">
+                  1 {selectedCoinUnit}
+                </span>
                 <CentralIcon
                   name="IconArrowRightLeft"
                   join="round"
@@ -413,7 +415,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                   ariaHidden={true}
                   className="text-muted-foreground"
                 />
-                <span className="text-foreground dark:text-white text-sm font-bold">
+                <span className="text-foreground text-sm font-bold dark:text-white">
                   {selectedRate ? formatUsd(selectedRate) : '-'}
                 </span>
               </div>
@@ -462,17 +464,17 @@ export const DashboardWalletSection: FunctionComponent = () => {
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="min-w-0 flex-1">
-            <h2 className="tracking-num-0.02 text-foreground dark:text-white text-base leading-7 font-bold sm:text-lg">
+            <h2 className="tracking-num-0.02 text-foreground text-base leading-7 font-bold sm:text-lg dark:text-white">
               Balance History
             </h2>
-            <p className="text-muted-foreground mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
+            <p className="text-muted-foreground mt-0.5 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               All your recent transactions using account balance
             </p>
           </div>
         </div>
 
         <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-          <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:min-w-[min(100%,280px)]">
+          <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:min-w-[min(100%,280px)] dark:border-[#16243B]">
             <CentralIcon
               name="IconMagnifyingGlass"
               join="round"
@@ -567,18 +569,18 @@ export const DashboardWalletSection: FunctionComponent = () => {
           </div>
         ) : (
           <>
-            <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 overflow-hidden border border-solid">
+            <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue overflow-hidden border border-solid dark:bg-gray-100">
               <div className="flex flex-col">
                 {filteredTx.map((tx) => (
                   <button
                     type="button"
                     key={tx.id}
                     onClick={() => setTxnDialogRow(tx)}
-                    className="border-border-subtle dark:border-darkslateblue focus-visible:ring-fuchsia/35 flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 hover:bg-hover-bg dark:hover:bg-gray-700/20 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5"
+                    className="border-border-subtle dark:border-darkslateblue focus-visible:ring-fuchsia/35 hover:bg-hover-bg flex w-full cursor-pointer flex-col gap-3 border-b border-solid p-4 text-left transition-colors last:border-b-0 focus-visible:ring-2 focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 dark:hover:bg-gray-700/20"
                     aria-label={`View transaction details for ${tx.title} on ${tx.date}`}
                   >
                     <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
-                      <div className="bg-card border-border-subtle dark:bg-[#051329] flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border">
+                      <div className="bg-card border-border-subtle flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border dark:bg-[#051329]">
                         <CentralIcon
                           name={tx.kind === 'purchase' ? 'IconBasket1' : 'IconCoinsAdd'}
                           join="round"
@@ -591,7 +593,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="tracking-num-0.02 text-foreground dark:text-white text-base leading-7 font-bold">
+                        <div className="tracking-num-0.02 text-foreground text-base leading-7 font-bold dark:text-white">
                           {tx.title}
                         </div>
                         <div className="text-muted-foreground dark:text-lightsteelblue-200 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
@@ -604,7 +606,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                         </div>
                       </div>
                     </div>
-                    <p className="text-foreground dark:text-white shrink-0 text-right text-xl font-bold tracking-tight">
+                    <p className="text-foreground shrink-0 text-right text-xl font-bold tracking-tight dark:text-white">
                       {tx.positive ? (
                         <>
                           <span className="mr-0.5 text-[#1ad824]">+</span>
@@ -639,22 +641,23 @@ export const DashboardWalletSection: FunctionComponent = () => {
                 onClick={() => setTopUpModalOpen(false)}
                 aria-label="Close top-up dialog"
               />
-              <div className="relative z-10 w-full max-w-[560px] rounded-xl border border-border-subtle bg-card text-foreground dark:border-[#eeeeee1a] dark:bg-gray-500 dark:text-white p-5 text-center sm:p-6">
+              <div className="border-border-subtle bg-card text-foreground relative z-10 w-full max-w-[560px] rounded-xl border p-5 text-center sm:p-6 dark:border-[#eeeeee1a] dark:bg-gray-500 dark:text-white">
                 <div className="relative mb-4 flex items-center justify-start gap-3 text-left">
-                  <h3 className="font-nata-sans text-lg font-extrabold text-foreground dark:text-white sm:text-xl">
+                  <h3 className="font-nata-sans text-foreground text-lg font-extrabold sm:text-xl dark:text-white">
                     COMPLETE TOP-UP
                   </h3>
                   <button
                     type="button"
                     onClick={() => setTopUpModalOpen(false)}
-                    className="rounded-num-8 absolute top-1/2 right-0 h-8 w-8 -translate-y-1/2 border border-border-subtle text-muted-foreground dark:border-[#18263E] dark:text-white/60"
+                    className="rounded-num-8 border-border-subtle text-muted-foreground absolute top-1/2 right-0 h-8 w-8 -translate-y-1/2 border dark:border-[#18263E] dark:text-white/60"
                   >
                     x
                   </button>
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="text-muted-foreground dark:text-lightsteelblue-200 text-sm">
-                    Send exactly <b className="text-foreground dark:text-white">{createdTopUp.amount}</b>{' '}
+                    Send exactly{' '}
+                    <b className="text-foreground dark:text-white">{createdTopUp.amount}</b>{' '}
                     {createdTopUp.cryptocurrency} to the address below.
                   </div>
                   {createdTopUp.qrCode ? (
@@ -664,12 +667,12 @@ export const DashboardWalletSection: FunctionComponent = () => {
                       className="mx-auto h-auto w-full max-w-[220px] rounded-lg bg-white p-2"
                     />
                   ) : null}
-                  <div className="rounded-num-8 border border-border-subtle bg-card-elevated text-foreground dark:border-[#16243B] dark:bg-[#051329] dark:text-white p-3 text-center text-xs sm:text-sm">
+                  <div className="rounded-num-8 border-border-subtle bg-card-elevated text-foreground border p-3 text-center text-xs sm:text-sm dark:border-[#16243B] dark:bg-[#051329] dark:text-white">
                     {createdTopUp.paymentAddress}
                   </div>
                   <div className="text-muted-foreground dark:text-lightsteelblue-200 text-xs sm:text-sm">
                     Status:{' '}
-                    <span className="font-semibold text-foreground dark:text-white">
+                    <span className="text-foreground font-semibold dark:text-white">
                       {topUpStatusQuery.data?.status ?? createdTopUp.status}
                     </span>{' '}
                     | Confirmations{' '}

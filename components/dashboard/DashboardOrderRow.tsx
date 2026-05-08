@@ -18,8 +18,8 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
   const displayName = formatOrderBrandLabel(brand)
 
   return (
-    <div className="group hover:bg-hover-bg dark:bg-gray-700 dark:hover:bg-[#13253F] flex w-full min-w-0 flex-row items-center gap-3 bg-transparent px-3 py-3 transition-colors sm:gap-4 sm:px-4 sm:py-3.5 md:px-5">
-      <div className="bg-card-elevated dark:bg-[#0D1B35] rounded-num-8 flex h-12 w-19 shrink-0 items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28">
+    <div className="group hover:bg-hover-bg flex w-full min-w-0 flex-row items-center gap-3 bg-transparent px-3 py-3 transition-colors sm:gap-4 sm:px-4 sm:py-3.5 md:px-5 dark:bg-gray-700 dark:hover:bg-[#13253F]">
+      <div className="bg-card-elevated rounded-num-8 flex h-12 w-19 shrink-0 items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.35)] sm:h-14 sm:w-28 dark:bg-[#0D1B35]">
         <img
           className="h-full w-full scale-110 object-cover"
           alt=""
@@ -68,7 +68,7 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
         )}
         <Link
           href={`/dashboard/orders/${id}` as Route}
-          className="text-foreground bg-card-elevated dark:text-ghostwhite dark:bg-[#13253F] font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 shrink-0 px-3 py-2 text-xs font-semibold transition-colors group-hover:bg-foreground/10 dark:group-hover:bg-white/10 focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm"
+          className="text-foreground bg-card-elevated dark:text-ghostwhite font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 group-hover:bg-foreground/10 shrink-0 px-3 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm dark:bg-[#13253F] dark:group-hover:bg-white/10"
         >
           View Details
         </Link>

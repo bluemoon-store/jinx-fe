@@ -64,17 +64,17 @@ const FAQItem: FunctionComponent<{
   isOpen: boolean
   onToggle: () => void
 }> = ({ question, answer, isOpen, onToggle }) => (
-  <div className="rounded-num-8 border-border-subtle bg-card dark:border-darkslateblue dark:bg-gray-100 border border-solid">
+  <div className="rounded-num-8 border-border-subtle bg-card dark:border-darkslateblue border border-solid dark:bg-gray-100">
     <button
       type="button"
       onClick={onToggle}
       aria-expanded={isOpen}
-      className="rounded-num-8 lg:p-num-19.1 bg-card dark:bg-gray-100 flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 p-4 text-left sm:gap-3 sm:p-5"
+      className="rounded-num-8 lg:p-num-19.1 bg-card flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 p-4 text-left sm:gap-3 sm:p-5 dark:bg-gray-100"
     >
       <b className="tracking-num--0_01 text-foreground sm:leading-num-28 flex-1 text-left text-sm leading-snug sm:text-base">
         {question}
       </b>
-      <div className="rounded-num-8 bg-foreground/10 dark:bg-white/5 flex shrink-0 items-center justify-center p-1">
+      <div className="rounded-num-8 bg-foreground/10 flex shrink-0 items-center justify-center p-1 dark:bg-white/5">
         <CentralIcon
           name="IconChevronDownMedium"
           join="round"
@@ -82,7 +82,7 @@ const FAQItem: FunctionComponent<{
           stroke="1"
           radius="1"
           size={20}
-          className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+          className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
           style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
         />
       </div>
@@ -141,7 +141,7 @@ const FAQSection: FunctionComponent = () => {
                 </div>
               </div>
             </div>
-            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
+            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               <br className="hidden sm:block" />
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -182,7 +182,7 @@ const FAQSection: FunctionComponent = () => {
           <div className="mt-6 flex items-center justify-center sm:mt-8">
             <Link
               href="/faqs"
-              className="rounded-num-8 border-border-subtle bg-card text-foreground hover:bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 dark:text-white dark:hover:bg-gray-700 sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border border-solid px-6 py-3 transition-colors sm:px-8 lg:w-[207px]"
+              className="rounded-num-8 border-border-subtle bg-card text-foreground hover:bg-card-elevated dark:border-darkslateblue sm:py-num-4 lg:px-num-16 box-border flex min-h-[44px] w-full max-w-[207px] cursor-pointer touch-manipulation items-center justify-center gap-2 border border-solid px-6 py-3 transition-colors sm:px-8 lg:w-[207px] dark:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
             >
               <b className="tracking-num--0_01 sm:leading-num-28 text-sm leading-snug sm:text-base">
                 Read all FAQs

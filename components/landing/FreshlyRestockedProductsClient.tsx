@@ -68,7 +68,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
                     <div className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                       from{' '}
                     </div>
-                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] sm:px-2.5">
+                    <div className="rounded-num-6 py-num-0 flex items-center justify-center px-2 text-white [background:linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] sm:px-2.5 dark:[background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
                       <b className="leading-num-24 [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                         {item.fromPrice.startsWith('$') ? item.fromPrice : `$${item.fromPrice}`}
                       </b>
@@ -150,7 +150,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
                 onClick={() => setPage(i)}
                 aria-label={`Go to page ${i + 1}`}
                 className={cn(
-                  'rounded-[13.5px] bg-foreground dark:bg-white transition-all duration-300',
+                  'bg-foreground rounded-[13.5px] transition-all duration-300 dark:bg-white',
                   i === page ? 'h-3 w-[30px]' : 'h-3 w-3 opacity-25'
                 )}
               />

@@ -34,9 +34,9 @@ export const DashboardSecuritySection: FunctionComponent = () => {
   }
 
   return (
-    <section className="font-commissioner text-foreground dark:text-white gap-num-30 flex w-full flex-col items-start text-left text-[18px]">
+    <section className="font-commissioner text-foreground gap-num-30 flex w-full flex-col items-start text-left text-[18px] dark:text-white">
       {/* Password reset */}
-      <article className="border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 box-border flex min-h-[98.7px] w-full shrink-0 flex-col gap-4 overflow-hidden rounded-lg border border-solid p-4 sm:flex-row sm:items-center sm:gap-3">
+      <article className="border-border-subtle bg-card-elevated dark:border-darkslateblue box-border flex min-h-[98.7px] w-full shrink-0 flex-col gap-4 overflow-hidden rounded-lg border border-solid p-4 sm:flex-row sm:items-center sm:gap-3 dark:bg-gray-100">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
           <b className="leading-num-28 tracking-num-0_02 self-stretch">Reset Password</b>
           <div className="text-num-16 text-muted-foreground dark:text-lightsteelblue-200 self-stretch leading-5 font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
@@ -48,7 +48,7 @@ export const DashboardSecuritySection: FunctionComponent = () => {
             type="button"
             onClick={handleRequestResetLink}
             disabled={resetLinkLoading}
-            className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 dark:bg-gray-200 dark:text-inherit font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid px-3 py-2 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-0 sm:w-auto sm:justify-start"
+            className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid px-3 py-2 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-0 sm:w-auto sm:justify-start dark:bg-gray-200 dark:text-inherit"
           >
             {resetLinkLoading ? (
               <span
@@ -76,7 +76,7 @@ export const DashboardSecuritySection: FunctionComponent = () => {
       <div className="bg-divider h-px w-full" />
 
       {/* Two-factor authentication */}
-      <article className="border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 box-border flex min-h-[98.7px] w-full shrink-0 flex-col gap-4 overflow-hidden rounded-lg border border-solid p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
+      <article className="border-border-subtle bg-card-elevated dark:border-darkslateblue box-border flex min-h-[98.7px] w-full shrink-0 flex-col gap-4 overflow-hidden rounded-lg border border-solid p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 dark:bg-gray-100">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
           <div className="flex flex-wrap items-center gap-2">
             <b className="leading-num-28 tracking-num-0_02">2 Factor Authentication</b>
@@ -123,7 +123,7 @@ export const DashboardSecuritySection: FunctionComponent = () => {
             <button
               type="button"
               onClick={() => openAuthModal('2fa-disable')}
-              className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 dark:bg-gray-200 dark:text-inherit font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid px-3 py-2 sm:min-h-0 sm:w-auto sm:px-6"
+              className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 font-inherit box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-solid px-3 py-2 sm:min-h-0 sm:w-auto sm:px-6 dark:bg-gray-200 dark:text-inherit"
             >
               <span className="leading-num-28 tracking-num--0_01 text-center font-semibold sm:text-left">
                 Disable 2FA

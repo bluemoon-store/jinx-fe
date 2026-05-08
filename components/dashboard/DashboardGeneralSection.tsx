@@ -37,11 +37,11 @@ export const DashboardGeneralSection: FunctionComponent = () => {
   }
 
   return (
-    <section className="font-commissioner text-foreground dark:text-white lg:gap-num-30 flex min-h-0 w-full min-w-0 flex-col gap-4 text-left text-sm sm:gap-6 lg:min-h-[606px] lg:text-[18px]">
+    <section className="font-commissioner text-foreground lg:gap-num-30 flex min-h-0 w-full min-w-0 flex-col gap-4 text-left text-sm sm:gap-6 lg:min-h-[606px] lg:text-[18px] dark:text-white">
       {/* Primary settings blocks */}
       <div className="lg:gap-num-30 flex min-h-0 flex-1 flex-col gap-4 sm:gap-6">
         {/* Avatar upload */}
-        <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 box-border flex w-full min-w-0 shrink-0 flex-col gap-3 overflow-hidden border border-solid p-3 sm:min-h-[98.7px] sm:flex-row sm:items-center sm:p-4">
+        <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue box-border flex w-full min-w-0 shrink-0 flex-col gap-3 overflow-hidden border border-solid p-3 sm:min-h-[98.7px] sm:flex-row sm:items-center sm:p-4 dark:bg-gray-100">
           <img
             className="h-14 w-14 shrink-0 rounded-xl object-cover sm:h-[66.7px] sm:w-[66.7px] sm:rounded-[13.33px]"
             alt=""
@@ -110,7 +110,7 @@ export const DashboardGeneralSection: FunctionComponent = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 sm:p-num-12 sm:text-num-16 flex w-full min-w-0 flex-1 flex-col items-start justify-center overflow-hidden border border-solid p-3 text-sm lg:max-w-none lg:flex-[0.955]">
+          <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue sm:p-num-12 sm:text-num-16 flex w-full min-w-0 flex-1 flex-col items-start justify-center overflow-hidden border border-solid p-3 text-sm lg:max-w-none lg:flex-[0.955] dark:bg-gray-100">
             <div className="flex flex-col gap-3 self-stretch sm:flex-row sm:items-center sm:justify-between sm:gap-4 lg:gap-5">
               <div className="rounded-num-8 flex min-w-0 flex-wrap items-center gap-2 overflow-hidden sm:gap-3">
                 <div className="flex min-w-0 items-center gap-2">

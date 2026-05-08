@@ -89,7 +89,7 @@ export default async function FeaturesSection() {
               <div className="tracking-num-0_02">FeatuRES</div>
             </div>
           </div>
-          <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
+          <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>

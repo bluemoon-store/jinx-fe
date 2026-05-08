@@ -81,10 +81,10 @@ const ReviewRow: FunctionComponent<{
   const statusCfg = status ? dashboardOrderStatusConfig[status] : null
 
   return (
-    <div className="border-border-subtle dark:border-darkslateblue hover:bg-hover-bg dark:hover:bg-[#13253F] flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 sm:gap-4 sm:p-5">
+    <div className="border-border-subtle dark:border-darkslateblue hover:bg-hover-bg flex flex-row items-center justify-between gap-3 border-b border-solid p-4 transition-colors last:border-b-0 sm:gap-4 sm:p-5 dark:hover:bg-[#13253F]">
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
         <div
-          className="rounded-num-8 bg-card dark:bg-[#0D1B35] flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]"
+          className="rounded-num-8 bg-card flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)] dark:bg-[#0D1B35]"
           aria-hidden
         >
           {row.imageUrl ? (
@@ -107,25 +107,24 @@ const ReviewRow: FunctionComponent<{
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <b className="tracking-num-0_02 text-base leading-6 lg:text-[18px]">{row.brand}</b>
-          <div className="text-muted-foreground dark:text-lightsteelblue-200 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:gap-2">
+          <div className="text-muted-foreground dark:text-lightsteelblue-200 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:gap-2 dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             <span>
               {row.itemCount} {row.itemCount === 1 ? 'Item' : 'Items'}
             </span>
             <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
-            <span className="tracking-num--0_01 text-foreground dark:text-white font-semibold">{row.price}</span>
+            <span className="tracking-num--0_01 text-foreground font-semibold dark:text-white">
+              {row.price}
+            </span>
             <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
             <span>{row.date}</span>
             <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
             <span>{row.time}</span>
             {statusCfg ? (
               <>
-                <span
-                  className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block"
-                  aria-hidden
-                />
+                <span className="bg-divider hidden h-3 w-px shrink-0 sm:inline-block" aria-hidden />
                 <span
                   className={cn(
-                    'rounded-num-6 inline-flex items-center gap-1 border border-border-subtle bg-card px-1.5 py-0.5 text-xs font-semibold dark:border-[#16243B] dark:bg-[#0D1B35]',
+                    'rounded-num-6 border-border-subtle bg-card inline-flex items-center gap-1 border px-1.5 py-0.5 text-xs font-semibold dark:border-[#16243B] dark:bg-[#0D1B35]',
                     statusCfg.color
                   )}
                   aria-label={`Payment status: ${statusCfg.label}`}
@@ -183,7 +182,7 @@ const ReviewRow: FunctionComponent<{
               size={16}
               ariaHidden={true}
             />
-            <span className="tracking-num--0_01 sm:text-num-14 text-sm font-semibold text-foreground dark:text-[#faf7ff]">
+            <span className="tracking-num--0_01 sm:text-num-14 text-foreground text-sm font-semibold dark:text-[#faf7ff]">
               Add Review
             </span>
           </button>
@@ -334,7 +333,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
 
   const filterBar = (
     <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
-      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
+      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
         <CentralIcon
           name="IconMagnifyingGlass"
           join="round"
@@ -606,7 +605,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
           />
         </div>
       ) : (
-        <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue dark:bg-gray-100 overflow-hidden border border-solid">
+        <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue overflow-hidden border border-solid dark:bg-gray-100">
           {!loading && error ? (
             <div className="px-4 py-8 text-center">
               <p className="text-sm text-red-300">{error}</p>

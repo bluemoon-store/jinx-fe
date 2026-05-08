@@ -11,7 +11,7 @@ export function DropsGrid() {
 
   if (isError) {
     return (
-      <div className="border-border-subtle bg-card text-foreground/75 dark:text-white/75 rounded-lg border p-8 text-center">
+      <div className="border-border-subtle bg-card text-foreground/75 rounded-lg border p-8 text-center dark:text-white/75">
         Could not load drops right now. Please try again shortly.
       </div>
     )
@@ -19,7 +19,7 @@ export function DropsGrid() {
 
   if (!data?.length) {
     return (
-      <div className="border-border-subtle bg-card text-foreground/75 dark:text-white/75 rounded-lg border p-8 text-center">
+      <div className="border-border-subtle bg-card text-foreground/75 rounded-lg border p-8 text-center dark:text-white/75">
         No live drops available right now.
       </div>
     )

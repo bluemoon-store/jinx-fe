@@ -60,7 +60,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
 
   return (
     <div
-      className={`text-foreground dark:text-ghostwhite font-commissioner border-border-subtle bg-card dark:border-gray-500 dark:bg-gray-200 py-num-18 relative box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border border-solid px-4 text-left text-base sm:px-5 ${modalShadowClass} lg:max-w-[480px] lg:text-lg`}
+      className={`text-foreground dark:text-ghostwhite font-commissioner border-border-subtle bg-card py-num-18 relative box-border flex w-full max-w-[419px] flex-col items-start overflow-hidden rounded-xl border border-solid px-4 text-left text-base sm:px-5 dark:border-gray-500 dark:bg-gray-200 ${modalShadowClass} lg:max-w-[480px] lg:text-lg`}
     >
       <div className="flex w-full min-w-0 flex-col items-center gap-6">
         <div className="text-foreground dark:text-whitesmoke-100 flex w-full flex-col items-start gap-3 self-stretch text-base sm:text-lg lg:text-xl">
@@ -73,7 +73,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
             <button
               type="button"
               onClick={onClose}
-              className="rounded-num-8 h-num-30 w-num-30 border-border-subtle dark:border-[#18263E] box-border flex shrink-0 touch-manipulation items-center justify-center border border-solid p-0 [-webkit-tap-highlight-color:transparent]"
+              className="rounded-num-8 h-num-30 w-num-30 border-border-subtle box-border flex shrink-0 touch-manipulation items-center justify-center border border-solid p-0 [-webkit-tap-highlight-color:transparent] dark:border-[#18263E]"
               aria-label="Close"
             >
               <CentralIcon
@@ -88,12 +88,12 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
               />
             </button>
           </div>
-          <div className="bg-border-subtle dark:bg-gray-100 h-px w-full self-stretch" aria-hidden />
+          <div className="bg-border-subtle h-px w-full self-stretch dark:bg-gray-100" aria-hidden />
         </div>
 
-        <div className="text-foreground dark:text-white flex items-center gap-3 self-stretch text-[18px]">
+        <div className="text-foreground flex items-center gap-3 self-stretch text-[18px] dark:text-white">
           <div
-            className="rounded-num-8 relative flex h-12 w-[98.7px] shrink-0 items-center justify-center overflow-hidden bg-card-elevated dark:bg-[#0D1B35] shadow-[0px_0px_3.31px_rgba(0,0,0,0.6)]"
+            className="rounded-num-8 bg-card-elevated relative flex h-12 w-[98.7px] shrink-0 items-center justify-center overflow-hidden shadow-[0px_0px_3.31px_rgba(0,0,0,0.6)] dark:bg-[#0D1B35]"
             aria-hidden
           >
             {imageUrl ? (
@@ -115,7 +115,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
             )}
           </div>
           <div className="flex min-w-0 flex-1 flex-col items-start">
-            <b className="font-commissioner leading-num-28 tracking-num-0.02 text-foreground dark:text-white relative text-[18px] font-bold">
+            <b className="font-commissioner leading-num-28 tracking-num-0.02 text-foreground relative text-[18px] font-bold dark:text-white">
               {brand}
             </b>
             <div className="font-commissioner text-num-16 leading-num-20 text-muted-foreground dark:text-lightsteelblue-200 self-stretch font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
@@ -131,7 +131,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
           </div>
         </div>
 
-        <div className="bg-border-subtle dark:bg-gray-100 h-px w-full self-stretch" aria-hidden />
+        <div className="bg-border-subtle h-px w-full self-stretch dark:bg-gray-100" aria-hidden />
 
         <p className={`relative self-stretch ${reviewLabelClass}`}>
           Rate your purchase and overall experience with Jinx Store
@@ -151,7 +151,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 type="button"
                 onClick={() => setRating(n)}
                 onMouseEnter={() => setHoveredStar(n)}
-                className="rounded-num-8 focus-visible:ring-fuchsia/40 font-inherit box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid border-border-subtle bg-card-elevated dark:border-[#16243B] dark:bg-gray-100 transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
+                className="rounded-num-8 focus-visible:ring-fuchsia/40 font-inherit border-border-subtle bg-card-elevated box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none dark:border-[#16243B] dark:bg-gray-100"
                 aria-label={`${n} stars`}
                 aria-pressed={rating >= n}
               >
@@ -187,7 +187,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Tell us about what you liked or disliked"
                 rows={4}
-                className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia box-border min-h-[120px] w-full resize-y border border-solid border-border-subtle bg-card-elevated text-foreground placeholder:text-muted-foreground dark:border-[#16243B] dark:bg-gray-100 dark:text-white dark:placeholder:text-white dark:placeholder:opacity-25 px-3 py-2.5 leading-7 font-semibold shadow-none transition-[border-color,box-shadow] outline-none focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)]"
+                className="text-num-16 font-commissioner rounded-num-8 tracking-num--0_01 focus:border-fuchsia border-border-subtle bg-card-elevated text-foreground placeholder:text-muted-foreground box-border min-h-[120px] w-full resize-y border border-solid px-3 py-2.5 leading-7 font-semibold shadow-none transition-[border-color,box-shadow] outline-none focus:shadow-[0px_0px_0px_3px_rgba(235,45,255,0.25)] dark:border-[#16243B] dark:bg-gray-100 dark:text-white dark:placeholder:text-white dark:placeholder:opacity-25"
               />
             </div>
 
@@ -206,7 +206,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 type="button"
                 disabled={deleting}
                 onClick={() => void onDelete?.()}
-                className="text-num-14 mt-2 border-border-subtle text-foreground/85 hover:bg-foreground/5 dark:border-white/15 dark:text-white/85 dark:hover:bg-white/5 box-border flex min-h-10 w-full items-center justify-center rounded-[7.79px] border px-4 py-2.5 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="text-num-14 border-border-subtle text-foreground/85 hover:bg-foreground/5 mt-2 box-border flex min-h-10 w-full items-center justify-center rounded-[7.79px] border px-4 py-2.5 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:text-white/85 dark:hover:bg-white/5"
               >
                 {deleting ? 'Deleting...' : 'Delete review'}
               </button>

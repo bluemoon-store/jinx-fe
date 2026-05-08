@@ -118,7 +118,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
 
   const filterBar = (
     <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
-      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1">
+      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
         <CentralIcon
           name="IconMagnifyingGlass"
           join="round"
@@ -318,7 +318,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
               })}
             </div>
           ) : (
-            <div className="rounded-num-8 border-border-subtle bg-card divide-y divide-border-subtle dark:divide-[#16243B] dark:border-[#16243B] dark:bg-[#0B1221] border border-solid">
+            <div className="rounded-num-8 border-border-subtle bg-card divide-border-subtle divide-y border border-solid dark:divide-[#16243B] dark:border-[#16243B] dark:bg-[#0B1221]">
               {filtered.map((d) => {
                 const status = getDropStatus(d.expiresAt)
                 return (

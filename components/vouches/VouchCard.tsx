@@ -14,7 +14,7 @@ export const VouchCard: FunctionComponent<Props> = ({ vouch }) => {
   const alt = vouch.caption?.trim() || 'Customer vouch'
 
   return (
-    <article className="font-nata-sans border-border-subtle text-foreground dark:border-darkslateblue dark:text-ghostwhite bg-card dark:bg-gray-100 relative box-border flex w-full flex-col items-center gap-3 rounded-lg border border-solid p-3 text-center text-base">
+    <article className="font-nata-sans border-border-subtle text-foreground dark:border-darkslateblue dark:text-ghostwhite bg-card relative box-border flex w-full flex-col items-center gap-3 rounded-lg border border-solid p-3 text-center text-base dark:bg-gray-100">
       <div className="relative w-full shrink-0 overflow-hidden rounded-md">
         <img
           src={vouch.imageUrl}

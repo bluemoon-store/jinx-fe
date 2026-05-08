@@ -235,14 +235,16 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
     <div className="text-muted-foreground flex w-full flex-col items-start gap-4">
       <div className="font-commissioner flex flex-col items-start gap-2 self-stretch">
         <div className="flex w-full flex-col gap-1">
-          <div className="leading-num-20 text-foreground dark:text-white font-semibold">Select Variant</div>
+          <div className="leading-num-20 text-foreground font-semibold dark:text-white">
+            Select Variant
+          </div>
           {selectedVariant ? (
             <p className="text-muted-foreground m-0 text-sm font-medium">
               {variantStockMessage(selectedVariant.stockQuantity)}
             </p>
           ) : null}
         </div>
-        <div className="relative box-border w-full overflow-visible rounded-lg border border-solid border-border-subtle bg-card-elevated text-foreground dark:text-white">
+        <div className="border-border-subtle bg-card-elevated text-foreground relative box-border w-full overflow-visible rounded-lg border border-solid dark:text-white">
           <button
             type="button"
             aria-label={`Select variant for ${productName}`}
@@ -264,7 +266,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
               stroke="1"
               radius="1"
               size={24}
-              className="h-6 w-6 shrink-0 text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+              className="text-foreground h-6 w-6 shrink-0 opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
               style={{ transform: isVariantOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
@@ -308,7 +310,7 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
                           stroke="2"
                           radius="1"
                           size={18}
-                          className="shrink-0 text-foreground dark:text-white"
+                          className="text-foreground shrink-0 dark:text-white"
                           ariaHidden={true}
                         />
                       ) : null}
@@ -323,8 +325,10 @@ export const ShopDetailPurchaseControls: FunctionComponent<PurchaseControlsProps
 
       <div className="flex flex-col items-stretch gap-4 self-stretch sm:flex-row sm:gap-5">
         <div className="flex flex-1 flex-col items-start gap-2">
-          <div className="leading-num-20 text-foreground dark:text-white font-semibold">Select Quantity</div>
-          <div className="rounded-num-8 border-border-subtle px-num-12 py-num-10 text-num-16 w-full overflow-hidden border border-solid bg-card-elevated text-foreground dark:text-white">
+          <div className="leading-num-20 text-foreground font-semibold dark:text-white">
+            Select Quantity
+          </div>
+          <div className="rounded-num-8 border-border-subtle px-num-12 py-num-10 text-num-16 bg-card-elevated text-foreground w-full overflow-hidden border border-solid dark:text-white">
             <div className="flex items-center justify-between gap-5 self-stretch">
               <button
                 type="button"
@@ -435,7 +439,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
 
   return (
     <>
-      <div className="rounded-num-12 text-muted-foreground box-border flex w-full flex-col items-start gap-4 bg-card-elevated p-4 sm:gap-5 sm:p-5">
+      <div className="rounded-num-12 text-muted-foreground bg-card-elevated box-border flex w-full flex-col items-start gap-4 p-4 sm:gap-5 sm:p-5">
         <ShopDetailPurchaseControls
           productId={product.id}
           productName={product.name}
@@ -448,14 +452,16 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
 
       <div className="font-nata-sans flex flex-col items-start gap-4 self-stretch text-center sm:gap-5">
         <div className="flex flex-wrap items-center justify-center gap-1.5 self-stretch sm:gap-[5px]">
-          <div className="tracking-num-0.02 text-foreground font-extrabold">EVERY PURCHASE WITH</div>
+          <div className="tracking-num-0.02 text-foreground font-extrabold">
+            EVERY PURCHASE WITH
+          </div>
           <div className="font-heydex flex items-center p-1 text-fuchsia-600 dark:text-fuchsia-200">
             <div className="tracking-num-0.02 font-extrabold">JINX</div>
           </div>
           <div className="tracking-num-0.02 text-foreground font-extrabold">GUARANTEES</div>
         </div>
         <div className="py-num-0 text-num-14 sm:px-num-16 flex w-full flex-wrap items-center justify-center gap-2 self-center px-4 text-center sm:gap-3">
-          <div className="rounded-num-8 border-mediumslateblue p-num-10 flex flex-col items-start border border-solid bg-card-elevated dark:[background:linear-gradient(180deg,rgba(139,92,246,0),rgba(139,92,246,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
+          <div className="rounded-num-8 border-mediumslateblue p-num-10 bg-card-elevated flex flex-col items-start border border-solid dark:[background:linear-gradient(180deg,rgba(139,92,246,0),rgba(139,92,246,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon
                 name="IconClockAlert"
@@ -467,13 +473,13 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
                 className="text-[#8B5CF6]"
               />
               <div className="flex flex-col items-start">
-                <div className="tracking-num-0.02 leading-num-20 text-foreground dark:text-white font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
+                <div className="tracking-num-0.02 leading-num-20 text-foreground font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:text-white dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
                   Instant Access
                 </div>
               </div>
             </div>
           </div>
-          <div className="rounded-num-8 p-num-10 border-red flex flex-col items-start border border-solid bg-card-elevated dark:[background:linear-gradient(180deg,rgba(255,42,42,0),rgba(255,42,42,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
+          <div className="rounded-num-8 p-num-10 border-red bg-card-elevated flex flex-col items-start border border-solid dark:[background:linear-gradient(180deg,rgba(255,42,42,0),rgba(255,42,42,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon
                 name="IconShieldCheck"
@@ -485,11 +491,11 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
                 className="text-[#FF2A2A]"
               />
               <div className="flex flex-col items-start">
-                <div className="tracking-num-0.02 leading-num-20 text-foreground dark:text-white font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">{`Safe & Secure`}</div>
+                <div className="tracking-num-0.02 leading-num-20 text-foreground font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:text-white dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">{`Safe & Secure`}</div>
               </div>
             </div>
           </div>
-          <div className="rounded-num-8 border-deepskyblue-200 p-num-10 flex flex-col items-start border border-solid bg-card-elevated dark:[background:linear-gradient(180deg,rgba(0,212,255,0),rgba(0,212,255,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
+          <div className="rounded-num-8 border-deepskyblue-200 p-num-10 bg-card-elevated flex flex-col items-start border border-solid dark:[background:linear-gradient(180deg,rgba(0,212,255,0),rgba(0,212,255,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon
                 name="IconSupport"
@@ -501,13 +507,13 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
                 className="text-[#00D4FF]"
               />
               <div className="flex flex-col items-start">
-                <div className="tracking-num-0.02 leading-num-20 text-foreground dark:text-white font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
+                <div className="tracking-num-0.02 leading-num-20 text-foreground font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:text-white dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
                   24/7 Support
                 </div>
               </div>
             </div>
           </div>
-          <div className="rounded-num-8 border-mediumvioletred p-num-10 flex flex-col items-start border border-solid bg-card-elevated dark:[background:linear-gradient(180deg,rgba(217,27,144,0),rgba(217,27,144,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
+          <div className="rounded-num-8 border-mediumvioletred p-num-10 bg-card-elevated flex flex-col items-start border border-solid dark:[background:linear-gradient(180deg,rgba(217,27,144,0),rgba(217,27,144,0.2)),linear-gradient(#1a0d35,#1a0d35)]">
             <div className="flex items-center justify-center gap-3">
               <CentralIcon
                 name="IconShieldCrossed"
@@ -519,7 +525,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
                 className="text-[#D91B90]"
               />
               <div className="flex flex-col items-start">
-                <div className="tracking-num-0.02 leading-num-20 text-foreground dark:text-white font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
+                <div className="tracking-num-0.02 leading-num-20 text-foreground font-extrabold uppercase [text-shadow:0px_0px_18.58px_rgba(0,0,0,0.1)] dark:text-white dark:[text-shadow:0px_0px_18.58px_rgba(0,0,0,0.6)]">
                   No Hidden Fees
                 </div>
               </div>
@@ -531,14 +537,14 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
       <div className="border-border-subtle h-px w-full border-t border-solid opacity-50" />
 
       <div className="flex w-full flex-col items-start gap-4">
-        <div className="rounded-num-12 sm:p-num-18 box-border flex w-full flex-col items-start overflow-hidden bg-card-elevated p-4">
+        <div className="rounded-num-12 sm:p-num-18 bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden p-4">
           <button
             type="button"
             aria-expanded={isProductDescriptionOpen}
             className="flex w-full items-center justify-between gap-0 self-stretch"
             onClick={() => setIsProductDescriptionOpen((v) => !v)}
           >
-            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-foreground dark:text-white">
+            <b className="tracking-num--0_01 leading-num-28 text-foreground flex-1 text-left dark:text-white">
               Product Description
             </b>
             <CentralIcon
@@ -548,7 +554,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
               stroke="1"
               radius="1"
               size={20}
-              className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+              className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
               style={{ transform: isProductDescriptionOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
@@ -559,21 +565,23 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
           >
             <div className="w-full overflow-hidden">
               <div className="bg-border-subtle relative left-1/2 mt-2 h-px w-screen -translate-x-1/2 opacity-50" />
-              <div className="pt-num-6 pb-num-6 flex w-full flex-col items-start gap-5 text-foreground dark:text-white">
+              <div className="pt-num-6 pb-num-6 text-foreground flex w-full flex-col items-start gap-5 dark:text-white">
                 <RichHtml html={product.description} emptyText="No description yet." />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-num-12 sm:p-num-18 box-border flex w-full flex-col items-start overflow-hidden bg-card-elevated p-4">
+        <div className="rounded-num-12 sm:p-num-18 bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden p-4">
           <button
             type="button"
             aria-expanded={isProcessToRedeemOpen}
             className="flex w-full items-center justify-between gap-0 self-stretch"
             onClick={() => setIsProcessToRedeemOpen((v) => !v)}
           >
-            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-foreground dark:text-white">Process to Redeem</b>
+            <b className="tracking-num--0_01 leading-num-28 text-foreground flex-1 text-left dark:text-white">
+              Process to Redeem
+            </b>
             <CentralIcon
               name="IconChevronDownMedium"
               join="round"
@@ -581,7 +589,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
               stroke="1"
               radius="1"
               size={20}
-              className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+              className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
               style={{ transform: isProcessToRedeemOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
@@ -602,14 +610,16 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
           </div>
         </div>
 
-        <div className="rounded-num-12 sm:p-num-18 box-border flex w-full flex-col items-start overflow-hidden bg-card-elevated p-4">
+        <div className="rounded-num-12 sm:p-num-18 bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden p-4">
           <button
             type="button"
             aria-expanded={isProductWarrantyOpen}
             className="flex w-full items-center justify-between gap-0 self-stretch"
             onClick={() => setIsProductWarrantyOpen((v) => !v)}
           >
-            <b className="tracking-num--0_01 leading-num-28 flex-1 text-left text-foreground dark:text-white">Product Warranty</b>
+            <b className="tracking-num--0_01 leading-num-28 text-foreground flex-1 text-left dark:text-white">
+              Product Warranty
+            </b>
             <CentralIcon
               name="IconChevronDownMedium"
               join="round"
@@ -617,7 +627,7 @@ export const ShopDetailPurchasePanel: FunctionComponent<PanelProps> = ({ product
               stroke="1"
               radius="1"
               size={20}
-              className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+              className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
               style={{ transform: isProductWarrantyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>

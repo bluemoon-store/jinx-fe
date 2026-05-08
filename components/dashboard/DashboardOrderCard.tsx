@@ -22,7 +22,11 @@ export const dashboardOrderStatusConfig: Record<
 > = {
   paid: { label: 'Paid', icon: 'IconCircleCheck', color: 'text-seagreen' },
   pending: { label: 'Pending', icon: 'IconClockAlert', color: 'text-[#FF7009]' },
-  expired: { label: 'Expired', icon: 'IconCrossSmall', color: 'text-muted-foreground dark:text-lightsteelblue-200' },
+  expired: {
+    label: 'Expired',
+    icon: 'IconCrossSmall',
+    color: 'text-muted-foreground dark:text-lightsteelblue-200',
+  },
 }
 
 export const DashboardOrderCard: FunctionComponent<Props> = ({
@@ -38,7 +42,7 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
   return (
     <Link
       href={`/dashboard/orders/${id}` as Route}
-      className="rounded-num-8 border-border-subtle bg-card text-foreground dark:text-white focus-visible:ring-fuchsia/50 box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-2 focus-visible:outline-none"
+      className="rounded-num-8 border-border-subtle bg-card text-foreground focus-visible:ring-fuchsia/50 box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-2 focus-visible:outline-none dark:text-white"
     >
       <div className="rounded-num-8 flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">
         <img
@@ -55,11 +59,11 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
           <span className="text-muted-foreground leading-num-24 shrink-0 font-medium whitespace-nowrap">
             {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
           </span>
-          <span className="bg-foreground/20 dark:bg-white/25 h-3.5 w-px" aria-hidden />
-          <span className="rounded-num-6 bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))] px-1.5 py-0 text-white">
+          <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
+          <span className="rounded-num-6 bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] px-1.5 py-0 text-white dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
             <b className="leading-num-24">{price}</b>
           </span>
-          <span className="bg-foreground/20 dark:bg-white/25 h-3.5 w-px" aria-hidden />
+          <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
           <span
             className={`rounded-num-6 flex items-center gap-0.5 px-1.5 py-0 ${cfg.color} ${
               status === 'paid'

@@ -117,9 +117,9 @@ const DashboardDropDetailPage: FunctionComponent = () => {
   return (
     <Reveal variant="fade-up" delay={140}>
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
-        <article className="text-num-16 font-commissioner text-foreground dark:text-white border-border-subtle bg-card dark:border-gray-600 dark:bg-gray-100 box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid p-5 text-left sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
+        <article className="text-num-16 font-commissioner text-foreground border-border-subtle bg-card box-border flex w-full min-w-0 flex-col gap-8 rounded-xl border border-solid p-5 text-left sm:p-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-16 dark:border-gray-600 dark:bg-gray-100 dark:text-white">
           <section className="flex w-full min-w-0 flex-col gap-5 lg:w-1/2">
-            <div className="rounded-num-12 bg-card-elevated dark:bg-[#051329] flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden">
+            <div className="rounded-num-12 bg-card-elevated flex aspect-447/255 max-h-[255px] w-full items-center justify-center overflow-hidden dark:bg-[#051329]">
               <img
                 className="max-h-full max-w-full object-contain object-center"
                 alt=""
@@ -130,7 +130,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
               <button
                 type="button"
                 onClick={() => setDropClaimMarkedUsed(claim.id, !markedAsUsed)}
-                className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle dark:border-gray-600 dark:bg-[#19263F] dark:text-white box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid"
+                className="rounded-num-8 p-num-12 bg-active-bg text-foreground border-border-subtle box-border flex min-h-[52px] flex-1 items-center justify-center gap-3 border border-solid dark:border-gray-600 dark:bg-[#19263F] dark:text-white"
               >
                 <CentralIcon
                   name="IconDoupleCheckmark2Small"
@@ -149,7 +149,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
             </div>
             <hr className="bg-divider h-px w-full border-0" aria-hidden />
             <section aria-labelledby="vouches-heading" className="flex flex-col gap-4">
-              <div className="text-foreground/75 dark:text-white flex items-center gap-2">
+              <div className="text-foreground/75 flex items-center gap-2 dark:text-white">
                 <CentralIcon
                   name="IconShieldCheck"
                   join="round"
@@ -165,10 +165,10 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                 </h2>
               </div>
 
-              <div className="rounded-xl border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 border border-solid p-4">
+              <div className="border-border-subtle bg-card-elevated rounded-xl border border-solid p-4 dark:border-gray-600 dark:bg-gray-200">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-base font-bold text-foreground dark:text-white uppercase">
+                    <p className="text-foreground truncate text-base font-bold uppercase dark:text-white">
                       {claim.variant.label}
                     </p>
                     <p className="text-muted-foreground dark:text-lightsteelblue-200 text-sm">
@@ -190,7 +190,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                     {claim.vouches.map((vouch) => (
                       <div
                         key={vouch.id}
-                        className="group bg-card dark:bg-gray-100 relative h-20 w-20 overflow-hidden rounded-lg"
+                        className="group bg-card relative h-20 w-20 overflow-hidden rounded-lg dark:bg-gray-100"
                       >
                         {vouch.imageUrl ? (
                           <Image src={vouch.imageUrl} alt="Vouch" fill className="object-cover" />
@@ -228,7 +228,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground/70 dark:text-white/30 text-xs italic">
+                  <p className="text-muted-foreground/70 text-xs italic dark:text-white/30">
                     No vouches shared for this claim yet.
                   </p>
                 )}
@@ -241,7 +241,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
               <span className="leading-num-20 font-semibold">Facing Issues?</span>
               <Link
                 href={'/support' as Route}
-                className="text-foreground dark:text-ghostwhite rounded-num-8 px-num-12 text-num-15_35 leading-num-21_93 bg-active-bg dark:bg-[#19263F] flex items-center gap-2 py-1.5 font-semibold transition-colors hover:bg-hover-bg dark:hover:bg-[#1f2d4a]"
+                className="text-foreground dark:text-ghostwhite rounded-num-8 px-num-12 text-num-15_35 leading-num-21_93 bg-active-bg hover:bg-hover-bg flex items-center gap-2 py-1.5 font-semibold transition-colors dark:bg-[#19263F] dark:hover:bg-[#1f2d4a]"
               >
                 <CentralIcon
                   name="IconRescueRing"
@@ -262,7 +262,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                 <h1 className="tracking-num-0_02 leading-8 font-extrabold uppercase">
                   {formatOrderBrandLabel(claim.product.name)}
                 </h1>
-                <div className="px-num-12 text-muted-foreground dark:text-lightsteelblue-100 font-commissioner bg-active-bg dark:bg-[#19263F] flex items-center gap-2 rounded-xl py-1.5 text-[13px]">
+                <div className="px-num-12 text-muted-foreground dark:text-lightsteelblue-100 font-commissioner bg-active-bg flex items-center gap-2 rounded-xl py-1.5 text-[13px] dark:bg-[#19263F]">
                   <CentralIcon
                     name={statusIcon as any}
                     join="round"
@@ -318,7 +318,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
               </button>
             </div>
             <div className="text-num-16 text-foreground dark:text-ghostwhite flex flex-col gap-4 self-stretch">
-              <div className="rounded-num-12 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5">
+              <div className="rounded-num-12 border-border-subtle bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5 dark:border-gray-600 dark:bg-gray-200">
                 <button
                   type="button"
                   aria-expanded={isProcessOpen}
@@ -335,7 +335,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                     stroke="1"
                     radius="1"
                     size={20}
-                    className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+                    className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
                     style={{ transform: isProcessOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   />
                 </button>
@@ -352,7 +352,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                           {claim.product.redeemProcess}
                         </p>
                       ) : (
-                        <div className="text-foreground dark:text-white flex flex-col items-start gap-5">
+                        <div className="text-foreground flex flex-col items-start gap-5 dark:text-white">
                           <div className="leading-num-24 opacity-[0.8]">
                             <b>Step 1: Open Redeem Page</b>
                             <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
@@ -390,7 +390,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                 </div>
               </div>
 
-              <div className="rounded-num-12 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5">
+              <div className="rounded-num-12 border-border-subtle bg-card-elevated box-border flex w-full flex-col items-start overflow-hidden border border-solid p-4 sm:p-5 dark:border-gray-600 dark:bg-gray-200">
                 <button
                   type="button"
                   aria-expanded={isWarrantyOpen}
@@ -405,7 +405,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                     stroke="1"
                     radius="1"
                     size={20}
-                    className="text-foreground dark:text-white opacity-75 transition-transform duration-300 ease-in-out"
+                    className="text-foreground opacity-75 transition-transform duration-300 ease-in-out dark:text-white"
                     style={{ transform: isWarrantyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   />
                 </button>
@@ -422,7 +422,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                           {claim.product.warrantyText}
                         </p>
                       ) : (
-                        <div className="text-foreground dark:text-white flex flex-col items-start gap-5">
+                        <div className="text-foreground flex flex-col items-start gap-5 dark:text-white">
                           <div className="leading-num-24 opacity-[0.8]">
                             <b>Warranty Coverage</b>
                             <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
@@ -451,14 +451,14 @@ const DashboardDropDetailPage: FunctionComponent = () => {
             </div>
             <hr className="bg-divider h-px w-full border-0" aria-hidden />
             <section className="flex flex-col gap-3">
-              <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid">
+              <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                 <span className="text-muted-foreground dark:text-lightsteelblue-200 leading-num-20 font-semibold">
                   Claim ID
                 </span>
                 <button
                   type="button"
                   onClick={() => void handleCopyText(claim.id, 'Claim ID')}
-                  className="text-num-16 tracking-num--0_01 text-foreground dark:text-white focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 items-center justify-end gap-2 rounded-md font-semibold"
+                  className="text-num-16 tracking-num--0_01 text-foreground focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 items-center justify-end gap-2 rounded-md font-semibold dark:text-white"
                   aria-label={`Copy claim ID ${claim.id}`}
                 >
                   <span className="min-w-0 truncate text-right">{claim.id}</span>
@@ -474,14 +474,14 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                   />
                 </button>
               </div>
-              <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid">
+              <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                 <span className="text-muted-foreground dark:text-lightsteelblue-200 leading-num-20 font-semibold">
                   Drop ID
                 </span>
                 <button
                   type="button"
                   onClick={() => void handleCopyText(claim.dropId, 'Drop ID')}
-                  className="text-num-16 tracking-num--0_01 text-foreground dark:text-white focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 items-center justify-end gap-2 rounded-md font-semibold"
+                  className="text-num-16 tracking-num--0_01 text-foreground focus-visible:ring-fuchsia/40 flex max-w-full min-w-0 flex-1 items-center justify-end gap-2 rounded-md font-semibold dark:text-white"
                   aria-label={`Copy drop ID ${claim.dropId}`}
                 >
                   <span className="min-w-0 truncate text-right">{claim.dropId}</span>
@@ -497,19 +497,19 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                   />
                 </button>
               </div>
-              <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid">
+              <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                 <span className="text-muted-foreground dark:text-lightsteelblue-200 leading-num-20 font-semibold">
                   Claimed At
                 </span>
-                <span className="text-num-16 tracking-num--0_01 text-foreground dark:text-white max-w-full text-right font-semibold">
+                <span className="text-num-16 tracking-num--0_01 text-foreground max-w-full text-right font-semibold dark:text-white">
                   {new Date(claim.claimedAt).toLocaleString('en-US')}
                 </span>
               </div>
-              <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-gray-600 dark:bg-gray-200 py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid">
+              <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                 <span className="text-muted-foreground dark:text-lightsteelblue-200 leading-num-20 font-semibold">
                   Variant
                 </span>
-                <span className="text-num-16 tracking-num--0_01 text-foreground dark:text-white max-w-full text-right font-semibold">
+                <span className="text-num-16 tracking-num--0_01 text-foreground max-w-full text-right font-semibold dark:text-white">
                   {claim.variant.label}
                 </span>
               </div>

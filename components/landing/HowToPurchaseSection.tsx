@@ -38,7 +38,7 @@ export default async function HowToPurchaseSection() {
               <div className="tracking-num-0_02">PuRChASE</div>
             </div>
           </div>
-          <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:text-base">
+          <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
@@ -66,7 +66,7 @@ export default async function HowToPurchaseSection() {
                     <div className="flex items-center justify-center gap-2.5 self-stretch lg:gap-3">
                       <div
                         className={cn(
-                          'border-border-subtle bg-foreground/10 dark:border-darkslateblue dark:bg-white/5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-solid opacity-70 transition-opacity duration-200 group-hover:opacity-100 lg:h-10 lg:w-10'
+                          'border-border-subtle bg-foreground/10 dark:border-darkslateblue flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-solid opacity-70 transition-opacity duration-200 group-hover:opacity-100 lg:h-10 lg:w-10 dark:bg-white/5'
                         )}
                       >
                         <img className="h-5 w-5 lg:h-6 lg:w-6" alt="" src={step.iconSrc} />
@@ -75,7 +75,7 @@ export default async function HowToPurchaseSection() {
                         {step.title}
                       </div>
                     </div>
-                    <div className="font-commissioner text-muted-foreground dark:text-lightsteelblue-200 self-stretch text-center text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] lg:text-base">
+                    <div className="font-commissioner text-muted-foreground dark:text-lightsteelblue-200 self-stretch text-center text-sm leading-snug font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] lg:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                       {step.description}
                     </div>
                   </div>

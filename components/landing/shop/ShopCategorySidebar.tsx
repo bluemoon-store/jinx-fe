@@ -52,7 +52,7 @@ export const ShopCategorySidebar: FunctionComponent<{
               onMouseLeave={() => setHoveredSlug(null)}
               className={[
                 isSelected
-                  ? 'rounded-num-8 sm:p-num-10 flex min-h-[44px] shrink-0 items-center gap-2 border border-solid border-active-border p-3 text-left text-foreground bg-active-bg dark:border-[#3B3161] dark:text-white dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)] sm:w-full'
+                  ? 'rounded-num-8 sm:p-num-10 border-active-border text-foreground bg-active-bg flex min-h-[44px] shrink-0 items-center gap-2 border border-solid p-3 text-left sm:w-full dark:border-[#3B3161] dark:text-white dark:[background:linear-gradient(90deg,rgba(235,45,255,0.2),rgba(235,45,255,0)),linear-gradient(#071935,#071935)]'
                   : 'rounded-num-12 sm:px-num-15 flex min-h-[44px] shrink-0 items-center gap-2 px-3 py-2 sm:w-full',
                 isHoverActive ? 'bg-hover-bg dark:bg-gray-700' : '',
               ].join(' ')}

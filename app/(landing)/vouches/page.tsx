@@ -31,7 +31,7 @@ export default function VouchesPage() {
                     color="#EB2DFF"
                     ariaHidden
                   />
-                  <h1 className="text-foreground dark:text-white leading-num-28 tracking-num-0.02 text-lg font-bold">
+                  <h1 className="text-foreground leading-num-28 tracking-num-0.02 text-lg font-bold dark:text-white">
                     Customer Vouches
                   </h1>
                 </div>
