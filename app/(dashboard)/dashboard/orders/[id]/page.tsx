@@ -478,7 +478,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               ) : isMultilineRedeem ? (
                 <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                   <pre
-                    className="tracking-num-0_02 max-h-[min(50vh,280px)] w-full min-w-0 flex-1 overflow-auto text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg"
+                    className="tracking-num-0_02 w-full min-w-0 flex-1 text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg"
                     tabIndex={0}
                   >
                     {redeemDisplay}

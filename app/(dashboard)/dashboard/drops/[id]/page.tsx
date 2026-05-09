@@ -293,7 +293,7 @@ const DashboardDropDetailPage: FunctionComponent = () => {
                   Copied
                 </span>
               ) : isMultilineRedeem ? (
-                <pre className="tracking-num-0_02 max-h-[min(50vh,280px)] w-full min-w-0 flex-1 overflow-auto text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg">
+                <pre className="tracking-num-0_02 w-full min-w-0 flex-1 text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg">
                   {redeemDisplay}
                 </pre>
               ) : (
