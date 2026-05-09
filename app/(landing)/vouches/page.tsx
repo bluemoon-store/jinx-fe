@@ -6,6 +6,8 @@ import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { VouchesGrid } from '@/components/vouches/VouchesGrid'
 
+const TELEGRAM_DROPS_URL = process.env.NEXT_PUBLIC_TELEGRAM_DROPS_URL?.trim() ?? ''
+
 export const metadata: Metadata = {
   title: 'Vouches | BlueMoon',
   description: 'Public proof of delivery and testimonials from our customers.',
@@ -18,9 +20,9 @@ export default function VouchesPage() {
       <main className="flex-1 pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
           <section className="mx-auto w-full max-w-[1440px] px-6 py-10 lg:px-16 lg:py-14">
-            <header className="mb-10 flex flex-col items-center gap-6 text-center">
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center justify-center gap-2">
+            <header className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
                   <CentralIcon
                     name="IconReceiptBill"
                     join="round"
@@ -39,6 +41,34 @@ export default function VouchesPage() {
                   Vouches from our real customers.
                 </p>
               </div>
+
+              <a
+                href={TELEGRAM_DROPS_URL || '#'}
+                target="_blank"
+                rel="noreferrer"
+                className="border-border-subtle bg-card text-foreground dark:border-whitesmoke-300 font-commissioner relative box-border flex w-full shrink-0 flex-col items-start overflow-hidden rounded-lg border border-solid p-4 text-left text-lg lg:w-auto dark:text-white dark:[background:linear-gradient(180deg,rgba(0,136,204,0),rgba(0,136,204,0.25)),linear-gradient(#0d1b35,#0d1b35)]"
+              >
+                <div className="gap-num-15 flex items-center">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7.11px] bg-[#0088CC]">
+                    <CentralIcon
+                      name="IconTelegram"
+                      join="round"
+                      fill="filled"
+                      stroke="1"
+                      radius="1"
+                      size={18}
+                      color="#FFFFFF"
+                      ariaHidden
+                    />
+                  </div>
+                  <div className="flex flex-col items-start justify-center">
+                    <b className="tracking-num-0.02 relative leading-7">Join Telegram Channel</b>
+                    <div className="text-muted-foreground dark:text-whitesmoke-100 relative text-base leading-6 font-medium">
+                      Stay updated on all the latest drops
+                    </div>
+                  </div>
+                </div>
+              </a>
             </header>
 
             <VouchesGrid />
