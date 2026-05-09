@@ -124,11 +124,6 @@ export const HotSellingProducts: FunctionComponent<{ items: ProductCard[] }> = (
                               <div className="tracking-num-0_02 min-w-0 flex-1 truncate text-sm leading-[20px] font-extrabold uppercase sm:text-base sm:leading-[20px]">
                                 {item.name}
                               </div>
-                              {item.flair?.trim() ? (
-                                <span className="max-w-[120px] shrink-0 truncate rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-1.5 py-0.5 text-[9px] font-semibold tracking-wide text-fuchsia-100 uppercase sm:max-w-[140px] sm:px-2 sm:text-[10px]">
-                                  {item.flair.trim()}
-                                </span>
-                              ) : null}
                               {item.isHot ? (
                                 <div className="font-heydex flex shrink-0 items-center gap-1.5 text-[#FF2A2A] sm:gap-2">
                                   <div className="tracking-num-0.02 text-base font-extrabold sm:text-lg">

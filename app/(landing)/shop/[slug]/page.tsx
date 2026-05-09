@@ -7,7 +7,7 @@ import Navbar from '@/components/landing/Navbar'
 import FooterServer from '@/components/landing/FooterServer'
 import type { ProductDetail } from '@/types/product'
 
-export const revalidate = 300
+export const revalidate = 60
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>

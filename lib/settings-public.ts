@@ -30,7 +30,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
 
   try {
     const response = await fetch(`${apiBase}/settings/public`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     })
 
     if (!response.ok) {

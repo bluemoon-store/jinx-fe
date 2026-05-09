@@ -6,7 +6,12 @@ import NewlyLaunchedProductsClient from './NewlyLaunchedProductsClient'
 export default async function NewlyLaunchedSection() {
   let items: Awaited<ReturnType<typeof getProductsAction>>['items'] = []
   try {
-    const result = await getProductsAction({ isNew: true, limit: 5 })
+    const result = await getProductsAction({
+      isNew: true,
+      limit: 5,
+      sortBy: 'updatedAt',
+      sortOrder: 'desc',
+    })
     items = result.items
   } catch {
     items = []

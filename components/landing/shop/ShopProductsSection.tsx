@@ -160,7 +160,6 @@ export const ShopProductsSection = ({ selectedCategorySlug }: Props) => {
                 name={p.name}
                 fromPrice={p.fromPrice.startsWith('$') ? p.fromPrice : `$${p.fromPrice}`}
                 imageSrc={p.primaryImageUrl ?? '/icons/placeholder.svg'}
-                flair={p.flair}
                 iconUrl={p.iconUrl}
                 detailHref={`/shop/${p.slug}`}
                 allVariantsOutOfStock={isQuickBuyProductOutOfStock(p)}

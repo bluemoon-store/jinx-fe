@@ -8,7 +8,7 @@ import ShopCatalogSection from '@/components/landing/shop/ShopCatalogSection'
 import type { ProductCard, ProductCategory } from '@/types/product'
 
 /** Hot list + categories are fetched at build time and revalidated (ISR). */
-export const revalidate = 300
+export const revalidate = 60
 
 export default async function ShopPage() {
   let hotProducts: ProductCard[] = []
@@ -16,7 +16,12 @@ export default async function ShopPage() {
 
   try {
     const [hotRes, cats] = await Promise.all([
-      getProductsAction({ isHot: true, limit: 10 }),
+      getProductsAction({
+        isHot: true,
+        limit: 10,
+        sortBy: 'updatedAt',
+        sortOrder: 'desc',
+      }),
       getCategoriesAction(),
     ])
     hotProducts = hotRes.items

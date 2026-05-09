@@ -69,7 +69,7 @@ export async function getFaqs(): Promise<FaqCategory[]> {
   if (!apiBase) return []
 
   try {
-    const response = await fetch(`${apiBase}/faq`, { next: { revalidate: 300 } })
+    const response = await fetch(`${apiBase}/faq`, { next: { revalidate: 60 } })
     if (!response.ok) return []
 
     const payload = (await response.json()) as { data?: RawFaqCategory[] } | RawFaqCategory[]

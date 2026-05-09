@@ -6,7 +6,6 @@ type Props = {
   name: string
   fromPrice: string
   imageSrc: string
-  flair?: string | null
   iconUrl?: string | null
   detailHref: `/shop/${string}`
   onQuickBuy?: () => void

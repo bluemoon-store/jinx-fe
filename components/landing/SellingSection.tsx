@@ -6,7 +6,12 @@ import SellingHotProductsClient from './SellingHotProductsClient'
 export default async function SellingSection() {
   let items: Awaited<ReturnType<typeof getProductsAction>>['items'] = []
   try {
-    const result = await getProductsAction({ isHot: true, limit: 10 })
+    const result = await getProductsAction({
+      isHot: true,
+      limit: 10,
+      sortBy: 'updatedAt',
+      sortOrder: 'desc',
+    })
     items = result.items
   } catch {
     items = []

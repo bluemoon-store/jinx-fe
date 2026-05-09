@@ -45,7 +45,7 @@ export async function getLegalDocs(): Promise<LegalDoc[]> {
   if (!apiBase) return []
 
   try {
-    const response = await fetch(`${apiBase}/legal`, { next: { revalidate: 300 } })
+    const response = await fetch(`${apiBase}/legal`, { next: { revalidate: 60 } })
     if (!response.ok) return []
 
     const payload = (await response.json()) as { data?: RawLegalDoc[] } | RawLegalDoc[]
@@ -67,7 +67,7 @@ export async function getLegalDoc(type: LegalType): Promise<LegalDoc | null> {
 
   try {
     const response = await fetch(`${apiBase}/legal/${type.toLowerCase()}`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     })
     if (!response.ok) return null
 

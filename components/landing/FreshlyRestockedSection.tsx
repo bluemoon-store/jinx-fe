@@ -6,7 +6,12 @@ import FreshlyRestockedProductsClient from './FreshlyRestockedProductsClient'
 export default async function FreshlyRestockedSection() {
   let items: Awaited<ReturnType<typeof getProductsAction>>['items'] = []
   try {
-    const result = await getProductsAction({ isRestocked: true, limit: 59 })
+    const result = await getProductsAction({
+      isRestocked: true,
+      limit: 59,
+      sortBy: 'updatedAt',
+      sortOrder: 'desc',
+    })
     items = result.items
   } catch {
     items = []

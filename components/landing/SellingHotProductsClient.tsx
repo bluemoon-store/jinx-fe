@@ -92,11 +92,6 @@ export default function SellingHotProductsClient({ items }: Props) {
                                 />
                               </div>
                             </div>
-                            {item.flair?.trim() ? (
-                              <span className="max-w-full truncate rounded-full border border-solid border-fuchsia-300/40 bg-fuchsia-500/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-fuchsia-100 uppercase">
-                                {item.flair.trim()}
-                              </span>
-                            ) : null}
                           </div>
                           <div className="text-num-16 text-body-foreground font-commissioner flex items-center justify-center gap-0.5">
                             <div className="leading-num-24 font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">

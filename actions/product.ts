@@ -9,6 +9,16 @@ import type {
   ProductVariant,
 } from '@/types/product'
 
+/** Sortable fields supported by GET /products (whitelisted server-side). */
+export type ProductSortBy =
+  | 'updatedAt'
+  | 'createdAt'
+  | 'name'
+  | 'sortOrder'
+  | 'launchedAt'
+  | 'restockedAt'
+  | 'price'
+
 /** Query params for public product list — matches planned GET /products filters. */
 export type GetProductsParams = {
   isHot?: boolean
@@ -19,6 +29,8 @@ export type GetProductsParams = {
   limit?: number
   /** Uses GET /products/search when non-empty */
   search?: string
+  sortBy?: ProductSortBy
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type ProductsPageResult = {
@@ -182,10 +194,18 @@ export async function getProductsAction(params?: GetProductsParams): Promise<Pro
   if (params?.categorySlug) q.categorySlug = params.categorySlug
   if (params?.page !== undefined) q.page = params.page
   if (params?.limit !== undefined) q.limit = params.limit
+  if (params?.sortBy) q.sortBy = params.sortBy
+  if (params?.sortOrder) q.sortOrder = params.sortOrder
 
   if (search) {
     const res = await api.get<BackendResponse<unknown>>('/products/search', {
-      params: { searchQuery: search, page: params?.page, limit: params?.limit },
+      params: {
+        searchQuery: search,
+        page: params?.page,
+        limit: params?.limit,
+        sortBy: params?.sortBy,
+        sortOrder: params?.sortOrder,
+      },
     })
     return parseProductsPayload(unwrapData(res))
   }

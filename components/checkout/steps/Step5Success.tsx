@@ -10,8 +10,9 @@ import { SupportRow } from '@/components/checkout/shared/SupportRow'
 import { formatUsd } from '@/lib/cart-format'
 import type { CartItem } from '@/stores/cart-store'
 import { useCartStore } from '@/stores/cart-store'
+import { orderUnsealStorageKey, useOrderUnsealStore } from '@/stores/order-unseal-store'
 import { useOrderDeliveryQuery, useOrderQuery, ORDERS_QUERY_KEYS } from '@/hooks/use-orders'
-import { RATING_STAR_COLORS } from '@/lib/rating-star-colors'
+import { OrderReviewSection } from '@/components/orders/OrderReviewSection'
 import { toast } from '@/lib/toast'
 import { deleteVouchAction } from '@/actions/vouch'
 import { VouchUploadModal } from '@/components/vouches/VouchUploadModal'
@@ -40,51 +41,10 @@ async function copyToClipboard(value: string, description?: string) {
   }
 }
 
-function RatingStarsInteractive({ initialRating }: { initialRating: number }) {
-  const [rating, setRating] = useState(() => Math.min(5, Math.max(0, Math.round(initialRating))))
-  const [hoveredStar, setHoveredStar] = useState<number | null>(null)
-  const previewRating = hoveredStar ?? rating
-
-  return (
-    <div
-      className="font-nata-sans flex shrink-0 items-center gap-2"
-      role="group"
-      aria-label="Rating"
-      onMouseLeave={() => setHoveredStar(null)}
-    >
-      {[1, 2, 3, 4, 5].map((n) => (
-        <button
-          key={n}
-          type="button"
-          onClick={() => setRating(n)}
-          onMouseEnter={() => setHoveredStar(n)}
-          className="rounded-num-8 focus-visible:ring-fuchsia/40 box-border flex h-9 w-9 shrink-0 touch-manipulation items-center justify-center border border-solid border-[#18263E] bg-[#19263F] transition-[border-color,box-shadow] [-webkit-tap-highlight-color:transparent] hover:border-white/20 focus-visible:ring-2 focus-visible:outline-none"
-          aria-label={`${n} stars`}
-          aria-pressed={rating >= n}
-        >
-          <CentralIcon
-            name="IconStar"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="3"
-            size={22}
-            ariaHidden={true}
-            className={previewRating >= n ? undefined : 'text-lightsteelblue-200/35'}
-            style={
-              previewRating >= n && previewRating > 0
-                ? { color: RATING_STAR_COLORS[previewRating - 1] }
-                : undefined
-            }
-          />
-        </button>
-      ))}
-    </div>
-  )
-}
-
 function SuccessCard({
   item,
+  orderId,
+  unsealLineId,
   onUnseal,
   deliveredCode,
   codeLoading,
@@ -93,6 +53,8 @@ function SuccessCard({
   onDeleteVouch,
 }: {
   item: SuccessDisplayItem
+  orderId?: string | null
+  unsealLineId: string
   onUnseal?: () => void
   deliveredCode?: string | null
   codeLoading: boolean
@@ -100,7 +62,14 @@ function SuccessCard({
   onAddVouch?: (orderItemId: string) => void
   onDeleteVouch?: (vouchId: string) => void
 }) {
-  const [revealed, setRevealed] = useState(false)
+  const unsealedMap = useOrderUnsealStore((s) => s.unsealed)
+  const markUnsealed = useOrderUnsealStore((s) => s.markUnsealed)
+  const persistKey =
+    orderId && orderId.length > 0 ? orderUnsealStorageKey(orderId, unsealLineId) : null
+  const persistedOpen = persistKey ? Boolean(unsealedMap[persistKey]) : false
+  const [guestRevealed, setGuestRevealed] = useState(false)
+  const revealed = persistKey ? persistedOpen : guestRevealed
+
   const [isProcessOpen, setIsProcessOpen] = useState(false)
   const [isWarrantyOpen, setIsWarrantyOpen] = useState(false)
   const lineTotal = item.unitPrice * item.quantity
@@ -151,8 +120,8 @@ function SuccessCard({
         className="h-px w-full opacity-60"
       />
       <div className={styles.unsealWrapper}>
-        <div className="flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:gap-3 sm:px-9 sm:py-6">
-          <span className="font-nata-sans text-center text-base font-extrabold tracking-[0.48px] break-all text-slate-50 sm:text-2xl">
+        <div className="flex min-h-[72px] w-full min-w-0 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:items-start sm:justify-center sm:gap-3 sm:px-9 sm:py-6">
+          <span className="font-nata-sans w-full min-w-0 flex-1 text-center text-base font-extrabold tracking-[0.48px] whitespace-pre-line wrap-break-word text-slate-50 sm:text-2xl">
             {codeLoading ? (
               <span className="inline-block h-7 w-48 max-w-full animate-pulse rounded bg-white/10 sm:h-8 sm:w-64" />
             ) : revealed ? (
@@ -166,7 +135,7 @@ function SuccessCard({
               type="button"
               onClick={() => copyToClipboard(effectiveCode)}
               aria-label="Copy code"
-              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
+              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation self-center rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none sm:self-start"
             >
               <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
             </button>
@@ -177,7 +146,8 @@ function SuccessCard({
           onClick={() => {
             if (revealed) return
             onUnseal?.()
-            setRevealed(true)
+            if (persistKey && orderId) markUnsealed(orderId, unsealLineId)
+            else setGuestRevealed(true)
           }}
           className={`${styles.peelButton} ${revealed ? styles.peeled : ''}`}
           aria-label="Click to unseal"
@@ -229,9 +199,9 @@ function SuccessCard({
                 <div className="text-lightsteelblue-200 flex flex-col items-start gap-3 text-sm sm:text-base">
                   <p className="m-0 font-semibold text-white">{item.name}</p>
                   <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                    <li className="mb-0">Variant: {item.variantLabel}</li>
-                    <li className="mb-0">Total paid: {formatUsd(lineTotal)}</li>
-                    <li>
+                    <li className="mb-0 whitespace-pre-line">Variant: {item.variantLabel}</li>
+                    <li className="mb-0 whitespace-pre-line">Total paid: {formatUsd(lineTotal)}</li>
+                    <li className="whitespace-pre-line">
                       {revealed && effectiveCode
                         ? `Use code ${effectiveCode} at checkout on the product platform.`
                         : 'Unseal this product to reveal your redeem code first.'}
@@ -275,11 +245,11 @@ function SuccessCard({
                 <div className="text-lightsteelblue-200 flex flex-col items-start gap-3 text-sm sm:text-base">
                   <p className="m-0 font-semibold text-white">Warranty Coverage</p>
                   <ul className="m-0 list-none text-[length:inherit] [&>li]:relative [&>li]:pl-4 [&>li]:before:absolute [&>li]:before:top-0 [&>li]:before:left-1 [&>li]:before:content-['•']">
-                    <li className="mb-0">
+                    <li className="mb-0 whitespace-pre-line">
                       If this {item.name} code is invalid or cannot be applied, we will help resolve
                       it as quickly as possible.
                     </li>
-                    <li>
+                    <li className="whitespace-pre-line">
                       Contact support within 48 hours and include your product ({item.variantLabel}
                       ).
                     </li>
@@ -358,34 +328,6 @@ function SuccessCard({
           ) : (
             <p className="text-white/30 text-xs italic">No vouches shared for this item yet.</p>
           )}
-        </div>
-      </div>
-      <Image
-        src={checkoutImg.divider}
-        alt=""
-        width={400}
-        height={1}
-        className="h-px w-full opacity-60"
-      />
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <CentralIcon
-            name="IconStar"
-            join="round"
-            fill="filled"
-            stroke="1"
-            radius="3"
-            size={18}
-            ariaHidden={true}
-            className="text-lightsteelblue-200 shrink-0"
-          />
-          <span className="text-lg font-bold tracking-[0.36px] text-white">Add Review</span>
-        </div>
-        <div className="border-whitesmoke-300 flex flex-col gap-4 rounded-xl border border-solid bg-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:p-5">
-          <span className="font-commissioner text-num-14 leading-num-20 font-semibold tracking-normal text-[#9497BC]">
-            Your rating
-          </span>
-          <RatingStarsInteractive initialRating={0} />
         </div>
       </div>
     </div>
@@ -547,6 +489,8 @@ export function Step5Success({
           <SuccessCard
             key={itemKey(item)}
             item={item}
+            orderId={orderId}
+            unsealLineId={item.orderItemId ?? itemKey(item)}
             onUnseal={onUnseal}
             deliveredCode={deliveryByKey[itemKey(item)]}
             codeLoading={deliveryLoading}
@@ -559,6 +503,12 @@ export function Step5Success({
           />
         ))}
       </div>
+
+      {orderId && order?.status === 'COMPLETED' ? (
+        <div className="w-full max-w-[560px] min-w-0">
+          <OrderReviewSection orderId={orderId} review={order.review ?? null} />
+        </div>
+      ) : null}
 
       <SupportRow />
 
