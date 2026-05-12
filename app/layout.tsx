@@ -93,6 +93,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Preload hero images for faster loading */}
+        <link rel="preload" href="/icons/hero-banner.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/icons/Main-Background-Hero.webp" as="image" type="image/webp" />
+      </head>
       <body
         className={`${fontCommissioner.variable} ${fontNataSans.variable} ${fontHeydex.variable} font-commissioner antialiased`}
       >
