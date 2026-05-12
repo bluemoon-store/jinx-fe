@@ -2,9 +2,10 @@
 
 import CentralIcon from '@central-icons-react/all'
 import { CentralIconName } from '@central-icons-react/all/icons'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FunctionComponent, useCallback, useMemo, useState, useEffect } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { ProductCategory } from '@/types/product'
 
@@ -15,12 +16,11 @@ type Props = {
 const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
   const router = useRouter()
   const [heroSearchQuery, setHeroSearchQuery] = useState('')
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isBackgroundLoaded, setIsBackgroundLoaded] = useState(false)
 
   // Preload the background image
   useEffect(() => {
-    const img = new Image()
+    const img = document.createElement('img')
     img.onload = () => setIsBackgroundLoaded(true)
     img.src = '/icons/Main-Background-Hero.webp'
   }, [])
@@ -202,23 +202,17 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
               </div>
 
               <div className="relative isolate w-full shrink-0 lg:h-full lg:w-[calc(666/1476*100%)] lg:max-w-none lg:min-w-0 lg:self-stretch">
-                {/* Loading placeholder */}
-                {!isImageLoaded && (
-                  <div className="bg-muted/30 animate-pulse absolute inset-0 rounded-lg lg:rounded-none">
-                    <div className="flex h-full w-full items-center justify-center">
-                      <div className="bg-muted/50 h-24 w-24 rounded-lg" />
-                    </div>
-                  </div>
-                )}
-                
-                <img
-                  alt=""
-                  aria-hidden
-                  className={`block h-auto w-full max-w-none object-contain object-right transition-opacity duration-300 lg:h-full lg:w-full lg:object-contain lg:object-right ${
-                    isImageLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
+                {/* Large Figma SVG: next/image + priority for early fetch; unoptimized because SVG is not passed through the raster optimizer. */}
+                <Image
                   src="/icons/hero-banner.svg"
-                  onLoad={() => setIsImageLoaded(true)}
+                  alt=""
+                  width={666}
+                  height={700}
+                  priority
+                  unoptimized
+                  sizes="(max-width: 1023px) 100vw, 45vw"
+                  className="block h-auto w-full max-w-none object-contain object-right lg:h-full lg:w-full lg:object-contain lg:object-right"
+                  aria-hidden
                 />
               </div>
             </div>
