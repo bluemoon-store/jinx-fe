@@ -58,12 +58,17 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
       <div className="mx-auto w-full max-w-[1476.9px] overflow-x-auto px-4 sm:px-6 lg:px-8">
         <main className="bg-background flex w-full flex-col pt-4 pb-0 md:pt-8 dark:bg-[#051329]">
           <div className="bg-card relative w-full overflow-hidden rounded-lg lg:aspect-[1476/700] dark:bg-[#051329]">
+            {/* Radial accent: light only (dark hero uses full-bleed photo below). */}
             <div
-              className={`pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_20%_0%,rgba(59,130,246,0.14)_0%,rgba(59,130,246,0)_100%)] transition-opacity duration-500 dark:bg-cover dark:bg-center dark:bg-no-repeat ${
-                isBackgroundLoaded 
-                  ? 'dark:bg-[url(\'/icons/Main-Background-Hero.webp\')] dark:opacity-100' 
-                  : 'dark:opacity-80'
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_20%_0%,rgba(59,130,246,0.14)_0%,rgba(59,130,246,0)_100%)] dark:hidden"
+              aria-hidden
+            />
+            {/* WebP via inline style so Tailwind/PostCSS does not treat url() as a resolve() dependency. */}
+            <div
+              className={`pointer-events-none absolute inset-0 hidden bg-cover bg-center bg-no-repeat transition-opacity duration-500 dark:block ${
+                isBackgroundLoaded ? 'opacity-100' : 'opacity-80'
               }`}
+              style={{ backgroundImage: 'url(/icons/Main-Background-Hero.webp)' }}
               aria-hidden
             />
             <div className="relative z-10 flex w-full flex-1 flex-col gap-6 sm:gap-8 lg:h-full lg:min-h-0 lg:flex-row lg:items-stretch lg:justify-between lg:gap-0">
