@@ -21,7 +21,7 @@ export default async function NewlyLaunchedSection() {
     <section className="text-base lg:text-[20px]">
       <Reveal variant="fade-up">
         <div className="mx-auto flex w-full max-w-[1476.9px] flex-col items-center gap-2 px-4 text-center sm:px-6 lg:gap-2.5 lg:px-8">
-          <div className="font-heydex text-limegreen flex items-center gap-2 text-2xl lg:gap-2.5 lg:text-[32px]">
+          <div className="font-heydex text-limegreen flex items-center gap-2 text-2xl sm:text-3xl lg:gap-2.5 lg:text-[32px]">
             <div className="flex items-center gap-1">
               <img className="h-5 w-5 lg:h-7 lg:w-7" alt="" src="/icons/IconStarLines.svg" />
               <div className="tracking-num-0_02">NEWLY</div>

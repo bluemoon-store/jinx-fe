@@ -163,7 +163,7 @@ export default function Legal({ documents }: LegalProps) {
               </div>
             ) : (
               <article
-                className="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-body-foreground prose-strong:text-foreground prose-em:text-body-foreground prose-li:text-body-foreground prose-blockquote:text-body-foreground prose-a:text-fuchsia-200 prose-a:no-underline hover:prose-a:underline"
+                className="prose prose-invert prose-headings:text-foreground prose-p:text-body-foreground prose-strong:text-foreground prose-em:text-body-foreground prose-li:text-body-foreground prose-blockquote:text-body-foreground prose-a:text-fuchsia-200 prose-a:no-underline hover:prose-a:underline max-w-none"
                 dangerouslySetInnerHTML={{
                   __html: sanitizeHtml(activeSection.contentHtml),
                 }}

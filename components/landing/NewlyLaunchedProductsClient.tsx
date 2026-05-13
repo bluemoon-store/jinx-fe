@@ -28,7 +28,7 @@ export default function NewlyLaunchedProductsClient({ items: allItems }: Props) 
           No new products available right now.
         </div>
       ) : (
-        <div className="grid grid-cols-1 justify-items-center gap-3 sm:grid-cols-3 lg:gap-[17px] xl:grid-cols-5">
+        <div className="grid grid-cols-2 justify-items-center gap-3 sm:grid-cols-3 lg:gap-[17px] xl:grid-cols-5 max-sm:[&>*:nth-child(odd):last-child]:hidden">
           {allItems.map((item, idx) => (
             <Reveal
               key={item.id}

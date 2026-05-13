@@ -121,7 +121,7 @@ function SuccessCard({
       />
       <div className={styles.unsealWrapper}>
         <div className="flex min-h-[72px] w-full min-w-0 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:items-start sm:justify-center sm:gap-3 sm:px-9 sm:py-6">
-          <span className="font-nata-sans w-full min-w-0 flex-1 text-center text-base font-extrabold tracking-[0.48px] whitespace-pre-line wrap-break-word text-slate-50 sm:text-2xl">
+          <span className="font-nata-sans w-full min-w-0 flex-1 text-center text-base font-extrabold tracking-[0.48px] wrap-break-word whitespace-pre-line text-slate-50 sm:text-2xl">
             {codeLoading ? (
               <span className="inline-block h-7 w-48 max-w-full animate-pulse rounded bg-white/10 sm:h-8 sm:w-64" />
             ) : revealed ? (
@@ -326,7 +326,7 @@ function SuccessCard({
               ))}
             </div>
           ) : (
-            <p className="text-white/30 text-xs italic">No vouches shared for this item yet.</p>
+            <p className="text-xs text-white/30 italic">No vouches shared for this item yet.</p>
           )}
         </div>
       </div>

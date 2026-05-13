@@ -28,7 +28,7 @@ export default function SellingHotProductsClient({ items }: Props) {
           No hot products available right now.
         </div>
       ) : (
-        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-2 justify-items-center gap-4 sm:gap-6 lg:grid-cols-3 xl:grid-cols-5 max-sm:[&>*:nth-child(odd):last-child]:hidden">
           {items.map((item, idx) => (
             <Reveal
               key={item.id}

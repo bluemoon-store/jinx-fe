@@ -1,3 +1,5 @@
+import { Suspense } from 'react'
+
 import FooterServer from '@/components/landing/FooterServer'
 import Navbar from '@/components/landing/Navbar'
 import LegalServer from '@/components/landing/LegalServer'
@@ -9,7 +11,9 @@ export default function LegalPage() {
       <Navbar />
       <main className="flex flex-1 flex-col pt-14 sm:pt-[75px]">
         <Reveal variant="fade-up" threshold={0}>
-          <LegalServer />
+          <Suspense fallback={null}>
+            <LegalServer />
+          </Suspense>
         </Reveal>
       </main>
       <FooterServer />

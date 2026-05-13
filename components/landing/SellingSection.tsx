@@ -30,10 +30,10 @@ export default async function SellingSection() {
                     alt=""
                     src="/icons/IconFire3.svg"
                   />
-                  <div className="tracking-num-0.02 text-xl sm:text-2xl lg:text-[32px]">Hot</div>
+                  <div className="tracking-num-0.02 text-2xl sm:text-3xl lg:text-[32px]">Hot</div>
                 </div>
               </div>
-              <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+              <div className="tracking-num-0.02 text-2xl font-extrabold sm:text-3xl lg:text-[32px]">
                 SELLING
               </div>
             </div>

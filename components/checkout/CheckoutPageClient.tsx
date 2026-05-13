@@ -470,7 +470,7 @@ export function CheckoutPageClient() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden md:flex-row">
       <aside className="flex w-full min-w-0 flex-col border-white/5 bg-gray-500 md:min-h-screen md:w-1/2 md:border-r">
-        <div className="mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:ml-auto md:mr-0 md:w-full md:items-stretch md:pl-10 md:pr-6 lg:pl-14 lg:pr-10 xl:pl-16 xl:pr-12">
+        <div className="mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:mr-0 md:ml-auto md:w-full md:items-stretch md:pr-6 md:pl-10 lg:pr-10 lg:pl-14 xl:pr-12 xl:pl-16">
           <BackToStore
             onBack={() => router.push('/shop')}
             label="Back to store"
@@ -499,7 +499,7 @@ export function CheckoutPageClient() {
       </aside>
 
       <main className="flex w-full min-w-0 flex-col bg-[#041329] md:min-h-screen md:w-1/2">
-        <div className="relative mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:ml-0 md:mr-auto md:pl-6 md:pr-10 lg:pl-10 lg:pr-14 xl:pl-12 xl:pr-16">
+        <div className="relative mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:mr-auto md:ml-0 md:pr-10 md:pl-6 lg:pr-14 lg:pl-10 xl:pr-16 xl:pl-12">
           <div className="flex shrink-0 justify-end pb-2">
             <CheckoutLogo variant="alt" />
           </div>

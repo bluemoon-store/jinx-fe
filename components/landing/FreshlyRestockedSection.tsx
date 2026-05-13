@@ -23,7 +23,7 @@ export default async function FreshlyRestockedSection() {
         <div className="mx-auto w-full max-w-[1476.9px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-2 text-center sm:gap-2.5 lg:gap-3">
             <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-              <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+              <div className="tracking-num-0.02 text-2xl font-extrabold sm:text-3xl lg:text-[32px]">
                 FRESHLY
               </div>
               <div className="text-mediumslateblue-100 font-heydex flex items-center gap-1.5 sm:gap-2">
@@ -32,7 +32,7 @@ export default async function FreshlyRestockedSection() {
                   alt=""
                   src="/icons/IconPlanning.svg"
                 />
-                <div className="tracking-num-0.02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+                <div className="tracking-num-0.02 text-2xl font-extrabold sm:text-3xl lg:text-[32px]">
                   ReSToCKED
                 </div>
               </div>

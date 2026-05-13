@@ -31,7 +31,7 @@ export default async function HowToPurchaseSection() {
       {/* Section header */}
       <Reveal variant="fade-up">
         <div className="mx-auto flex w-full max-w-[1476.9px] flex-col items-center gap-2 px-4 text-center sm:px-6 lg:gap-2.5 lg:px-8">
-          <div className="flex items-center gap-1 text-xl sm:text-2xl lg:text-[32px]">
+          <div className="flex items-center gap-1 text-2xl sm:text-3xl lg:text-[32px]">
             <div className="tracking-num-0_02 font-extrabold">HOW TO</div>
             <div className="text-gold font-heydex flex items-center gap-1 lg:gap-[5px]">
               <img className="h-5 w-5 lg:h-7 lg:w-7" alt="" src="/icons/IconBasket2.svg" />

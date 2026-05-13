@@ -80,7 +80,7 @@ const FAQSection: FunctionComponent<FAQSectionProps> = ({ categories = [] }) => 
         <div className="mx-auto flex w-full max-w-[1474px] flex-col items-center gap-2 px-4 text-center sm:gap-2.5 sm:px-6 lg:gap-3 lg:px-8">
           <div className="font-nata-sans sm:max-w-num-580 flex w-full max-w-full flex-col items-center justify-center gap-2 sm:gap-2.5 lg:gap-3">
             <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-[5px]">
-              <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+              <div className="tracking-num-0_02 text-2xl font-extrabold sm:text-3xl lg:text-[32px]">
                 FREQUENTLY ASKED
               </div>
               <div className="text-deepskyblue-100 font-heydex flex items-center gap-1.5 sm:gap-[5px]">
@@ -89,7 +89,7 @@ const FAQSection: FunctionComponent<FAQSectionProps> = ({ categories = [] }) => 
                   alt=""
                   src="/icons/IconBubbleQuestion.svg"
                 />
-                <div className="tracking-num-0_02 text-xl font-extrabold sm:text-2xl lg:text-[32px]">
+                <div className="tracking-num-0_02 text-2xl font-extrabold sm:text-3xl lg:text-[32px]">
                   QUEsTIONS
                 </div>
               </div>

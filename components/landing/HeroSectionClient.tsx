@@ -4,9 +4,18 @@ import CentralIcon from '@central-icons-react/all'
 import { CentralIconName } from '@central-icons-react/all/icons'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
-import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react'
 
+import { useLandingPageReadyNotify } from '@/components/landing/LandingPageReadyGate'
 import type { ProductCategory } from '@/types/product'
 
 type Props = {
@@ -15,13 +24,50 @@ type Props = {
 
 const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
   const router = useRouter()
+  const { theme, resolvedTheme } = useTheme()
+  const notifyLandingReady = useLandingPageReadyNotify()
+  const [mounted, setMounted] = useState(false)
   const [heroSearchQuery, setHeroSearchQuery] = useState('')
   const [isBackgroundLoaded, setIsBackgroundLoaded] = useState(false)
+  const [isBannerLoaded, setIsBannerLoaded] = useState(false)
+  const [showHeroBanner, setShowHeroBanner] = useState<boolean | null>(null)
+  const [categoryRailExpanded, setCategoryRailExpanded] = useState(false)
 
-  // Preload the background image
+  const isDark = useMemo(() => {
+    if (!mounted) return false
+    if (theme === 'light' || theme === 'dark') return theme === 'dark'
+    return resolvedTheme === 'dark'
+  }, [mounted, resolvedTheme, theme])
+
+  const isHeroReady =
+    mounted &&
+    showHeroBanner !== null &&
+    (!showHeroBanner || isBannerLoaded) &&
+    (!isDark || isBackgroundLoaded)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const sync = () => setShowHeroBanner(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  useEffect(() => {
+    if (!isHeroReady || !notifyLandingReady) return
+    notifyLandingReady()
+  }, [isHeroReady, notifyLandingReady])
+
+  // Preload the dark hero background (not shown in light mode).
   useEffect(() => {
     const img = document.createElement('img')
-    img.onload = () => setIsBackgroundLoaded(true)
+    const done = () => setIsBackgroundLoaded(true)
+    img.onload = done
+    img.onerror = done
     img.src = '/icons/Main-Background-Hero.webp'
   }, [])
 
@@ -57,7 +103,10 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
     <section className="bg-background w-full dark:bg-[#051329]">
       <div className="mx-auto w-full max-w-[1476.9px] overflow-x-auto px-4 sm:px-6 lg:px-8">
         <main className="bg-background flex w-full flex-col pt-4 pb-0 md:pt-8 dark:bg-[#051329]">
-          <div className="bg-card relative w-full overflow-hidden rounded-lg lg:aspect-[1476/700] dark:bg-[#051329]">
+          <div
+            className="bg-card relative w-full overflow-hidden rounded-lg lg:aspect-[1476/700] dark:bg-[#051329]"
+            aria-busy={!isHeroReady}
+          >
             {/* Radial accent: light only (dark hero uses full-bleed photo below). */}
             <div
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_20%_0%,rgba(59,130,246,0.14)_0%,rgba(59,130,246,0)_100%)] dark:hidden"
@@ -88,7 +137,10 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
                       </div>
                     </div>
                     <p className="text-foreground w-full min-w-0 flex-1 text-center [font-family:'Commissioner',Helvetica] text-sm leading-snug font-medium tracking-[0] sm:text-left sm:text-base sm:leading-6 dark:text-white">
-                      Launch Offer for all New Users | 5% OFF on all purchases
+                      <span className="lg:hidden">Launch Offer for all New Users</span>
+                      <span className="hidden lg:inline">
+                        Launch Offer for all New Users | 5% OFF on all purchases
+                      </span>
                     </p>
                   </div>
 
@@ -201,50 +253,85 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
                 </div>
               </div>
 
-              <div className="relative isolate w-full shrink-0 lg:h-full lg:w-[calc(666/1476*100%)] lg:max-w-none lg:min-w-0 lg:self-stretch">
-                {/* Large Figma SVG: next/image + priority for early fetch; unoptimized because SVG is not passed through the raster optimizer. */}
-                <Image
-                  src="/icons/hero-banner.svg"
-                  alt=""
-                  width={666}
-                  height={700}
-                  priority
-                  unoptimized
-                  sizes="(max-width: 1023px) 100vw, 45vw"
-                  className="block h-auto w-full max-w-none object-contain object-right lg:h-full lg:w-full lg:object-contain lg:object-right"
-                  aria-hidden
-                />
-              </div>
+              {showHeroBanner ? (
+                <div className="relative isolate w-full shrink-0 lg:h-full lg:w-[calc(666/1476*100%)] lg:max-w-none lg:min-w-0 lg:self-stretch">
+                  {/* Large Figma SVG: next/image + priority for early fetch; unoptimized because SVG is not passed through the raster optimizer. */}
+                  <Image
+                    src="/icons/hero-banner.svg"
+                    alt=""
+                    width={666}
+                    height={700}
+                    priority
+                    unoptimized
+                    sizes="(min-width: 1024px) 45vw, 0px"
+                    className="block h-auto w-full max-w-none object-contain object-right lg:h-full lg:w-full lg:object-contain lg:object-right"
+                    aria-hidden
+                    onLoadingComplete={() => setIsBannerLoaded(true)}
+                    onError={() => setIsBannerLoaded(true)}
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </main>
       </div>
 
       <div className="mx-auto w-full max-w-[1776.9px] px-4 pt-6 pb-8 sm:px-6 lg:px-8">
-        <div className="font-commissioner flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
-          {categoryTabs.map(({ name, slug, icon }) => (
-            <div key={slug || 'all'} className="group relative w-auto">
-              <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#2563eb] opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:bg-[#003bbf]" />
+        <div className="relative">
+          <div
+            className={`font-commissioner flex flex-row flex-wrap items-center justify-center gap-2 transition-[max-height] duration-500 ease-in-out motion-reduce:transition-none sm:gap-3 lg:max-h-none lg:overflow-visible lg:transition-none ${
+              categoryRailExpanded
+                ? 'max-h-[min(200vh,120rem)] overflow-visible'
+                : 'max-h-[6.5rem] overflow-hidden'
+            }`}
+          >
+            {categoryTabs.map(({ name, slug, icon }) => (
+              <div key={slug || 'all'} className="group relative w-auto">
+                <div className="absolute inset-0 translate-y-1 rounded-[99px] bg-[#2563eb] opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:bg-[#003bbf]" />
 
-              <button
-                type="button"
-                onClick={() => goToShopWithCategory(slug)}
-                className="border-border-subtle bg-card text-foreground/80 relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed px-4 py-3 text-[14px] leading-5 transition-all duration-200 group-hover:-rotate-1 hover:border-[#2563eb] hover:bg-[#2563eb] hover:text-white sm:w-auto sm:gap-1 sm:py-2 dark:border-gray-600 dark:bg-transparent dark:text-white/70 dark:hover:border-[#005eff] dark:hover:bg-[#005eff]"
-              >
-                <CentralIcon
-                  name={icon as CentralIconName}
-                  join="round"
-                  fill="filled"
-                  stroke="2"
-                  radius="1"
-                  size={18}
-                  className="text-foreground/80 group-hover:text-white dark:text-white/70"
-                  ariaHidden={true}
-                />
-                <span className="leading-5 font-bold tracking-[0]">{name}</span>
-              </button>
-            </div>
-          ))}
+                <button
+                  type="button"
+                  onClick={() => goToShopWithCategory(slug)}
+                  className="border-border-subtle bg-card text-foreground/80 relative z-10 flex min-h-[44px] w-full transform cursor-pointer items-center gap-2 rounded-[99px] border border-dashed px-4 py-3 text-[14px] leading-5 transition-all duration-200 group-hover:-rotate-1 hover:border-[#2563eb] hover:bg-[#2563eb] hover:text-white sm:w-auto sm:gap-1 sm:py-2 dark:border-gray-600 dark:bg-transparent dark:text-white/70 dark:hover:border-[#005eff] dark:hover:bg-[#005eff]"
+                >
+                  <CentralIcon
+                    name={icon as CentralIconName}
+                    join="round"
+                    fill="filled"
+                    stroke="2"
+                    radius="1"
+                    size={18}
+                    className="text-foreground/80 group-hover:text-white dark:text-white/70"
+                    ariaHidden={true}
+                  />
+                  <span className="leading-5 font-bold tracking-[0]">{name}</span>
+                </button>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="text-muted-foreground hover:text-foreground mx-auto mt-2 flex items-center justify-center gap-1.5 rounded-full p-2 transition-colors lg:hidden"
+            aria-expanded={categoryRailExpanded}
+            aria-label={categoryRailExpanded ? 'Show fewer categories' : 'Show all categories'}
+            onClick={() => setCategoryRailExpanded((e) => !e)}
+          >
+            <span className="text-xs font-semibold tracking-wide">
+              {categoryRailExpanded ? 'Less' : 'More'}
+            </span>
+            <CentralIcon
+              name="IconChevronDownMedium"
+              join="round"
+              fill="filled"
+              stroke="2"
+              radius="1"
+              size={18}
+              className={`shrink-0 transition-transform duration-500 ease-in-out motion-reduce:transition-none ${
+                categoryRailExpanded ? 'rotate-180' : ''
+              }`}
+              ariaHidden={true}
+            />
+          </button>
         </div>
       </div>
     </section>

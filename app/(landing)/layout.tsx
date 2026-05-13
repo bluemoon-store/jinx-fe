@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 import { useAuthModal } from '@/components/auth/auth-modal-context'
@@ -29,7 +29,9 @@ function AuthQueryHandler() {
 export default function LandingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <AuthQueryHandler />
+      <Suspense fallback={null}>
+        <AuthQueryHandler />
+      </Suspense>
       {children}
     </div>
   )

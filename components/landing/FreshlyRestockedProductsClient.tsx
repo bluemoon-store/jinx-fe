@@ -42,7 +42,7 @@ export default function FreshlyRestockedProductsClient({ items: allItems }: Prop
           No restocked products available right now.
         </div>
       ) : (
-        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
+        <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6 max-sm:[&>*:nth-child(odd):last-child]:hidden">
           {items.map((item, idx) => (
             <Reveal
               key={item.id}
