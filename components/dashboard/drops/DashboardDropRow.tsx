@@ -29,27 +29,48 @@ export const DashboardDropRow: FunctionComponent<DashboardDropSummaryProps> = ({
         <div className="text-foreground dark:text-ghostwhite tracking-num-0.02 truncate text-sm font-bold sm:text-base">
           {name}
         </div>
-        <div className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs leading-5">
-          <span className="font-medium">{variantLabel}</span>
-          <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
-            –
-          </span>
-          <b className="text-foreground dark:text-ghostwhite font-bold">{claimedAt}</b>
-          <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
-            –
-          </span>
-          <span className={`inline-flex items-center gap-1 ${cfg.color}`}>
-            <CentralIcon
-              name={cfg.icon as any}
-              join="round"
-              fill="filled"
-              stroke="1"
-              radius="1"
-              size={14}
-              ariaHidden={true}
-            />
-            <span className="font-semibold">{cfg.label}</span>
-          </span>
+        <div className="text-muted-foreground dark:text-lightsteelblue-100 sm:text-num-14 flex flex-col gap-0.5 text-xs leading-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-1.5 sm:gap-y-0.5">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 sm:hidden">
+            <span className="font-medium">{variantLabel}</span>
+            <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
+              –
+            </span>
+            <span className={`inline-flex items-center gap-1 ${cfg.color}`}>
+              <CentralIcon
+                name={cfg.icon as any}
+                join="round"
+                fill="filled"
+                stroke="1"
+                radius="1"
+                size={14}
+                ariaHidden={true}
+              />
+              <span className="font-semibold">{cfg.label}</span>
+            </span>
+          </div>
+          <b className="text-foreground dark:text-ghostwhite font-bold sm:hidden">{claimedAt}</b>
+          <div className="hidden flex-wrap items-center gap-x-1.5 gap-y-0.5 sm:flex">
+            <span className="font-medium">{variantLabel}</span>
+            <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
+              –
+            </span>
+            <b className="text-foreground dark:text-ghostwhite font-bold">{claimedAt}</b>
+            <span className="text-muted-foreground/70 dark:text-lightsteelblue-200" aria-hidden>
+              –
+            </span>
+            <span className={`inline-flex items-center gap-1 ${cfg.color}`}>
+              <CentralIcon
+                name={cfg.icon as any}
+                join="round"
+                fill="filled"
+                stroke="1"
+                radius="1"
+                size={14}
+                ariaHidden={true}
+              />
+              <span className="font-semibold">{cfg.label}</span>
+            </span>
+          </div>
         </div>
       </div>
 

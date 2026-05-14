@@ -79,8 +79,8 @@ function SuccessCard({
 
   return (
     <div className="border-whitesmoke-300 md:p-num-30 flex w-full max-w-[560px] flex-col gap-4 rounded-xl border-[1.5px] bg-gray-100 p-4 text-left sm:gap-5 sm:p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="sm:gap-num-15 flex min-w-0 items-start gap-3">
+      <div className="flex flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="sm:gap-num-15 flex min-w-0 flex-1 items-start gap-3">
           {item.thumbUrl ? (
             <Image
               src={item.thumbUrl}
@@ -120,8 +120,8 @@ function SuccessCard({
         className="h-px w-full opacity-60"
       />
       <div className={styles.unsealWrapper}>
-        <div className="flex min-h-[72px] w-full min-w-0 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:flex-row sm:items-start sm:justify-center sm:gap-3 sm:px-9 sm:py-6">
-          <span className="font-nata-sans w-full min-w-0 flex-1 text-center text-base font-extrabold tracking-[0.48px] wrap-break-word whitespace-pre-line text-slate-50 sm:text-2xl">
+        <div className="flex min-h-[72px] w-full min-w-0 flex-row items-start gap-3 rounded-xl border border-dashed border-fuchsia-100 bg-[linear-gradient(180deg,rgba(235,45,255,0.25)_0%,rgba(235,45,255,0)_100%)] px-4 py-5 sm:gap-3 sm:px-9 sm:py-6">
+          <span className="font-nata-sans min-w-0 flex-1 text-left text-base font-extrabold tracking-[0.48px] wrap-break-word whitespace-pre-line text-slate-50 sm:text-2xl">
             {codeLoading ? (
               <span className="inline-block h-7 w-48 max-w-full animate-pulse rounded bg-white/10 sm:h-8 sm:w-64" />
             ) : revealed ? (
@@ -135,7 +135,7 @@ function SuccessCard({
               type="button"
               onClick={() => copyToClipboard(effectiveCode)}
               aria-label="Copy code"
-              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation self-center rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none sm:self-start"
+              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation self-start rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
             >
               <Image src={checkoutImg.invoiceCopy} alt="" width={26} height={26} />
             </button>

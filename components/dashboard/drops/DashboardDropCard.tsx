@@ -55,29 +55,56 @@ export const DashboardDropCard: FunctionComponent<Props> = ({
         <div className="tracking-num-0_02 w-full truncate text-center text-sm font-extrabold uppercase sm:text-base">
           {name}
         </div>
-        <div className="font-commissioner sm:text-num-14 flex items-center justify-center gap-1.5 text-xs">
-          <span className="text-muted-foreground leading-num-24 shrink-0 font-medium whitespace-nowrap">
-            {variantLabel}
-          </span>
-          <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
-          <span className="rounded-num-6 bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] px-1.5 py-0 text-white dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
-            <b className="leading-num-24">{claimedAt}</b>
-          </span>
-          <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
-          <span
-            className={`rounded-num-6 flex items-center gap-0.5 px-1.5 py-0 ${cfg.color} bg-[linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]`}
-          >
-            <CentralIcon
-              name={cfg.icon as any}
-              join="round"
-              fill="filled"
-              stroke="1"
-              radius="1"
-              size={14}
-              ariaHidden={true}
-            />
-            <span className="leading-num-24 font-semibold">{cfg.label}</span>
-          </span>
+        <div className="font-commissioner sm:text-num-14 flex w-full flex-col items-center gap-1.5 text-xs sm:flex-row sm:flex-wrap sm:justify-center sm:gap-1.5">
+          <div className="flex items-center justify-center gap-1.5 sm:hidden">
+            <span className="text-muted-foreground leading-num-24 shrink-0 font-medium whitespace-nowrap">
+              {variantLabel}
+            </span>
+            <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
+            <span
+              className={`rounded-num-6 flex items-center gap-0.5 px-1.5 py-0 ${cfg.color} bg-[linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]`}
+            >
+              <CentralIcon
+                name={cfg.icon as any}
+                join="round"
+                fill="filled"
+                stroke="1"
+                radius="1"
+                size={14}
+                ariaHidden={true}
+              />
+              <span className="leading-num-24 font-semibold">{cfg.label}</span>
+            </span>
+          </div>
+          <div className="flex justify-center sm:hidden">
+            <span className="rounded-num-6 bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] px-1.5 py-0 text-white dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+              <b className="leading-num-24">{claimedAt}</b>
+            </span>
+          </div>
+          <div className="hidden items-center justify-center gap-1.5 sm:flex">
+            <span className="text-muted-foreground leading-num-24 shrink-0 font-medium whitespace-nowrap">
+              {variantLabel}
+            </span>
+            <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
+            <span className="rounded-num-6 bg-[linear-gradient(180deg,rgba(17,24,39,0.22),rgba(17,24,39,0.34))] px-1.5 py-0 text-white dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.14))]">
+              <b className="leading-num-24">{claimedAt}</b>
+            </span>
+            <span className="bg-foreground/20 h-3.5 w-px dark:bg-white/25" aria-hidden />
+            <span
+              className={`rounded-num-6 flex items-center gap-0.5 px-1.5 py-0 ${cfg.color} bg-[linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]`}
+            >
+              <CentralIcon
+                name={cfg.icon as any}
+                join="round"
+                fill="filled"
+                stroke="1"
+                radius="1"
+                size={14}
+                ariaHidden={true}
+              />
+              <span className="leading-num-24 font-semibold">{cfg.label}</span>
+            </span>
+          </div>
         </div>
       </div>
     </Link>

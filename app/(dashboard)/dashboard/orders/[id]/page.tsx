@@ -696,7 +696,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
 
               <div className="text-num-14 text-muted-foreground dark:text-lightsteelblue-200 flex flex-col gap-3">
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                     <span className="leading-num-20 font-semibold">Order ID</span>
                     <button

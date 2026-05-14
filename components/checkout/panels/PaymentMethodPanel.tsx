@@ -121,7 +121,7 @@ export function PaymentMethodPanel({
           <button
             type="button"
             onClick={onBack}
-            className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none"
+            className="text-ghostwhite focus-visible:ring-fuchsia/40 hidden items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none md:inline-flex"
             aria-label="Back"
           >
             <CentralIcon
@@ -160,18 +160,18 @@ export function PaymentMethodPanel({
               type="button"
               disabled={busy}
               onClick={() => onContinue(row.crypto)}
-              className="focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:p-[22px]"
+              className="focus-visible:ring-fuchsia/40 flex w-full flex-nowrap items-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:p-[22px]"
             >
               <Image src={row.icon} alt="" width={row.w} height={row.h} className="shrink-0" />
-              <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">
-                <div className="text-base font-bold tracking-[0.36px] text-white sm:text-lg">
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-base font-bold tracking-[0.36px] text-white sm:text-lg">
                   {row.title}
                 </div>
-                <div className="text-lightsteelblue-200 text-sm [text-shadow:0px_0px_8.63px_#00000099] sm:text-base">
+                <div className="text-lightsteelblue-200 truncate text-sm [text-shadow:0px_0px_8.63px_#00000099] sm:text-base">
                   {row.sub}
                 </div>
               </div>
-              <span className="shrink-0 text-base font-bold tracking-[0.4px] text-white sm:text-xl">
+              <span className="shrink-0 self-center text-base font-bold tracking-[0.4px] text-white sm:text-xl">
                 {amountByCrypto.get(row.crypto) ?? '—'}
               </span>
             </button>
@@ -190,7 +190,7 @@ export function PaymentMethodPanel({
               type="button"
               disabled={busy}
               onClick={() => onWalletContinue()}
-              className="focus-visible:ring-fuchsia/40 flex w-full flex-wrap items-center justify-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:p-[22px]"
+              className="focus-visible:ring-fuchsia/40 flex w-full flex-nowrap items-center gap-3 p-4 text-left transition-colors hover:bg-[#0E1B30] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:p-[22px]"
             >
               <Image
                 src={checkoutImg.banknote}
@@ -199,13 +199,13 @@ export function PaymentMethodPanel({
                 height={32}
                 className="shrink-0"
               />
-              <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">
-                <div className="text-lg font-bold tracking-[0.36px] text-white">Wallet</div>
-                <div className="text-lightsteelblue-200 text-base [text-shadow:0px_0px_8.63px_#00000099]">
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-lg font-bold tracking-[0.36px] text-white">Wallet</div>
+                <div className="text-lightsteelblue-200 truncate text-base [text-shadow:0px_0px_8.63px_#00000099]">
                   Pay using account balance
                 </div>
               </div>
-              <span className="text-lightsteelblue-200 shrink-0 text-base font-bold tracking-[0.4px]">
+              <span className="text-lightsteelblue-200 shrink-0 self-center text-base font-bold tracking-[0.4px]">
                 Instant
               </span>
             </button>

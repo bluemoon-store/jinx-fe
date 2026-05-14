@@ -37,11 +37,9 @@ import { usePromoStore } from '@/stores/promo-store'
 
 function SuccessTopBar({ onBack }: { onBack: () => void }) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex min-w-0 flex-row items-center justify-between gap-3">
       <BackToStore onBack={onBack} label="Back to home" />
-      <div className="self-end sm:self-auto">
-        <CheckoutLogo variant="default" />
-      </div>
+      <CheckoutLogo variant="default" />
     </div>
   )
 }
@@ -468,39 +466,15 @@ export function CheckoutPageClient() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden md:flex-row">
-      <aside className="flex w-full min-w-0 flex-col border-white/5 bg-gray-500 md:min-h-screen md:w-1/2 md:border-r">
-        <div className="mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:mr-0 md:ml-auto md:w-full md:items-stretch md:pr-6 md:pl-10 lg:pr-10 lg:pl-14 xl:pr-12 xl:pl-16">
-          <BackToStore
-            onBack={() => router.push('/shop')}
-            label="Back to store"
-            className="bg-[#0E1B30]"
-          />
-          <div className="mt-6 flex w-full min-w-0 flex-1 flex-col items-center sm:mt-8 md:items-stretch lg:mt-10">
-            {step === 1 || step === 2 ? <CartColumn checkoutStep={step} /> : null}
-            {step === 3 ? (
-              <CheckoutOverviewCard
-                centerSecurityNote
-                cryptocurrency={effectivePaymentSnapshot?.cryptocurrency}
-              />
-            ) : null}
-            {step === 5 ? (
-              <CheckoutOverviewCard
-                orderId={orderIdParam ?? undefined}
-                cryptocurrency={
-                  effectivePaymentSnapshot?.cryptocurrency ??
-                  cryptoPaymentQuery.data?.cryptocurrency
-                }
-              />
-            ) : null}
-          </div>
-          <LegalFooter />
-        </div>
-      </aside>
-
-      <main className="flex w-full min-w-0 flex-col bg-[#041329] md:min-h-screen md:w-1/2">
-        <div className="relative mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:mr-auto md:ml-0 md:pr-10 md:pl-6 lg:pr-14 lg:pl-10 xl:pr-16 xl:pl-12">
-          <div className="flex shrink-0 justify-end pb-2">
+    <div className="flex min-h-screen flex-col overflow-x-hidden md:flex-row-reverse">
+      <main className="flex w-full min-w-0 flex-col border-b border-white/5 bg-[#041329] md:min-h-screen md:w-1/2 md:border-0">
+        <div className="relative mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:ml-0 md:mr-auto md:pl-6 md:pr-10 lg:pl-10 lg:pr-14 xl:pl-12 xl:pr-16">
+          <div className="flex min-w-0 shrink-0 flex-row items-center justify-between gap-3 pb-2 md:justify-end">
+            <BackToStore
+              onBack={() => router.push('/shop')}
+              label="Back to store"
+              className="md:hidden"
+            />
             <CheckoutLogo variant="alt" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col pt-2 sm:pt-4 lg:pt-6">
@@ -563,6 +537,33 @@ export function CheckoutPageClient() {
           </div>
         </div>
       </main>
+
+      <aside className="flex w-full min-w-0 flex-col bg-gray-500 md:min-h-screen md:w-1/2 md:border-r md:border-white/5">
+        <div className="mx-auto flex w-full max-w-[860px] min-w-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 md:mx-0 md:ml-auto md:mr-0 md:w-full md:items-stretch md:pl-10 md:pr-6 lg:pl-14 lg:pr-10 xl:pl-16 xl:pr-12">
+          <div className="hidden w-full min-w-0 shrink-0 flex-row items-center justify-between gap-3 pb-2 md:flex">
+            <BackToStore onBack={() => router.push('/shop')} label="Back to store" />
+          </div>
+          <div className="mt-6 flex w-full min-w-0 flex-1 flex-col items-center sm:mt-8 md:mt-3 md:items-stretch lg:mt-6">
+            {step === 1 || step === 2 ? <CartColumn checkoutStep={step} /> : null}
+            {step === 3 ? (
+              <CheckoutOverviewCard
+                centerSecurityNote
+                cryptocurrency={effectivePaymentSnapshot?.cryptocurrency}
+              />
+            ) : null}
+            {step === 5 ? (
+              <CheckoutOverviewCard
+                orderId={orderIdParam ?? undefined}
+                cryptocurrency={
+                  effectivePaymentSnapshot?.cryptocurrency ??
+                  cryptoPaymentQuery.data?.cryptocurrency
+                }
+              />
+            ) : null}
+          </div>
+          <LegalFooter />
+        </div>
+      </aside>
     </div>
   )
 }

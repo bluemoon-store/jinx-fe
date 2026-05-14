@@ -48,7 +48,7 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
           <button
             type="button"
             onClick={onBack}
-            className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none"
+            className="text-ghostwhite focus-visible:ring-fuchsia/40 hidden items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none md:inline-flex"
             aria-label="Back"
           >
             <CentralIcon
@@ -134,7 +134,7 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
                 stroke="2"
                 radius="1"
                 size={68}
-                className="mx-auto shrink-0 text-[#0E1B30] lg:mx-0"
+                className="mx-auto hidden shrink-0 text-[#0E1B30] sm:block lg:mx-0"
               />
             </div>
           </div>
@@ -190,7 +190,7 @@ export function BuyerProtectionPanel({ onBack, onContinue }: Props) {
                 stroke="2"
                 radius="1"
                 size={68}
-                className="mx-auto shrink-0 text-[#0E1B30] lg:mx-0"
+                className="mx-auto hidden shrink-0 text-[#0E1B30] sm:block lg:mx-0"
               />
             </div>
           </div>

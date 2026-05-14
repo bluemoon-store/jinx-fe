@@ -35,7 +35,7 @@ export function WalletPaymentConfirm({ totalUsd, onBack, onConfirm, busy }: Prop
           <button
             type="button"
             onClick={onBack}
-            className="text-ghostwhite focus-visible:ring-fuchsia/40 inline-flex items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none"
+            className="text-ghostwhite focus-visible:ring-fuchsia/40 hidden items-center justify-center bg-transparent p-0 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#041329] focus-visible:outline-none md:inline-flex"
             aria-label="Back"
           >
             <CentralIcon

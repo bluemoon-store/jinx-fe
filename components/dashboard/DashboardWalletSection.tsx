@@ -44,15 +44,6 @@ type WalletTx = {
   userId: string
 }
 
-type SortOption = 'newest' | 'oldest' | 'amount_desc' | 'amount_asc'
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
-  { value: 'amount_desc', label: 'Amount (High to Low)' },
-  { value: 'amount_asc', label: 'Amount (Low to High)' },
-]
-
 type CoinOption = {
   value: ApiCryptoCurrency
   label: string
@@ -122,10 +113,6 @@ function mapTransactionToWalletTx(tx: ApiWalletTransaction): WalletTx {
 const walletCoinTriggerClass =
   'rounded-num-8 bg-card-elevated text-foreground dark:text-white border-border-subtle dark:border-[#16243B] flex min-h-11 w-full items-center justify-between gap-2 border border-solid px-3 py-2.5 text-left'
 
-const walletFilterTriggerClass = cn(
-  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 items-center gap-2 border border-solid py-2'
-)
-
 /** Wallet — balance card, add funds, history; matches dashboard shell + Orders/Reviews layout. */
 export const DashboardWalletSection: FunctionComponent = () => {
   const [balanceVisible, setBalanceVisible] = useState(true)
@@ -136,25 +123,13 @@ export const DashboardWalletSection: FunctionComponent = () => {
   const coinMenuRef = useRef<HTMLDivElement>(null)
   const [historySearch, setHistorySearch] = useState('')
   const [txnDialogRow, setTxnDialogRow] = useState<WalletTx | null>(null)
-  const [sortOption, setSortOption] = useState<SortOption>('newest')
-  const [sortMenuOpen, setSortMenuOpen] = useState(false)
-  const sortMenuRef = useRef<HTMLDivElement>(null)
   const [topUpModalOpen, setTopUpModalOpen] = useState(false)
   const [createdTopUp, setCreatedTopUp] = useState<ApiWalletTopUp | null>(null)
-  const walletSortParams =
-    sortOption === 'oldest'
-      ? { sortBy: 'createdAt' as const, sortOrder: 'asc' as const }
-      : sortOption === 'amount_desc'
-        ? { sortBy: 'amount' as const, sortOrder: 'desc' as const }
-        : sortOption === 'amount_asc'
-          ? { sortBy: 'amount' as const, sortOrder: 'asc' as const }
-          : { sortBy: 'createdAt' as const, sortOrder: 'desc' as const }
-
   const balanceQuery = useWalletBalanceQuery()
   const txQuery = useWalletTransactionsInfiniteQuery({
     limit: WALLET_TX_PAGE_SIZE,
-    sortBy: walletSortParams.sortBy,
-    sortOrder: walletSortParams.sortOrder,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
   })
   const ratesQuery = useExchangeRatesQuery()
   const createTopUpMutation = useCreateWalletTopUpMutation()
@@ -177,23 +152,16 @@ export const DashboardWalletSection: FunctionComponent = () => {
     () => (txQuery.data?.pages ?? []).flatMap((page) => page.items.map(mapTransactionToWalletTx)),
     [txQuery.data?.pages]
   )
-  const toggleMenu = (menu: 'coin' | 'status' | 'sort') => {
-    setCoinMenuOpen((prev) => (menu === 'coin' ? !prev : false))
-    setSortMenuOpen((prev) => (menu === 'sort' ? !prev : false))
-  }
-
   useEffect(() => {
-    if (!coinMenuOpen && !sortMenuOpen) return
+    if (!coinMenuOpen) return
     const onDoc = (e: MouseEvent) => {
       const target = e.target as Node
-      if (coinMenuRef.current?.contains(target) || sortMenuRef.current?.contains(target)) return
+      if (coinMenuRef.current?.contains(target)) return
       setCoinMenuOpen(false)
-      setSortMenuOpen(false)
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       setCoinMenuOpen(false)
-      setSortMenuOpen(false)
     }
     document.addEventListener('mousedown', onDoc)
     document.addEventListener('keydown', onKey)
@@ -201,7 +169,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
       document.removeEventListener('mousedown', onDoc)
       document.removeEventListener('keydown', onKey)
     }
-  }, [coinMenuOpen, sortMenuOpen])
+  }, [coinMenuOpen])
 
   const filteredTx = useMemo(() => {
     const q = historySearch.trim().toLowerCase()
@@ -240,7 +208,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
   return (
     <div className="flex min-w-0 flex-col gap-6 sm:gap-8">
       {/* Balance + Add funds */}
-      <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-6 xl:gap-8">
+      <div className="grid min-w-0 grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-6 xl:gap-8">
         {/* Account balance card */}
         <div className="flex min-w-0 flex-col gap-3">
           <p className="text-muted-foreground text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
@@ -312,7 +280,7 @@ export const DashboardWalletSection: FunctionComponent = () => {
                     aria-haspopup="listbox"
                     aria-expanded={coinMenuOpen}
                     aria-label="Select payment coin"
-                    onClick={() => toggleMenu('coin')}
+                    onClick={() => setCoinMenuOpen((o) => !o)}
                     className={walletCoinTriggerClass}
                   >
                     <span className="flex min-w-0 items-center gap-2">
@@ -473,8 +441,8 @@ export const DashboardWalletSection: FunctionComponent = () => {
           </div>
         </div>
 
-        <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-          <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:min-w-[min(100%,280px)] dark:border-[#16243B]">
+        <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 w-full min-w-0">
+          <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 dark:border-[#16243B]">
             <CentralIcon
               name="IconMagnifyingGlass"
               join="round"
@@ -492,62 +460,6 @@ export const DashboardWalletSection: FunctionComponent = () => {
               placeholder="Search by invoice ID, transaction hash, or address"
               className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal outline-none focus:ring-0"
             />
-          </div>
-          <div className="relative w-fit max-w-full shrink-0" ref={sortMenuRef}>
-            <button
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded={sortMenuOpen}
-              aria-label="Sort transactions"
-              onClick={() => toggleMenu('sort')}
-              className={cn(walletFilterTriggerClass, 'w-fit max-w-full')}
-            >
-              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
-                Sort by
-              </span>
-              <span className="text-sm font-semibold">
-                {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
-              </span>
-              <CentralIcon
-                name="IconChevronDownMedium"
-                join="round"
-                fill="filled"
-                stroke="2"
-                radius="1"
-                size={16}
-                ariaHidden={true}
-                className="text-muted-foreground shrink-0"
-              />
-            </button>
-            {sortMenuOpen ? (
-              <ul
-                role="listbox"
-                aria-label="Sort by"
-                className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
-              >
-                <div className={siteSelectDropdownList}>
-                  {SORT_OPTIONS.map((opt) => (
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={sortOption === opt.value}
-                      className={cn(
-                        siteSelectDropdownOptionRow,
-                        siteSelectDropdownOptionInteractive,
-                        'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
-                        sortOption === opt.value && 'bg-foreground/5 dark:bg-white/5'
-                      )}
-                      onClick={() => {
-                        setSortOption(opt.value)
-                        setSortMenuOpen(false)
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </ul>
-            ) : null}
           </div>
         </div>
 

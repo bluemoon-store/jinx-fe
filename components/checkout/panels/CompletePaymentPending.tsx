@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { checkoutImg } from '@/components/checkout/checkout-images'
 import { InvoiceBadge } from '@/components/checkout/shared/InvoiceBadge'
@@ -54,6 +54,17 @@ function cryptoAmountCopyValue(amountLine: string): string {
   const t = amountLine.replace(/≈/g, '').trim()
   if (!t || t === '—') return t
   return t.split(/\s+/)[0] ?? t
+}
+
+/** Split display line like "0.00175974 ETH" into amount + symbol for stacked typography. */
+function parseCryptoAmountDisplay(line: string): { amount: string; symbol: string } {
+  const t = line.replace(/≈/g, '').trim()
+  if (!t || t === '—') return { amount: t || '—', symbol: '' }
+  const parts = t.split(/\s+/).filter(Boolean)
+  if (parts.length === 1) return { amount: parts[0]!, symbol: '' }
+  const amount = parts[0]!
+  const symbol = parts.slice(1).join(' ')
+  return { amount, symbol }
 }
 
 export function CompletePaymentPending({
@@ -142,6 +153,12 @@ export function CompletePaymentPending({
   const amountLine = cryptoAmountLabel ?? '—'
   const usdLine = amountUsdLabel ?? ''
 
+  const { amount: amountDisplay, symbol: symbolDisplay } = useMemo(
+    () => parseCryptoAmountDisplay(amountLine),
+    [amountLine]
+  )
+  const usdPlain = usdLine.replace(/^\s*≈\s*/u, '').trim()
+
   return (
     <div className="sm:gap-num-30 flex w-full max-w-[729px] flex-col gap-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
@@ -195,7 +212,7 @@ export function CompletePaymentPending({
           <span className="text-lightsteelblue-200 text-sm font-semibold">Payment Address</span>
           <div className="border-whitesmoke-300 flex min-h-11 items-center justify-between gap-2 rounded-lg border bg-gray-100 px-2 py-2 sm:px-3 sm:py-2.5">
             <Image src={checkoutImg.wallet} alt="" width={18} height={18} className="shrink-0" />
-            <span className="min-w-0 flex-1 text-center text-xs font-semibold break-all text-white sm:text-sm md:text-base">
+            <span className="min-w-0 flex-1 text-left text-xs font-semibold break-all text-white sm:text-sm md:text-base">
               {addr}
             </span>
             <button
@@ -210,30 +227,50 @@ export function CompletePaymentPending({
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-lightsteelblue-200 text-sm font-semibold">Amount to pay</span>
-          <div className="border-whitesmoke-300 flex min-h-11 items-center justify-between gap-2 rounded-lg border bg-gray-100 px-2 py-2 sm:px-3 sm:py-2.5">
-            <Image src={checkoutImg.coins} alt="" width={18} height={18} className="shrink-0" />
-            <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-2">
-              <span className="text-sm font-semibold text-white sm:text-base">{amountLine}</span>
-              {usdLine ? (
-                <>
-                  <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
-                    ≈
+          <span className="text-lightsteelblue-200 flex items-center gap-2 text-sm font-semibold">
+            Amount to pay
+          </span>
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-[#ffffff08]">
+            <div className="flex items-center justify-between gap-3 px-3 py-3.5 sm:px-4 sm:py-4">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <Image
+                  src={CRYPTO_ICON[cryptocurrency] ?? checkoutImg.btc}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 shrink-0"
+                />
+                <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="text-lg font-bold tracking-tight text-white tabular-nums sm:text-xl">
+                    {amountDisplay}
                   </span>
-                  <span className="text-lightsteelblue-200 text-sm font-semibold sm:text-base">
-                    {usdLine}
-                  </span>
-                </>
-              ) : null}
+                  {symbolDisplay ? (
+                    <span className="text-xs font-semibold text-white/75 sm:text-sm">
+                      {symbolDisplay}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => copyToClipboard(cryptoAmountCopyValue(amountLine))}
+                aria-label="Copy amount to pay"
+                className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
+              >
+                <Image src={checkoutImg.copyFrame} alt="" width={28} height={28} />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => copyToClipboard(cryptoAmountCopyValue(amountLine))}
-              aria-label="Copy amount to pay"
-              className="focus-visible:ring-fuchsia/40 inline-flex shrink-0 touch-manipulation rounded p-0.5 opacity-90 transition-opacity [-webkit-tap-highlight-color:transparent] hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none"
-            >
-              <Image src={checkoutImg.copyFrame} alt="" width={28} height={28} />
-            </button>
+            {usdPlain ? (
+              <>
+                <div className="border-t border-white/10" />
+                <div className="flex items-center gap-2.5 px-3 py-2.5 sm:px-4 sm:py-3">
+                  <Image src={checkoutImg.coins} alt="" width={18} height={18} className="shrink-0 opacity-90" />
+                  <span className="text-lightsteelblue-200 text-left text-sm font-semibold sm:text-base">
+                    ≈ {usdPlain}
+                  </span>
+                </div>
+              </>
+            ) : null}
           </div>
         </div>
 

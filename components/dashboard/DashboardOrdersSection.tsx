@@ -68,8 +68,16 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ]
 
 const dashboardSelectTriggerClass = cn(
-  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2'
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0',
 )
+
+const filterMenuPanelClass = (align: 'start' | 'end') =>
+  cn(
+    siteSelectDropdownPanel,
+    'absolute top-full z-20 mt-2 overflow-hidden min-w-42 max-sm:min-w-0 max-sm:w-full max-sm:left-0 max-sm:right-0',
+    align === 'start' && 'left-0',
+    align === 'end' && 'right-0 sm:left-auto',
+  )
 
 type Props = {
   onFilteredCountChange?: (count: number) => void
@@ -89,6 +97,8 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const [sortOption, setSortOption] = useState<SortOption>('newest')
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const filterBarRef = useRef<HTMLDivElement>(null)
   const selectedViewOption = VIEW_OPTIONS.find((o) => o.value === viewMode) ?? VIEW_OPTIONS[0]
   const expiredMode = statusFilter === 'expired'
   const orderSortParams =
@@ -155,20 +165,21 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   }, [filtered.length, onFilteredCountChange])
 
   useEffect(() => {
-    if (!viewMenuOpen && !statusMenuOpen && !paymentMethodMenuOpen && !sortMenuOpen) return
+    const anyOpen =
+      viewMenuOpen ||
+      statusMenuOpen ||
+      paymentMethodMenuOpen ||
+      sortMenuOpen ||
+      mobileFiltersOpen
+    if (!anyOpen) return
     const onDoc = (e: MouseEvent) => {
       const target = e.target as Node
-      if (
-        viewMenuRef.current?.contains(target) ||
-        statusMenuRef.current?.contains(target) ||
-        paymentMethodMenuRef.current?.contains(target) ||
-        sortMenuRef.current?.contains(target)
-      )
-        return
+      if (filterBarRef.current?.contains(target)) return
       setViewMenuOpen(false)
       setStatusMenuOpen(false)
       setPaymentMethodMenuOpen(false)
       setSortMenuOpen(false)
+      setMobileFiltersOpen(false)
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
@@ -176,6 +187,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
       setStatusMenuOpen(false)
       setPaymentMethodMenuOpen(false)
       setSortMenuOpen(false)
+      setMobileFiltersOpen(false)
     }
     document.addEventListener('mousedown', onDoc)
     document.addEventListener('keydown', onKey)
@@ -183,7 +195,13 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
       document.removeEventListener('mousedown', onDoc)
       document.removeEventListener('keydown', onKey)
     }
-  }, [paymentMethodMenuOpen, statusMenuOpen, sortMenuOpen, viewMenuOpen])
+  }, [
+    mobileFiltersOpen,
+    paymentMethodMenuOpen,
+    sortMenuOpen,
+    statusMenuOpen,
+    viewMenuOpen,
+  ])
 
   const visibleOrders = filtered
   const totalForFooter =
@@ -201,29 +219,57 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
   const shown = visibleOrders.length
 
   const filterBar = (
-    <div className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3">
-      <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 w-full min-w-0 items-center gap-2 overflow-hidden border border-solid py-0 lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
-        <CentralIcon
-          name="IconMagnifyingGlass"
-          join="round"
-          fill="filled"
-          stroke="2"
-          radius="1"
-          size={18}
-          ariaHidden={true}
-          className="text-muted-foreground"
-        />
-        <input
-          type="search"
-          value={orderSearch}
-          onChange={(e) => setOrderSearch(e.target.value)}
-          placeholder="Search using Order ID, Product Name"
-          className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal outline-none focus:ring-0"
-        />
+    <div
+      ref={filterBarRef}
+      className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3"
+    >
+      <div className="flex min-w-0 w-full flex-row items-stretch gap-2 lg:contents">
+        <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:w-full lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
+          <CentralIcon
+            name="IconMagnifyingGlass"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={18}
+            ariaHidden={true}
+            className="text-muted-foreground"
+          />
+          <input
+            type="search"
+            value={orderSearch}
+            onChange={(e) => setOrderSearch(e.target.value)}
+            placeholder="Search using Order ID, Product Name"
+            className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-foreground placeholder:text-muted-foreground min-w-0 flex-1 border-none bg-transparent px-0 py-1 text-sm font-normal outline-none focus:ring-0"
+          />
+        </div>
+        <button
+          type="button"
+          className="border-border-subtle bg-card-elevated text-foreground flex h-11 w-11 shrink-0 items-center justify-center rounded-num-8 border border-solid sm:hidden dark:border-[#16243B]"
+          aria-label={mobileFiltersOpen ? 'Close filters' : 'Open filters'}
+          aria-expanded={mobileFiltersOpen}
+          onClick={() => setMobileFiltersOpen((open) => !open)}
+        >
+          <CentralIcon
+            name="IconFilter1"
+            join="round"
+            fill="filled"
+            stroke="2"
+            radius="1"
+            size={20}
+            ariaHidden={true}
+          />
+        </button>
       </div>
 
-      <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:gap-3 lg:w-auto lg:shrink-0 lg:justify-end">
-        <div className="relative w-fit max-w-full shrink-0" ref={statusMenuRef}>
+      <div
+        className={cn(
+          'flex w-full min-w-0 flex-wrap items-center gap-2 sm:flex sm:gap-3 lg:w-auto lg:shrink-0 lg:justify-end',
+          !mobileFiltersOpen && 'max-sm:hidden',
+          'max-sm:flex-col max-sm:items-stretch',
+        )}
+      >
+        <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={statusMenuRef}>
           <button
             type="button"
             aria-haspopup="listbox"
@@ -232,28 +278,30 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('status')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               Status
             </span>
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-              {statusFilter === 'all' ? 'All' : dashboardOrderStatusConfig[statusFilter].label}
+            <span className="flex min-w-0 items-center gap-1.5 sm:contents">
+              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+                {statusFilter === 'all' ? 'All' : dashboardOrderStatusConfig[statusFilter].label}
+              </span>
+              <CentralIcon
+                name="IconChevronDownMedium"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={16}
+                ariaHidden={true}
+                className="shrink-0"
+              />
             </span>
-            <CentralIcon
-              name="IconChevronDownMedium"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              ariaHidden={true}
-              className="shrink-0"
-            />
           </button>
           {statusMenuOpen ? (
             <ul
               role="listbox"
               aria-label="Status"
-              className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={filterMenuPanelClass('start')}
             >
               <div className={siteSelectDropdownList}>
                 {STATUS_OPTIONS.map((opt) => {
@@ -274,6 +322,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                       onClick={() => {
                         setStatusFilter(opt.value)
                         setStatusMenuOpen(false)
+                        setMobileFiltersOpen(false)
                       }}
                     >
                       {statusCfg ? (
@@ -296,7 +345,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </ul>
           ) : null}
         </div>
-        <div className="relative w-fit max-w-full shrink-0" ref={paymentMethodMenuRef}>
+        <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={paymentMethodMenuRef}>
           <button
             type="button"
             aria-haspopup="listbox"
@@ -305,28 +354,30 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('payment')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               Payment Method
             </span>
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-              {PAYMENT_METHOD_OPTIONS.find((o) => o.value === paymentMethodFilter)?.label ?? 'All'}
+            <span className="flex min-w-0 items-center gap-1.5 sm:contents">
+              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+                {PAYMENT_METHOD_OPTIONS.find((o) => o.value === paymentMethodFilter)?.label ?? 'All'}
+              </span>
+              <CentralIcon
+                name="IconChevronDownMedium"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={16}
+                ariaHidden={true}
+                className="shrink-0"
+              />
             </span>
-            <CentralIcon
-              name="IconChevronDownMedium"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              ariaHidden={true}
-              className="shrink-0"
-            />
           </button>
           {paymentMethodMenuOpen ? (
             <ul
               role="listbox"
               aria-label="Payment Method"
-              className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={filterMenuPanelClass('start')}
             >
               <div className={siteSelectDropdownList}>
                 {PAYMENT_METHOD_OPTIONS.map((opt) => (
@@ -343,6 +394,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                     onClick={() => {
                       setPaymentMethodFilter(opt.value)
                       setPaymentMethodMenuOpen(false)
+                      setMobileFiltersOpen(false)
                     }}
                   >
                     {opt.iconSrc ? (
@@ -355,7 +407,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </ul>
           ) : null}
         </div>
-        <div className="relative w-fit max-w-full shrink-0" ref={sortMenuRef}>
+        <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={sortMenuRef}>
           <button
             type="button"
             aria-haspopup="listbox"
@@ -364,28 +416,30 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('sort')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               Sort by
             </span>
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-              {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
+            <span className="flex min-w-0 items-center gap-1.5 sm:contents">
+              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+                {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
+              </span>
+              <CentralIcon
+                name="IconChevronDownMedium"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={16}
+                ariaHidden={true}
+                className="shrink-0"
+              />
             </span>
-            <CentralIcon
-              name="IconChevronDownMedium"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              ariaHidden={true}
-              className="shrink-0"
-            />
           </button>
           {sortMenuOpen ? (
             <ul
               role="listbox"
               aria-label="Sort by"
-              className={`absolute top-full left-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={filterMenuPanelClass('start')}
             >
               <div className={siteSelectDropdownList}>
                 {SORT_OPTIONS.map((opt) => (
@@ -396,12 +450,13 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                     className={cn(
                       siteSelectDropdownOptionRow,
                       siteSelectDropdownOptionInteractive,
-                      'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm whitespace-nowrap',
+                      'text-foreground dark:text-ghostwhite sm:text-num-14 lg:text-num-16 text-sm max-sm:whitespace-normal sm:whitespace-nowrap',
                       sortOption === opt.value && 'bg-foreground/5 dark:bg-white/5'
                     )}
                     onClick={() => {
                       setSortOption(opt.value)
                       setSortMenuOpen(false)
+                      setMobileFiltersOpen(false)
                     }}
                   >
                     {opt.label}
@@ -411,7 +466,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </ul>
           ) : null}
         </div>
-        <div className="relative w-fit max-w-full shrink-0" ref={viewMenuRef}>
+        <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={viewMenuRef}>
           <button
             type="button"
             aria-haspopup="listbox"
@@ -420,28 +475,30 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('view')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
               View
             </span>
-            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold">
-              {selectedViewOption.label}
+            <span className="flex min-w-0 items-center gap-1.5 sm:contents">
+              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+                {selectedViewOption.label}
+              </span>
+              <CentralIcon
+                name="IconChevronDownMedium"
+                join="round"
+                fill="filled"
+                stroke="2"
+                radius="1"
+                size={16}
+                ariaHidden={true}
+                className="shrink-0"
+              />
             </span>
-            <CentralIcon
-              name="IconChevronDownMedium"
-              join="round"
-              fill="filled"
-              stroke="2"
-              radius="1"
-              size={16}
-              ariaHidden={true}
-              className="shrink-0"
-            />
           </button>
           {viewMenuOpen ? (
             <ul
               role="listbox"
               aria-label="View layout"
-              className={`absolute top-full right-0 z-20 mt-2 min-w-42 overflow-hidden ${siteSelectDropdownPanel}`}
+              className={filterMenuPanelClass('end')}
             >
               <div className={siteSelectDropdownList}>
                 {VIEW_OPTIONS.map((opt) => (
@@ -458,6 +515,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
                     onClick={() => {
                       setViewMode(opt.value)
                       setViewMenuOpen(false)
+                      setMobileFiltersOpen(false)
                     }}
                   >
                     <CentralIcon
@@ -573,7 +631,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
       ) : (
         <>
           {viewMode === 'grid' ? (
-            <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {visibleOrders.map((o) => (
                 <DashboardOrderCard
                   key={o.id}

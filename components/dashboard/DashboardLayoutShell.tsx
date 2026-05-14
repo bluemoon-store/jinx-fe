@@ -6,15 +6,15 @@ import { Reveal } from '@/components/ui/reveal'
 import { DASHBOARD_PATHS } from '@/lib/dashboard-routes'
 import { mapApiOrderToDashboardCard, useOrderQuery } from '@/hooks/use-orders'
 import { useMyDropClaimQuery } from '@/hooks/use-drops'
+import { useCurrentUser } from '@/hooks/use-auth'
+import { DashboardMobileTabs } from '@/components/dashboard/DashboardMobileTabs'
 import { formatOrderBrandLabel } from '@/components/dashboard/dashboard-order-brand'
 import { useWalletBalanceQuery } from '@/hooks/use-wallet'
 import CentralIcon from '@central-icons-react/all'
 import type { Route } from 'next'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import type { FunctionComponent, ReactNode } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { Drawer } from 'vaul'
+import { useMemo, type FunctionComponent, type ReactNode } from 'react'
 
 const accountNav = [
   { label: 'Orders', icon: 'IconBasket2' as const, href: DASHBOARD_PATHS.orders },
@@ -37,6 +37,7 @@ const headerByPath: Record<string, { title: string; icon: string }> = {
   [DASHBOARD_PATHS.general]: { title: 'General', icon: 'IconSettingsSliderThree' },
   [DASHBOARD_PATHS.security]: { title: 'Security', icon: 'IconShieldKeyhole' },
   [DASHBOARD_PATHS.deletion]: { title: 'Deletion', icon: 'IconTrashCan' },
+  [DASHBOARD_PATHS.settings]: { title: 'Settings', icon: 'IconSettingsSliderThree' },
 }
 
 type SidebarNavProps = {
@@ -187,72 +188,22 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
     !isOrderDetail && !isDropDetail
       ? (headerByPath[pathname] ?? headerByPath[DASHBOARD_PATHS.orders])
       : null
-  const detailId = isOrderDetail ? orderIdFromPath : isDropDetail ? dropClaimIdFromPath : ''
-  const detailIdDisplay = detailId ? `${detailId.slice(0, 8)}...${detailId.slice(-6)}` : '—'
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const currentUserQuery = useCurrentUser()
+  const displayUserId = currentUserQuery.data?.id ?? ''
 
-  useEffect(() => {
-    setMobileNavOpen(false)
-  }, [pathname])
-
+  const displayUserIdShort = useMemo(() => {
+    if (!displayUserId) return '—'
+    if (displayUserId.length <= 18) return displayUserId
+    return `${displayUserId.slice(0, 8)}...${displayUserId.slice(-6)}`
+  }, [displayUserId])
   return (
     <div className="text-foreground dark:text-ghostwhite font-commissioner sm:text-num-14 bg-background flex min-h-screen w-full flex-col overflow-x-hidden pt-16 text-left text-sm sm:pt-[95px] lg:text-[18px]">
       <Navbar />
 
-      <Drawer.Root
-        open={mobileNavOpen}
-        onOpenChange={setMobileNavOpen}
-        direction="left"
-        shouldScaleBackground={false}
-      >
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-50 bg-black/55" />
-          <Drawer.Content
-            aria-describedby={undefined}
-            className="border-border-subtle bg-background fixed top-0 left-0 z-[51] flex h-[100dvh] w-[min(100vw-2.5rem,288px)] max-w-[100vw] flex-col border-r border-solid shadow-[8px_0_40px_rgba(0,0,0,0.35)] outline-none"
-          >
-            <Drawer.Title className="sr-only">Dashboard navigation</Drawer.Title>
-            <div className="flex flex-1 touch-pan-y flex-col gap-5 overflow-y-auto overscroll-contain px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-8">
-              <aside
-                aria-label="Account navigation"
-                className="text-muted-foreground flex min-w-0 flex-col gap-5"
-              >
-                <DashboardSidebarNav
-                  pathname={pathname}
-                  walletBalanceLabel={walletBalanceLabel}
-                  onNavigate={() => setMobileNavOpen(false)}
-                />
-              </aside>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-
-        <button
-          type="button"
-          onClick={() => setMobileNavOpen(true)}
-          className="border-border-subtle bg-card-elevated text-foreground fixed bottom-6 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-solid shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:hidden dark:bg-[#071935] dark:text-white"
-          aria-label="Open dashboard menu"
-          aria-expanded={mobileNavOpen}
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden={true}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h7"
-            />
-          </svg>
-        </button>
-      </Drawer.Root>
+      <DashboardMobileTabs />
 
       <main className="mx-auto flex w-full max-w-[1920px] flex-1 flex-col gap-4 pb-8 sm:gap-6 lg:gap-12">
-        <div className="mx-auto flex w-full max-w-[1476.9px] flex-1 flex-col px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-[1476.9px] flex-1 flex-col px-5 py-4 sm:px-6 sm:pt-0 sm:pb-0 lg:px-8">
           <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-[224px_1fr] sm:gap-6 lg:gap-8">
             <Reveal variant="slide-left" className="hidden min-w-0 sm:block">
               <aside
@@ -265,12 +216,13 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
 
             <section className="relative flex min-h-[min(60vh,520px)] min-w-0 flex-col gap-4 md:min-h-0 md:gap-8">
               <Reveal variant="slide-right" delay={80}>
-                <div className="text-foreground flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4 lg:gap-5 dark:text-white">
-                  {isOrderDetail || isDropDetail ? (
-                    <nav
-                      aria-label="Breadcrumb"
-                      className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-wrap items-center gap-2 text-base"
-                    >
+                <div className="text-foreground flex w-full min-w-0 flex-row flex-nowrap items-center justify-between gap-2 sm:gap-4 lg:gap-5 dark:text-white">
+                  <div className="min-w-0 flex-1">
+                    {isOrderDetail || isDropDetail ? (
+                      <nav
+                        aria-label="Breadcrumb"
+                        className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-nowrap items-center gap-2 text-base"
+                      >
                       <Link
                         href={
                           (isOrderDetail ? DASHBOARD_PATHS.orders : DASHBOARD_PATHS.drops) as Route
@@ -297,7 +249,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                       </span>
                     </nav>
                   ) : pageHeader ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
                       <CentralIcon
                         name={pageHeader.icon as any}
                         join="round"
@@ -307,22 +259,29 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                         size={16}
                         ariaHidden={true}
                         color="#EB2DFF"
+                        className="shrink-0"
                       />
-                      <b className="leading-num-28 tracking-num-0_02 text-num-16">
+                      <b className="leading-num-28 tracking-num-0_02 text-num-16 truncate">
                         {pageHeader.title}
                       </b>
                     </div>
                   ) : null}
-                  <div className="text-muted-foreground border-border-subtle bg-card-elevated flex w-full min-w-0 flex-wrap items-center gap-2 self-stretch rounded-md border px-3 py-2.5 text-xs sm:w-fit sm:self-auto sm:px-2 sm:py-1.5 sm:text-[12px]">
-                    <span className="shrink-0 leading-[15px] font-semibold">ID</span>
-                    <div className="text-foreground dark:text-ghostwhite flex min-w-0 items-center gap-1.5">
-                      <span className="leading-[15px] font-semibold break-all">
-                        {detailId ? detailIdDisplay : 'JNX-LKXJLKNALSDJ'}
+                  </div>
+                  <div className="text-muted-foreground border-border-subtle bg-card-elevated flex w-auto max-w-[45%] shrink-0 flex-nowrap items-center gap-1.5 rounded-md border px-2 py-2 text-xs sm:max-w-none sm:w-fit sm:gap-2 sm:px-2 sm:py-1.5 sm:text-[12px]">
+                    <span className="shrink-0 leading-[15px] font-semibold">User ID</span>
+                    <div className="text-foreground dark:text-ghostwhite flex min-w-0 flex-1 items-center gap-1">
+                      <span className="leading-[15px] hidden min-w-0 font-semibold break-all sm:inline">
+                        {displayUserId || '—'}
+                      </span>
+                      <span className="leading-[15px] min-w-0 truncate font-semibold sm:hidden">
+                        {displayUserIdShort}
                       </span>
                       <button
                         type="button"
+                        disabled={!displayUserId}
                         onClick={() => {
-                          const valueToCopy = detailId || 'JNX-LKXJLKNALSDJ'
+                          const valueToCopy = displayUserId
+                          if (!valueToCopy) return
                           navigator.clipboard
                             .writeText(valueToCopy)
                             .then(() => {
@@ -339,7 +298,7 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                             })
                         }}
                         aria-label="Copy ID"
-                        className="inline-flex h-5 w-5 items-center justify-center text-current"
+                        className="inline-flex h-5 w-5 items-center justify-center text-current disabled:pointer-events-none disabled:opacity-40"
                       >
                         <CentralIcon
                           name="IconSquareBehindSquare1"

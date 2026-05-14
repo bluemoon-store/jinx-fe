@@ -7,6 +7,7 @@ export const DASHBOARD_PATHS = {
   general: '/dashboard/general',
   security: '/dashboard/security',
   deletion: '/dashboard/deletion',
+  settings: '/dashboard/settings',
 } as const
 
 export type DashboardPath = (typeof DASHBOARD_PATHS)[keyof typeof DASHBOARD_PATHS]
