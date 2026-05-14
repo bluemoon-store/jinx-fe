@@ -127,9 +127,33 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                     {emailDisplay || '—'}
                   </div>
                 </div>
-                <div className="bg-divider h-3.5 w-px shrink-0" />
+                {!isVerified && (
+                  <>
+                    <div className="bg-divider h-3.5 w-px shrink-0" />
+                    <div className="text-red flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(255,_42,_42,_0.05),_rgba(255,_42,_42,_0.14))]">
+                      <CentralIcon
+                        name="IconCrossSmall"
+                        join="round"
+                        fill="filled"
+                        stroke="2"
+                        radius="1"
+                        size={20}
+                        ariaHidden={true}
+                        color="#ff2a2a"
+                      />
+                      <div className="leading-6 font-semibold text-red-500 dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                        Not Verified
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="text-muted-foreground dark:text-lightsteelblue-100 flex w-full items-stretch sm:ml-auto sm:w-auto sm:items-center sm:justify-end">
                 {isVerified ? (
-                  <div className="text-limegreen flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]">
+                  <div
+                    className="text-limegreen flex shrink-0 items-center justify-center gap-0.5 rounded-md px-2 py-1 text-center [background:linear-gradient(180deg,_rgba(27,_217,_36,_0.05),_rgba(27,_217,_36,_0.14))]"
+                    role="status"
+                  >
                     <CentralIcon
                       name="IconSubscriptionTick1"
                       join="round"
@@ -140,60 +164,43 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                       ariaHidden={true}
                       color="#25d366"
                     />
-                    <div className="leading-6 font-semibold dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                      Verified
+                    <div className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold whitespace-nowrap dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+                      Verified Email
                     </div>
                   </div>
                 ) : (
-                  <div className="text-red flex items-center justify-center gap-0.5 rounded-md px-1.5 py-0 text-center [background:linear-gradient(180deg,_rgba(255,_42,_42,_0.05),_rgba(255,_42,_42,_0.14))]">
+                  <button
+                    type="button"
+                    className={`${secondaryActionBtnClass} shrink-0 text-center sm:text-left`}
+                    disabled={isSendingVerification || !emailDisplay}
+                    onClick={async () => {
+                      setIsSendingVerification(true)
+                      try {
+                        await sendVerificationEmail()
+                        toast.success('Verification email sent', {
+                          description: 'Check your inbox for the verification link.',
+                        })
+                      } catch (e) {
+                        toast.error(parseApiError(e))
+                      } finally {
+                        setIsSendingVerification(false)
+                      }
+                    }}
+                  >
                     <CentralIcon
-                      name="IconCrossSmall"
+                      name="IconPaperPlaneTopRight"
                       join="round"
                       fill="filled"
                       stroke="2"
                       radius="1"
                       size={20}
                       ariaHidden={true}
-                      color="#ff2a2a"
                     />
-                    <div className="leading-6 font-semibold text-red-500 dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-                      Not Verified
-                    </div>
-                  </div>
+                    <span className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold whitespace-nowrap">
+                      {isSendingVerification ? 'Sending…' : 'Resend Verification'}
+                    </span>
+                  </button>
                 )}
-              </div>
-              <div className="text-muted-foreground dark:text-lightsteelblue-100 flex w-full items-stretch sm:w-auto sm:items-center">
-                <button
-                  type="button"
-                  className={`${secondaryActionBtnClass} shrink-0 text-center sm:text-left`}
-                  disabled={isVerified || isSendingVerification || !emailDisplay}
-                  onClick={async () => {
-                    setIsSendingVerification(true)
-                    try {
-                      await sendVerificationEmail()
-                      toast.success('Verification email sent', {
-                        description: 'Check your inbox for the verification link.',
-                      })
-                    } catch (e) {
-                      toast.error(parseApiError(e))
-                    } finally {
-                      setIsSendingVerification(false)
-                    }
-                  }}
-                >
-                  <CentralIcon
-                    name="IconPaperPlaneTopRight"
-                    join="round"
-                    fill="filled"
-                    stroke="2"
-                    radius="1"
-                    size={20}
-                    ariaHidden={true}
-                  />
-                  <span className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold whitespace-nowrap">
-                    {isSendingVerification ? 'Sending…' : 'Resend Verification'}
-                  </span>
-                </button>
               </div>
             </div>
           </div>

@@ -200,7 +200,9 @@ export function PaymentMethodPanel({
                 className="shrink-0"
               />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-lg font-bold tracking-[0.36px] text-white">Wallet</div>
+                <div className="truncate text-lg font-bold tracking-[0.36px] text-white">
+                  Wallet
+                </div>
                 <div className="text-lightsteelblue-200 truncate text-base [text-shadow:0px_0px_8.63px_#00000099]">
                   Pay using account balance
                 </div>

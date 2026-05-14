@@ -52,9 +52,7 @@ const ReviewRatingStars: FunctionComponent<ReviewRatingStarsProps> = ({
           size={22}
           ariaHidden={true}
           className={previewRating >= n ? undefined : 'text-lightsteelblue-200/40'}
-          style={
-            previewRating >= n ? { color: RATING_STAR_COLORS[previewRating - 1] } : undefined
-          }
+          style={previewRating >= n ? { color: RATING_STAR_COLORS[previewRating - 1] } : undefined}
         />
       </button>
     ))}
@@ -182,7 +180,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
             {/* Mobile: Add review heading, close, prompt, stars — to the right of the image */}
             <div className="flex min-w-0 flex-1 flex-col gap-2 sm:hidden">
               <div className="flex items-start justify-between gap-2">
-                <h2 className="tracking-num-0.02 min-w-0 pr-1 text-base font-extrabold uppercase leading-snug">
+                <h2 className="tracking-num-0.02 min-w-0 pr-1 text-base leading-snug font-extrabold uppercase">
                   {isEdit ? 'Edit review' : 'Add review'}
                 </h2>
                 <ReviewCloseButton onClose={onClose} />
@@ -203,11 +201,11 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
           </div>
 
           {/* Product / variant / pricing: full width below on max-sm; beside image on sm+ */}
-          <div className="text-foreground flex w-full min-w-0 flex-col items-stretch gap-2 text-[18px] dark:text-white sm:flex-1">
+          <div className="text-foreground flex w-full min-w-0 flex-col items-stretch gap-2 text-[18px] sm:flex-1 dark:text-white">
             <b className="font-commissioner leading-num-28 tracking-num-0.02 text-foreground text-[18px] font-bold dark:text-white">
               {brand}
             </b>
-            <div className="font-commissioner flex flex-col gap-1.5 text-num-16 leading-num-20 font-medium sm:hidden">
+            <div className="font-commissioner text-num-16 leading-num-20 flex flex-col gap-1.5 font-medium sm:hidden">
               <span className="text-muted-foreground dark:text-lightsteelblue-200 [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
                 {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
               </span>
@@ -221,7 +219,7 @@ export const DashboardReviewsPopup: FunctionComponent<DashboardReviewsPopupProps
                 {time}
               </span>
             </div>
-            <div className="font-commissioner text-num-16 leading-num-20 text-muted-foreground dark:text-lightsteelblue-200 hidden font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)] sm:block">
+            <div className="font-commissioner text-num-16 leading-num-20 text-muted-foreground dark:text-lightsteelblue-200 hidden font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:block dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
               <span>
                 {itemCount} {itemCount === 1 ? 'Item' : 'Items'} -{' '}
               </span>

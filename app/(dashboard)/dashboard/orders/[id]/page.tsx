@@ -214,6 +214,11 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
   const redeemProcess = firstLine?.product?.redeemProcess ?? null
   const warrantyText = firstLine?.product?.warrantyText ?? null
 
+  const purchaseAt = new Date(apiOrder.createdAt)
+  const dayOfPurchaseLabel = Number.isNaN(purchaseAt.getTime())
+    ? '—'
+    : purchaseAt.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+
   return (
     <Reveal variant="fade-up" delay={140}>
       <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
@@ -449,7 +454,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
             </header>
 
-            <div className="rounded-num-8 border-fuchsia font-nata-sans gap-num-15 flex flex-wrap items-center justify-center self-stretch border border-dashed p-6 text-[22px] [background:linear-gradient(180deg,rgba(235,45,255,0),rgba(235,45,255,0.25))] sm:p-9 sm:text-[24px]">
+            <div className="rounded-num-8 border-fuchsia font-nata-sans gap-num-15 flex w-full flex-wrap items-center self-stretch border border-dashed p-6 text-[22px] [background:linear-gradient(180deg,rgba(235,45,255,0),rgba(235,45,255,0.25))] sm:p-9 sm:text-[24px]">
               {redeemCodeCopied ? (
                 <button
                   type="button"
@@ -476,9 +481,9 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </span>
                 </button>
               ) : isMultilineRedeem ? (
-                <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                <div className="flex w-full min-w-0 flex-row items-start justify-between gap-3">
                   <pre
-                    className="tracking-num-0_02 w-full min-w-0 flex-1 text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg"
+                    className="tracking-num-0_02 min-w-0 flex-1 text-left text-base leading-relaxed font-extrabold break-words whitespace-pre-wrap text-white sm:text-lg"
                     tabIndex={0}
                   >
                     {redeemDisplay}
@@ -486,7 +491,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <button
                     type="button"
                     onClick={handleCopyRedeemCode}
-                    className="focus-visible:ring-fuchsia/40 shrink-0 touch-manipulation self-end rounded-md p-1 [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none sm:self-start"
+                    className="focus-visible:ring-fuchsia/40 shrink-0 touch-manipulation rounded-md p-1 [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:outline-none"
                     aria-label="Copy redeem code"
                   >
                     <CentralIcon
@@ -501,8 +506,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   </button>
                 </div>
               ) : (
-                <>
-                  <span className="tracking-num-0_02 text-center leading-8 font-extrabold break-all uppercase">
+                <div className="flex w-full min-w-0 items-center justify-between gap-3">
+                  <span className="tracking-num-0_02 min-w-0 flex-1 text-left leading-8 font-extrabold break-all uppercase">
                     {redeemDisplay}
                   </span>
                   <button
@@ -521,7 +526,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       ariaHidden={true}
                     />
                   </button>
-                </>
+                </div>
               )}
             </div>
 
@@ -696,8 +701,8 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
               </div>
 
               <div className="text-num-14 text-muted-foreground dark:text-lightsteelblue-200 flex flex-col gap-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
+                <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] w-full min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                     <span className="leading-num-20 font-semibold">Order ID</span>
                     <button
                       type="button"
@@ -718,7 +723,7 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                       />
                     </button>
                   </div>
-                  <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
+                  <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex min-h-[52px] w-full min-w-0 flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
                     <span className="leading-num-20 font-semibold">Payment Status</span>
                     <span className="text-num-16 tracking-num--0_01 text-foreground flex items-center gap-1.5 font-semibold dark:text-white">
                       <CentralIcon
@@ -747,6 +752,13 @@ const DashboardOrderDetailPage: FunctionComponent = () => {
                   <span className="leading-num-20 font-semibold">Quantity</span>
                   <span className="text-num-16 tracking-num--0_01 text-foreground font-semibold dark:text-white">
                     {String(card.itemCount).padStart(2, '0')}
+                  </span>
+                </div>
+
+                <div className="rounded-num-8 border-border-subtle bg-card-elevated py-num-10 px-num-12 flex flex-wrap items-center justify-between gap-3 border border-solid dark:border-gray-600 dark:bg-gray-200">
+                  <span className="leading-num-20 font-semibold">Day of Purchase</span>
+                  <span className="text-num-16 tracking-num--0_01 text-foreground max-w-full text-right font-semibold dark:text-white">
+                    {dayOfPurchaseLabel}
                   </span>
                 </div>
               </div>

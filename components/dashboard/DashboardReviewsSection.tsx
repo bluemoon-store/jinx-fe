@@ -68,7 +68,7 @@ const ratedBadgeClass =
   'font-commissioner relative box-border inline-flex w-fit max-w-full items-center gap-3 rounded-xl border border-solid border-border-subtle bg-card-elevated text-foreground dark:border-[rgba(238,238,238,0.1)] dark:bg-gray-200 dark:text-ghostwhite py-1.5 px-3 text-left text-num-15_35 leading-num-21_93'
 
 const dashboardSelectTriggerClass = cn(
-  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0',
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0'
 )
 
 const filterMenuPanelClass = (align: 'start' | 'end') =>
@@ -76,7 +76,7 @@ const filterMenuPanelClass = (align: 'start' | 'end') =>
     siteSelectDropdownPanel,
     'absolute top-full z-20 mt-2 overflow-hidden min-w-42 max-sm:min-w-0 max-sm:w-full max-sm:left-0 max-sm:right-0',
     align === 'start' && 'left-0',
-    align === 'end' && 'right-0 sm:left-auto',
+    align === 'end' && 'right-0 sm:left-auto'
   )
 
 const ReviewRow: FunctionComponent<{
@@ -91,7 +91,7 @@ const ReviewRow: FunctionComponent<{
   return (
     <div className="border-border-subtle dark:border-darkslateblue hover:bg-hover-bg flex flex-row flex-wrap items-center gap-3 border-b border-solid p-4 transition-colors last:border-b-0 sm:flex-nowrap sm:items-center sm:justify-between sm:gap-4 sm:p-5 dark:hover:bg-[#13253F]">
       <div
-        className="order-1 rounded-num-8 bg-card flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)] dark:bg-[#0D1B35]"
+        className="rounded-num-8 bg-card order-1 flex h-14 w-[105px] shrink-0 items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)] dark:bg-[#0D1B35]"
         aria-hidden
       >
         {row.imageUrl ? (
@@ -113,7 +113,7 @@ const ReviewRow: FunctionComponent<{
         )}
       </div>
 
-      <div className="order-2 flex max-sm:ml-auto shrink-0 flex-col items-end gap-2 sm:order-3">
+      <div className="order-2 flex shrink-0 flex-col items-end gap-2 max-sm:ml-auto sm:order-3">
         {review ? (
           <div className={ratedBadgeClass} aria-disabled="true">
             <div className="relative font-semibold">Rated </div>
@@ -157,13 +157,13 @@ const ReviewRow: FunctionComponent<{
         ) : null}
       </div>
 
-      <div className="order-3 flex w-full min-w-0 basis-full flex-col gap-1 sm:order-2 sm:basis-auto sm:w-auto sm:flex-1">
+      <div className="order-3 flex w-full min-w-0 basis-full flex-col gap-1 sm:order-2 sm:w-auto sm:flex-1 sm:basis-auto">
         <b className="tracking-num-0_02 text-base leading-6 lg:text-[18px]">{row.brand}</b>
         <div
           className={cn(
             'text-muted-foreground dark:text-lightsteelblue-200 text-sm font-medium [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]',
             'flex flex-row flex-wrap items-center gap-x-1.5 gap-y-1 sm:gap-2',
-            'max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-0.5 [-webkit-overflow-scrolling:touch]'
+            '[-webkit-overflow-scrolling:touch] max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-0.5'
           )}
         >
           <span>
@@ -175,10 +175,7 @@ const ReviewRow: FunctionComponent<{
           </span>
           <span className="bg-divider inline-block h-3 w-px shrink-0" aria-hidden />
           <span>{row.date}</span>
-          <span
-            className="bg-divider inline-block h-3 w-px shrink-0 max-sm:hidden"
-            aria-hidden
-          />
+          <span className="bg-divider inline-block h-3 w-px shrink-0 max-sm:hidden" aria-hidden />
           <span className="hidden sm:inline">{row.time}</span>
           {statusCfg ? (
             <>
@@ -304,8 +301,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
   }, [orders, paymentMethodFilter, pendingReviewRows, search, statusFilter])
 
   useEffect(() => {
-    const anyOpen =
-      statusMenuOpen || paymentMethodMenuOpen || sortMenuOpen || mobileFiltersOpen
+    const anyOpen = statusMenuOpen || paymentMethodMenuOpen || sortMenuOpen || mobileFiltersOpen
     if (!anyOpen) return
     const onDoc = (e: MouseEvent) => {
       const target = e.target as Node
@@ -354,7 +350,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
       ref={filterBarRef}
       className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3"
     >
-      <div className="flex min-w-0 w-full flex-row items-stretch gap-2 lg:contents">
+      <div className="flex w-full min-w-0 flex-row items-stretch gap-2 lg:contents">
         <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:w-full lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
           <CentralIcon
             name="IconMagnifyingGlass"
@@ -376,7 +372,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
         </div>
         <button
           type="button"
-          className="border-border-subtle bg-card-elevated text-foreground flex h-11 w-11 shrink-0 items-center justify-center rounded-num-8 border border-solid sm:hidden dark:border-[#16243B]"
+          className="border-border-subtle bg-card-elevated text-foreground rounded-num-8 flex h-11 w-11 shrink-0 items-center justify-center border border-solid sm:hidden dark:border-[#16243B]"
           aria-label={mobileFiltersOpen ? 'Close filters' : 'Open filters'}
           aria-expanded={mobileFiltersOpen}
           onClick={() => setMobileFiltersOpen((open) => !open)}
@@ -397,7 +393,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
         className={cn(
           'flex w-full min-w-0 flex-wrap items-center gap-2 sm:flex sm:gap-3 lg:w-auto lg:shrink-0 lg:justify-end',
           !mobileFiltersOpen && 'max-sm:hidden',
-          'max-sm:flex-col max-sm:items-stretch',
+          'max-sm:flex-col max-sm:items-stretch'
         )}
       >
         <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={statusMenuRef}>
@@ -409,11 +405,11 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             onClick={() => toggleMenu('status')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Status
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {STATUS_OPTIONS.find((o) => o.value === statusFilter)?.label ?? 'All'}
               </span>
               <CentralIcon
@@ -429,11 +425,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             </span>
           </button>
           {statusMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="Status"
-              className={filterMenuPanelClass('start')}
-            >
+            <ul role="listbox" aria-label="Status" className={filterMenuPanelClass('start')}>
               <div className={siteSelectDropdownList}>
                 {STATUS_OPTIONS.map((opt) => {
                   const statusCfg =
@@ -476,7 +468,10 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             </ul>
           ) : null}
         </div>
-        <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={paymentMethodMenuRef}>
+        <div
+          className="relative w-fit max-w-full shrink-0 max-sm:w-full"
+          ref={paymentMethodMenuRef}
+        >
           <button
             type="button"
             aria-haspopup="listbox"
@@ -485,12 +480,13 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             onClick={() => toggleMenu('payment')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Payment Method
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
-                {PAYMENT_METHOD_OPTIONS.find((o) => o.value === paymentMethodFilter)?.label ?? 'All'}
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
+                {PAYMENT_METHOD_OPTIONS.find((o) => o.value === paymentMethodFilter)?.label ??
+                  'All'}
               </span>
               <CentralIcon
                 name="IconChevronDownMedium"
@@ -547,11 +543,11 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             onClick={() => toggleMenu('sort')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Sort by
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
               </span>
               <CentralIcon
@@ -567,11 +563,7 @@ export const DashboardReviewsSection: FunctionComponent = () => {
             </span>
           </button>
           {sortMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="Sort by"
-              className={filterMenuPanelClass('start')}
-            >
+            <ul role="listbox" aria-label="Sort by" className={filterMenuPanelClass('start')}>
               <div className={siteSelectDropdownList}>
                 {SORT_OPTIONS.map((opt) => (
                   <button

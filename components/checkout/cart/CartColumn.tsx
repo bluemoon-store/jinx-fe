@@ -61,11 +61,11 @@ function CartLine({
 
   return (
     <div className="grid w-full max-w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] gap-x-3 gap-y-2 sm:flex sm:flex-row sm:items-start sm:gap-6">
-      <div className="max-sm:contents sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:gap-num-15">
-        <div className="col-start-1 row-start-1 row-span-2 self-start sm:col-auto sm:self-center">
+      <div className="sm:gap-num-15 max-sm:contents sm:flex sm:min-w-0 sm:flex-1 sm:items-center">
+        <div className="col-start-1 row-span-2 row-start-1 self-start sm:col-auto sm:self-center">
           <LineThumb item={item} />
         </div>
-        <div className="col-start-2 row-start-1 row-span-2 flex min-w-0 flex-col justify-center gap-0.5 pr-1 sm:col-auto sm:min-w-0 sm:flex-1 sm:pr-0">
+        <div className="col-start-2 row-span-2 row-start-1 flex min-w-0 flex-col justify-center gap-0.5 pr-1 sm:col-auto sm:min-w-0 sm:flex-1 sm:pr-0">
           <div className="flex max-w-full min-w-0 items-center gap-x-2 sm:gap-x-2.5">
             <span className="text-ghostwhite max-w-full min-w-0 truncate text-base leading-snug font-bold tracking-[-0.17px] sm:text-[17.5px] sm:leading-[25px]">
               {item.name}
@@ -82,14 +82,20 @@ function CartLine({
           </span>
         </div>
       </div>
-      <div className="col-start-3 row-start-1 row-span-2 flex w-full max-w-full min-w-0 shrink-0 flex-col items-end justify-start gap-2 sm:col-auto sm:ml-auto sm:w-auto sm:flex-row sm:flex-nowrap sm:items-center sm:justify-end sm:gap-x-4">
+      <div className="col-start-3 row-span-2 row-start-1 flex w-full max-w-full min-w-0 shrink-0 flex-col items-end justify-start gap-2 sm:col-auto sm:ml-auto sm:w-auto sm:flex-row sm:flex-nowrap sm:items-center sm:justify-end sm:gap-x-4">
         <button
           type="button"
           className="order-1 flex h-8 w-8 shrink-0 items-center justify-center sm:order-3 sm:h-11 sm:w-11"
           aria-label="Remove"
           onClick={onRemove}
         >
-          <Image src={checkoutImg.cross} alt="" width={18} height={18} className="h-4 w-4 sm:h-num-18 sm:w-num-18" />
+          <Image
+            src={checkoutImg.cross}
+            alt=""
+            width={18}
+            height={18}
+            className="sm:h-num-18 sm:w-num-18 h-4 w-4"
+          />
         </button>
         <div className="border-whitesmoke-300 order-2 flex min-h-8 shrink-0 items-center gap-0.5 rounded-lg border bg-gray-100 px-0.5 py-0.5 sm:order-1 sm:min-h-9 sm:gap-2">
           <button
@@ -98,7 +104,13 @@ function CartLine({
             aria-label="Decrease"
             onClick={() => onDelta(-1)}
           >
-            <Image src={checkoutImg.minus} alt="" width={16} height={16} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <Image
+              src={checkoutImg.minus}
+              alt=""
+              width={16}
+              height={16}
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+            />
           </button>
           <span className="min-w-[2ch] text-center text-sm font-semibold tracking-[-0.2px] text-white sm:text-lg">
             {qtyLabel}
@@ -109,7 +121,13 @@ function CartLine({
             aria-label="Increase"
             onClick={() => onDelta(1)}
           >
-            <Image src={checkoutImg.plus} alt="" width={16} height={16} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <Image
+              src={checkoutImg.plus}
+              alt=""
+              width={16}
+              height={16}
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+            />
           </button>
         </div>
         <span className="order-3 hidden text-lg font-bold tracking-[-0.24px] text-white sm:order-2 sm:block sm:text-xl">

@@ -22,6 +22,16 @@ import { usePathname } from 'next/navigation'
 import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { Drawer } from 'vaul'
 
+const MOBILE_DRAWER_NAV_GRID = 'grid grid-cols-2 gap-2'
+
+const mobileDrawerNavTileClass = (index: number, total: number) =>
+  [
+    'border-border-subtle bg-card-elevated hover:bg-hover-bg box-border flex w-[calc(50%-0.25rem)] max-w-[calc(50%-0.25rem)] shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors',
+    index === total - 1 && total % 2 === 1 ? 'col-span-2 justify-self-center' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
 const Navbar: FunctionComponent = () => {
   const [mobileNavMenuOpen, setMobileNavMenuOpen] = useState(false)
   const [desktopUserMenuOpen, setDesktopUserMenuOpen] = useState(false)
@@ -33,7 +43,7 @@ const Navbar: FunctionComponent = () => {
   const mobileCartMenuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
   const { openAuthModal, isAuthenticated } = useAuthModal()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const walletBalanceQuery = useWalletBalanceQuery({ enabled: isAuthenticated })
   const cartItems = useCartStore((s) => s.items)
   const prevCartItemCountRef = useRef(0)
@@ -199,22 +209,6 @@ const Navbar: FunctionComponent = () => {
             <NavbarThemeSwitch />
             {isLoggedIn ? (
               <>
-                <Link
-                  href={'/support' as Route}
-                  className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated box-border flex h-[38px] shrink-0 items-center justify-center gap-2 border border-solid pt-px pb-0.5"
-                >
-                  <CentralIcon
-                    name="IconRescueRing"
-                    join="round"
-                    fill="filled"
-                    stroke="1"
-                    radius="1"
-                    size={16}
-                    color="currentColor"
-                    ariaHidden={true}
-                  />
-                  <b className="tracking-num--0_01 leading-num-28">0</b>
-                </Link>
                 <Link
                   href={DASHBOARD_PATHS.wallet as Route}
                   className="rounded-num-8 px-num-12 box-border flex h-[38px] shrink-0 items-center justify-center gap-2 bg-fuchsia-200 pt-px pb-0.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
@@ -458,7 +452,7 @@ const Navbar: FunctionComponent = () => {
           </AnimatePresence>
         </div>
 
-        {/* Hamburger — site nav, Help, and account (mobile) */}
+        {/* Hamburger — site nav and account (mobile) */}
         <button
           type="button"
           onClick={() => {
@@ -489,7 +483,7 @@ const Navbar: FunctionComponent = () => {
         </button>
       </div>
 
-      {/* Mobile: hamburger bottom drawer — nav links + Help */}
+      {/* Mobile: hamburger bottom drawer — nav links */}
       <Drawer.Root
         open={mobileNavMenuOpen}
         onOpenChange={setMobileNavMenuOpen}
@@ -505,167 +499,301 @@ const Navbar: FunctionComponent = () => {
             <div className="bg-muted-foreground/20 mx-auto mt-3 h-1.5 w-12 shrink-0 rounded-full" />
             <div className="flex flex-col gap-2 overflow-y-auto overscroll-contain px-6 pt-4 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
               {!isLoggedIn ? (
-                <div className="border-border-subtle mb-4 flex flex-col gap-2 border-b border-solid pb-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      openAuthModal('signin')
-                      setMobileNavMenuOpen(false)
-                    }}
-                    className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated text-foreground box-border flex min-h-[44px] w-full items-center justify-center gap-2 border border-solid py-2.5"
-                  >
-                    <span className="tracking-num--0_01 leading-num-28 font-semibold">Log In</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      openAuthModal('signup')
-                      setMobileNavMenuOpen(false)
-                    }}
-                    className="rounded-num-8 px-num-12 box-border flex min-h-[44px] w-full items-center justify-center gap-2 bg-fuchsia-200 py-2.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
-                  >
-                    <CentralIcon
-                      name="IconPeople"
-                      join="round"
-                      fill="filled"
-                      stroke="1"
-                      radius="1"
-                      size={16}
-                      ariaHidden={true}
-                    />
-                    <span className="tracking-num--0_01 leading-num-28 font-semibold">
-                      Create Account
+                <div className="border-border-subtle flex flex-col gap-2">
+                  <div className="border-border-subtle mb-4 flex flex-col gap-2 border-b border-solid pb-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        openAuthModal('signin')
+                        setMobileNavMenuOpen(false)
+                      }}
+                      className="rounded-num-8 px-num-12 border-border-subtle bg-card-elevated text-foreground box-border flex min-h-[44px] w-full items-center justify-center gap-2 border border-solid py-2.5"
+                    >
+                      <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                        Log In
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        openAuthModal('signup')
+                        setMobileNavMenuOpen(false)
+                      }}
+                      className="rounded-num-8 px-num-12 box-border flex min-h-[44px] w-full items-center justify-center gap-2 bg-fuchsia-200 py-2.5 text-white shadow-[0px_2px_0px_rgba(235,45,255,0.25)]"
+                    >
+                      <CentralIcon
+                        name="IconPeople"
+                        join="round"
+                        fill="filled"
+                        stroke="1"
+                        radius="1"
+                        size={16}
+                        ariaHidden={true}
+                      />
+                      <span className="tracking-num--0_01 leading-num-28 font-semibold">
+                        Create Account
+                      </span>
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <span className="text-muted-foreground px-1 text-[11px] font-bold tracking-wider uppercase">
+                      Menu
                     </span>
-                  </button>
-                </div>
-              ) : (
-                <div className="border-border-subtle mb-4 flex flex-col gap-1 border-b border-solid pb-4">
-                  <div className="text-foreground mb-2 text-lg font-bold">Account</div>
-                  {userDropdownLinks.map((item) => {
-                    const active = isActiveLink(item.href)
-                    return (
-                      <Link
-                        key={item.key}
-                        href={item.href as Route}
-                        className={`rounded-num-8 flex min-h-[44px] items-center justify-between gap-2 px-4 text-base font-semibold ${
-                          active ? 'bg-active-bg text-foreground' : 'opacity-80'
-                        }`}
-                        onClick={() => setMobileNavMenuOpen(false)}
-                        aria-current={active ? 'page' : undefined}
-                      >
-                        <span className="flex min-w-0 items-center gap-2.5">
+                    <div className="grid grid-cols-2 gap-2">
+                      {navLinks.map((link) => (
+                        <Link
+                          key={link.label}
+                          href={link.href as Route}
+                          onClick={() => setMobileNavMenuOpen(false)}
+                          className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                        >
                           <CentralIcon
-                            name={item.icon as any}
+                            name={link.icon as any}
                             join="round"
                             fill="filled"
                             stroke="2"
                             radius="1"
-                            size={18}
-                            color={active ? '#EB2DFF' : undefined}
+                            size={24}
+                            color="#9CA8BC"
                             ariaHidden={true}
                           />
-                          {item.label}
-                        </span>
-                        {item.trailing ? (
-                          <span className="font-nata-sans text-foreground shrink-0 text-sm font-extrabold tabular-nums">
-                            {item.trailing}
+                          <span className="text-foreground text-xs font-semibold">
+                            {link.label}
                           </span>
-                        ) : null}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6 pt-2">
+                  <div className="border-border-subtle bg-card-elevated flex items-center justify-between gap-3 rounded-2xl border border-solid p-4">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <img
+                        src={user?.avatar || '/icons/Ellipse 1.svg'}
+                        alt={user?.userName || 'User'}
+                        className="bg-muted h-12 w-12 shrink-0 rounded-full object-cover"
+                        onError={(e) => {
+                          const el = e.currentTarget
+                          el.onerror = null
+                          el.src = '/icons/Ellipse 1.svg'
+                        }}
+                      />
+                      <div className="flex min-w-0 flex-col items-start">
+                        <span className="text-foreground truncate text-base leading-none font-bold">
+                          {user?.userName || 'User'}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLogOutModalOpen(true)
+                        setMobileNavMenuOpen(false)
+                      }}
+                      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-solid border-red-500/45 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-500/20 dark:border-red-400/45 dark:text-red-400 dark:hover:bg-red-500/15"
+                    >
+                      <CentralIcon
+                        name="IconArrowBoxLeft"
+                        join="round"
+                        fill="filled"
+                        stroke="2"
+                        radius="1"
+                        size={16}
+                        color="currentColor"
+                        ariaHidden={true}
+                      />
+                      Sign Out
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    <span className="text-muted-foreground px-1 text-[11px] font-bold tracking-wider uppercase">
+                      Account
+                    </span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href={DASHBOARD_PATHS.orders as Route}
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconBasket2"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Orders</span>
                       </Link>
-                    )
-                  })}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLogOutModalOpen(true)
-                      setMobileNavMenuOpen(false)
-                    }}
-                    className="rounded-num-8 text-foreground hover:bg-hover-bg flex min-h-[44px] w-full items-center gap-2.5 px-4 text-left text-base font-semibold opacity-80 transition-colors"
-                  >
-                    <CentralIcon
-                      name="IconArrowBoxLeft"
-                      join="round"
-                      fill="filled"
-                      stroke="2"
-                      radius="1"
-                      size={18}
-                      color="currentColor"
-                      ariaHidden={true}
-                    />
-                    Log Out
-                  </button>
+                      <Link
+                        href={DASHBOARD_PATHS.drops as Route}
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconAirdrop2"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Drops</span>
+                      </Link>
+                      <Link
+                        href={DASHBOARD_PATHS.wallet as Route}
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconBanknote2"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Wallet</span>
+                      </Link>
+                      <Link
+                        href={DASHBOARD_PATHS.reviews as Route}
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconStar"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Reviews</span>
+                      </Link>
+                      <Link
+                        href={DASHBOARD_PATHS.settings as Route}
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg col-span-2 flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconSettingsSliderThree"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Settings</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    <span className="text-muted-foreground px-1 text-[11px] font-bold tracking-wider uppercase">
+                      Explore
+                    </span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href="/shop"
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconBasket1"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Shop</span>
+                      </Link>
+                      <Link
+                        href="/drops"
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconAirdrop2"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Drops</span>
+                      </Link>
+                      <Link
+                        href="/vouches"
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconReceiptBill"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Vouches</span>
+                      </Link>
+                      <Link
+                        href="/faqs"
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconCircleQuestionmark"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">FAQs</span>
+                      </Link>
+                      <Link
+                        href="/support"
+                        onClick={() => setMobileNavMenuOpen(false)}
+                        className="border-border-subtle bg-card-elevated hover:bg-hover-bg col-span-2 flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                      >
+                        <CentralIcon
+                          name="IconRescueRing"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={24}
+                          color="#9CA8BC"
+                          ariaHidden={true}
+                        />
+                        <span className="text-foreground text-xs font-semibold">Support</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               )}
-              <div className="text-foreground mb-2 text-lg font-bold">Menu</div>
-              <div className="flex flex-col gap-1">
-                {navLinks.map((link) =>
-                  link.href.startsWith('/') ? (
-                    <Link
-                      key={link.label}
-                      href={link.href as Route}
-                      className={`rounded-num-8 flex min-h-[44px] items-center gap-2.5 px-4 text-base font-semibold ${
-                        isActiveLink(link.href) ? 'bg-active-bg text-foreground' : 'opacity-80'
-                      }`}
-                      onClick={() => setMobileNavMenuOpen(false)}
-                      aria-current={isActiveLink(link.href) ? 'page' : undefined}
-                    >
-                      <CentralIcon
-                        name={link.icon as any}
-                        join="round"
-                        fill="filled"
-                        stroke="1"
-                        radius="1"
-                        size={18}
-                        color={isActiveLink(link.href) ? '#EB2DFF' : undefined}
-                        ariaHidden={true}
-                      />
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      className={`rounded-num-8 flex min-h-[44px] items-center gap-2.5 px-4 text-base font-semibold ${
-                        isActiveLink(link.href) ? 'bg-active-bg text-foreground' : 'opacity-80'
-                      }`}
-                      onClick={() => setMobileNavMenuOpen(false)}
-                    >
-                      <CentralIcon
-                        name={link.icon as any}
-                        join="round"
-                        fill="filled"
-                        stroke="1"
-                        radius="1"
-                        size={18}
-                        ariaHidden={true}
-                      />
-                      {link.label}
-                    </a>
-                  )
-                )}
-              </div>
-              <div className="border-border-subtle mt-4 border-t border-solid pt-4">
-                <Link
-                  href={'/support' as Route}
-                  onClick={() => setMobileNavMenuOpen(false)}
-                  className="rounded-num-8 border-border-subtle bg-card-elevated text-foreground hover:bg-hover-bg flex min-h-[44px] w-full items-center justify-between gap-2 border border-solid px-4 text-base font-semibold transition-colors"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <CentralIcon
-                      name="IconRescueRing"
-                      join="round"
-                      fill="filled"
-                      stroke="1"
-                      radius="1"
-                      size={16}
-                      color="currentColor"
-                      ariaHidden={true}
-                    />
-                    Help
-                  </span>
-                  <b className="tracking-num--0_01 text-base leading-none">0</b>
-                </Link>
-              </div>
             </div>
           </Drawer.Content>
         </Drawer.Portal>

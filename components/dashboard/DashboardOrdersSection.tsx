@@ -68,7 +68,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ]
 
 const dashboardSelectTriggerClass = cn(
-  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0',
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0'
 )
 
 const filterMenuPanelClass = (align: 'start' | 'end') =>
@@ -76,7 +76,7 @@ const filterMenuPanelClass = (align: 'start' | 'end') =>
     siteSelectDropdownPanel,
     'absolute top-full z-20 mt-2 overflow-hidden min-w-42 max-sm:min-w-0 max-sm:w-full max-sm:left-0 max-sm:right-0',
     align === 'start' && 'left-0',
-    align === 'end' && 'right-0 sm:left-auto',
+    align === 'end' && 'right-0 sm:left-auto'
   )
 
 type Props = {
@@ -166,11 +166,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
 
   useEffect(() => {
     const anyOpen =
-      viewMenuOpen ||
-      statusMenuOpen ||
-      paymentMethodMenuOpen ||
-      sortMenuOpen ||
-      mobileFiltersOpen
+      viewMenuOpen || statusMenuOpen || paymentMethodMenuOpen || sortMenuOpen || mobileFiltersOpen
     if (!anyOpen) return
     const onDoc = (e: MouseEvent) => {
       const target = e.target as Node
@@ -195,13 +191,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
       document.removeEventListener('mousedown', onDoc)
       document.removeEventListener('keydown', onKey)
     }
-  }, [
-    mobileFiltersOpen,
-    paymentMethodMenuOpen,
-    sortMenuOpen,
-    statusMenuOpen,
-    viewMenuOpen,
-  ])
+  }, [mobileFiltersOpen, paymentMethodMenuOpen, sortMenuOpen, statusMenuOpen, viewMenuOpen])
 
   const visibleOrders = filtered
   const totalForFooter =
@@ -223,7 +213,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
       ref={filterBarRef}
       className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3"
     >
-      <div className="flex min-w-0 w-full flex-row items-stretch gap-2 lg:contents">
+      <div className="flex w-full min-w-0 flex-row items-stretch gap-2 lg:contents">
         <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:w-full lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
           <CentralIcon
             name="IconMagnifyingGlass"
@@ -245,7 +235,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
         </div>
         <button
           type="button"
-          className="border-border-subtle bg-card-elevated text-foreground flex h-11 w-11 shrink-0 items-center justify-center rounded-num-8 border border-solid sm:hidden dark:border-[#16243B]"
+          className="border-border-subtle bg-card-elevated text-foreground rounded-num-8 flex h-11 w-11 shrink-0 items-center justify-center border border-solid sm:hidden dark:border-[#16243B]"
           aria-label={mobileFiltersOpen ? 'Close filters' : 'Open filters'}
           aria-expanded={mobileFiltersOpen}
           onClick={() => setMobileFiltersOpen((open) => !open)}
@@ -266,7 +256,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
         className={cn(
           'flex w-full min-w-0 flex-wrap items-center gap-2 sm:flex sm:gap-3 lg:w-auto lg:shrink-0 lg:justify-end',
           !mobileFiltersOpen && 'max-sm:hidden',
-          'max-sm:flex-col max-sm:items-stretch',
+          'max-sm:flex-col max-sm:items-stretch'
         )}
       >
         <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={statusMenuRef}>
@@ -278,11 +268,11 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('status')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Status
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {statusFilter === 'all' ? 'All' : dashboardOrderStatusConfig[statusFilter].label}
               </span>
               <CentralIcon
@@ -298,11 +288,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </span>
           </button>
           {statusMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="Status"
-              className={filterMenuPanelClass('start')}
-            >
+            <ul role="listbox" aria-label="Status" className={filterMenuPanelClass('start')}>
               <div className={siteSelectDropdownList}>
                 {STATUS_OPTIONS.map((opt) => {
                   const statusCfg =
@@ -345,7 +331,10 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </ul>
           ) : null}
         </div>
-        <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={paymentMethodMenuRef}>
+        <div
+          className="relative w-fit max-w-full shrink-0 max-sm:w-full"
+          ref={paymentMethodMenuRef}
+        >
           <button
             type="button"
             aria-haspopup="listbox"
@@ -354,12 +343,13 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('payment')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Payment Method
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
-                {PAYMENT_METHOD_OPTIONS.find((o) => o.value === paymentMethodFilter)?.label ?? 'All'}
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
+                {PAYMENT_METHOD_OPTIONS.find((o) => o.value === paymentMethodFilter)?.label ??
+                  'All'}
               </span>
               <CentralIcon
                 name="IconChevronDownMedium"
@@ -416,11 +406,11 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('sort')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Sort by
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
               </span>
               <CentralIcon
@@ -436,11 +426,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </span>
           </button>
           {sortMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="Sort by"
-              className={filterMenuPanelClass('start')}
-            >
+            <ul role="listbox" aria-label="Sort by" className={filterMenuPanelClass('start')}>
               <div className={siteSelectDropdownList}>
                 {SORT_OPTIONS.map((opt) => (
                   <button
@@ -475,11 +461,11 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             onClick={() => toggleMenu('view')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               View
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {selectedViewOption.label}
               </span>
               <CentralIcon
@@ -495,11 +481,7 @@ export const DashboardOrdersSection: FunctionComponent<Props> = ({ onFilteredCou
             </span>
           </button>
           {viewMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="View layout"
-              className={filterMenuPanelClass('end')}
-            >
+            <ul role="listbox" aria-label="View layout" className={filterMenuPanelClass('end')}>
               <div className={siteSelectDropdownList}>
                 {VIEW_OPTIONS.map((opt) => (
                   <button

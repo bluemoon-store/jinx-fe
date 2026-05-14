@@ -264,7 +264,13 @@ export function CompletePaymentPending({
               <>
                 <div className="border-t border-white/10" />
                 <div className="flex items-center gap-2.5 px-3 py-2.5 sm:px-4 sm:py-3">
-                  <Image src={checkoutImg.coins} alt="" width={18} height={18} className="shrink-0 opacity-90" />
+                  <Image
+                    src={checkoutImg.coins}
+                    alt=""
+                    width={18}
+                    height={18}
+                    className="shrink-0 opacity-90"
+                  />
                   <span className="text-lightsteelblue-200 text-left text-sm font-semibold sm:text-base">
                     ≈ {usdPlain}
                   </span>

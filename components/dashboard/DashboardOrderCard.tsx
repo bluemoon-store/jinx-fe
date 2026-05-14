@@ -41,7 +41,11 @@ export const DashboardOrderCard: FunctionComponent<Props> = ({
 
   return (
     <Link
-      href={`/dashboard/orders/${id}` as Route}
+      href={
+        status === 'pending'
+          ? (`/checkout?step=3&orderId=${id}` as Route)
+          : (`/dashboard/orders/${id}` as Route)
+      }
       className="rounded-num-8 border-border-subtle bg-card text-foreground focus-visible:ring-fuchsia/50 box-border flex w-full min-w-0 flex-col items-center justify-center gap-3 border border-solid p-3 transition-[box-shadow,transform] hover:shadow-[0_0_0_1px_rgba(235,45,255,0.25)] focus-visible:ring-2 focus-visible:outline-none dark:text-white"
     >
       <div className="rounded-num-8 flex aspect-[257/125] w-full items-center justify-center overflow-hidden shadow-[0px_0px_8.63px_rgba(0,_0,_0,_0.6)]">

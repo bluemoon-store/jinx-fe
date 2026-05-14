@@ -24,7 +24,7 @@ const VIEW_OPTIONS: { value: DropsViewMode; label: string; icon: string }[] = [
 ]
 
 const dashboardSelectTriggerClass = cn(
-  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0',
+  'rounded-num-8 px-num-12 bg-card-elevated text-foreground dark:text-lightsteelblue-100 border-border-subtle dark:border-[#16243B] flex min-h-11 w-full min-w-0 items-center gap-2 border border-solid py-2 max-sm:justify-between max-sm:gap-0'
 )
 
 const filterMenuPanelClass = (align: 'start' | 'end') =>
@@ -32,7 +32,7 @@ const filterMenuPanelClass = (align: 'start' | 'end') =>
     siteSelectDropdownPanel,
     'absolute top-full z-20 mt-2 overflow-hidden min-w-42 max-sm:min-w-0 max-sm:w-full max-sm:left-0 max-sm:right-0',
     align === 'start' && 'left-0',
-    align === 'end' && 'right-0 sm:left-auto',
+    align === 'end' && 'right-0 sm:left-auto'
   )
 
 function formatClaimDate(value: string) {
@@ -134,7 +134,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
       ref={filterBarRef}
       className="text-muted-foreground dark:text-lightsteelblue-100 lg:text-num-16 flex w-full min-w-0 flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-3"
     >
-      <div className="flex min-w-0 w-full flex-row items-stretch gap-2 lg:contents">
+      <div className="flex w-full min-w-0 flex-row items-stretch gap-2 lg:contents">
         <div className="rounded-num-8 px-num-12 bg-card-elevated border-border-subtle flex min-h-11 min-w-0 flex-1 items-center gap-2 overflow-hidden border border-solid py-0 sm:w-full lg:min-w-[min(100%,240px)] lg:flex-1 dark:border-[#16243B]">
           <CentralIcon
             name="IconMagnifyingGlass"
@@ -156,7 +156,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
         </div>
         <button
           type="button"
-          className="border-border-subtle bg-card-elevated text-foreground flex h-11 w-11 shrink-0 items-center justify-center rounded-num-8 border border-solid sm:hidden dark:border-[#16243B]"
+          className="border-border-subtle bg-card-elevated text-foreground rounded-num-8 flex h-11 w-11 shrink-0 items-center justify-center border border-solid sm:hidden dark:border-[#16243B]"
           aria-label={mobileFiltersOpen ? 'Close filters' : 'Open filters'}
           aria-expanded={mobileFiltersOpen}
           onClick={() => setMobileFiltersOpen((open) => !open)}
@@ -177,7 +177,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
         className={cn(
           'flex w-full min-w-0 flex-wrap items-center gap-2 sm:flex sm:gap-3 lg:w-auto lg:shrink-0 lg:justify-end',
           !mobileFiltersOpen && 'max-sm:hidden',
-          'max-sm:flex-col max-sm:items-stretch',
+          'max-sm:flex-col max-sm:items-stretch'
         )}
       >
         <div className="relative w-fit max-w-full shrink-0 max-sm:w-full" ref={sortMenuRef}>
@@ -189,11 +189,11 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
             onClick={() => toggleMenu('sort')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               Sort by
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {SORT_OPTIONS.find((o) => o.value === sortOption)?.label ?? 'Newest'}
               </span>
               <CentralIcon
@@ -209,11 +209,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
             </span>
           </button>
           {sortMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="Sort by"
-              className={filterMenuPanelClass('start')}
-            >
+            <ul role="listbox" aria-label="Sort by" className={filterMenuPanelClass('start')}>
               <div className={siteSelectDropdownList}>
                 {SORT_OPTIONS.map((opt) => (
                   <button
@@ -250,11 +246,11 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
             onClick={() => toggleMenu('view')}
             className={dashboardSelectTriggerClass}
           >
-            <span className="tracking-num--0_01 shrink-0 leading-num-28 sm:text-num-14 lg:text-num-16 text-sm font-semibold opacity-50">
+            <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 shrink-0 text-sm font-semibold opacity-50">
               View
             </span>
             <span className="flex min-w-0 items-center gap-1.5 sm:contents">
-              <span className="tracking-num--0_01 truncate leading-num-28 text-sm font-semibold max-sm:text-right sm:text-left sm:text-num-14 lg:text-num-16">
+              <span className="tracking-num--0_01 leading-num-28 sm:text-num-14 lg:text-num-16 truncate text-sm font-semibold max-sm:text-right sm:text-left">
                 {selectedViewOption.label}
               </span>
               <CentralIcon
@@ -270,11 +266,7 @@ export const DashboardDropsSection: FunctionComponent<Props> = ({ onFilteredCoun
             </span>
           </button>
           {viewMenuOpen ? (
-            <ul
-              role="listbox"
-              aria-label="View layout"
-              className={filterMenuPanelClass('end')}
-            >
+            <ul role="listbox" aria-label="View layout" className={filterMenuPanelClass('end')}>
               <div className={siteSelectDropdownList}>
                 {VIEW_OPTIONS.map((opt) => (
                   <button

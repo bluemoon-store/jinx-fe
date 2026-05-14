@@ -20,11 +20,12 @@ function isMainTabActive(pathname: string, href: string): boolean {
     return true
   if (href === DASHBOARD_PATHS.drops && pathname.startsWith(`${DASHBOARD_PATHS.drops}/`))
     return true
-  if (href === DASHBOARD_PATHS.settings && (
-    pathname === DASHBOARD_PATHS.general ||
-    pathname === DASHBOARD_PATHS.security ||
-    pathname === DASHBOARD_PATHS.deletion
-  ))
+  if (
+    href === DASHBOARD_PATHS.settings &&
+    (pathname === DASHBOARD_PATHS.general ||
+      pathname === DASHBOARD_PATHS.security ||
+      pathname === DASHBOARD_PATHS.deletion)
+  )
     return true
   return false
 }

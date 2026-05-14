@@ -67,10 +67,14 @@ export const DashboardOrderRow: FunctionComponent<DashboardOrderSummaryProps> = 
           </Link>
         )}
         <Link
-          href={`/dashboard/orders/${id}` as Route}
+          href={
+            status === 'pending'
+              ? (`/checkout?step=3&orderId=${id}` as Route)
+              : (`/dashboard/orders/${id}` as Route)
+          }
           className="text-foreground bg-card-elevated dark:text-ghostwhite font-commissioner sm:text-num-14 rounded-num-8 focus-visible:ring-fuchsia/50 group-hover:bg-foreground/10 shrink-0 px-3 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none sm:px-5 sm:py-2.5 sm:text-sm dark:bg-[#13253F] dark:group-hover:bg-white/10"
         >
-          View Details
+          {status === 'pending' ? 'Complete Payment' : 'View Details'}
         </Link>
       </div>
     </div>

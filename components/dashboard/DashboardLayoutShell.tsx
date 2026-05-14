@@ -223,57 +223,59 @@ export const DashboardLayoutShell: FunctionComponent<Props> = ({ children }) => 
                         aria-label="Breadcrumb"
                         className="font-commissioner leading-num-28 md:text-num-16 flex min-w-0 flex-nowrap items-center gap-2 text-base"
                       >
-                      <Link
-                        href={
-                          (isOrderDetail ? DASHBOARD_PATHS.orders : DASHBOARD_PATHS.drops) as Route
-                        }
-                        className="text-muted-foreground hover:text-foreground dark:hover:text-ghostwhite shrink-0 font-medium transition-colors"
-                      >
-                        {isOrderDetail ? 'Orders' : 'Drops'}
-                      </Link>
-                      <CentralIcon
-                        name="IconChevronRightMedium"
-                        join="round"
-                        fill="filled"
-                        stroke="2"
-                        radius="1"
-                        size={16}
-                        ariaHidden={true}
-                        className="text-muted-foreground shrink-0"
-                      />
-                      <span
-                        className="text-foreground dark:text-ghostwhite tracking-num-0_02 min-w-0 truncate font-bold"
-                        aria-current="page"
-                      >
-                        {breadcrumbCurrentLabel}
-                      </span>
-                    </nav>
-                  ) : pageHeader ? (
-                    <div className="flex min-w-0 items-center gap-2">
-                      <CentralIcon
-                        name={pageHeader.icon as any}
-                        join="round"
-                        fill="filled"
-                        stroke="2"
-                        radius="1"
-                        size={16}
-                        ariaHidden={true}
-                        color="#EB2DFF"
-                        className="shrink-0"
-                      />
-                      <b className="leading-num-28 tracking-num-0_02 text-num-16 truncate">
-                        {pageHeader.title}
-                      </b>
-                    </div>
-                  ) : null}
+                        <Link
+                          href={
+                            (isOrderDetail
+                              ? DASHBOARD_PATHS.orders
+                              : DASHBOARD_PATHS.drops) as Route
+                          }
+                          className="text-muted-foreground hover:text-foreground dark:hover:text-ghostwhite shrink-0 font-medium transition-colors"
+                        >
+                          {isOrderDetail ? 'Orders' : 'Drops'}
+                        </Link>
+                        <CentralIcon
+                          name="IconChevronRightMedium"
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={16}
+                          ariaHidden={true}
+                          className="text-muted-foreground shrink-0"
+                        />
+                        <span
+                          className="text-foreground dark:text-ghostwhite tracking-num-0_02 min-w-0 truncate font-bold"
+                          aria-current="page"
+                        >
+                          {breadcrumbCurrentLabel}
+                        </span>
+                      </nav>
+                    ) : pageHeader ? (
+                      <div className="flex min-w-0 items-center gap-2">
+                        <CentralIcon
+                          name={pageHeader.icon as any}
+                          join="round"
+                          fill="filled"
+                          stroke="2"
+                          radius="1"
+                          size={16}
+                          ariaHidden={true}
+                          color="#EB2DFF"
+                          className="shrink-0"
+                        />
+                        <b className="leading-num-28 tracking-num-0_02 text-num-16 truncate">
+                          {pageHeader.title}
+                        </b>
+                      </div>
+                    ) : null}
                   </div>
-                  <div className="text-muted-foreground border-border-subtle bg-card-elevated flex w-auto max-w-[45%] shrink-0 flex-nowrap items-center gap-1.5 rounded-md border px-2 py-2 text-xs sm:max-w-none sm:w-fit sm:gap-2 sm:px-2 sm:py-1.5 sm:text-[12px]">
+                  <div className="text-muted-foreground border-border-subtle bg-card-elevated flex w-auto max-w-[45%] shrink-0 flex-nowrap items-center gap-1.5 rounded-md border px-2 py-2 text-xs sm:w-fit sm:max-w-none sm:gap-2 sm:px-2 sm:py-1.5 sm:text-[12px]">
                     <span className="shrink-0 leading-[15px] font-semibold">User ID</span>
                     <div className="text-foreground dark:text-ghostwhite flex min-w-0 flex-1 items-center gap-1">
-                      <span className="leading-[15px] hidden min-w-0 font-semibold break-all sm:inline">
+                      <span className="hidden min-w-0 leading-[15px] font-semibold break-all sm:inline">
                         {displayUserId || '—'}
                       </span>
-                      <span className="leading-[15px] min-w-0 truncate font-semibold sm:hidden">
+                      <span className="min-w-0 truncate leading-[15px] font-semibold sm:hidden">
                         {displayUserIdShort}
                       </span>
                       <button
