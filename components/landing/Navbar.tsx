@@ -539,13 +539,13 @@ const Navbar: FunctionComponent = () => {
                     <span className="text-muted-foreground px-1 text-[11px] font-bold tracking-wider uppercase">
                       Menu
                     </span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {navLinks.map((link) => (
+                    <div className={MOBILE_DRAWER_NAV_GRID}>
+                      {navLinks.map((link, i) => (
                         <Link
                           key={link.label}
                           href={link.href as Route}
                           onClick={() => setMobileNavMenuOpen(false)}
-                          className="border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors"
+                          className={mobileDrawerNavTileClass(i, navLinks.length)}
                         >
                           <CentralIcon
                             name={link.icon as any}
