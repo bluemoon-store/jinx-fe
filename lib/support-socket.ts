@@ -8,15 +8,8 @@ let socket: Socket | null = null
 let lastToken: string | null = null
 
 function resolveTicketsSocketBase(): string {
-  const explicit =
-    process.env.NEXT_PUBLIC_BACKEND_WS_URL?.replace(/\/$/, '') ??
-    process.env.NEXT_PUBLIC_WS_URL?.replace(/\/$/, '')
+  const explicit = process.env.NEXT_PUBLIC_WS_URL?.replace(/\/$/, '')
   if (explicit) return explicit
-
-  const api = process.env.NEXT_PUBLIC_BACKEND_API_URL?.replace(/\/$/, '')
-  if (api && /^https?:\/\//i.test(api)) {
-    return api.replace(/\/v1\/?$/i, '')
-  }
 
   const feApi = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
   if (feApi && /^https?:\/\//i.test(feApi)) {

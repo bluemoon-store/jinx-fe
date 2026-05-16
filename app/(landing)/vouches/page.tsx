@@ -6,7 +6,7 @@ import Navbar from '@/components/landing/Navbar'
 import { Reveal } from '@/components/ui/reveal'
 import { VouchesGrid } from '@/components/vouches/VouchesGrid'
 
-const TELEGRAM_DROPS_URL = process.env.NEXT_PUBLIC_TELEGRAM_DROPS_URL?.trim() ?? ''
+const TELEGRAM_DROPS_URL = ''
 
 export const metadata: Metadata = {
   title: 'Vouches | BlueMoon',

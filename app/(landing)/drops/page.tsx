@@ -9,7 +9,7 @@ import { UnauthenticatedDropsGate } from '@/components/landing/drops/Unauthentic
 import { Reveal } from '@/components/ui/reveal'
 import { useAuthModal } from '@/components/auth/auth-modal-context'
 
-const TELEGRAM_DROPS_URL = process.env.NEXT_PUBLIC_TELEGRAM_DROPS_URL?.trim() ?? ''
+const TELEGRAM_DROPS_URL = ''
 
 export default function DropsPage() {
   const { isAuthenticated } = useAuthModal()
