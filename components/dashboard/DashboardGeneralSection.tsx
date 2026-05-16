@@ -2,11 +2,16 @@
 
 import CentralIcon from '@central-icons-react/all'
 import { useTheme } from 'next-themes'
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useRef, useState } from 'react'
 
+import { removeAvatarAction, uploadAvatarAction } from '@/actions/user'
 import { useAuth } from '@/hooks/use-auth'
 import { parseApiError } from '@/lib/api-error'
 import { toast } from '@/lib/toast'
+
+const AVATAR_MAX_BYTES = 2 * 1024 * 1024
+const AVATAR_ALLOWED_TYPES = ['image/png', 'image/jpeg']
+const DEFAULT_AVATAR_SRC = '/icons/Ellipse 1.svg'
 
 const secondaryActionBtnClass =
   'rounded-num-8 border-border-subtle bg-card-elevated text-foreground dark:border-darkslateblue dark:bg-gray-300 dark:text-inherit px-num-12 box-border flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden border border-solid py-2.5 font-inherit sm:min-h-0 sm:w-auto sm:justify-start sm:py-2'
@@ -19,12 +24,58 @@ const themeOptionUnselectedClass =
 /** General settings: profile, email, theme — layout refactored from Figma (flex/grid, no absolute). */
 export const DashboardGeneralSection: FunctionComponent = () => {
   const { theme, setTheme } = useTheme()
-  const { user, sendVerificationEmail } = useAuth()
+  const { user, sendVerificationEmail, refreshCurrentUser } = useAuth()
   const [isSendingVerification, setIsSendingVerification] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [isRemovingAvatar, setIsRemovingAvatar] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const selectedTheme: 'dark' | 'light' | 'system' =
     theme === 'dark' || theme === 'light' || theme === 'system' ? theme : 'system'
   const isVerified = user?.isVerified === true
   const emailDisplay = user?.email ?? ''
+  const avatarSrc = user?.avatar?.trim() ? user.avatar : DEFAULT_AVATAR_SRC
+  const hasAvatar = !!user?.avatar?.trim()
+  const isAvatarBusy = isUploadingAvatar || isRemovingAvatar
+
+  async function handleAvatarFilePicked(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    if (!AVATAR_ALLOWED_TYPES.includes(file.type)) {
+      toast.error('Please choose a PNG or JPG image.')
+      return
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      toast.error('Image must be 2 MB or smaller.')
+      return
+    }
+
+    setIsUploadingAvatar(true)
+    try {
+      await uploadAvatarAction(file)
+      await refreshCurrentUser()
+      toast.success('Avatar updated')
+    } catch (e) {
+      toast.error(parseApiError(e))
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }
+
+  async function handleRemoveAvatar() {
+    if (!hasAvatar) return
+    setIsRemovingAvatar(true)
+    try {
+      await removeAvatarAction()
+      await refreshCurrentUser()
+      toast.success('Avatar removed')
+    } catch (e) {
+      toast.error(parseApiError(e))
+    } finally {
+      setIsRemovingAvatar(false)
+    }
+  }
 
   function themeLabel(t: 'dark' | 'light' | 'system') {
     return t === 'dark' ? 'Dark' : t === 'light' ? 'Light' : 'System'
@@ -43,9 +94,9 @@ export const DashboardGeneralSection: FunctionComponent = () => {
         {/* Avatar upload */}
         <div className="rounded-num-8 border-border-subtle bg-card-elevated dark:border-darkslateblue box-border flex w-full min-w-0 shrink-0 flex-col gap-3 overflow-hidden border border-solid p-3 sm:min-h-[98.7px] sm:flex-row sm:items-center sm:p-4 dark:bg-gray-100">
           <img
-            className="h-14 w-14 shrink-0 rounded-xl object-cover sm:h-[66.7px] sm:w-[66.7px] sm:rounded-[13.33px]"
+            className="border-border-subtle dark:border-darkslateblue h-14 w-14 shrink-0 rounded-full border-2 border-solid object-cover sm:h-[66.7px] sm:w-[66.7px]"
             alt=""
-            src="/icons/Ellipse 1.svg"
+            src={avatarSrc}
           />
           <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
             <b className="tracking-num-0_02 sm:leading-num-28 self-stretch text-base leading-6 lg:text-[18px]">
@@ -56,7 +107,19 @@ export const DashboardGeneralSection: FunctionComponent = () => {
             </div>
           </div>
           <div className="text-muted-foreground dark:text-lightsteelblue-100 flex w-full min-w-0 shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
-            <button type="button" className={secondaryActionBtnClass}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg"
+              className="hidden"
+              onChange={handleAvatarFilePicked}
+            />
+            <button
+              type="button"
+              className={secondaryActionBtnClass}
+              disabled={isAvatarBusy}
+              onClick={() => fileInputRef.current?.click()}
+            >
               <CentralIcon
                 name="IconArrowOutOfBox"
                 join="round"
@@ -67,17 +130,14 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                 ariaHidden={true}
               />
               <span className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold">
-                Upload
+                {isUploadingAvatar ? 'Uploading…' : 'Upload'}
               </span>
             </button>
             <button
               type="button"
               className={secondaryActionBtnClass}
-              onClick={() => {
-                toast.info('Avatar removed', {
-                  description: 'This is a demo toast (no API call yet).',
-                })
-              }}
+              disabled={isAvatarBusy || !hasAvatar}
+              onClick={handleRemoveAvatar}
             >
               <CentralIcon
                 name="IconTrashCan"
@@ -90,7 +150,7 @@ export const DashboardGeneralSection: FunctionComponent = () => {
                 color="#ff2a2a"
               />
               <span className="tracking-num--0_01 sm:text-num-16 sm:leading-num-28 text-sm leading-6 font-semibold">
-                Remove
+                {isRemovingAvatar ? 'Removing…' : 'Remove'}
               </span>
             </button>
           </div>
