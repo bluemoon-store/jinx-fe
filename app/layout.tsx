@@ -1,8 +1,9 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Commissioner, Nata_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 
 import { Providers } from '@/components/layouts/providers'
+import { ServiceWorkerRegister } from '@/components/pwa/service-worker-register'
 
 import './globals.css'
 
@@ -57,6 +58,11 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/favicons/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'Jinx',
+    statusBarStyle: 'default',
+  },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   openGraph: {
     type: 'website',
@@ -86,6 +92,10 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -102,6 +112,7 @@ export default function RootLayout({
         className={`${fontCommissioner.variable} ${fontNataSans.variable} ${fontHeydex.variable} font-commissioner antialiased`}
       >
         <Providers>{children}</Providers>
+        <ServiceWorkerRegister />
       </body>
     </html>
   )

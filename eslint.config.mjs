@@ -6,4 +6,14 @@ export default defineConfig([
     ignores: ['.next/**', 'node_modules/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
   js.configs.recommended,
+  {
+    files: ['public/sw.js'],
+    languageOptions: {
+      globals: {
+        self: 'readonly',
+        fetch: 'readonly',
+        clients: 'readonly',
+      },
+    },
+  },
 ])
