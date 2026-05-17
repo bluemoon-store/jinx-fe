@@ -3,7 +3,11 @@ import { Reveal } from '@/components/ui/reveal'
 
 import NewlyLaunchedProductsClient from './NewlyLaunchedProductsClient'
 
-export default async function NewlyLaunchedSection() {
+type Props = {
+  description: string
+}
+
+export default async function NewlyLaunchedSection({ description }: Props) {
   let items: Awaited<ReturnType<typeof getProductsAction>>['items'] = []
   try {
     const result = await getProductsAction({
@@ -30,11 +34,8 @@ export default async function NewlyLaunchedSection() {
               LAUNCHED
             </div>
           </div>
-          <div className="font-commissioner text-foreground w-full max-w-[580px] text-sm font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-            Just added to Jinx Store, all new giftcards for you.
-            <br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          <div className="font-commissioner text-foreground w-full max-w-[580px] text-sm font-medium whitespace-pre-line opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+            {description}
           </div>
         </div>
       </Reveal>

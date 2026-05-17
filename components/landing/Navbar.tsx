@@ -25,6 +25,9 @@ import { Drawer } from 'vaul'
 const MOBILE_DRAWER_TILE_CLASS =
   'border-border-subtle bg-card-elevated hover:bg-hover-bg flex flex-col items-center justify-center gap-2 rounded-2xl border border-solid py-4 transition-colors'
 
+const MOBILE_DRAWER_GRID_LAST_ODD_CLASS =
+  'col-span-2 w-[calc((100%-0.5rem)/2)] justify-self-center'
+
 const Navbar: FunctionComponent = () => {
   const [mobileNavMenuOpen, setMobileNavMenuOpen] = useState(false)
   const [desktopUserMenuOpen, setDesktopUserMenuOpen] = useState(false)
@@ -647,7 +650,7 @@ const Navbar: FunctionComponent = () => {
                       <Link
                         href={DASHBOARD_PATHS.settings as Route}
                         onClick={() => setMobileNavMenuOpen(false)}
-                        className={`${MOBILE_DRAWER_TILE_CLASS} col-span-2`}
+                        className={`${MOBILE_DRAWER_TILE_CLASS} ${MOBILE_DRAWER_GRID_LAST_ODD_CLASS}`}
                       >
                         <CentralIcon
                           name="IconSettingsSliderThree"
@@ -675,7 +678,11 @@ const Navbar: FunctionComponent = () => {
                         key={link.label}
                         href={link.href as Route}
                         onClick={() => setMobileNavMenuOpen(false)}
-                        className={`${MOBILE_DRAWER_TILE_CLASS}${i === navLinks.length - 1 ? 'col-span-2' : ''}`}
+                        className={`${MOBILE_DRAWER_TILE_CLASS}${
+                          i === navLinks.length - 1 && navLinks.length % 2 !== 0
+                            ? ` ${MOBILE_DRAWER_GRID_LAST_ODD_CLASS}`
+                            : ''
+                        }`}
                       >
                         <CentralIcon
                           name={link.icon as any}

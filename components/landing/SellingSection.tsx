@@ -3,7 +3,11 @@ import { Reveal } from '@/components/ui/reveal'
 
 import SellingHotProductsClient from './SellingHotProductsClient'
 
-export default async function SellingSection() {
+type Props = {
+  description: string
+}
+
+export default async function SellingSection({ description }: Props) {
   let items: Awaited<ReturnType<typeof getProductsAction>>['items'] = []
   try {
     const result = await getProductsAction({
@@ -37,9 +41,8 @@ export default async function SellingSection() {
                 SELLING
               </div>
             </div>
-            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-              From everyday essentials to premium digital rewards
-              <br /> discover categories built for instant access.
+            <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium whitespace-pre-line opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
+              {description}
             </div>
           </div>
         </div>

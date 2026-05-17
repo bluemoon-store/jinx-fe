@@ -20,9 +20,11 @@ import type { ProductCategory } from '@/types/product'
 
 type Props = {
   categories: ProductCategory[]
+  title: string
+  subtitle: string
 }
 
-const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
+const HeroSectionClient: FunctionComponent<Props> = ({ categories, title, subtitle }) => {
   const router = useRouter()
   const { theme, resolvedTheme } = useTheme()
   const notifyLandingReady = useLandingPageReadyNotify()
@@ -145,13 +147,11 @@ const HeroSectionClient: FunctionComponent<Props> = ({ categories }) => {
                   </div>
 
                   <p className="text-foreground max-w-full text-center [font-family:'Nata_Sans',Helvetica] text-[clamp(1.625rem,4vw+1rem,3.5rem)] leading-[1.05] font-black tracking-[-0.03em] text-balance sm:text-left sm:leading-[1] sm:tracking-[-0.56px] dark:text-[#faf7ff]">
-                    <span className="sm:tracking-[-0.31px]">THE </span>
-                    <span className="underline sm:tracking-[-0.31px]">ONE STOP</span>
-                    <span className="sm:tracking-[-0.31px]"> STORE FOR ALL DIGITAL PURCHASES</span>
+                    <span className="sm:tracking-[-0.31px]">{title}</span>
                   </p>
 
                   <p className="text-muted-foreground max-w-full text-center [font-family:'Commissioner',Helvetica] text-lg leading-snug font-medium tracking-[0] text-pretty sm:text-left sm:text-xl sm:leading-[26px] dark:text-white">
-                    The fastest way to grab digital goods with zero friction.
+                    {subtitle}
                   </p>
 
                   <div className="flex w-full max-w-[571px] min-w-0 flex-col items-stretch justify-center gap-4">

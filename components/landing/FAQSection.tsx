@@ -6,6 +6,7 @@ import { FunctionComponent, useState } from 'react'
 import { Reveal } from '@/components/ui/reveal'
 import { sanitizeHtml } from '@/lib/sanitize-html'
 import type { FaqCategory } from '@/lib/faq-public'
+import { LANDING_TEXT_DEFAULTS } from '@/lib/landing-texts'
 
 const FAQItem: FunctionComponent<{
   question: string
@@ -52,9 +53,13 @@ const FAQItem: FunctionComponent<{
 
 type FAQSectionProps = {
   categories?: FaqCategory[]
+  description?: string
 }
 
-const FAQSection: FunctionComponent<FAQSectionProps> = ({ categories = [] }) => {
+const FAQSection: FunctionComponent<FAQSectionProps> = ({
+  categories = [],
+  description = LANDING_TEXT_DEFAULTS.faqDesc,
+}) => {
   const items = categories.flatMap((category) => category.items).slice(0, 8)
   const [openIds, setOpenIds] = useState<Set<string>>(new Set())
 
@@ -95,9 +100,7 @@ const FAQSection: FunctionComponent<FAQSectionProps> = ({ categories = [] }) => 
               </div>
             </div>
             <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              <br className="hidden sm:block" />
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {description}
             </div>
           </div>
         </div>

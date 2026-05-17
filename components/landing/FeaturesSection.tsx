@@ -1,7 +1,11 @@
 import { Reveal } from '@/components/ui/reveal'
 import CentralIcon from '@central-icons-react/all'
 
-export default async function FeaturesSection() {
+type Props = {
+  description: string
+}
+
+export default async function FeaturesSection({ description }: Props) {
   const features = [
     {
       title: 'Instant Access',
@@ -90,10 +94,7 @@ export default async function FeaturesSection() {
             </div>
           </div>
           <div className="font-commissioner max-w-num-580 sm:leading-num-24 text-foreground text-sm leading-6 font-medium opacity-[0.75] [text-shadow:0px_0px_8.63px_rgba(17,24,39,0.16)] sm:text-base dark:[text-shadow:0px_0px_8.63px_rgba(0,0,0,0.6)]">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            <br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            {description}
           </div>
         </div>
       </Reveal>
